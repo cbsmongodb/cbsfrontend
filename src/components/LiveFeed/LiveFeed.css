@@ -1,0 +1,46 @@
+.live-feed h1 {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.live-feed-error {
+  color: #c0392b;
+  font-size: 13px;
+}
+
+.live-feed-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+.live-feed-table th,
+.live-feed-table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.live-feed-table tr.far {
+  background: #fef2f2;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dot.checkin {
+  background: #16a34a;
+}
+
+.dot.checkout {
+  background: #6b7280;
+}
+
+.dot.far {
+  background: #e11d48;
+}
