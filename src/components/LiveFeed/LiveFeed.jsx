@@ -10,15 +10,16 @@ const LiveFeedMap = dynamic(() => import('./LiveFeedMap'), { ssr: false })
 
 const FAR_THRESHOLD_METERS = 300
 
-function flattenToEvents(plans) {
+function flattenToEvents(items) {
   const events = []
-  for (const plan of plans) {
-    for (const addr of plan.addresses) {
+  for (const item of items) {
+    for (const addr of item.addresses) {
       if (addr.lat == null || addr.lng == null) continue
       events.push({
-        employeeId: plan.employeeId,
-        employeeName: plan.employeeName || 'უცნობი',
-        hospitalName: plan.hospitalName || '—',
+        groupKey: item.groupKey,
+        employeeId: item.employeeId,
+        employeeName: item.employeeName || 'უცნობი',
+        hospitalName: item.hospitalName || '—',
         type: addr.addressType === 'performer_i_went_location' ? 'checkin' : 'checkout',
         lat: addr.lat,
         lng: addr.lng,
@@ -34,19 +35,16 @@ function flattenToEvents(plans) {
 
 export default function LiveFeed() {
   const [events, setEvents] = useState([])
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [selectedIndex, setSelectedIndex] = useState(null)
+  const [selectedGroupKey, setSelectedGroupKey] = useState(null)
   const [selectedEmployee, setSelectedEmployee] = useState(null)
 
   async function load() {
     try {
-      const plans = await apiFetch('/api/attendance/live-feed')
-      setEvents(flattenToEvents(plans))
+      const items = await apiFetch('/api/attendance/live-feed')
+      setEvents(flattenToEvents(items))
     } catch (err) {
       setError(err.message)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -56,71 +54,68 @@ export default function LiveFeed() {
     return () => clearInterval(interval)
   }, [])
 
-  function handleRowClick(event, index) {
-    setSelectedIndex(index)
+  function handleRowClick(event) {
+    setSelectedGroupKey(event.groupKey)
     if (event.employeeId) {
       setSelectedEmployee({ id: event.employeeId, name: event.employeeName })
     }
   }
 
-  const mapEvents = selectedIndex != null && events[selectedIndex] ? [events[selectedIndex]] : []
+  const mapEvents = selectedGroupKey
+    ? events.filter((e) => e.groupKey === selectedGroupKey)
+    : []
 
   return (
     <div className="live-feed">
       <h1>Live Feed</h1>
 
       {error && <p className="live-feed-error">{error}</p>}
-      {loading ? (
-        <p>იტვირთება...</p>
-      ) : (
-        <>
-          <LiveFeedMap events={mapEvents} />
 
-          <table className="live-feed-table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>თანამშრომელი</th>
-                <th>ტიპი</th>
-                <th>ჰოსპიტალი</th>
-                <th>დრო</th>
-                <th>მისამართი</th>
-                <th>მანძილი</th>
-              </tr>
-            </thead>
-            <tbody>
-              {events.map((event, i) => (
-                <tr
-                  key={i}
-                  className={`${event.isFar ? 'far' : ''} ${selectedIndex === i ? 'selected' : ''}`}
-                  onClick={() => handleRowClick(event, i)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <td>
-                    <span className={`dot ${event.isFar ? 'far' : event.type}`} />
-                  </td>
-                  <td>{event.employeeName}</td>
-                  <td>{event.type === 'checkin' ? 'ჩექინი' : 'ჩექაუთი'}</td>
-                  <td>{event.hospitalName}</td>
-                  <td>
-                    {new Date(event.time).toLocaleTimeString('ka-GE', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </td>
-                  <td>{event.address}</td>
-                  <td>{event.distanceFromHospital != null ? `${event.distanceFromHospital}მ` : '—'}</td>
-                </tr>
-              ))}
-              {events.length === 0 && (
-                <tr>
-                  <td colSpan={7}>დღეს ჯერ არავინ დაჩექინებულა</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </>
-      )}
+      <LiveFeedMap events={mapEvents} />
+
+      <table className="live-feed-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>თანამშრომელი</th>
+            <th>ტიპი</th>
+            <th>ჰოსპიტალი</th>
+            <th>დრო</th>
+            <th>მისამართი</th>
+            <th>მანძილი</th>
+          </tr>
+        </thead>
+        <tbody>
+          {events.map((event, i) => (
+            <tr
+              key={i}
+              className={`${event.isFar ? 'far' : ''} ${selectedGroupKey === event.groupKey ? 'selected' : ''}`}
+              onClick={() => handleRowClick(event)}
+              style={{ cursor: 'pointer' }}
+            >
+              <td>
+                <span className={`dot ${event.isFar ? 'far' : event.type}`} />
+              </td>
+              <td>{event.employeeName}</td>
+              <td>{event.type === 'checkin' ? 'ჩექინი' : 'ჩექაუთი'}</td>
+              <td>{event.hospitalName}</td>
+              <td>
+                {new Date(event.time).toLocaleTimeString('ka-GE', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </td>
+              <td>{event.address}</td>
+              <td>{event.distanceFromHospital != null ? `${event.distanceFromHospital}მ` : '—'}</td>
+            </tr>
+          ))}
+          {events.length === 0 && (
+            <tr>
+              <td colSpan={7}>დღეს ჯერ არავინ დაჩექინებულა</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
 
       {selectedEmployee && (
         <EmployeeDayModal
