@@ -45,9 +45,11 @@ export default function HospitalPinModal({ hospital, onClose, onSaved }) {
         style={{
           background: '#fff',
           borderRadius: 12,
-          padding: 20,
-          width: 480,
-          maxWidth: '92vw',
+          padding: 24,
+          width: 720,
+          maxWidth: '94vw',
+          maxHeight: '90vh',
+          overflowY: 'auto',
         }}
         onClick={(e) => e.stopPropagation()}
       >

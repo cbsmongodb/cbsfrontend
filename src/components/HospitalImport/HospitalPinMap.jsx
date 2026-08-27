@@ -131,7 +131,7 @@ export default function HospitalPinMap({ position, onPick, initialQuery }) {
       <MapContainer
         center={position || TBILISI}
         zoom={position ? 16 : 7}
-        style={{ height: 300, width: '100%', borderRadius: 8 }}
+        style={{ height: 500, width: '100%', borderRadius: 8 }}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <ClickHandler onPick={onPick} />
