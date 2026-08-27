@@ -76,10 +76,10 @@
 
 .live-feed-controls {
   display: flex;
-  gap: 16px;
   align-items: center;
-  margin: 8px 0 12px;
+  margin: 16px 0 12px;
   flex-wrap: wrap;
+  gap: 16px;
 }
 
 .live-feed-search {
@@ -127,4 +127,102 @@
   font-size: 12px;
   color: #16a34a;
   font-weight: 600;
+}
+
+.live-feed-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.live-feed-far-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  user-select: none;
+  color: var(--color-text-muted);
+}
+
+.live-search {
+  --timing: 0.3s;
+  --width-of-input: 100%;
+  flex: 1;
+  --height-of-input: 40px;
+  --border-height: 2px;
+  --input-bg: #f3f3f3;
+  --border-color: #4a9dec;
+  --border-radius: 30px;
+  --after-border-radius: 1px;
+  position: relative;
+  width: var(--width-of-input);
+  height: var(--height-of-input);
+  display: flex;
+  align-items: center;
+  padding-inline: 0.8em;
+  border-radius: var(--border-radius);
+  transition: border-radius 0.5s ease;
+  background: var(--input-bg);
+}
+
+.live-search button {
+  border: none;
+  background: none;
+  color: #8b8ba7;
+  display: flex;
+  align-items: center;
+}
+
+.live-search-input {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  background-color: transparent;
+  width: 100%;
+  height: 100%;
+  padding-inline: 0.5em;
+  padding-block: 0.7em;
+  border: none;
+  outline: none;
+  color: var(--color-text);
+}
+
+.live-search:before {
+  content: "";
+  position: absolute;
+  background: var(--border-color);
+  transform: scaleX(0);
+  transform-origin: center;
+  width: 100%;
+  height: var(--border-height);
+  left: 0;
+  bottom: 0;
+  border-radius: 1px;
+  transition: transform var(--timing) ease;
+}
+
+.live-search:focus-within {
+  border-radius: var(--after-border-radius);
+}
+
+.live-search:focus-within:before {
+  transform: scale(1);
+}
+
+.live-search-reset {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.live-search-input:not(:placeholder-shown) ~ .live-search-reset {
+  opacity: 1;
+  visibility: visible;
+}
+
+.live-search svg {
+  width: 17px;
+  margin-top: 3px;
 }
