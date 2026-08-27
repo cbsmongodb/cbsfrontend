@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { apiFetch } from '@/lib/api'
+import LocationPickerModal from './LocationPickerModal'
 import './ResourceTable.css'
 
 export default function ResourceTable({ title, endpoint, fields }) {
@@ -10,6 +11,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [optionsByField, setOptionsByField] = useState({})
+  const [locationPickerField, setLocationPickerField] = useState(null)
 
   async function load() {
     setLoading(true)
@@ -72,6 +74,11 @@ export default function ResourceTable({ title, endpoint, fields }) {
     setEditingId(item._id)
     const next = {}
     fields.forEach((f) => {
+      if (f.type === 'location') {
+        next[f.latField] = item[f.latField] ?? ''
+        next[f.lngField] = item[f.lngField] ?? ''
+        return
+      }
       const raw = item[f.name]
       if (f.type === 'select') next[f.name] = relationId(raw)
       else if (f.type === 'multiselect') next[f.name] = relationIds(raw)
@@ -120,22 +127,37 @@ export default function ResourceTable({ title, endpoint, fields }) {
   }
 
   function renderInput(f) {
-    if (f.type === 'enum') {
+    if (f.type === 'location') {
+      const lat = form[f.latField]
+      const lng = form[f.lngField]
+      const hasLocation = lat !== '' && lat != null && lng !== '' && lng != null
       return (
-        <select
+        <div
           key={f.name}
-          className="field-select"
-          value={form[f.name] || ''}
-          onChange={(e) => handleChange(f.name, e.target.value)}
-          required
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            border: '2px solid transparent',
+            background: '#f3f3f3',
+            borderRadius: 10,
+            padding: '0 12px',
+            height: '2.5em',
+            fontSize: 13,
+          }}
         >
-          <option value="">{f.label}...</option>
-          {(f.options || []).map((opt) => (
-            <option key={opt} value={opt}>
-              {f.optionLabels?.[opt] || opt}
-            </option>
-          ))}
-        </select>
+          <span style={{ color: hasLocation ? '#16a34a' : '#94a3b8' }}>
+            {hasLocation ? `📍 ${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}` : 'მდებარეობა არ არის მითითებული'}
+          </span>
+          <button
+            type="button"
+            className="btn-gray btn-sm"
+            onClick={() => setLocationPickerField(f)}
+            style={{ marginLeft: 'auto' }}
+          >
+            <span>{hasLocation ? 'შესწორება' : 'რუკიდან არჩევა'}</span>
+          </button>
+        </div>
       )
     }
 
@@ -153,6 +175,25 @@ export default function ResourceTable({ title, endpoint, fields }) {
           {options.map((opt) => (
             <option key={opt._id} value={opt._id}>
               {opt[f.optionsLabel || 'name']}
+            </option>
+          ))}
+        </select>
+      )
+    }
+
+    if (f.type === 'enum') {
+      return (
+        <select
+          key={f.name}
+          className="field-select"
+          value={form[f.name] || ''}
+          onChange={(e) => handleChange(f.name, e.target.value)}
+          required
+        >
+          <option value="">{f.label}...</option>
+          {(f.options || []).map((opt) => (
+            <option key={opt} value={opt}>
+              {f.optionLabels?.[opt] || opt}
             </option>
           ))}
         </select>
@@ -227,6 +268,12 @@ export default function ResourceTable({ title, endpoint, fields }) {
   }
 
   function renderCell(f, item) {
+    if (f.type === 'location') {
+      const lat = item[f.latField]
+      const lng = item[f.lngField]
+      if (lat == null || lng == null) return '—'
+      return `${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}`
+    }
     const value = item[f.name]
     if (f.type === 'enum') {
       return value ? f.optionLabels?.[value] || value : '—'
@@ -297,6 +344,19 @@ export default function ResourceTable({ title, endpoint, fields }) {
             )}
           </tbody>
         </table>
+      )}
+
+      {locationPickerField && (
+        <LocationPickerModal
+          initialLat={form[locationPickerField.latField] || null}
+          initialLng={form[locationPickerField.lngField] || null}
+          initialQuery={form.address || ''}
+          onPick={(lat, lng) => {
+            handleChange(locationPickerField.latField, lat)
+            handleChange(locationPickerField.lngField, lng)
+          }}
+          onClose={() => setLocationPickerField(null)}
+        />
       )}
     </div>
   )

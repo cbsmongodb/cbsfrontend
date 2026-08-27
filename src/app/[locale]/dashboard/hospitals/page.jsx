@@ -1,4 +1,5 @@
 import ResourceTable from "@/components/ResourceTable/ResourceTable";
+
 export default function Page() {
   return (
     <ResourceTable
@@ -15,8 +16,7 @@ export default function Page() {
         },
         { name: "phoneNumber", label: "ტელეფონი" },
         { name: "email", label: "ელ-ფოსტა" },
-        { name: "lat", label: "გრძედი (lat)", type: "number" },
-        { name: "lng", label: "განედი (lng)", type: "number" },
+        { name: "location", label: "მდებარეობა", type: "location", latField: "lat", lngField: "lng" },
         { name: "isActive", label: "აქტიური", type: "checkbox" },
       ]}
     />
