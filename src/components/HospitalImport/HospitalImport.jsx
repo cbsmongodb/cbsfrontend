@@ -355,7 +355,7 @@ export default function HospitalImport() {
                 <span>{savingId === h._id ? '...' : 'შენახვა'}</span>
               </button>
               
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.address)}`}
+               <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.address)}`}
                 target="_blank"
                 rel="noreferrer"
                 style={{ fontSize: 12, color: '#2563eb' }}
