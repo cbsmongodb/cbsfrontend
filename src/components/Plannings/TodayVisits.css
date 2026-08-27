@@ -1,0 +1,78 @@
+.today-visits {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.today-visits-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.today-visits-header h2 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.today-visits-warning {
+  color: #b45309;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.today-visits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.today-visit-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.today-visit-card.far {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.today-visit-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.today-visit-name {
+  font-weight: 600;
+}
+
+.today-visit-status {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.today-visit-distance {
+  font-size: 13px;
+  color: #16a34a;
+  margin-bottom: 8px;
+}
+
+.today-visit-distance.far {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.today-visit-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.today-visit-done {
+  font-size: 13px;
+  color: #64748b;
+}

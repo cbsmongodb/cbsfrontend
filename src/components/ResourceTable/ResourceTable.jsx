@@ -120,6 +120,25 @@ export default function ResourceTable({ title, endpoint, fields }) {
   }
 
   function renderInput(f) {
+    if (f.type === 'enum') {
+      return (
+        <select
+          key={f.name}
+          className="field-select"
+          value={form[f.name] || ''}
+          onChange={(e) => handleChange(f.name, e.target.value)}
+          required
+        >
+          <option value="">{f.label}...</option>
+          {(f.options || []).map((opt) => (
+            <option key={opt} value={opt}>
+              {f.optionLabels?.[opt] || opt}
+            </option>
+          ))}
+        </select>
+      )
+    }
+
     if (f.type === 'select') {
       const options = optionsByField[f.name] || []
       return (
@@ -209,6 +228,9 @@ export default function ResourceTable({ title, endpoint, fields }) {
 
   function renderCell(f, item) {
     const value = item[f.name]
+    if (f.type === 'enum') {
+      return value ? f.optionLabels?.[value] || value : '—'
+    }
     if (f.type === 'select') {
       if (value && typeof value === 'object') return value[f.optionsLabel || 'name'] || '—'
       return '—'
