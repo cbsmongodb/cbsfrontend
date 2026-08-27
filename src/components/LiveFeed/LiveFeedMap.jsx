@@ -1,7 +1,7 @@
 'use client'
 
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import 'leaflet/dist/leaflet.css'
 
 const TBILISI = [41.7151, 44.8271]
@@ -12,37 +12,41 @@ function colorFor(event) {
   return '#6b7280'
 }
 
-function FitBounds({ events }) {
+function FitBounds({ events, focusKey }) {
   const map = useMap()
+  const eventsRef = useRef(events)
+  eventsRef.current = events
 
   useEffect(() => {
-    if (events.length === 0) return
+    const current = eventsRef.current
+    if (!current || current.length === 0) return
 
     map.whenReady(() => {
-      if (events.length === 1) {
-        map.setView([events[0].lat, events[0].lng], 16)
+      if (current.length === 1) {
+        map.setView([current[0].lat, current[0].lng], 17)
         return
       }
-      const bounds = events.map((e) => [e.lat, e.lng])
-      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 16 })
+      const bounds = current.map((e) => [e.lat, e.lng])
+      map.fitBounds(bounds, { padding: [60, 60], maxZoom: 18 })
     })
-  }, [events, map])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusKey, map])
 
   return null
 }
 
-export default function LiveFeedMap({ events = [] }) {
+export default function LiveFeedMap({ events = [], focusKey }) {
   const center = events[0] ? [events[0].lat, events[0].lng] : TBILISI
 
   return (
     <MapContainer
       center={center}
-      zoom={events.length > 0 ? 16 : 11}
+      zoom={events.length > 0 ? 17 : 11}
       style={{ height: '380px', width: '100%' }}
       attributionControl={false}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <FitBounds events={events} />
+      <FitBounds events={events} focusKey={focusKey} />
 
       {events.map((event, i) => (
         <CircleMarker

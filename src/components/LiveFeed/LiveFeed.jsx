@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { apiFetch } from '@/lib/api'
-import EmployeeDayModal from './EmployeeDayModal'
 import './LiveFeed.css'
 
 const LiveFeedMap = dynamic(() => import('./LiveFeedMap'), { ssr: false })
@@ -37,7 +36,6 @@ export default function LiveFeed() {
   const [events, setEvents] = useState([])
   const [error, setError] = useState('')
   const [selectedGroupKey, setSelectedGroupKey] = useState(null)
-  const [selectedEmployee, setSelectedEmployee] = useState(null)
 
   async function load() {
     try {
@@ -54,13 +52,6 @@ export default function LiveFeed() {
     return () => clearInterval(interval)
   }, [])
 
-  function handleRowClick(event) {
-    setSelectedGroupKey(event.groupKey)
-    if (event.employeeId) {
-      setSelectedEmployee({ id: event.employeeId, name: event.employeeName })
-    }
-  }
-
   const mapEvents = selectedGroupKey
     ? events.filter((e) => e.groupKey === selectedGroupKey)
     : []
@@ -71,7 +62,7 @@ export default function LiveFeed() {
 
       {error && <p className="live-feed-error">{error}</p>}
 
-      <LiveFeedMap events={mapEvents} />
+      <LiveFeedMap events={mapEvents} focusKey={selectedGroupKey} />
 
       <table className="live-feed-table">
         <thead>
@@ -90,7 +81,7 @@ export default function LiveFeed() {
             <tr
               key={i}
               className={`${event.isFar ? 'far' : ''} ${selectedGroupKey === event.groupKey ? 'selected' : ''}`}
-              onClick={() => handleRowClick(event)}
+              onClick={() => setSelectedGroupKey(event.groupKey)}
               style={{ cursor: 'pointer' }}
             >
               <td>
@@ -116,14 +107,6 @@ export default function LiveFeed() {
           )}
         </tbody>
       </table>
-
-      {selectedEmployee && (
-        <EmployeeDayModal
-          employeeId={selectedEmployee.id}
-          employeeName={selectedEmployee.name}
-          onClose={() => setSelectedEmployee(null)}
-        />
-      )}
     </div>
   )
 }
