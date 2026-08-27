@@ -1,6 +1,6 @@
 'use client'
 
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, CircleMarker, Popup, Polyline, useMap } from 'react-leaflet'
 import { useEffect, useRef } from 'react'
 import 'leaflet/dist/leaflet.css'
 
@@ -37,6 +37,8 @@ function FitBounds({ events, focusKey }) {
 
 export default function LiveFeedMap({ events = [], focusKey }) {
   const center = events[0] ? [events[0].lat, events[0].lng] : TBILISI
+  const orderedEvents = [...events].sort((a, b) => new Date(a.time) - new Date(b.time))
+  const routePoints = orderedEvents.map((e) => [e.lat, e.lng])
 
   return (
     <MapContainer
@@ -47,6 +49,13 @@ export default function LiveFeedMap({ events = [], focusKey }) {
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <FitBounds events={events} focusKey={focusKey} />
+
+      {routePoints.length > 1 && (
+        <Polyline
+          positions={routePoints}
+          pathOptions={{ color: '#2563eb', weight: 3, opacity: 0.6, dashArray: '6 8' }}
+        />
+      )}
 
       {events.map((event, i) => (
         <CircleMarker

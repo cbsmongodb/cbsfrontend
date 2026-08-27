@@ -8,6 +8,7 @@ import './LiveFeed.css'
 const LiveFeedMap = dynamic(() => import('./LiveFeedMap'), { ssr: false })
 
 const FAR_THRESHOLD_METERS = 300
+const SHORT_VISIT_MINUTES = 1
 
 function flattenToEvents(items) {
   const events = []
@@ -32,15 +33,33 @@ function flattenToEvents(items) {
   return events.sort((a, b) => new Date(b.time) - new Date(a.time))
 }
 
+function annotateShortVisits(events) {
+  const byGroup = new Map()
+  events.forEach((e) => {
+    if (!byGroup.has(e.groupKey)) byGroup.set(e.groupKey, [])
+    byGroup.get(e.groupKey).push(e)
+  })
+
+  return events.map((e) => {
+    const pair = byGroup.get(e.groupKey)
+    const checkin = pair.find((p) => p.type === 'checkin')
+    const checkout = pair.find((p) => p.type === 'checkout')
+    if (!checkin || !checkout) return { ...e, isShort: false }
+    const minutes = (new Date(checkout.time) - new Date(checkin.time)) / 60000
+    return { ...e, isShort: minutes >= 0 && minutes < SHORT_VISIT_MINUTES }
+  })
+}
+
 export default function LiveFeed() {
   const [events, setEvents] = useState([])
   const [error, setError] = useState('')
-  const [selectedGroupKey, setSelectedGroupKey] = useState(null)
+  const [focus, setFocus] = useState(null) // { type: 'pair', groupKey } | { type: 'day', employeeId }
+  const [onlyFar, setOnlyFar] = useState(false)
 
   async function load() {
     try {
       const items = await apiFetch('/api/attendance/live-feed')
-      setEvents(flattenToEvents(items))
+      setEvents(annotateShortVisits(flattenToEvents(items)))
     } catch (err) {
       setError(err.message)
     }
@@ -52,9 +71,15 @@ export default function LiveFeed() {
     return () => clearInterval(interval)
   }, [])
 
-  const mapEvents = selectedGroupKey
-    ? events.filter((e) => e.groupKey === selectedGroupKey)
-    : []
+  const visibleEvents = onlyFar ? events.filter((e) => e.isFar) : events
+
+  const mapEvents = !focus
+    ? []
+    : focus.type === 'pair'
+    ? events.filter((e) => e.groupKey === focus.groupKey)
+    : events.filter((e) => String(e.employeeId) === String(focus.employeeId))
+
+  const focusKey = focus ? `${focus.type}-${focus.groupKey || focus.employeeId}` : null
 
   return (
     <div className="live-feed">
@@ -62,7 +87,19 @@ export default function LiveFeed() {
 
       {error && <p className="live-feed-error">{error}</p>}
 
-      <LiveFeedMap events={mapEvents} focusKey={selectedGroupKey} />
+      <div style={{ margin: '8px 0' }}>
+        <label style={{ fontSize: 13, cursor: 'pointer', userSelect: 'none' }}>
+          <input
+            type="checkbox"
+            checked={onlyFar}
+            onChange={(e) => setOnlyFar(e.target.checked)}
+            style={{ marginRight: 6 }}
+          />
+          მხოლოდ საეჭვო ვიზიტები (300მ+ დაშორება)
+        </label>
+      </div>
+
+      <LiveFeedMap events={mapEvents} focusKey={focusKey} />
 
       <table className="live-feed-table">
         <thead>
@@ -77,32 +114,83 @@ export default function LiveFeed() {
           </tr>
         </thead>
         <tbody>
-          {events.map((event, i) => (
-            <tr
-              key={i}
-              className={`${event.isFar ? 'far' : ''} ${selectedGroupKey === event.groupKey ? 'selected' : ''}`}
-              onClick={() => setSelectedGroupKey(event.groupKey)}
-              style={{ cursor: 'pointer' }}
-            >
-              <td>
-                <span className={`dot ${event.isFar ? 'far' : event.type}`} />
-              </td>
-              <td>{event.employeeName}</td>
-              <td>{event.type === 'checkin' ? 'ჩექინი' : 'ჩექაუთი'}</td>
-              <td>{event.hospitalName}</td>
-              <td>
-                {new Date(event.time).toLocaleTimeString('ka-GE', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-              </td>
-              <td>{event.address}</td>
-              <td>{event.distanceFromHospital != null ? `${event.distanceFromHospital}მ` : '—'}</td>
-            </tr>
-          ))}
-          {events.length === 0 && (
+          {visibleEvents.map((event, i) => {
+            const isSelected =
+              focus &&
+              ((focus.type === 'pair' && focus.groupKey === event.groupKey) ||
+                (focus.type === 'day' && String(focus.employeeId) === String(event.employeeId)))
+
+            return (
+              <tr
+                key={i}
+                className={`${event.isFar ? 'far' : ''} ${isSelected ? 'selected' : ''}`}
+                style={{ cursor: 'pointer' }}
+              >
+                <td onClick={() => setFocus({ type: 'pair', groupKey: event.groupKey })}>
+                  <span className={`dot ${event.isFar ? 'far' : event.type}`} />
+                </td>
+                <td onClick={() => setFocus({ type: 'pair', groupKey: event.groupKey })}>
+                  {event.employeeName}
+                  {event.isShort && (
+                    <span
+                      style={{
+                        marginLeft: 6,
+                        fontSize: 11,
+                        color: '#b45309',
+                        background: '#fef3c7',
+                        padding: '1px 6px',
+                        borderRadius: 4,
+                      }}
+                    >
+                      ძალიან მოკლე ვიზიტი
+                    </span>
+                  )}
+                  {event.employeeId && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setFocus({ type: 'day', employeeId: event.employeeId })
+                      }}
+                      style={{
+                        marginLeft: 8,
+                        fontSize: 11,
+                        color: '#2563eb',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        textDecoration: 'underline',
+                        padding: 0,
+                      }}
+                    >
+                      მთელი დღე
+                    </button>
+                  )}
+                </td>
+                <td onClick={() => setFocus({ type: 'pair', groupKey: event.groupKey })}>
+                  {event.type === 'checkin' ? 'ჩექინი' : 'ჩექაუთი'}
+                </td>
+                <td onClick={() => setFocus({ type: 'pair', groupKey: event.groupKey })}>
+                  {event.hospitalName}
+                </td>
+                <td onClick={() => setFocus({ type: 'pair', groupKey: event.groupKey })}>
+                  {new Date(event.time).toLocaleTimeString('ka-GE', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </td>
+                <td onClick={() => setFocus({ type: 'pair', groupKey: event.groupKey })}>
+                  {event.address}
+                </td>
+                <td onClick={() => setFocus({ type: 'pair', groupKey: event.groupKey })}>
+                  {event.distanceFromHospital != null ? `${event.distanceFromHospital}მ` : '—'}
+                </td>
+              </tr>
+            )
+          })}
+          {visibleEvents.length === 0 && (
             <tr>
-              <td colSpan={7}>დღეს ჯერ არავინ დაჩექინებულა</td>
+              <td colSpan={7}>{onlyFar ? 'საეჭვო ვიზიტები არ არის' : 'დღეს ჯერ არავინ დაჩექინებულა'}</td>
             </tr>
           )}
         </tbody>
