@@ -216,95 +216,99 @@ export default function LiveFeed() {
         </label>
       </div>
 
-      <table className="live-feed-table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>თანამშრომელი</th>
-            <th>ჰოსპიტალი</th>
-            <th>ჩექინი</th>
-            <th>ჩექაუთი</th>
-            <th>ხანგრძლივობა</th>
-            <th>მანძილი</th>
-          </tr>
-        </thead>
-        <tbody>
-          {visibleVisits.map((visit) => {
-            const isSelected =
-              focus &&
-              ((focus.type === 'pair' && focus.groupKey === visit.groupKey) ||
-                (focus.type === 'day' && String(focus.employeeId) === String(visit.employeeId)))
+      <div className="live-feed-table-wrap">
+        <table className="live-feed-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>თანამშრომელი</th>
+              <th>ჰოსპიტალი</th>
+              <th>ჩექინი</th>
+              <th>ჩექაუთი</th>
+              <th>ხანგრძლივობა</th>
+              <th>მანძილი</th>
+            </tr>
+          </thead>
+          <tbody>
+            {visibleVisits.map((visit) => {
+              const isSelected =
+                focus &&
+                ((focus.type === 'pair' && focus.groupKey === visit.groupKey) ||
+                  (focus.type === 'day' && String(focus.employeeId) === String(visit.employeeId)))
 
-            const empKey = String(visit.employeeId)
-            const showDayLink = visit.employeeId && !seenEmployeeForDayLink.has(empKey)
-            if (visit.employeeId) seenEmployeeForDayLink.add(empKey)
+              const empKey = String(visit.employeeId)
+              const showDayLink = visit.employeeId && !seenEmployeeForDayLink.has(empKey)
+              if (visit.employeeId) seenEmployeeForDayLink.add(empKey)
 
-            const distance = visit.checkinDistance ?? visit.checkoutDistance
+              const distance = visit.checkinDistance ?? visit.checkoutDistance
 
-            return (
-              <tr
-                key={visit.groupKey}
-                className={`${visit.isFar ? 'far' : ''} ${isSelected ? 'selected' : ''}`}
-                style={{ cursor: 'pointer' }}
-                onClick={() => setFocus({ type: 'pair', groupKey: visit.groupKey })}
-              >
-                <td>
-                  <span className={`dot ${visit.isFar ? 'far' : 'checkin'}`} />
-                </td>
-                <td>
-                  {visit.visitNumber != null && (
-                    <span className="visit-badge">{visit.visitNumber}</span>
-                  )}
-                  {visit.employeeName}
-                  {visit.isShort && <span className="short-badge">ძალიან მოკლე ვიზიტი</span>}
-                  {showDayLink && (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setFocus({ type: 'day', employeeId: visit.employeeId })
-                      }}
-                      className="day-link"
-                    >
-                      მთელი დღე
-                    </button>
-                  )}
-                </td>
-                <td>{visit.hospitalName}</td>
-                <td>
-                  {visit.checkinTime
-                    ? new Date(visit.checkinTime).toLocaleTimeString('ka-GE', {
+              return (
+                <tr
+                  key={visit.groupKey}
+                  className={`${visit.isFar ? 'far' : ''} ${isSelected ? 'selected' : ''}`}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setFocus({ type: 'pair', groupKey: visit.groupKey })}
+                >
+                  <td data-label="">
+                    <span className={`dot ${visit.isFar ? 'far' : 'checkin'}`} />
+                  </td>
+                  <td data-label="თანამშრომელი">
+                    {visit.visitNumber != null && (
+                      <span className="visit-badge">{visit.visitNumber}</span>
+                    )}
+                    {visit.employeeName}
+                    {visit.isShort && <span className="short-badge">ძალიან მოკლე ვიზიტი</span>}
+                    {showDayLink && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setFocus({ type: 'day', employeeId: visit.employeeId })
+                        }}
+                        className="day-link"
+                      >
+                        მთელი დღე
+                      </button>
+                    )}
+                  </td>
+                  <td data-label="ჰოსპიტალი">{visit.hospitalName}</td>
+                  <td data-label="ჩექინი">
+                    {visit.checkinTime
+                      ? new Date(visit.checkinTime).toLocaleTimeString('ka-GE', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })
+                      : '—'}
+                  </td>
+                  <td data-label="ჩექაუთი">
+                    {visit.checkoutTime ? (
+                      new Date(visit.checkoutTime).toLocaleTimeString('ka-GE', {
                         hour: '2-digit',
                         minute: '2-digit',
                       })
-                    : '—'}
+                    ) : visit.isOpen ? (
+                      <span className="live-badge">🟢 ამჟამად იქ არის</span>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
+                  <td data-label="ხანგრძლივობა">
+                    {visit.durationMinutes != null ? `${visit.durationMinutes} წთ` : '—'}
+                  </td>
+                  <td data-label="მანძილი">{distance != null ? `${distance}მ` : '—'}</td>
+                </tr>
+              )
+            })}
+            {visibleVisits.length === 0 && (
+              <tr>
+                <td colSpan={7}>
+                  {search ? 'ასეთი თანამშრომელი ვერ მოიძებნა' : onlyFar ? 'საეჭვო ვიზიტები არ არის' : 'დღეს ჯერ არავინ დაჩექინებულა'}
                 </td>
-                <td>
-                  {visit.checkoutTime ? (
-                    new Date(visit.checkoutTime).toLocaleTimeString('ka-GE', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })
-                  ) : visit.isOpen ? (
-                    <span className="live-badge">🟢 ამჟამად იქ არის</span>
-                  ) : (
-                    '—'
-                  )}
-                </td>
-                <td>{visit.durationMinutes != null ? `${visit.durationMinutes} წთ` : '—'}</td>
-                <td>{distance != null ? `${distance}მ` : '—'}</td>
               </tr>
-            )
-          })}
-          {visibleVisits.length === 0 && (
-            <tr>
-              <td colSpan={7}>
-                {search ? 'ასეთი თანამშრომელი ვერ მოიძებნა' : onlyFar ? 'საეჭვო ვიზიტები არ არის' : 'დღეს ჯერ არავინ დაჩექინებულა'}
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
