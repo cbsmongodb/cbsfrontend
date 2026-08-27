@@ -44,3 +44,12 @@
 .dot.far {
   background: #e11d48;
 }
+
+.visit-number-tooltip {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+}

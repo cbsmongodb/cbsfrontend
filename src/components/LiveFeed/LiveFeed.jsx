@@ -33,20 +33,39 @@ function flattenToEvents(items) {
   return events.sort((a, b) => new Date(b.time) - new Date(a.time))
 }
 
-function annotateShortVisits(events) {
+function annotate(events) {
   const byGroup = new Map()
   events.forEach((e) => {
     if (!byGroup.has(e.groupKey)) byGroup.set(e.groupKey, [])
     byGroup.get(e.groupKey).push(e)
   })
 
+  // visit numbering: per employee, chronological order of their groupKeys
+  const groupsByEmployee = new Map()
+  byGroup.forEach((groupEvents, groupKey) => {
+    const employeeId = String(groupEvents[0].employeeId)
+    const earliestTime = Math.min(...groupEvents.map((e) => new Date(e.time).getTime()))
+    if (!groupsByEmployee.has(employeeId)) groupsByEmployee.set(employeeId, [])
+    groupsByEmployee.get(employeeId).push({ groupKey, earliestTime })
+  })
+
+  const visitNumberByGroupKey = new Map()
+  groupsByEmployee.forEach((groups) => {
+    groups.sort((a, b) => a.earliestTime - b.earliestTime)
+    groups.forEach((g, i) => visitNumberByGroupKey.set(g.groupKey, i + 1))
+  })
+
   return events.map((e) => {
     const pair = byGroup.get(e.groupKey)
     const checkin = pair.find((p) => p.type === 'checkin')
     const checkout = pair.find((p) => p.type === 'checkout')
-    if (!checkin || !checkout) return { ...e, isShort: false }
-    const minutes = (new Date(checkout.time) - new Date(checkin.time)) / 60000
-    return { ...e, isShort: minutes >= 0 && minutes < SHORT_VISIT_MINUTES }
+    const minutes =
+      checkin && checkout ? (new Date(checkout.time) - new Date(checkin.time)) / 60000 : null
+    return {
+      ...e,
+      isShort: minutes != null && minutes >= 0 && minutes < SHORT_VISIT_MINUTES,
+      visitNumber: visitNumberByGroupKey.get(e.groupKey),
+    }
   })
 }
 
@@ -59,7 +78,7 @@ export default function LiveFeed() {
   async function load() {
     try {
       const items = await apiFetch('/api/attendance/live-feed')
-      setEvents(annotateShortVisits(flattenToEvents(items)))
+      setEvents(annotate(flattenToEvents(items)))
     } catch (err) {
       setError(err.message)
     }
@@ -80,6 +99,8 @@ export default function LiveFeed() {
     : events.filter((e) => String(e.employeeId) === String(focus.employeeId))
 
   const focusKey = focus ? `${focus.type}-${focus.groupKey || focus.employeeId}` : null
+
+  const seenEmployeeForDayLink = new Set()
 
   return (
     <div className="live-feed">
@@ -120,6 +141,10 @@ export default function LiveFeed() {
               ((focus.type === 'pair' && focus.groupKey === event.groupKey) ||
                 (focus.type === 'day' && String(focus.employeeId) === String(event.employeeId)))
 
+            const empKey = String(event.employeeId)
+            const showDayLink = event.employeeId && !seenEmployeeForDayLink.has(empKey)
+            if (event.employeeId) seenEmployeeForDayLink.add(empKey)
+
             return (
               <tr
                 key={i}
@@ -130,6 +155,24 @@ export default function LiveFeed() {
                   <span className={`dot ${event.isFar ? 'far' : event.type}`} />
                 </td>
                 <td onClick={() => setFocus({ type: 'pair', groupKey: event.groupKey })}>
+                  {event.visitNumber != null && (
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        minWidth: 18,
+                        textAlign: 'center',
+                        marginRight: 6,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: '#fff',
+                        background: '#334155',
+                        borderRadius: 9,
+                        padding: '1px 5px',
+                      }}
+                    >
+                      {event.visitNumber}
+                    </span>
+                  )}
                   {event.employeeName}
                   {event.isShort && (
                     <span
@@ -145,7 +188,7 @@ export default function LiveFeed() {
                       ძალიან მოკლე ვიზიტი
                     </span>
                   )}
-                  {event.employeeId && (
+                  {showDayLink && (
                     <button
                       type="button"
                       onClick={(e) => {

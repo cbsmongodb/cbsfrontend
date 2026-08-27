@@ -1,16 +1,12 @@
 'use client'
 
-import { MapContainer, TileLayer, CircleMarker, Popup, Polyline, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, CircleMarker, Tooltip, Popup, Polyline, useMap } from 'react-leaflet'
 import { useEffect, useRef } from 'react'
 import 'leaflet/dist/leaflet.css'
 
 const TBILISI = [41.7151, 44.8271]
-
-function colorFor(event) {
-  if (event.isFar) return '#e11d48'
-  if (event.type === 'checkin') return '#16a34a'
-  return '#6b7280'
-}
+const CHECKIN_COLOR = '#16a34a'
+const CHECKOUT_COLOR = '#dc2626'
 
 function FitBounds({ events, focusKey }) {
   const map = useMap()
@@ -57,28 +53,42 @@ export default function LiveFeedMap({ events = [], focusKey }) {
         />
       )}
 
-      {events.map((event, i) => (
-        <CircleMarker
-          key={i}
-          center={[event.lat, event.lng]}
-          radius={10}
-          pathOptions={{ color: colorFor(event), fillColor: colorFor(event), fillOpacity: 0.85 }}
-        >
-          <Popup>
-            <strong>{event.employeeName}</strong>
-            <br />
-            {event.type === 'checkin' ? 'ჩექინი' : 'ჩექაუთი'} — {event.hospitalName}
-            <br />
-            {new Date(event.time).toLocaleTimeString('ka-GE', { hour: '2-digit', minute: '2-digit' })}
-            {event.distanceFromHospital != null && (
-              <>
-                <br />
-                მანძილი ჰოსპიტალამდე: {event.distanceFromHospital}მ
-              </>
+      {events.map((event, i) => {
+        const color = event.type === 'checkin' ? CHECKIN_COLOR : CHECKOUT_COLOR
+        return (
+          <CircleMarker
+            key={i}
+            center={[event.lat, event.lng]}
+            radius={14}
+            pathOptions={{
+              color: event.isFar ? '#f59e0b' : '#fff',
+              weight: event.isFar ? 3 : 2,
+              dashArray: event.isFar ? '4 3' : undefined,
+              fillColor: color,
+              fillOpacity: 0.95,
+            }}
+          >
+            {event.visitNumber != null && (
+              <Tooltip permanent direction="center" className="visit-number-tooltip">
+                {event.visitNumber}
+              </Tooltip>
             )}
-          </Popup>
-        </CircleMarker>
-      ))}
+            <Popup>
+              <strong>{event.employeeName}</strong>
+              <br />
+              {event.type === 'checkin' ? 'ჩექინი' : 'ჩექაუთი'} — {event.hospitalName}
+              <br />
+              {new Date(event.time).toLocaleTimeString('ka-GE', { hour: '2-digit', minute: '2-digit' })}
+              {event.distanceFromHospital != null && (
+                <>
+                  <br />
+                  მანძილი ჰოსპიტალამდე: {event.distanceFromHospital}მ
+                </>
+              )}
+            </Popup>
+          </CircleMarker>
+        )
+      })}
     </MapContainer>
   )
 }
