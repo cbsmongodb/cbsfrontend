@@ -1,12 +1,43 @@
 'use client'
 
-import { MapContainer, TileLayer, CircleMarker, Tooltip, Popup, Polyline, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet'
 import { useEffect, useRef } from 'react'
+import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
 const TBILISI = [41.7151, 44.8271]
 const CHECKIN_COLOR = '#16a34a'
 const CHECKOUT_COLOR = '#dc2626'
+
+function pinIcon(color, number, isFar) {
+  const ringColor = isFar ? '#f59e0b' : '#ffffff'
+  const ringWidth = isFar ? 3 : 2
+
+  const svg = `
+    <svg width="34" height="46" viewBox="0 0 34 46" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M17 0C7.6 0 0 7.6 0 17c0 12.7 17 29 17 29s17-16.3 17-29C34 7.6 26.4 0 17 0z"
+        fill="${color}"
+        stroke="${ringColor}"
+        stroke-width="${ringWidth}"
+      />
+      <circle cx="17" cy="17" r="11" fill="rgba(255,255,255,0.15)" />
+      ${
+        number != null
+          ? `<text x="17" y="22" text-anchor="middle" font-size="15" font-weight="700" fill="#fff" font-family="Arial, sans-serif">${number}</text>`
+          : ''
+      }
+    </svg>
+  `
+
+  return L.divIcon({
+    html: svg,
+    className: 'gmaps-style-pin',
+    iconSize: [34, 46],
+    iconAnchor: [17, 46],
+    popupAnchor: [0, -40],
+  })
+}
 
 function FitBounds({ events, focusKey }) {
   const map = useMap()
@@ -56,23 +87,11 @@ export default function LiveFeedMap({ events = [], focusKey }) {
       {events.map((event, i) => {
         const color = event.type === 'checkin' ? CHECKIN_COLOR : CHECKOUT_COLOR
         return (
-          <CircleMarker
+          <Marker
             key={i}
-            center={[event.lat, event.lng]}
-            radius={14}
-            pathOptions={{
-              color: event.isFar ? '#f59e0b' : '#fff',
-              weight: event.isFar ? 3 : 2,
-              dashArray: event.isFar ? '4 3' : undefined,
-              fillColor: color,
-              fillOpacity: 0.95,
-            }}
+            position={[event.lat, event.lng]}
+            icon={pinIcon(color, event.visitNumber, event.isFar)}
           >
-            {event.visitNumber != null && (
-              <Tooltip permanent direction="center" className="visit-number-tooltip">
-                {event.visitNumber}
-              </Tooltip>
-            )}
             <Popup>
               <strong>{event.employeeName}</strong>
               <br />
@@ -86,7 +105,7 @@ export default function LiveFeedMap({ events = [], focusKey }) {
                 </>
               )}
             </Popup>
-          </CircleMarker>
+          </Marker>
         )
       })}
     </MapContainer>

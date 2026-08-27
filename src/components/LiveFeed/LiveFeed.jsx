@@ -20,6 +20,8 @@ function flattenToEvents(items) {
         employeeId: item.employeeId,
         employeeName: item.employeeName || 'უცნობი',
         hospitalName: item.hospitalName || '—',
+        hospitalLat: item.hospitalLat ?? null,
+        hospitalLng: item.hospitalLng ?? null,
         type: addr.addressType === 'performer_i_went_location' ? 'checkin' : 'checkout',
         lat: addr.lat,
         lng: addr.lng,
@@ -40,7 +42,6 @@ function annotate(events) {
     byGroup.get(e.groupKey).push(e)
   })
 
-  // visit numbering: per employee, chronological order of their groupKeys
   const groupsByEmployee = new Map()
   byGroup.forEach((groupEvents, groupKey) => {
     const employeeId = String(groupEvents[0].employeeId)
@@ -72,7 +73,7 @@ function annotate(events) {
 export default function LiveFeed() {
   const [events, setEvents] = useState([])
   const [error, setError] = useState('')
-  const [focus, setFocus] = useState(null) // { type: 'pair', groupKey } | { type: 'day', employeeId }
+  const [focus, setFocus] = useState(null)
   const [onlyFar, setOnlyFar] = useState(false)
 
   async function load() {
