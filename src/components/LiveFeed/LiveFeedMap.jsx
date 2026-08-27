@@ -20,33 +20,36 @@ function FitBounds({ events }) {
 
     map.whenReady(() => {
       if (events.length === 1) {
-        map.setView([events[0].lat, events[0].lng], 15)
+        map.setView([events[0].lat, events[0].lng], 16)
         return
       }
-
       const bounds = events.map((e) => [e.lat, e.lng])
-      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 })
+      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 16 })
     })
   }, [events, map])
 
   return null
 }
-export default function LiveFeedMap({ events }) {
+
+export default function LiveFeedMap({ events = [] }) {
   const center = events[0] ? [events[0].lat, events[0].lng] : TBILISI
 
   return (
-    <MapContainer center={center} zoom={12} style={{ height: '380px', width: '100%' }}>
-      <TileLayer
-        attribution='&copy; OpenStreetMap contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+    <MapContainer
+      center={center}
+      zoom={events.length > 0 ? 16 : 11}
+      style={{ height: '380px', width: '100%' }}
+      attributionControl={false}
+    >
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <FitBounds events={events} />
+
       {events.map((event, i) => (
         <CircleMarker
           key={i}
           center={[event.lat, event.lng]}
-          radius={9}
-          pathOptions={{ color: colorFor(event), fillColor: colorFor(event), fillOpacity: 0.8 }}
+          radius={10}
+          pathOptions={{ color: colorFor(event), fillColor: colorFor(event), fillOpacity: 0.85 }}
         >
           <Popup>
             <strong>{event.employeeName}</strong>

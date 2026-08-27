@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { apiFetch } from '@/lib/api'
+import EmployeeDayModal from './EmployeeDayModal'
 import './LiveFeed.css'
 
 const LiveFeedMap = dynamic(() => import('./LiveFeedMap'), { ssr: false })
@@ -15,6 +16,7 @@ function flattenToEvents(plans) {
     for (const addr of plan.addresses) {
       if (addr.lat == null || addr.lng == null) continue
       events.push({
+        employeeId: plan.employeeId,
         employeeName: plan.employeeName || 'უცნობი',
         hospitalName: plan.hospitalName || '—',
         type: addr.addressType === 'performer_i_went_location' ? 'checkin' : 'checkout',
@@ -34,6 +36,8 @@ export default function LiveFeed() {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [selectedIndex, setSelectedIndex] = useState(null)
+  const [selectedEmployee, setSelectedEmployee] = useState(null)
 
   async function load() {
     try {
@@ -52,6 +56,15 @@ export default function LiveFeed() {
     return () => clearInterval(interval)
   }, [])
 
+  function handleRowClick(event, index) {
+    setSelectedIndex(index)
+    if (event.employeeId) {
+      setSelectedEmployee({ id: event.employeeId, name: event.employeeName })
+    }
+  }
+
+  const mapEvents = selectedIndex != null && events[selectedIndex] ? [events[selectedIndex]] : []
+
   return (
     <div className="live-feed">
       <h1>Live Feed</h1>
@@ -61,7 +74,7 @@ export default function LiveFeed() {
         <p>იტვირთება...</p>
       ) : (
         <>
-          <LiveFeedMap events={events} />
+          <LiveFeedMap events={mapEvents} />
 
           <table className="live-feed-table">
             <thead>
@@ -77,7 +90,12 @@ export default function LiveFeed() {
             </thead>
             <tbody>
               {events.map((event, i) => (
-                <tr key={i} className={event.isFar ? 'far' : ''}>
+                <tr
+                  key={i}
+                  className={`${event.isFar ? 'far' : ''} ${selectedIndex === i ? 'selected' : ''}`}
+                  onClick={() => handleRowClick(event, i)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <td>
                     <span className={`dot ${event.isFar ? 'far' : event.type}`} />
                   </td>
@@ -102,6 +120,14 @@ export default function LiveFeed() {
             </tbody>
           </table>
         </>
+      )}
+
+      {selectedEmployee && (
+        <EmployeeDayModal
+          employeeId={selectedEmployee.id}
+          employeeName={selectedEmployee.name}
+          onClose={() => setSelectedEmployee(null)}
+        />
       )}
     </div>
   )

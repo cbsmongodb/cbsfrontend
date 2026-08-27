@@ -3,13 +3,13 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useParams, usePathname, useRouter } from 'next/navigation'
-import './Sidebar.css'
 import CheckInButton from './CheckInButton'
+import './Sidebar.css'
 
 const NAV = [
   { type: 'link', href: 'dashboard', label: 'დეშბორდი' },
   { type: 'link', href: 'dashboard/notifications', label: 'შეტყობინებები' },
-    { type: 'link', href: 'dashboard/live-feeds', label: 'Live Feed' },
+  { type: 'link', href: 'dashboard/live-feeds', label: 'Live Feed' },
   {
     type: 'group',
     id: 'configureProduct',
@@ -30,14 +30,12 @@ const NAV = [
       { href: 'dashboard/doctor-categories', label: 'ექიმის კატეგორიები' },
       { href: 'dashboard/doctor-subcategories', label: 'ექიმის ქვეკატეგორიები' },
       { href: 'dashboard/hospitals', label: 'ჰოსპიტლები' },
+      { href: 'dashboard/hospitals/import', label: 'ჰოსპიტლების იმპორტი' },
       { href: 'dashboard/pharmacies', label: 'აფთიაქები' },
       { href: 'dashboard/profiles', label: 'პროფილები' },
     ],
   },
   {
-    // planning (checkin/checkout, live feed source) + everything money-related
-    // that flows from it — kept together since they're used in the same
-    // daily workflow by field reps
     type: 'group',
     id: 'planningSales',
     label: 'დაგეგმვა და გაყიდვები',
@@ -81,6 +79,8 @@ export default function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
 
+  const [mobileOpen, setMobileOpen] = useState(false)
+
   const [openGroups, setOpenGroups] = useState(() => {
     const initial = {}
     NAV.forEach((entry) => {
@@ -103,71 +103,110 @@ export default function Sidebar() {
     router.replace(`/${locale}/login`)
   }
 
+  function handleNavigate() {
+    setMobileOpen(false)
+  }
+
   return (
-    <aside className="sidebar">
-      <div className="sidebar-brand">CBS Admin</div>
+    <>
+           {!mobileOpen && (
+        <button
+          type="button"
+          className="sidebar-hamburger"
+          onClick={() => setMobileOpen(true)}
+          aria-label="მენიუს გახსნა"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="4" y1="7" x2="20" y2="7" />
+            <line x1="4" y1="12" x2="20" y2="12" />
+            <line x1="4" y1="17" x2="14" y2="17" />
+          </svg>
+        </button>
+      )}
+
+      {mobileOpen && (
+        <div className="sidebar-overlay" onClick={() => setMobileOpen(false)} />
+      )}
+
+      <aside className={`sidebar${mobileOpen ? ' open' : ''}`}>
+        <div className="sidebar-top">
+          <div className="sidebar-brand">CBS Admin</div>
+          <button
+            type="button"
+            className="sidebar-close"
+            onClick={() => setMobileOpen(false)}
+            aria-label="მენიუს დახურვა"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
         <CheckInButton />
 
-      <nav className="sidebar-nav">
-        {NAV.map((entry) => {
-          if (entry.type === 'link') {
-            const href = `/${locale}/${entry.href}`
-            const active = pathname === href
+        <nav className="sidebar-nav">
+          {NAV.map((entry) => {
+            if (entry.type === 'link') {
+              const href = `/${locale}/${entry.href}`
+              const active = pathname === href
+              return (
+                <Link key={href} href={href} className={active ? 'active' : ''} onClick={handleNavigate}>
+                  {entry.label}
+                </Link>
+              )
+            }
+
+            const isOpen = openGroups[entry.id]
             return (
-              <Link key={href} href={href} className={active ? 'active' : ''}>
-                {entry.label}
-              </Link>
+              <div key={entry.id} className="sidebar-group">
+                <button
+                  type="button"
+                  className={`sidebar-group-header${isOpen ? ' open' : ''}`}
+                  onClick={() => toggleGroup(entry.id)}
+                >
+                  <span>{entry.label}</span>
+                  <span className="sidebar-chevron">{isOpen ? '▾' : '▸'}</span>
+                </button>
+
+                {isOpen && (
+                  <div className="sidebar-group-items">
+                    {entry.items.map((item) => {
+                      const href = `/${locale}/${item.href}`
+                      const active = pathname === href
+                      return (
+                        <Link key={href} href={href} className={active ? 'active' : ''} onClick={handleNavigate}>
+                          {item.label}
+                        </Link>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
             )
-          }
+          })}
+        </nav>
 
-          const isOpen = openGroups[entry.id]
-          return (
-            <div key={entry.id} className="sidebar-group">
-              <button
-                type="button"
-                className={`sidebar-group-header${isOpen ? ' open' : ''}`}
-                onClick={() => toggleGroup(entry.id)}
-              >
-                <span>{entry.label}</span>
-                <span className="sidebar-chevron">{isOpen ? '▾' : '▸'}</span>
-              </button>
-
-              {isOpen && (
-                <div className="sidebar-group-items">
-                  {entry.items.map((item) => {
-                    const href = `/${locale}/${item.href}`
-                    const active = pathname === href
-                    return (
-                      <Link key={href} href={href} className={active ? 'active' : ''}>
-                        {item.label}
-                      </Link>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-          )
-        })}
-      </nav>
-
-           <button className="sidebar-logout" onClick={handleLogout}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-          <polyline points="16 17 21 12 16 7" />
-          <line x1="21" y1="12" x2="9" y2="12" />
-        </svg>
-        <span>გასვლა</span>
-      </button>
-    </aside>
+        <button className="sidebar-logout" onClick={handleLogout}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          <span>გასვლა</span>
+        </button>
+      </aside>
+    </>
   )
 }

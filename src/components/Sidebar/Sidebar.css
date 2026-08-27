@@ -174,3 +174,97 @@
 .sidebar-logout:hover svg {
   transform: translateX(2px);
 }
+
+.sidebar-hamburger {
+  display: none;
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 1001;
+  background: linear-gradient(to bottom, #1b1c3f, #4a4e91);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(27, 28, 63, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.sidebar-hamburger:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(27, 28, 63, 0.45);
+}
+
+.sidebar-hamburger:active {
+  transform: scale(0.95);
+}
+
+.sidebar-top {
+  display: none;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-close {
+  background: #f1f5f9;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #475569;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-close:hover {
+  background: #e2e8f0;
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar-hamburger {
+    display: flex;
+  }
+
+  .sidebar-top {
+    display: flex;
+    margin-bottom: 12px;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: auto;
+    right: 0;
+    height: 100vh;
+    width: 280px;
+    max-width: 85vw;
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+    box-shadow: -2px 0 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+  }
+}
