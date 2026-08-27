@@ -1,7 +1,9 @@
 'use client'
 
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
+import { useState } from 'react'
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
+import { apiFetch } from '@/lib/api'
 import 'leaflet/dist/leaflet.css'
 
 const TBILISI = [41.7151, 44.8271]
@@ -35,16 +37,107 @@ function ClickHandler({ onPick }) {
   return null
 }
 
-export default function HospitalPinMap({ position, onPick }) {
+function FlyTo({ position }) {
+  const map = useMap()
+  if (position) {
+    map.flyTo(position, 17, { duration: 0.6 })
+  }
+  return null
+}
+
+export default function HospitalPinMap({ position, onPick, initialQuery }) {
+  const [query, setQuery] = useState(initialQuery || '')
+  const [results, setResults] = useState([])
+  const [searching, setSearching] = useState(false)
+  const [searchError, setSearchError] = useState('')
+  const [flyTarget, setFlyTarget] = useState(null)
+
+  async function handleSearch(e) {
+    e.preventDefault()
+    if (!query.trim()) return
+    setSearching(true)
+    setSearchError('')
+    setResults([])
+    try {
+      const data = await apiFetch(`/api/hospitals/geocode-search?q=${encodeURIComponent(query)}`)
+      if (data.length === 0) setSearchError('ვერაფერი მოიძებნა — სცადეთ სხვა ტექსტი, ან პირდაპირ დააჭირეთ რუკას')
+      setResults(data)
+    } catch (err) {
+      setSearchError(err.message)
+    } finally {
+      setSearching(false)
+    }
+  }
+
+  function pickResult(result) {
+    onPick(result.lat, result.lng)
+    setFlyTarget([result.lat, result.lng])
+    setResults([])
+  }
+
   return (
-    <MapContainer
-      center={position || TBILISI}
-      zoom={position ? 16 : 7}
-      style={{ height: 320, width: '100%', borderRadius: 8 }}
-    >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <ClickHandler onPick={onPick} />
-      {position && <Marker position={position} icon={pinIcon()} />}
-    </MapContainer>
+    <div>
+      <form onSubmit={handleSearch} style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
+        <input
+          type="text"
+          className="field-input"
+          style={{ flex: 1, minWidth: 0, height: '2.3em' }}
+          placeholder="მოძებნეთ მისამართი ან ჰოსპიტლის სახელი..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <button type="submit" className="btn-gray btn-sm" disabled={searching}>
+          <span>{searching ? '...' : '🔍 ძებნა'}</span>
+        </button>
+      </form>
+
+      {searchError && (
+        <p style={{ fontSize: 12, color: '#b45309', marginBottom: 8 }}>{searchError}</p>
+      )}
+
+      {results.length > 0 && (
+        <div
+          style={{
+            border: '1px solid #e2e8f0',
+            borderRadius: 8,
+            marginBottom: 8,
+            maxHeight: 140,
+            overflowY: 'auto',
+          }}
+        >
+          {results.map((r, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => pickResult(r)}
+              style={{
+                display: 'block',
+                width: '100%',
+                textAlign: 'left',
+                padding: '8px 10px',
+                border: 'none',
+                borderBottom: i < results.length - 1 ? '1px solid #f1f5f9' : 'none',
+                background: '#fff',
+                cursor: 'pointer',
+                fontSize: 12.5,
+              }}
+            >
+              📍 {r.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <MapContainer
+        center={position || TBILISI}
+        zoom={position ? 16 : 7}
+        style={{ height: 300, width: '100%', borderRadius: 8 }}
+      >
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <ClickHandler onPick={onPick} />
+        {flyTarget && <FlyTo position={flyTarget} />}
+        {position && <Marker position={position} icon={pinIcon()} />}
+      </MapContainer>
+    </div>
   )
 }

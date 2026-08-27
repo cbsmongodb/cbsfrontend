@@ -69,7 +69,7 @@ export default function HospitalPinModal({ hospital, onClose, onSaved }) {
           დააჭირეთ რუკაზე ზუსტად იმ წერტილს, სადაც ეს ჰოსპიტალია
         </p>
 
-        <HospitalPinMap position={position} onPick={(lat, lng) => setPosition([lat, lng])} />
+        <HospitalPinMap position={position} onPick={(lat, lng) => setPosition([lat, lng])} initialQuery={hospital.address} />
 
         {position && (
           <p style={{ fontSize: 12, color: '#16a34a', marginTop: 8 }}>
