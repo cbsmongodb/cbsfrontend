@@ -1,19 +1,26 @@
 'use client'
-
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { apiFetch } from '@/lib/api'
 
-function todayKey() {
-  return `checkinStatus-${new Date().toISOString().slice(0, 10)}`
-}
-
 export default function CheckInButton() {
-  const [status, setStatus] = useState(() => {
-    if (typeof window === 'undefined') return 'checkin'
-    return localStorage.getItem(todayKey()) || 'checkin'
-  })
+  const [status, setStatus] = useState('checkin')
+  const [ready, setReady] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    async function loadStatus() {
+      try {
+        const data = await apiFetch('/api/attendance/my-status')
+        setStatus(data.nextAction)
+      } catch (err) {
+        console.error('loadStatus failed:', err)
+      } finally {
+        setReady(true)
+      }
+    }
+    loadStatus()
+  }, [])
 
   function getPosition() {
     return new Promise((resolve, reject) => {
@@ -31,20 +38,15 @@ export default function CheckInButton() {
     try {
       const position = await getPosition()
       const { latitude: lat, longitude: lng } = position.coords
-
       await apiFetch('/api/attendance/current-location', {
         method: 'POST',
         body: JSON.stringify({ lat, lng }),
       })
-
       await apiFetch('/api/attendance/mark', {
         method: 'POST',
         body: JSON.stringify({ type: status }),
       })
-
-      const nextStatus = status === 'checkin' ? 'checkout' : 'checkin'
-      setStatus(nextStatus)
-      localStorage.setItem(todayKey(), nextStatus)
+      setStatus(status === 'checkin' ? 'checkout' : 'checkin')
     } catch (err) {
       setError(err.message || 'შეცდომა მოხდა')
     } finally {
@@ -58,7 +60,7 @@ export default function CheckInButton() {
         type="button"
         className={status === 'checkin' ? 'btn-green' : 'btn-gray'}
         onClick={handleClick}
-        disabled={loading}
+        disabled={loading || !ready}
         style={{ width: '100%' }}
       >
         <span>{loading ? '...' : status === 'checkin' ? 'ჩექინი' : 'ჩექაუთი'}</span>
