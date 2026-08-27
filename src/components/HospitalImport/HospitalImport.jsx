@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
 import { apiFetch } from '@/lib/api'
+import HospitalPinModal from './HospitalPinModal'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -92,11 +93,7 @@ function InstructionsCard() {
         <button type="button" className="btn" onClick={copyInstructions}>
           <span>📋 {copyLabel}</span>
         </button>
-        <button
-          type="button"
-          className="btn-gray"
-          onClick={() => setExpanded((v) => !v)}
-        >
+        <button type="button" className="btn-gray" onClick={() => setExpanded((v) => !v)}>
           <span>{expanded ? 'დამალვა' : 'ნახე რას აკოპირებ'}</span>
         </button>
       </div>
@@ -135,9 +132,10 @@ export default function HospitalImport() {
   const [geocodeError, setGeocodeError] = useState('')
   const [progress, setProgress] = useState({ processed: 0, total: 0 })
 
-  const [failedHospitals, setFailedHospitals] = useState([])
-  const [manualCoords, setManualCoords] = useState({})
-  const [savingId, setSavingId] = useState(null)
+  const [missing, setMissing] = useState([])
+  const [missingLoading, setMissingLoading] = useState(false)
+  const [missingError, setMissingError] = useState('')
+  const [pinTarget, setPinTarget] = useState(null)
 
   const preview = parseRows(text)
 
@@ -171,11 +169,12 @@ export default function HospitalImport() {
     setGeocodeError('')
     setGeocodeResult(null)
     setProgress({ processed: 0, total: 0 })
-    setFailedHospitals([])
     try {
       const data = await apiFetch('/api/hospitals/geocode-missing', { method: 'POST' })
       setGeocodeResult(data)
-      setFailedHospitals(data.failedHospitals || [])
+      if (data.failedHospitals?.length) {
+        setMissing(data.failedHospitals)
+      }
     } catch (err) {
       setGeocodeError(err.message)
     } finally {
@@ -183,33 +182,22 @@ export default function HospitalImport() {
     }
   }
 
-  function updateManualCoord(id, field, value) {
-    setManualCoords((prev) => ({
-      ...prev,
-      [id]: { ...prev[id], [field]: value },
-    }))
+  async function loadMissing() {
+    setMissingLoading(true)
+    setMissingError('')
+    try {
+      const data = await apiFetch('/api/hospitals/missing-coordinates')
+      setMissing(data)
+    } catch (err) {
+      setMissingError(err.message)
+    } finally {
+      setMissingLoading(false)
+    }
   }
 
-  async function saveManualCoord(hospital) {
-    const coords = manualCoords[hospital._id]
-    const lat = parseFloat(coords?.lat)
-    const lng = parseFloat(coords?.lng)
-    if (Number.isNaN(lat) || Number.isNaN(lng)) {
-      alert('გთხოვთ, შეიყვანოთ ვალიდური lat და lng')
-      return
-    }
-    setSavingId(hospital._id)
-    try {
-      await apiFetch(`/api/hospitals/${hospital._id}`, {
-        method: 'PUT',
-        body: JSON.stringify({ lat, lng }),
-      })
-      setFailedHospitals((prev) => prev.filter((h) => h._id !== hospital._id))
-    } catch (err) {
-      alert(err.message)
-    } finally {
-      setSavingId(null)
-    }
+  function handlePinSaved(hospitalId) {
+    setMissing((prev) => prev.filter((h) => h._id !== hospitalId))
+    setPinTarget(null)
   }
 
   const progressPercent =
@@ -270,20 +258,18 @@ export default function HospitalImport() {
         კოორდინატებს.
       </p>
 
-      <button type="button" className="btn-gray" onClick={handleGeocode} disabled={geocoding}>
-        <span>{geocoding ? 'მიმდინარეობს...' : 'კოორდინატების მოძებნა'}</span>
-      </button>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <button type="button" className="btn-gray" onClick={handleGeocode} disabled={geocoding}>
+          <span>{geocoding ? 'მიმდინარეობს...' : 'კოორდინატების ავტომატური მოძებნა'}</span>
+        </button>
+        <button type="button" className="btn-gray" onClick={loadMissing} disabled={missingLoading}>
+          <span>{missingLoading ? 'იტვირთება...' : 'ვისი მდებარეობაც ჯერ არ ვიცით'}</span>
+        </button>
+      </div>
 
       {geocoding && (
         <div style={{ marginTop: 12 }}>
-          <div
-            style={{
-              height: 8,
-              background: '#e2e8f0',
-              borderRadius: 4,
-              overflow: 'hidden',
-            }}
-          >
+          <div style={{ height: 8, background: '#e2e8f0', borderRadius: 4, overflow: 'hidden' }}>
             <div
               style={{
                 height: '100%',
@@ -300,6 +286,7 @@ export default function HospitalImport() {
       )}
 
       {geocodeError && <p className="resource-error" style={{ marginTop: 12 }}>{geocodeError}</p>}
+      {missingError && <p className="resource-error" style={{ marginTop: 12 }}>{missingError}</p>}
 
       {geocodeResult && (
         <p style={{ marginTop: 12, fontSize: 14 }}>
@@ -307,64 +294,42 @@ export default function HospitalImport() {
         </p>
       )}
 
-      {failedHospitals.length > 0 && (
+      {missing.length > 0 && (
         <div style={{ marginTop: 16 }}>
           <h3 style={{ fontSize: 14, marginBottom: 8 }}>
-            ვერ მოიძებნა ({failedHospitals.length}) — შეავსეთ ხელით
+            რუკაზე არ არის დამატებული ({missing.length})
           </h3>
-          {failedHospitals.map((h) => (
+          {missing.map((h) => (
             <div
               key={h._id}
               style={{
                 display: 'flex',
                 alignItems: 'center',
+                justifyContent: 'space-between',
                 gap: 8,
-                padding: '8px 0',
+                padding: '10px 0',
                 borderBottom: '1px solid #f1f5f9',
                 flexWrap: 'wrap',
               }}
             >
-              <div style={{ flex: '1 1 220px', fontSize: 13 }}>
+              <div style={{ fontSize: 13 }}>
                 <strong>{h.name}</strong>
                 <div style={{ color: '#64748b', fontSize: 12 }}>{h.address}</div>
               </div>
-              <input
-                type="number"
-                step="any"
-                placeholder="lat"
-                className="field-input"
-                style={{ width: 110, minWidth: 0, height: '2.2em' }}
-                value={manualCoords[h._id]?.lat ?? ''}
-                onChange={(e) => updateManualCoord(h._id, 'lat', e.target.value)}
-              />
-              <input
-                type="number"
-                step="any"
-                placeholder="lng"
-                className="field-input"
-                style={{ width: 110, minWidth: 0, height: '2.2em' }}
-                value={manualCoords[h._id]?.lng ?? ''}
-                onChange={(e) => updateManualCoord(h._id, 'lng', e.target.value)}
-              />
-              <button
-                type="button"
-                className="btn-gray btn-sm"
-                onClick={() => saveManualCoord(h)}
-                disabled={savingId === h._id}
-              >
-                <span>{savingId === h._id ? '...' : 'შენახვა'}</span>
+              <button type="button" className="btn-gray btn-sm" onClick={() => setPinTarget(h)}>
+                <span>📍 რუკაზე მონიშვნა</span>
               </button>
-              
-               <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.address)}`}
-                target="_blank"
-                rel="noreferrer"
-                style={{ fontSize: 12, color: '#2563eb' }}
-              >
-                Google Maps-ზე ძებნა ↗
-              </a>
             </div>
           ))}
         </div>
+      )}
+
+      {pinTarget && (
+        <HospitalPinModal
+          hospital={pinTarget}
+          onClose={() => setPinTarget(null)}
+          onSaved={handlePinSaved}
+        />
       )}
     </div>
   )
