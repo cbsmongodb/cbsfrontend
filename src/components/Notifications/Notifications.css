@@ -1,0 +1,80 @@
+.notifications-page {
+  padding: 4px;
+}
+
+.notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.notifications-header h1 {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.unread-badge {
+  background: #dc2626;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 1px 8px;
+}
+
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notification-card {
+  position: relative;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.notification-card:hover {
+  background: #f8fafc;
+}
+
+.notification-card.unread {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.notification-type {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.notification-message {
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.notification-time {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 6px;
+}
+
+.notification-dot {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2563eb;
+}
