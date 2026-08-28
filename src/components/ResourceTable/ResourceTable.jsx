@@ -255,14 +255,22 @@ export default function ResourceTable({ title, endpoint, fields }) {
       <input
         key={f.name}
         className={f.type === 'date' ? 'field-date' : 'field-input'}
-        type={f.type === 'number' ? 'number' : f.type === 'date' ? 'date' : 'text'}
+        type={
+          f.type === 'number'
+            ? 'number'
+            : f.type === 'date'
+            ? 'date'
+            : f.type === 'password'
+            ? 'password'
+            : 'text'
+        }
         step={f.type === 'number' ? 'any' : undefined}
         placeholder={f.label}
         value={form[f.name] ?? ''}
         onChange={(e) =>
           handleChange(f.name, f.type === 'number' ? e.target.valueAsNumber : e.target.value)
         }
-        required={f.type !== 'checkbox'}
+        required={f.required !== undefined ? f.required : f.type !== 'checkbox'}
       />
     )
   }
@@ -315,7 +323,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
         <table>
           <thead>
             <tr>
-              {fields.map((f) => (
+              {fields.filter((f) => !f.hideInTable).map((f) => (
                 <th key={f.name}>{f.label}</th>
               ))}
               <th></th>
@@ -324,7 +332,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
           <tbody>
             {items.map((item) => (
               <tr key={item._id}>
-                {fields.map((f) => (
+                {fields.filter((f) => !f.hideInTable).map((f) => (
                   <td key={f.name}>{renderCell(f, item)}</td>
                 ))}
                 <td className="resource-actions">
@@ -339,7 +347,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
             ))}
             {items.length === 0 && (
               <tr>
-                <td colSpan={fields.length + 1}>ცარიელია</td>
+                <td colSpan={fields.filter((f) => !f.hideInTable).length + 1}>ცარიელია</td>
               </tr>
             )}
           </tbody>
