@@ -58,7 +58,7 @@ export default function CheckInButton() {
     <div className="checkin-box">
       <button
         type="button"
-        className={status === 'checkin' ? 'btn-green' : 'btn-gray'}
+        className={status === 'checkin' ? 'btn-green' : 'btn-red'}
         onClick={handleClick}
         disabled={loading || !ready}
         style={{ width: '100%' }}

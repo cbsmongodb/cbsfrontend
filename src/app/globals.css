@@ -267,3 +267,30 @@ a {
     transform: scale(0.9);
   }
 }
+
+.btn-red {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-feature-settings: "case" on;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(to bottom, #f87171, #dc2626);
+  box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.btn-red:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(220, 38, 38, 0.4);
+}
+
+.btn-red:disabled {
+  opacity: 0.55;
+  cursor: default;
+  transform: none;
+}
