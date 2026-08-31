@@ -94,3 +94,17 @@
 .team-status-detail.muted {
   color: #94a3b8;
 }
+
+.team-status-card.status-absent {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.team-status-dot.status-absent {
+  background: #dc2626;
+}
+
+.team-status-detail.absent {
+  color: #dc2626;
+  font-weight: 600;
+}

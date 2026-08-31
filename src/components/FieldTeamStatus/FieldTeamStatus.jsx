@@ -6,6 +6,7 @@ import { apiFetch } from '@/lib/api'
 import './FieldTeamStatus.css'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
+const ABSENT_BUFFER_MINUTES = 60
 
 function buildVisits(items) {
   const byGroup = new Map()
@@ -50,12 +51,14 @@ const STATUS_FILTERS = [
   { key: 'all', label: 'ყველა' },
   { key: 'onField', label: '🟢 ველზეა' },
   { key: 'notCheckedIn', label: '⚪ ჯერ არ დაჩექინებულა' },
+  { key: 'absent', label: '🔴 არ გამოცხადებულა' },
   { key: 'done', label: '✓ დღეს დაასრულა' },
 ]
 
 export default function FieldTeamStatus() {
   const [employees, setEmployees] = useState([])
   const [visits, setVisits] = useState([])
+  const [workStartTime, setWorkStartTime] = useState('10:00')
   const [error, setError] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [, forceTick] = useState(0)
@@ -78,9 +81,20 @@ export default function FieldTeamStatus() {
     }
   }
 
+  async function loadConfig() {
+    try {
+      const data = await apiFetch('/api/config/plan')
+      const config = Array.isArray(data) ? data[0] : data
+      if (config?.workStartTime) setWorkStartTime(config.workStartTime)
+    } catch (err) {
+      console.error('loadConfig failed:', err)
+    }
+  }
+
   useEffect(() => {
     loadFeed()
     loadEmployees()
+    loadConfig()
     const interval = setInterval(loadFeed, 60000)
 
     let socket
@@ -100,6 +114,15 @@ export default function FieldTeamStatus() {
     return () => clearInterval(tick)
   }, [])
 
+  const isPastAbsentCutoff = useMemo(() => {
+    const [h, m] = workStartTime.split(':').map(Number)
+    const cutoffMinutes = h * 60 + m + ABSENT_BUFFER_MINUTES
+    const now = new Date()
+    const nowMinutes = now.getHours() * 60 + now.getMinutes()
+    return nowMinutes > cutoffMinutes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workStartTime, forceTick])
+
   const teamStatus = useMemo(() => {
     const byEmployee = new Map()
     visits.forEach((v) => {
@@ -115,6 +138,7 @@ export default function FieldTeamStatus() {
       let status = 'notCheckedIn'
       if (openVisit) status = 'onField'
       else if (empVisits.length > 0) status = 'done'
+      else if (isPastAbsentCutoff) status = 'absent'
 
       return {
         employeeId: emp._id,
@@ -125,7 +149,7 @@ export default function FieldTeamStatus() {
         visitCount: empVisits.length,
       }
     })
-  }, [employees, visits])
+  }, [employees, visits, isPastAbsentCutoff])
 
   const visibleTeamStatus = useMemo(() => {
     if (statusFilter === 'all') return teamStatus
@@ -133,7 +157,7 @@ export default function FieldTeamStatus() {
   }, [teamStatus, statusFilter])
 
   const statusCounts = useMemo(() => {
-    const counts = { onField: 0, notCheckedIn: 0, done: 0 }
+    const counts = { onField: 0, notCheckedIn: 0, absent: 0, done: 0 }
     teamStatus.forEach((t) => counts[t.status]++)
     return counts
   }, [teamStatus])
@@ -174,6 +198,9 @@ export default function FieldTeamStatus() {
               )}
               {t.status === 'notCheckedIn' && (
                 <div className="team-status-detail muted">ჯერ არ დაჩექინებულა</div>
+              )}
+              {t.status === 'absent' && (
+                <div className="team-status-detail absent">არ გამოცხადებულა დღეს</div>
               )}
             </div>
           </div>
