@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { apiFetch } from '@/lib/api'
 import LocationPickerModal from './LocationPickerModal'
+import MultiSelectSearch from './MultiSelectSearch'
 import './ResourceTable.css'
 
 export default function ResourceTable({ title, endpoint, fields }) {
@@ -27,7 +28,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
   }
 
   async function loadOptions() {
-    const optionFields = fields.filter((f) => f.type === 'select' || f.type === 'multiselect')
+    const optionFields = fields.filter((f) => f.type === 'select' || f.type === 'multiselect' || f.type === 'multiselect-search')
     if (optionFields.length === 0) return
 
     const entries = await Promise.all(
@@ -83,7 +84,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
       const raw = item[f.name]
       if (f.type === 'weekdays') next[f.name] = Array.isArray(raw) ? raw : [1, 2, 3, 4, 5]
       else if (f.type === 'select') next[f.name] = relationId(raw)
-      else if (f.type === 'multiselect') next[f.name] = relationIds(raw)
+      else if (f.type === 'multiselect' || f.type === 'multiselect-search') next[f.name] = relationIds(raw)
       else if (f.type === 'checkbox') next[f.name] = !!raw
       else if (f.type === 'date') next[f.name] = raw ? String(raw).slice(0, 10) : ''
       else next[f.name] = raw ?? ''
@@ -246,7 +247,22 @@ export default function ResourceTable({ title, endpoint, fields }) {
       )
     }
 
-    if (f.type === 'multiselect') {
+    if (f.type === 'multiselect-search') {
+      const options = optionsByField[f.name] || []
+      const selected = form[f.name] || []
+      return (
+        <MultiSelectSearch
+          key={f.name}
+          options={options}
+          selected={selected}
+          optionsLabel={f.optionsLabel}
+          placeholder={f.label}
+          onChange={(next) => handleChange(f.name, next)}
+        />
+      )
+    }
+
+        if (f.type === 'multiselect') {
       const options = optionsByField[f.name] || []
       const selected = form[f.name] || []
       return (
@@ -343,7 +359,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
       if (value && typeof value === 'object') return value[f.optionsLabel || 'name'] || '—'
       return '—'
     }
-    if (f.type === 'multiselect') {
+    if (f.type === 'multiselect' || f.type === 'multiselect-search') {
       if (!Array.isArray(value) || value.length === 0) return '—'
       return value.map((v) => (v && typeof v === 'object' ? v[f.optionsLabel || 'name'] : v)).join(', ')
     }

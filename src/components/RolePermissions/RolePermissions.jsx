@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import './RolePermissions.css'
 
@@ -46,23 +48,26 @@ function emptyPrivileges() {
   return p
 }
 
+function countActiveResources(privileges) {
+  if (!privileges) return 0
+  return Object.values(privileges).filter((p) => p && Object.values(p).some((v) => v === 1)).length
+}
+
 export default function RolePermissions() {
+  const { locale } = useParams()
   const [roles, setRoles] = useState([])
-  const [selectedRoleId, setSelectedRoleId] = useState('')
-  const [newRoleName, setNewRoleName] = useState('')
-  const [privileges, setPrivileges] = useState(emptyPrivileges())
+  const [expandedRoleId, setExpandedRoleId] = useState(null)
+  const [privilegesDraft, setPrivilegesDraft] = useState({})
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
+  const [savingId, setSavingId] = useState(null)
   const [error, setError] = useState('')
+  const [successRoleId, setSuccessRoleId] = useState(null)
 
   async function loadRoles() {
     setLoading(true)
     try {
       const data = await apiFetch('/api/admin/roles')
       setRoles(data)
-      if (data.length > 0 && !selectedRoleId) {
-        setSelectedRoleId(data[0]._id)
-      }
     } catch (err) {
       setError(err.message)
     } finally {
@@ -72,22 +77,25 @@ export default function RolePermissions() {
 
   useEffect(() => {
     loadRoles()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    const role = roles.find((r) => r._id === selectedRoleId)
-    if (!role) return
+  function toggleExpand(role) {
+    if (expandedRoleId === role._id) {
+      setExpandedRoleId(null)
+      return
+    }
     const merged = emptyPrivileges()
     const rolePrivileges = role.privileges || {}
     Object.keys(rolePrivileges).forEach((key) => {
       if (merged[key]) merged[key] = { ...merged[key], ...rolePrivileges[key] }
     })
-    setPrivileges(merged)
-  }, [selectedRoleId, roles])
+    setPrivilegesDraft(merged)
+    setExpandedRoleId(role._id)
+    setSuccessRoleId(null)
+  }
 
   function toggle(resourceKey, actionKey) {
-    setPrivileges((prev) => ({
+    setPrivilegesDraft((prev) => ({
       ...prev,
       [resourceKey]: {
         ...prev[resourceKey],
@@ -97,7 +105,7 @@ export default function RolePermissions() {
   }
 
   function toggleRow(resourceKey) {
-    setPrivileges((prev) => {
+    setPrivilegesDraft((prev) => {
       const allOn = ACTIONS.every((a) => prev[resourceKey][a.key] === 1)
       const next = { ...prev[resourceKey] }
       ACTIONS.forEach((a) => {
@@ -107,138 +115,136 @@ export default function RolePermissions() {
     })
   }
 
-  async function handleSave() {
-    setSaving(true)
+  async function handleSave(roleId) {
+    setSavingId(roleId)
     setError('')
+    setSuccessRoleId(null)
     try {
-      await apiFetch(`/api/admin/roles/${selectedRoleId}`, {
+      await apiFetch(`/api/admin/roles/${roleId}`, {
         method: 'PUT',
-        body: JSON.stringify({ privileges }),
+        body: JSON.stringify({ privileges: privilegesDraft }),
       })
+      setSuccessRoleId(roleId)
       loadRoles()
     } catch (err) {
       setError(err.message)
     } finally {
-      setSaving(false)
+      setSavingId(null)
     }
   }
 
-  async function handleCreateRole(e) {
-    e.preventDefault()
-    if (!newRoleName.trim()) return
-    setError('')
-    try {
-      const created = await apiFetch('/api/admin/roles', {
-        method: 'POST',
-        body: JSON.stringify({ name: newRoleName.trim(), privileges: emptyPrivileges() }),
-      })
-      setNewRoleName('')
-      await loadRoles()
-      setSelectedRoleId(created._id)
-    } catch (err) {
-      setError(err.message)
-    }
-  }
-
-  async function handleDeleteRole() {
-    if (!selectedRoleId) return
+  async function handleDeleteRole(roleId) {
     if (!confirm('წავშალო ეს როლი?')) return
     try {
-      await apiFetch(`/api/admin/roles/${selectedRoleId}`, { method: 'DELETE' })
-      setSelectedRoleId('')
+      await apiFetch(`/api/admin/roles/${roleId}`, { method: 'DELETE' })
+      if (expandedRoleId === roleId) setExpandedRoleId(null)
       loadRoles()
     } catch (err) {
       setError(err.message)
     }
   }
-
-  const selectedRole = roles.find((r) => r._id === selectedRoleId)
 
   if (loading) return <p>იტვირთება...</p>
 
   return (
     <div className="role-permissions">
-      <h1>როლები და უფლებები</h1>
-
-      <div className="role-permissions-toolbar">
-        <select
-          className="field-select"
-          value={selectedRoleId}
-          onChange={(e) => setSelectedRoleId(e.target.value)}
-        >
-          {roles.map((r) => (
-            <option key={r._id} value={r._id}>
-              {r.name}
-            </option>
-          ))}
-        </select>
-
-        <form onSubmit={handleCreateRole} style={{ display: 'flex', gap: 6 }}>
-          <input
-            type="text"
-            className="field-input"
-            placeholder="ახალი როლის სახელი"
-            value={newRoleName}
-            onChange={(e) => setNewRoleName(e.target.value)}
-          />
-          <button type="submit" className="btn-gray btn-sm">
-            <span>ახალი როლი</span>
-          </button>
-        </form>
-
-        {selectedRole && selectedRole.name !== 'admin' && (
-          <button type="button" className="btn-gray btn-sm" onClick={handleDeleteRole}>
-            <span>როლის წაშლა</span>
-          </button>
-        )}
+      <div className="role-permissions-header">
+        <h1>როლები და უფლებები</h1>
+        <Link href={`/${locale}/dashboard/roles/new`} className="btn">
+          <span>ახალი როლის დამატება</span>
+        </Link>
       </div>
 
       {error && <p className="resource-error">{error}</p>}
 
-      {selectedRole?.name === 'admin' ? (
-        <p style={{ color: '#64748b', fontSize: 13 }}>
-          "admin" როლს ავტომატურად აქვს სრული წვდომა ყველგან — ცალკე უფლებების მართვა არ სჭირდება.
-        </p>
-      ) : selectedRoleId ? (
-        <>
-          <div className="role-permissions-table-wrap">
-            <table className="role-permissions-table">
-              <thead>
-                <tr>
-                  <th>გვერდი</th>
-                  {ACTIONS.map((a) => (
-                    <th key={a.key}>{a.label}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {RESOURCES.map((r) => (
-                  <tr key={r.key}>
-                    <td className="role-permissions-resource" onClick={() => toggleRow(r.key)}>
-                      {r.label}
-                    </td>
-                    {ACTIONS.map((a) => (
-                      <td key={a.key} style={{ textAlign: 'center' }}>
-                        <input
-                          type="checkbox"
-                          checked={privileges[r.key]?.[a.key] === 1}
-                          onChange={() => toggle(r.key, a.key)}
-                        />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      <div className="role-accordion">
+        {roles.map((r) => {
+          const isExpanded = expandedRoleId === r._id
+          const isAdmin = r.name === 'admin'
+          return (
+            <div key={r._id} className={`role-accordion-item ${isExpanded ? 'open' : ''}`}>
+              <button
+                type="button"
+                className="role-accordion-header"
+                onClick={() => !isAdmin && toggleExpand(r)}
+                disabled={isAdmin}
+              >
+                <div className="role-accordion-header-info">
+                  <div className="role-accordion-name">{r.name}</div>
+                  <div className="role-accordion-sub">
+                    {isAdmin ? 'სრული წვდომა ყველგან' : `${countActiveResources(r.privileges)} გვერდზე აქვს წვდომა`}
+                  </div>
+                </div>
+                <div className="role-accordion-header-actions">
+                  {!isAdmin && (
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      className="btn-gray btn-sm role-accordion-delete"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDeleteRole(r._id)
+                      }}
+                    >
+                      წაშლა
+                    </span>
+                  )}
+                  {!isAdmin && <span className="role-accordion-chevron">{isExpanded ? '▾' : '▸'}</span>}
+                </div>
+              </button>
 
-          <button type="button" className="btn" onClick={handleSave} disabled={saving} style={{ marginTop: 14 }}>
-            <span>{saving ? '...' : 'უფლებების შენახვა'}</span>
-          </button>
-        </>
-      ) : (
-        <p>ჯერ აირჩიეთ ან შექმენით როლი</p>
-      )}
+              {isExpanded && (
+                <div className="role-accordion-body">
+                  <div className="role-permissions-table-wrap">
+                    <table className="role-permissions-table">
+                      <thead>
+                        <tr>
+                          <th>გვერდი</th>
+                          {ACTIONS.map((a) => (
+                            <th key={a.key}>{a.label}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {RESOURCES.map((res) => (
+                          <tr key={res.key}>
+                            <td className="role-permissions-resource" onClick={() => toggleRow(res.key)}>
+                              {res.label}
+                            </td>
+                            {ACTIONS.map((a) => (
+                              <td key={a.key} style={{ textAlign: 'center' }}>
+                                <input
+                                  type="checkbox"
+                                  checked={privilegesDraft[res.key]?.[a.key] === 1}
+                                  onChange={() => toggle(res.key, a.key)}
+                                />
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 14 }}>
+                    <button
+                      type="button"
+                      className="btn"
+                      onClick={() => handleSave(r._id)}
+                      disabled={savingId === r._id}
+                    >
+                      <span>{savingId === r._id ? '...' : 'უფლებების შენახვა'}</span>
+                    </button>
+                    {successRoleId === r._id && (
+                      <span style={{ color: '#16a34a', fontSize: 13 }}>შენახულია ✓</span>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

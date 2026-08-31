@@ -15,13 +15,13 @@ export default function Page() {
         {
           name: "profiles",
           label: "პროფილები",
-          type: "multiselect",
+          type: "multiselect-search",
           optionsEndpoint: "/api/profiles",
         },
         {
           name: "manufacturers",
           label: "მწარმოებლები",
-          type: "multiselect",
+          type: "multiselect-search",
           optionsEndpoint: "/api/manufacturers",
         },
         { name: "price", label: "ფასი", type: "number" },
