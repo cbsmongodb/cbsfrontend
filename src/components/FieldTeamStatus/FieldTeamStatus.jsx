@@ -53,6 +53,7 @@ const STATUS_FILTERS = [
   { key: 'notCheckedIn', label: '⚪ ჯერ არ დაჩექინებულა' },
   { key: 'absent', label: '🔴 არ გამოცხადებულა' },
   { key: 'done', label: '✓ დღეს დაასრულა' },
+  { key: 'offToday', label: '🌙 დღეს არ მუშაობს' },
 ]
 
 export default function FieldTeamStatus() {
@@ -114,6 +115,8 @@ export default function FieldTeamStatus() {
     return () => clearInterval(tick)
   }, [])
 
+  const todayWeekday = new Date().getDay()
+
   const isPastAbsentCutoff = useMemo(() => {
     const [h, m] = workStartTime.split(':').map(Number)
     const cutoffMinutes = h * 60 + m + ABSENT_BUFFER_MINUTES
@@ -134,11 +137,15 @@ export default function FieldTeamStatus() {
     return employees.map((emp) => {
       const empVisits = byEmployee.get(String(emp._id)) || []
       const openVisit = empVisits.find((v) => v.isOpen)
+      const workDays = Array.isArray(emp.workDays) && emp.workDays.length > 0 ? emp.workDays : [1, 2, 3, 4, 5]
+      const worksToday = workDays.includes(todayWeekday)
 
-      let status = 'notCheckedIn'
+      let status
       if (openVisit) status = 'onField'
       else if (empVisits.length > 0) status = 'done'
+      else if (!worksToday) status = 'offToday'
       else if (isPastAbsentCutoff) status = 'absent'
+      else status = 'notCheckedIn'
 
       return {
         employeeId: emp._id,
@@ -149,7 +156,7 @@ export default function FieldTeamStatus() {
         visitCount: empVisits.length,
       }
     })
-  }, [employees, visits, isPastAbsentCutoff])
+  }, [employees, visits, isPastAbsentCutoff, todayWeekday])
 
   const visibleTeamStatus = useMemo(() => {
     if (statusFilter === 'all') return teamStatus
@@ -157,7 +164,7 @@ export default function FieldTeamStatus() {
   }, [teamStatus, statusFilter])
 
   const statusCounts = useMemo(() => {
-    const counts = { onField: 0, notCheckedIn: 0, absent: 0, done: 0 }
+    const counts = { onField: 0, notCheckedIn: 0, absent: 0, done: 0, offToday: 0 }
     teamStatus.forEach((t) => counts[t.status]++)
     return counts
   }, [teamStatus])
@@ -201,6 +208,9 @@ export default function FieldTeamStatus() {
               )}
               {t.status === 'absent' && (
                 <div className="team-status-detail absent">არ გამოცხადებულა დღეს</div>
+              )}
+              {t.status === 'offToday' && (
+                <div className="team-status-detail muted">დღეს არ მუშაობს</div>
               )}
             </div>
           </div>

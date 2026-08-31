@@ -80,7 +80,8 @@ export default function ResourceTable({ title, endpoint, fields }) {
         return
       }
       const raw = item[f.name]
-      if (f.type === 'select') next[f.name] = relationId(raw)
+      if (f.type === 'weekdays') next[f.name] = Array.isArray(raw) ? raw : [1, 2, 3, 4, 5]
+      else if (f.type === 'select') next[f.name] = relationId(raw)
       else if (f.type === 'multiselect') next[f.name] = relationIds(raw)
       else if (f.type === 'checkbox') next[f.name] = !!raw
       else if (f.type === 'date') next[f.name] = raw ? String(raw).slice(0, 10) : ''
@@ -157,6 +158,50 @@ export default function ResourceTable({ title, endpoint, fields }) {
           >
             <span>{hasLocation ? 'შესწორება' : 'რუკიდან არჩევა'}</span>
           </button>
+        </div>
+      )
+    }
+
+    if (f.type === 'weekdays') {
+      const selected = form[f.name] || []
+      const DAYS = [
+        { value: 1, label: 'ორშ' },
+        { value: 2, label: 'სამშ' },
+        { value: 3, label: 'ოთხშ' },
+        { value: 4, label: 'ხუთშ' },
+        { value: 5, label: 'პარ' },
+        { value: 6, label: 'შაბ' },
+        { value: 0, label: 'კვი' },
+      ]
+      return (
+        <div key={f.name} style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 12, color: '#64748b', marginRight: 4 }}>{f.label}:</span>
+          {DAYS.map((d) => {
+            const isChecked = selected.includes(d.value)
+            return (
+              <button
+                key={d.value}
+                type="button"
+                onClick={() => {
+                  const next = isChecked
+                    ? selected.filter((v) => v !== d.value)
+                    : [...selected, d.value].sort()
+                  handleChange(f.name, next)
+                }}
+                style={{
+                  padding: '5px 10px',
+                  borderRadius: 999,
+                  border: isChecked ? '1px solid #4a9dec' : '1px solid #e2e8f0',
+                  background: isChecked ? '#4a9dec' : '#f8fafc',
+                  color: isChecked ? '#fff' : '#64748b',
+                  fontSize: 12,
+                  cursor: 'pointer',
+                }}
+              >
+                {d.label}
+              </button>
+            )
+          })}
         </div>
       )
     }
@@ -276,6 +321,12 @@ export default function ResourceTable({ title, endpoint, fields }) {
   }
 
   function renderCell(f, item) {
+    if (f.type === 'weekdays') {
+      const DAY_LABELS = { 0: 'კვ', 1: 'ორ', 2: 'სმ', 3: 'ოთ', 4: 'ხთ', 5: 'პრ', 6: 'შბ' }
+      const value = item[f.name]
+      const sorted = [...value].sort()
+      return sorted.map((d) => DAY_LABELS[d]).join(', ')
+    }
     if (f.type === 'location') {
       const lat = item[f.latField]
       const lng = item[f.lngField]

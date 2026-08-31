@@ -53,6 +53,7 @@ export default function Page() {
           optionsEndpoint: "/api/divisions",
           required: false,
         },
+        { name: "workDays", label: "სამუშაო დღეები", type: "weekdays", required: false },
         { name: "isActive", label: "აქტიური", type: "checkbox" },
       ]}
     />
