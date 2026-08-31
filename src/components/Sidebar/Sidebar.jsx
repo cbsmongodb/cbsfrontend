@@ -131,8 +131,15 @@ export default function Sidebar() {
       )}
 
       <aside className={`sidebar${mobileOpen ? ' open' : ''}`}>
+        <div className="brand-header">
+          <div className="brand-text">
+            <span className="brand-cbs">CBS</span>
+            <span className="brand-global">GLOBAL</span>
+          </div>
+          <span className="brand-underline" />
+        </div>
+
         <div className="sidebar-top">
-          <div className="sidebar-brand">CBS Admin</div>
           <button
             type="button"
             className="sidebar-close"
