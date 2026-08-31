@@ -18,11 +18,6 @@
   background: linear-gradient(180deg, #5b9bff 0%, #b9c0cc 50%, #5fd67e 100%);
 }
 
-.sidebar-brand {
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
 .sidebar-nav {
   display: flex;
   flex-direction: column;
@@ -33,7 +28,7 @@
 .sidebar-nav > a {
   padding: 8px 10px;
   border-radius: 4px;
-  color: #333;
+  color: #1e3a68;
   text-decoration: none;
   font-size: 13px;
 }
@@ -44,8 +39,9 @@
 }
 
 .sidebar-nav > a.active {
-  background: #2955a3;
+  background: #1e3a68;
   color: #fff;
+  font-weight: 700;
 }
 
 .sidebar-group {
@@ -63,7 +59,7 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 13px;
-  color: #333;
+  color: #1e3a68;
   text-align: left;
 }
 
@@ -92,7 +88,7 @@
 .sidebar-group-items a {
   padding: 6px 10px;
   border-radius: 4px;
-  color: #555;
+  color: #1e3a68;
   text-decoration: none;
   font-size: 12.5px;
 }
@@ -103,8 +99,9 @@
 }
 
 .sidebar-group-items a.active {
-  background: #2955a3;
+  background: #1e3a68;
   color: #fff;
+  font-weight: 700;
 }
 
 .sidebar-logout {
@@ -114,6 +111,7 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 13px;
+  color: #1e3a68;
 }
 
 
@@ -288,19 +286,18 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 20px 14px;
+  padding: 24px 14px;
   margin-bottom: 16px;
   border-radius: 14px;
-  background: linear-gradient(135deg, #eef3fb 0%, #f4f5f6 50%, #eef8f0 100%);
-  border: 1px solid #e8ecf1;
-  box-shadow: 0 1px 3px rgba(30, 58, 104, 0.06);
+  background: linear-gradient(135deg, #14284a 0%, #1c2b38 50%, #123324 100%);
+  box-shadow: 0 6px 18px rgba(15, 30, 55, 0.22);
 }
 
 .brand-text {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   line-height: 1.2;
 }
 
@@ -308,15 +305,18 @@
   font-family: var(--font-sans);
   font-weight: 800;
   font-size: 19px;
-  color: #1e293b;
   letter-spacing: -0.01em;
+  background: linear-gradient(90deg, #7fb3ff 0%, #eef1f5 50%, #7fe0a0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .brand-global {
   font-family: var(--font-sans);
   font-weight: 600;
   font-size: 10.5px;
-  color: #7d8a9c;
-  letter-spacing: 0.12em;
+  color: #a9b8ce;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
