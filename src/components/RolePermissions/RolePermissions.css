@@ -1,0 +1,57 @@
+.role-permissions h1 {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.role-permissions-toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.role-permissions-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #eee;
+  border-radius: 10px;
+}
+
+.role-permissions-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.role-permissions-table th,
+.role-permissions-table td {
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  white-space: nowrap;
+}
+
+.role-permissions-table thead th {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  font-size: 11.5px;
+  color: #64748b;
+  text-transform: uppercase;
+  box-shadow: 0 1px 0 #eee;
+}
+
+.role-permissions-resource {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.role-permissions-resource:hover {
+  color: #4a9dec;
+}
+
+.role-permissions-table input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
