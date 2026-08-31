@@ -68,46 +68,48 @@ export default function LiveFeedMap({ events = [], focusKey }) {
   const routePoints = orderedEvents.map((e) => [e.lat, e.lng])
 
   return (
-    <MapContainer
-      center={center}
-      zoom={events.length > 0 ? 17 : 11}
-      style={{ height: '350px', width: '100%' }}
-      attributionControl={false}
-    >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <FitBounds events={events} focusKey={focusKey} />
+    <div className="map-gradient-border">
+      <MapContainer
+        center={center}
+        zoom={events.length > 0 ? 17 : 11}
+        style={{ height: '350px', width: '100%' }}
+        attributionControl={false}
+      >
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <FitBounds events={events} focusKey={focusKey} />
 
-      {routePoints.length > 1 && (
-        <Polyline
-          positions={routePoints}
-          pathOptions={{ color: '#2563eb', weight: 3, opacity: 0.6, dashArray: '6 8' }}
-        />
-      )}
+        {routePoints.length > 1 && (
+          <Polyline
+            positions={routePoints}
+            pathOptions={{ color: '#2563eb', weight: 3, opacity: 0.6, dashArray: '6 8' }}
+          />
+        )}
 
-      {events.map((event, i) => {
-        const color = event.type === 'checkin' ? CHECKIN_COLOR : CHECKOUT_COLOR
-        return (
-          <Marker
-            key={i}
-            position={[event.lat, event.lng]}
-            icon={pinIcon(color, event.visitNumber, event.isFar)}
-          >
-            <Popup>
-              <strong>{event.employeeName}</strong>
-              <br />
-              {event.type === 'checkin' ? 'ჩექინი' : 'ჩექაუთი'} — {event.hospitalName}
-              <br />
-              {new Date(event.time).toLocaleTimeString('ka-GE', { hour: '2-digit', minute: '2-digit' })}
-              {event.distanceFromHospital != null && (
-                <>
-                  <br />
-                  მანძილი ჰოსპიტალამდე: {event.distanceFromHospital}მ
-                </>
-              )}
-            </Popup>
-          </Marker>
-        )
-      })}
-    </MapContainer>
+        {events.map((event, i) => {
+          const color = event.type === 'checkin' ? CHECKIN_COLOR : CHECKOUT_COLOR
+          return (
+            <Marker
+              key={i}
+              position={[event.lat, event.lng]}
+              icon={pinIcon(color, event.visitNumber, event.isFar)}
+            >
+              <Popup>
+                <strong>{event.employeeName}</strong>
+                <br />
+                {event.type === 'checkin' ? 'ჩექინი' : 'ჩექაუთი'} — {event.hospitalName}
+                <br />
+                {new Date(event.time).toLocaleTimeString('ka-GE', { hour: '2-digit', minute: '2-digit' })}
+                {event.distanceFromHospital != null && (
+                  <>
+                    <br />
+                    მანძილი ჰოსპიტალამდე: {event.distanceFromHospital}მ
+                  </>
+                )}
+              </Popup>
+            </Marker>
+          )
+        })}
+      </MapContainer>
+    </div>
   )
 }

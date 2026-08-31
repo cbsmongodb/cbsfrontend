@@ -83,13 +83,23 @@ export default function Notifications() {
       {loading ? (
         <p>იტვირთება...</p>
       ) : notifications.length === 0 ? (
-        <p style={{ color: '#64748b', fontSize: 14 }}>შეტყობინებები არ არის</p>
+        <div className="notifications-empty">
+          <div className="notifications-empty-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+          </div>
+          <div className="notifications-empty-title">შეტყობინებები არ არის</div>
+          <div className="notifications-empty-sub">ახალი შეტყობინების მოსვლისას, აქ გამოჩნდება</div>
+        </div>
       ) : (
         <div className="notifications-list">
           {notifications.map((n) => (
             <div
               key={n._id}
               className={`notification-card ${n.read ? '' : 'unread'}`}
+              data-type={n.notifiableType}
               onClick={() => !n.read && handleMarkRead(n._id)}
             >
               <div className="notification-type">{TYPE_LABELS[n.notifiableType] || n.notifiableType}</div>

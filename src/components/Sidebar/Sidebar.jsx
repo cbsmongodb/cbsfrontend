@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams, usePathname, useRouter } from 'next/navigation'
+import { apiFetch } from '@/lib/api'
 import CheckInButton from './CheckInButton'
 import './Sidebar.css'
 
@@ -82,6 +83,21 @@ export default function Sidebar() {
   const router = useRouter()
 
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
+
+  useEffect(() => {
+    async function loadUnread() {
+      try {
+        const data = await apiFetch('/api/notifications')
+        setUnreadCount(data.filter((n) => !n.read).length)
+      } catch (err) {
+        console.error('loadUnread failed:', err)
+      }
+    }
+    loadUnread()
+    const interval = setInterval(loadUnread, 30000)
+    return () => clearInterval(interval)
+  }, [])
 
   const [openGroups, setOpenGroups] = useState(() => {
     const initial = {}
@@ -162,7 +178,12 @@ export default function Sidebar() {
               const active = pathname === href
               return (
                 <Link key={href} href={href} className={active ? 'active' : ''} onClick={handleNavigate}>
-                  {entry.label}
+                  <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                    {entry.label}
+                    {entry.href === 'dashboard/notifications' && unreadCount > 0 && (
+                      <span className="sidebar-nav-badge">{unreadCount}</span>
+                    )}
+                  </span>
                 </Link>
               )
             }

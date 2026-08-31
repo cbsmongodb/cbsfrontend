@@ -331,3 +331,14 @@
     border: none;
   }
 }
+
+.map-gradient-border {
+  padding: 2px;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #5b9bff 0%, #b9c0cc 50%, #5fd67e 100%);
+}
+
+.map-gradient-border .leaflet-container {
+  border-radius: calc(0.5rem - 2px);
+  overflow: hidden;
+}
