@@ -171,10 +171,9 @@ export default function Sidebar() {
       <aside className={`sidebar${mobileOpen ? ' open' : ''}`}>
         <div className="brand-header">
           <div className="brand-text">
-            <span className="brand-cbs">CBS</span>
-            <span className="brand-global">GLOBAL</span>
+            <span className="brand-cbs">Global CBS</span>
+            <span className="brand-global">Pharmaceutical</span>
           </div>
-          <span className="brand-underline" />
         </div>
 
         <div className="sidebar-top">
