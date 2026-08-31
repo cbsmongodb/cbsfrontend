@@ -10,6 +10,7 @@ const NAV = [
   { type: 'link', href: 'dashboard', label: 'დეშბორდი' },
   { type: 'link', href: 'dashboard/notifications', label: 'შეტყობინებები' },
   { type: 'link', href: 'dashboard/live-feeds', label: 'Live Feed' },
+  { type: 'link', href: 'dashboard/team-status', label: 'საველე გუნდის სტატუსი' },
   {
     type: 'group',
     id: 'configureProduct',
