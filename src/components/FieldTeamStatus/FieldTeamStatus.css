@@ -108,3 +108,9 @@
   color: #dc2626;
   font-weight: 600;
 }
+
+.team-status-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}

@@ -5,10 +5,42 @@ import { apiFetch } from '@/lib/api'
 import './Notifications.css'
 
 const TYPE_LABELS = {
-  Task: '📋 დავალება',
-  BudgetRequest: '💰 ბიუჯეტის მოთხოვნა',
-  BudgetRequird: '💰 საჭირო ბიუჯეტი',
-  StockAlert: '⚠️ მარაგის გაფრთხილება',
+  Task: 'დავალება',
+  BudgetRequest: 'ბიუჯეტის მოთხოვნა',
+  BudgetRequird: 'საჭირო ბიუჯეტი',
+  StockAlert: 'მარაგის გაფრთხილება',
+}
+
+function NotificationIcon({ type }) {
+  const common = { width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' }
+  if (type === 'Task') {
+    return (
+      <svg {...common}>
+        <rect x="4" y="3" width="16" height="18" rx="2" />
+        <line x1="8" y1="8" x2="16" y2="8" />
+        <line x1="8" y1="12" x2="16" y2="12" />
+        <line x1="8" y1="16" x2="12" y2="16" />
+      </svg>
+    )
+  }
+  if (type === 'BudgetRequest' || type === 'BudgetRequird') {
+    return (
+      <svg {...common}>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v10M9 9.5c0-1.4 1.3-2.5 3-2.5s3 1 3 2.3c0 2.7-6 1.3-6 4 0 1.4 1.3 2.5 3 2.5s3-1.1 3-2.5" />
+      </svg>
+    )
+  }
+  if (type === 'StockAlert') {
+    return (
+      <svg {...common}>
+        <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+        <line x1="12" y1="9" x2="12" y2="13" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+      </svg>
+    )
+  }
+  return null
 }
 
 export default function Notifications() {
@@ -105,7 +137,10 @@ export default function Notifications() {
               data-type={n.notifiableType}
               onClick={() => !n.read && handleMarkRead(n._id)}
             >
-              <div className="notification-type">{TYPE_LABELS[n.notifiableType] || n.notifiableType}</div>
+              <div className="notification-type">
+                <NotificationIcon type={n.notifiableType} />
+                {TYPE_LABELS[n.notifiableType] || n.notifiableType}
+              </div>
               <div className="notification-message">{n.message}</div>
               <div className="notification-time">
                 {new Date(n.createdAt).toLocaleString('ka-GE', {
