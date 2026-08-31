@@ -112,9 +112,12 @@ export default function Sidebar() {
       })
     }
 
+    window.addEventListener('notifications-updated', loadUnread)
+
     return () => {
       clearInterval(interval)
       if (socket) socket.disconnect()
+      window.removeEventListener('notifications-updated', loadUnread)
     }
   }, [])
 

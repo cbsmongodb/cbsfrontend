@@ -35,6 +35,7 @@ export default function Notifications() {
     try {
       await apiFetch(`/api/notifications/${id}/read`, { method: 'POST' })
       setNotifications((prev) => prev.map((n) => (n._id === id ? { ...n, read: true } : n)))
+      window.dispatchEvent(new Event('notifications-updated'))
     } catch (err) {
       setError(err.message)
     }
@@ -44,6 +45,7 @@ export default function Notifications() {
     try {
       await apiFetch('/api/notifications/read-all', { method: 'POST' })
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
+      window.dispatchEvent(new Event('notifications-updated'))
     } catch (err) {
       setError(err.message)
     }
@@ -54,6 +56,7 @@ export default function Notifications() {
     try {
       await apiFetch('/api/notifications', { method: 'DELETE' })
       setNotifications([])
+      window.dispatchEvent(new Event('notifications-updated'))
     } catch (err) {
       setError(err.message)
     }
