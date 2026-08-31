@@ -12,6 +12,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
   const [loading, setLoading] = useState(true)
   const [optionsByField, setOptionsByField] = useState({})
   const [locationPickerField, setLocationPickerField] = useState(null)
+  const [search, setSearch] = useState('')
 
   async function load() {
     setLoading(true)
@@ -128,6 +129,50 @@ export default function ResourceTable({ title, endpoint, fields }) {
   }
 
   function renderInput(f) {
+    if (f.type === 'weekdays') {
+      const selected = form[f.name] || []
+      const DAYS = [
+        { value: 1, label: 'ორშ' },
+        { value: 2, label: 'სამშ' },
+        { value: 3, label: 'ოთხშ' },
+        { value: 4, label: 'ხუთშ' },
+        { value: 5, label: 'პარ' },
+        { value: 6, label: 'შაბ' },
+        { value: 0, label: 'კვი' },
+      ]
+      return (
+        <div key={f.name} className="resource-field-weekdays" style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 12, color: '#64748b', marginRight: 4 }}>{f.label}:</span>
+          {DAYS.map((d) => {
+            const isChecked = selected.includes(d.value)
+            return (
+              <button
+                key={d.value}
+                type="button"
+                onClick={() => {
+                  const next = isChecked
+                    ? selected.filter((v) => v !== d.value)
+                    : [...selected, d.value].sort()
+                  handleChange(f.name, next)
+                }}
+                style={{
+                  padding: '5px 10px',
+                  borderRadius: 999,
+                  border: isChecked ? '1px solid #4a9dec' : '1px solid #e2e8f0',
+                  background: isChecked ? '#4a9dec' : '#f8fafc',
+                  color: isChecked ? '#fff' : '#64748b',
+                  fontSize: 12,
+                  cursor: 'pointer',
+                }}
+              >
+                {d.label}
+              </button>
+            )
+          })}
+        </div>
+      )
+    }
+
     if (f.type === 'location') {
       const lat = form[f.latField]
       const lng = form[f.lngField]
@@ -158,50 +203,6 @@ export default function ResourceTable({ title, endpoint, fields }) {
           >
             <span>{hasLocation ? 'შესწორება' : 'რუკიდან არჩევა'}</span>
           </button>
-        </div>
-      )
-    }
-
-    if (f.type === 'weekdays') {
-      const selected = form[f.name] || []
-      const DAYS = [
-        { value: 1, label: 'ორშ' },
-        { value: 2, label: 'სამშ' },
-        { value: 3, label: 'ოთხშ' },
-        { value: 4, label: 'ხუთშ' },
-        { value: 5, label: 'პარ' },
-        { value: 6, label: 'შაბ' },
-        { value: 0, label: 'კვი' },
-      ]
-      return (
-        <div key={f.name} style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 12, color: '#64748b', marginRight: 4 }}>{f.label}:</span>
-          {DAYS.map((d) => {
-            const isChecked = selected.includes(d.value)
-            return (
-              <button
-                key={d.value}
-                type="button"
-                onClick={() => {
-                  const next = isChecked
-                    ? selected.filter((v) => v !== d.value)
-                    : [...selected, d.value].sort()
-                  handleChange(f.name, next)
-                }}
-                style={{
-                  padding: '5px 10px',
-                  borderRadius: 999,
-                  border: isChecked ? '1px solid #4a9dec' : '1px solid #e2e8f0',
-                  background: isChecked ? '#4a9dec' : '#f8fafc',
-                  color: isChecked ? '#fff' : '#64748b',
-                  fontSize: 12,
-                  cursor: 'pointer',
-                }}
-              >
-                {d.label}
-              </button>
-            )
-          })}
         </div>
       )
     }
@@ -324,6 +325,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
     if (f.type === 'weekdays') {
       const DAY_LABELS = { 0: 'კვ', 1: 'ორ', 2: 'სმ', 3: 'ოთ', 4: 'ხთ', 5: 'პრ', 6: 'შბ' }
       const value = item[f.name]
+      if (!Array.isArray(value) || value.length === 0) return '—'
       const sorted = [...value].sort()
       return sorted.map((d) => DAY_LABELS[d]).join(', ')
     }
@@ -350,6 +352,17 @@ export default function ResourceTable({ title, endpoint, fields }) {
     return value ?? ''
   }
 
+  function itemMatchesSearch(item) {
+    if (!search.trim()) return true
+    const q = search.trim().toLowerCase()
+    return fields.some((f) => {
+      const cell = renderCell(f, item)
+      return String(cell).toLowerCase().includes(q)
+    })
+  }
+
+  const visibleItems = items.filter(itemMatchesSearch)
+
   return (
     <div className="resource-table">
       <h1>{title}</h1>
@@ -368,9 +381,36 @@ export default function ResourceTable({ title, endpoint, fields }) {
 
       {error && <p className="resource-error">{error}</p>}
 
+      <form className="resource-search" onSubmit={(e) => e.preventDefault()}>
+        <button type="button" tabIndex={-1}>
+          <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9"
+              stroke="currentColor"
+              strokeWidth="1.333"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+        <input
+          className="resource-search-input"
+          placeholder="ძებნა..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          type="text"
+        />
+        <button className="resource-search-reset" type="button" onClick={() => setSearch('')}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </form>
+
       {loading ? (
         <p>იტვირთება...</p>
       ) : (
+        <div className="resource-table-scroll">
         <table>
           <thead>
             <tr>
@@ -381,7 +421,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
             </tr>
           </thead>
           <tbody>
-            {items.map((item) => (
+            {visibleItems.map((item) => (
               <tr key={item._id}>
                 {fields.filter((f) => !f.hideInTable).map((f) => (
                   <td key={f.name}>{renderCell(f, item)}</td>
@@ -396,13 +436,16 @@ export default function ResourceTable({ title, endpoint, fields }) {
                 </td>
               </tr>
             ))}
-            {items.length === 0 && (
+            {visibleItems.length === 0 && (
               <tr>
-                <td colSpan={fields.filter((f) => !f.hideInTable).length + 1}>ცარიელია</td>
+                <td colSpan={fields.filter((f) => !f.hideInTable).length + 1}>
+                  {search ? 'ვერაფერი მოიძებნა' : 'ცარიელია'}
+                </td>
               </tr>
             )}
           </tbody>
         </table>
+        </div>
       )}
 
       {locationPickerField && (
