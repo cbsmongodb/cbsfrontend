@@ -105,6 +105,14 @@ function formatAgo(seconds) {
   return `${minutes} წუთის წინ`
 }
 
+function formatDuration(minutes) {
+  if (minutes == null) return '—'
+  if (minutes < 60) return `${minutes} წთ`
+  const h = Math.floor(minutes / 60)
+  const m = minutes % 60
+  return m > 0 ? `${h} სთ ${m} წთ` : `${h} სთ`
+}
+
 export default function LiveFeed() {
   const [events, setEvents] = useState([])
   const [error, setError] = useState('')
@@ -293,7 +301,7 @@ export default function LiveFeed() {
                     )}
                   </td>
                   <td data-label="ხანგრძლივობა">
-                    {visit.durationMinutes != null ? `${visit.durationMinutes} წთ` : '—'}
+                    {formatDuration(visit.durationMinutes)}
                   </td>
                   <td data-label="მანძილი">{distance != null ? `${distance}მ` : '—'}</td>
                 </tr>
