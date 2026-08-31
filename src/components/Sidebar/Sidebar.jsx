@@ -172,7 +172,6 @@ export default function Sidebar() {
         <div className="brand-header">
           <div className="brand-text">
             <span className="brand-cbs">Global CBS</span>
-            <span className="brand-global">Pharmaceutical</span>
           </div>
         </div>
 
