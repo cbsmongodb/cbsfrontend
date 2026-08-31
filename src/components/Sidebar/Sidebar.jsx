@@ -17,6 +17,7 @@ const NAV = [
     label: 'პროდუქტის კონფიგურაცია',
     items: [
       { href: 'dashboard/drugs', label: 'მედიკამენტები' },
+      { href: 'dashboard/drugs/import', label: 'მედიკამენტების იმპორტი' },
       { href: 'dashboard/product-types', label: 'პროდუქტის ტიპები' },
       { href: 'dashboard/manufacturers', label: 'მწარმოებლები' },
       { href: 'dashboard/producing-countries', label: 'მწარმოებელი ქვეყნები' },
