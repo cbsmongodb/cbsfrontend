@@ -3,9 +3,12 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams, usePathname, useRouter } from 'next/navigation'
+import { io } from 'socket.io-client'
 import { apiFetch } from '@/lib/api'
 import CheckInButton from './CheckInButton'
 import './Sidebar.css'
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 const NAV = [
   { type: 'link', href: 'dashboard', label: 'დეშბორდი' },
@@ -95,8 +98,24 @@ export default function Sidebar() {
       }
     }
     loadUnread()
-    const interval = setInterval(loadUnread, 30000)
-    return () => clearInterval(interval)
+    const interval = setInterval(loadUnread, 60000)
+
+    let socket
+    if (API_URL) {
+      socket = io(API_URL, { transports: ['websocket'] })
+      socket.on('notification:new', (payload) => {
+        const stored = localStorage.getItem('employee')
+        const myId = stored ? JSON.parse(stored)?._id : null
+        if (myId && String(payload.employeeId) === String(myId)) {
+          loadUnread()
+        }
+      })
+    }
+
+    return () => {
+      clearInterval(interval)
+      if (socket) socket.disconnect()
+    }
   }, [])
 
   const [openGroups, setOpenGroups] = useState(() => {
