@@ -368,7 +368,8 @@
     "employees": "Сотрудники",
     "groups": "Группы",
     "hospitals": "Больницы",
-    "manufacturers": "Производители"
+    "manufacturers": "Производители",
+    "pharmacies": "Аптеки"
   },
   "fields": {
     "position": "Должность",

@@ -368,7 +368,8 @@
     "employees": "Employees",
     "groups": "Groups",
     "hospitals": "Hospitals",
-    "manufacturers": "Manufacturers"
+    "manufacturers": "Manufacturers",
+    "pharmacies": "Pharmacies"
   },
   "fields": {
     "position": "Position",
