@@ -360,11 +360,13 @@
   },
   "pages": {
     "designations": "პოზიციები",
-    "divisions": "დივიზიონები"
+    "divisions": "დივიზიონები",
+    "doctorCategories": "ექიმის კატეგორიები"
   },
   "fields": {
     "position": "პოზიცია",
     "isActive": "აქტიური",
-    "name": "სახელი"
+    "name": "სახელი",
+    "description": "აღწერა"
   }
 }

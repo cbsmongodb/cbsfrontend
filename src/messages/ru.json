@@ -360,11 +360,13 @@
   },
   "pages": {
     "designations": "Должности",
-    "divisions": "Дивизионы"
+    "divisions": "Дивизионы",
+    "doctorCategories": "Категории врачей"
   },
   "fields": {
     "position": "Должность",
     "isActive": "Активен",
-    "name": "Название"
+    "name": "Название",
+    "description": "Описание"
   }
 }

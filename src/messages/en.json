@@ -360,11 +360,13 @@
   },
   "pages": {
     "designations": "Designations",
-    "divisions": "Divisions"
+    "divisions": "Divisions",
+    "doctorCategories": "Doctor Categories"
   },
   "fields": {
     "position": "Position",
     "isActive": "Active",
-    "name": "Name"
+    "name": "Name",
+    "description": "Description"
   }
 }
