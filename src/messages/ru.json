@@ -362,12 +362,21 @@
     "designations": "Должности",
     "divisions": "Дивизионы",
     "doctorCategories": "Категории врачей",
-    "doctorSubcategories": "Подкатегории врачей"
+    "doctorSubcategories": "Подкатегории врачей",
+    "doctors": "Врачи"
   },
   "fields": {
     "position": "Должность",
     "isActive": "Активен",
     "name": "Название",
-    "description": "Описание"
+    "description": "Описание",
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "uniqueNumber": "Уникальный номер",
+    "email": "Эл. почта",
+    "phoneNumber": "Телефон",
+    "profile": "Профиль",
+    "category": "Категория",
+    "isBudgeted": "С бюджетом"
   }
 }

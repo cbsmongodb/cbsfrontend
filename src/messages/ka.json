@@ -362,12 +362,21 @@
     "designations": "პოზიციები",
     "divisions": "დივიზიონები",
     "doctorCategories": "ექიმის კატეგორიები",
-    "doctorSubcategories": "ექიმის ქვეკატეგორიები"
+    "doctorSubcategories": "ექიმის ქვეკატეგორიები",
+    "doctors": "ექიმები"
   },
   "fields": {
     "position": "პოზიცია",
     "isActive": "აქტიური",
     "name": "სახელი",
-    "description": "აღწერა"
+    "description": "აღწერა",
+    "firstName": "სახელი",
+    "lastName": "გვარი",
+    "uniqueNumber": "უნიკალური ნომერი",
+    "email": "ელ-ფოსტა",
+    "phoneNumber": "ტელეფონი",
+    "profile": "პროფილი",
+    "category": "კატეგორია",
+    "isBudgeted": "ბიუჯეტირებული"
   }
 }

@@ -362,12 +362,21 @@
     "designations": "Designations",
     "divisions": "Divisions",
     "doctorCategories": "Doctor Categories",
-    "doctorSubcategories": "Doctor Subcategories"
+    "doctorSubcategories": "Doctor Subcategories",
+    "doctors": "Doctors"
   },
   "fields": {
     "position": "Position",
     "isActive": "Active",
     "name": "Name",
-    "description": "Description"
+    "description": "Description",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "uniqueNumber": "Unique Number",
+    "email": "Email",
+    "phoneNumber": "Phone",
+    "profile": "Profile",
+    "category": "Category",
+    "isBudgeted": "Budgeted"
   }
 }
