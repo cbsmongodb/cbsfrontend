@@ -109,3 +109,18 @@
     max-height: 60vh;
   }
 }
+
+.sales-listing-edit-input {
+  width: 80px;
+  padding: 5px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: var(--font-sans);
+}
+
+.sales-listing-edit-input:focus {
+  border-color: #4a9dec;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(74, 157, 236, 0.15);
+}
