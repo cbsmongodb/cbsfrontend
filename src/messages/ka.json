@@ -373,7 +373,8 @@
     "plannings": "ვიზიტების დაგეგმვა",
     "producingCountries": "მწარმოებელი ქვეყნები",
     "productTypes": "პროდუქტის ტიპები",
-    "profiles": "პროფილები"
+    "profiles": "პროფილები",
+    "regions": "რეგიონები"
   },
   "fields": {
     "position": "პოზიცია",
@@ -422,6 +423,7 @@
     "pharmacy": "აფთიაქი",
     "performer": "შემსრულებელი",
     "comment": "კომენტარი",
-    "assignmentContent": "დავალების შინაარსი"
+    "assignmentContent": "დავალების შინაარსი",
+    "reimbursementPerDay": "ანაზღაურება/დღე"
   }
 }

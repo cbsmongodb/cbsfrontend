@@ -373,7 +373,8 @@
     "plannings": "Visit Planning",
     "producingCountries": "Producing Countries",
     "productTypes": "Product Types",
-    "profiles": "Profiles"
+    "profiles": "Profiles",
+    "regions": "Regions"
   },
   "fields": {
     "position": "Position",
@@ -422,6 +423,7 @@
     "pharmacy": "Pharmacy",
     "performer": "Performer",
     "comment": "Comment",
-    "assignmentContent": "Assignment Content"
+    "assignmentContent": "Assignment Content",
+    "reimbursementPerDay": "Reimbursement / Day"
   }
 }

@@ -373,7 +373,8 @@
     "plannings": "Планирование визитов",
     "producingCountries": "Страны-производители",
     "productTypes": "Типы продукции",
-    "profiles": "Профили"
+    "profiles": "Профили",
+    "regions": "Регионы"
   },
   "fields": {
     "position": "Должность",
@@ -422,6 +423,7 @@
     "pharmacy": "Аптека",
     "performer": "Исполнитель",
     "comment": "Комментарий",
-    "assignmentContent": "Содержание задания"
+    "assignmentContent": "Содержание задания",
+    "reimbursementPerDay": "Возмещение/день"
   }
 }
