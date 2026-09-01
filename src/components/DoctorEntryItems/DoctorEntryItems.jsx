@@ -226,7 +226,8 @@ export default function DoctorEntryItems() {
       // fields immediately, without needing a separate "load"
       const refreshed = groupItemsIntoDoctorEntries(result.items || [])
       if (refreshed.length > 0) setDoctorEntries(refreshed)
-      setSuccess('შენახულია ✓')
+      setSuccess('შენახულია')
+      setTimeout(() => setSuccess(''), 3000)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -272,7 +273,14 @@ export default function DoctorEntryItems() {
       </div>
 
       {error && <p className="resource-error">{error}</p>}
-      {success && <p style={{ color: '#16a34a', fontSize: 13 }}>{success}</p>}
+      {success && (
+        <div className="doctor-entries-success">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+          {success}
+        </div>
+      )}
 
       {doctorEntries.map((entry, doctorIndex) => {
         const doc = selectedDoctor(entry.doctorId)
