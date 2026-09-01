@@ -365,7 +365,8 @@
     "doctorSubcategories": "Подкатегории врачей",
     "doctors": "Врачи",
     "drugs": "Препараты",
-    "employees": "Сотрудники"
+    "employees": "Сотрудники",
+    "groups": "Группы"
   },
   "fields": {
     "position": "Должность",
@@ -397,6 +398,9 @@
     "designation": "Должность",
     "group": "Группа",
     "division": "Дивизион",
-    "workDays": "Рабочие дни"
+    "workDays": "Рабочие дни",
+    "region": "Регион",
+    "section": "Секция",
+    "note": "Заметка"
   }
 }

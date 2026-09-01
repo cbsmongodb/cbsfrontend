@@ -365,7 +365,8 @@
     "doctorSubcategories": "ექიმის ქვეკატეგორიები",
     "doctors": "ექიმები",
     "drugs": "მედიკამენტები",
-    "employees": "თანამშრომლები"
+    "employees": "თანამშრომლები",
+    "groups": "ჯგუფები"
   },
   "fields": {
     "position": "პოზიცია",
@@ -397,6 +398,9 @@
     "designation": "პოზიცია",
     "group": "ჯგუფი",
     "division": "დივიზიონი",
-    "workDays": "სამუშაო დღეები"
+    "workDays": "სამუშაო დღეები",
+    "region": "რეგიონი",
+    "section": "სექცია",
+    "note": "შენიშვნა"
   }
 }

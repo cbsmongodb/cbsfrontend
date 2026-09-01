@@ -365,7 +365,8 @@
     "doctorSubcategories": "Doctor Subcategories",
     "doctors": "Doctors",
     "drugs": "Drugs",
-    "employees": "Employees"
+    "employees": "Employees",
+    "groups": "Groups"
   },
   "fields": {
     "position": "Position",
@@ -397,6 +398,9 @@
     "designation": "Position",
     "group": "Group",
     "division": "Division",
-    "workDays": "Work Days"
+    "workDays": "Work Days",
+    "region": "Region",
+    "section": "Section",
+    "note": "Note"
   }
 }
