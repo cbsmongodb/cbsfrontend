@@ -63,5 +63,11 @@
         "settings": "სისტემის პარამეტრები"
       }
     }
+  },
+  "checkin": {
+    "checkin": "ჩექინი",
+    "checkout": "ჩექაუთი",
+    "gpsUnsupported": "ეს ბრაუზერი GPS-ს არ უჭერს მხარს",
+    "genericError": "შეცდომა მოხდა"
   }
 }

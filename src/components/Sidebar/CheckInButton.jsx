@@ -1,8 +1,10 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 
 export default function CheckInButton() {
+  const t = useTranslations('checkin')
   const [status, setStatus] = useState('checkin')
   const [ready, setReady] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -25,7 +27,7 @@ export default function CheckInButton() {
   function getPosition() {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
-        reject(new Error('ეს ბრაუზერი GPS-ს არ უჭერს მხარს'))
+        reject(new Error(t('gpsUnsupported')))
         return
       }
       navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true })
@@ -48,7 +50,7 @@ export default function CheckInButton() {
       })
       setStatus(status === 'checkin' ? 'checkout' : 'checkin')
     } catch (err) {
-      setError(err.message || 'შეცდომა მოხდა')
+      setError(err.message || t('genericError'))
     } finally {
       setLoading(false)
     }
@@ -63,7 +65,7 @@ export default function CheckInButton() {
         disabled={loading || !ready}
         style={{ width: '100%' }}
       >
-        <span>{loading ? '...' : status === 'checkin' ? 'ჩექინი' : 'ჩექაუთი'}</span>
+        <span>{loading ? '...' : status === 'checkin' ? t('checkin') : t('checkout')}</span>
       </button>
       {error && <p className="checkin-error">{error}</p>}
     </div>

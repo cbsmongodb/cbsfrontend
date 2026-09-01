@@ -63,5 +63,11 @@
         "settings": "System Settings"
       }
     }
+  },
+  "checkin": {
+    "checkin": "Check In",
+    "checkout": "Check Out",
+    "gpsUnsupported": "This browser does not support GPS",
+    "genericError": "Something went wrong"
   }
 }
