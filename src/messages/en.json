@@ -364,7 +364,8 @@
     "doctorCategories": "Doctor Categories",
     "doctorSubcategories": "Doctor Subcategories",
     "doctors": "Doctors",
-    "drugs": "Drugs"
+    "drugs": "Drugs",
+    "employees": "Employees"
   },
   "fields": {
     "position": "Position",
@@ -385,6 +386,17 @@
     "price": "Price",
     "stocks": "Stock",
     "bonus": "Bonus",
-    "monthlyTarget": "Monthly Target"
+    "monthlyTarget": "Monthly Target",
+    "passwordEdit": "Password (leave empty on edit = unchanged)",
+    "username": "Username",
+    "personnelNumber": "Personnel Number",
+    "employeeType": "Type",
+    "employeeTypeField": "Field",
+    "employeeTypeOffice": "Office",
+    "role": "Role",
+    "designation": "Position",
+    "group": "Group",
+    "division": "Division",
+    "workDays": "Work Days"
   }
 }

@@ -1,60 +1,65 @@
+'use client'
+
+import { useTranslations } from "next-intl";
 import ResourceTable from "@/components/ResourceTable/ResourceTable";
 
 export default function Page() {
+  const t = useTranslations();
+
   return (
     <ResourceTable
-      title="თანამშრომლები"
+      title={t('pages.employees')}
       endpoint="/api/employees"
       fields={[
-        { name: "firstName", label: "სახელი" },
-        { name: "lastName", label: "გვარი", required: false },
-        { name: "email", label: "ელ-ფოსტა" },
+        { name: "firstName", label: t('fields.firstName') },
+        { name: "lastName", label: t('fields.lastName'), required: false },
+        { name: "email", label: t('fields.email') },
         {
           name: "password",
-          label: "პაროლი (რედაქტირებისას ცარიელი = უცვლელი)",
+          label: t('fields.passwordEdit'),
           type: "password",
           required: false,
           hideInTable: true,
         },
-        { name: "username", label: "იუზერნეიმი", required: false },
-        { name: "personnelNumber", label: "პერსონალის ნომერი", required: false },
-        { name: "phoneNumber", label: "ტელეფონი", required: false },
+        { name: "username", label: t('fields.username'), required: false },
+        { name: "personnelNumber", label: t('fields.personnelNumber'), required: false },
+        { name: "phoneNumber", label: t('fields.phoneNumber'), required: false },
         {
           name: "employeeType",
-          label: "ტიპი",
+          label: t('fields.employeeType'),
           type: "enum",
           options: ["field", "office"],
-          optionLabels: { field: "საველე", office: "საოფისე" },
+          optionLabels: { field: t('fields.employeeTypeField'), office: t('fields.employeeTypeOffice') },
         },
         {
           name: "role",
-          label: "როლი",
+          label: t('fields.role'),
           type: "select",
           optionsEndpoint: "/api/admin/roles",
         },
         {
           name: "designation",
-          label: "პოზიცია",
+          label: t('fields.designation'),
           type: "select",
           optionsEndpoint: "/api/admin/designations",
           required: false,
         },
         {
           name: "group",
-          label: "ჯგუფი",
+          label: t('fields.group'),
           type: "select",
           optionsEndpoint: "/api/admin/groups",
           required: false,
         },
         {
           name: "division",
-          label: "დივიზიონი",
+          label: t('fields.division'),
           type: "select",
           optionsEndpoint: "/api/divisions",
           required: false,
         },
-        { name: "workDays", label: "სამუშაო დღეები", type: "weekdays", required: false },
-        { name: "isActive", label: "აქტიური", type: "checkbox" },
+        { name: "workDays", label: t('fields.workDays'), type: "weekdays", required: false },
+        { name: "isActive", label: t('fields.isActive'), type: "checkbox" },
       ]}
     />
   );

@@ -364,7 +364,8 @@
     "doctorCategories": "Категории врачей",
     "doctorSubcategories": "Подкатегории врачей",
     "doctors": "Врачи",
-    "drugs": "Препараты"
+    "drugs": "Препараты",
+    "employees": "Сотрудники"
   },
   "fields": {
     "position": "Должность",
@@ -385,6 +386,17 @@
     "price": "Цена",
     "stocks": "Запас",
     "bonus": "Бонус",
-    "monthlyTarget": "Месячная цель"
+    "monthlyTarget": "Месячная цель",
+    "passwordEdit": "Пароль (оставьте пустым при редактировании = без изменений)",
+    "username": "Имя пользователя",
+    "personnelNumber": "Табельный номер",
+    "employeeType": "Тип",
+    "employeeTypeField": "Полевой",
+    "employeeTypeOffice": "Офисный",
+    "role": "Роль",
+    "designation": "Должность",
+    "group": "Группа",
+    "division": "Дивизион",
+    "workDays": "Рабочие дни"
   }
 }

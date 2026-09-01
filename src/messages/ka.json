@@ -364,7 +364,8 @@
     "doctorCategories": "ექიმის კატეგორიები",
     "doctorSubcategories": "ექიმის ქვეკატეგორიები",
     "doctors": "ექიმები",
-    "drugs": "მედიკამენტები"
+    "drugs": "მედიკამენტები",
+    "employees": "თანამშრომლები"
   },
   "fields": {
     "position": "პოზიცია",
@@ -385,6 +386,17 @@
     "price": "ფასი",
     "stocks": "მარაგი",
     "bonus": "ბონუსი",
-    "monthlyTarget": "თვიური მიზანი"
+    "monthlyTarget": "თვიური მიზანი",
+    "passwordEdit": "პაროლი (რედაქტირებისას ცარიელი = უცვლელი)",
+    "username": "იუზერნეიმი",
+    "personnelNumber": "პერსონალის ნომერი",
+    "employeeType": "ტიპი",
+    "employeeTypeField": "საველე",
+    "employeeTypeOffice": "საოფისე",
+    "role": "როლი",
+    "designation": "პოზიცია",
+    "group": "ჯგუფი",
+    "division": "დივიზიონი",
+    "workDays": "სამუშაო დღეები"
   }
 }
