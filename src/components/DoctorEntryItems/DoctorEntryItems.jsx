@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { apiFetch } from '@/lib/api'
+import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './DoctorEntryItems.css'
 
 const BANKS = ['BOG', 'TBC', 'Liberty', 'Cash', 'Pharmacy']
@@ -249,14 +250,13 @@ export default function DoctorEntryItems() {
       <div className="doctor-entries-top">
         <div className="doctor-entries-field">
           <label>თანამშრომელი</label>
-          <select className="field-select" value={employeeId} onChange={(e) => setEmployeeId(e.target.value)}>
-            <option value="">აირჩიეთ თანამშრომელი...</option>
-            {employees.map((emp) => (
-              <option key={emp._id} value={emp._id}>
-                {emp.name || `${emp.firstName} ${emp.lastName}`}
-              </option>
-            ))}
-          </select>
+          <SearchableSelect
+            options={employees}
+            value={employeeId}
+            onChange={setEmployeeId}
+            getLabel={(emp) => emp.name || `${emp.firstName} ${emp.lastName}`}
+            placeholder="ჩაწერეთ სახელი..."
+          />
         </div>
 
         <div className="doctor-entries-field">
