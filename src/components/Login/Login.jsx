@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter, useParams } from 'next/navigation'
+import { useRouter, useParams, usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import './Login.css'
@@ -9,12 +9,19 @@ import './Login.css'
 export default function Login() {
   const t = useTranslations('login')
   const router = useRouter()
+  const pathname = usePathname()
   const { locale } = useParams()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  function switchLocale(newLocale) {
+    const segments = pathname.split('/')
+    segments[1] = newLocale
+    router.push(segments.join('/'))
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -43,6 +50,19 @@ export default function Login() {
       <div className="login-card">
         <div className="login-brand">
           <span className="login-brand-text">Global CBS</span>
+        </div>
+
+        <div className="login-lang-switcher">
+          {['en', 'ka', 'ru'].map((l) => (
+            <button
+              key={l}
+              type="button"
+              className={locale === l ? 'active' : ''}
+              onClick={() => switchLocale(l)}
+            >
+              {l.toUpperCase()}
+            </button>
+          ))}
         </div>
 
         <form className="login-form" onSubmit={handleSubmit}>

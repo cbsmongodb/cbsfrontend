@@ -134,3 +134,36 @@
     padding: 22px 20px 26px;
   }
 }
+
+.login-lang-switcher {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 0;
+  background: #fff;
+}
+
+.login-lang-switcher button {
+  padding: 5px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #fff;
+  color: #64748b;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.login-lang-switcher button:hover {
+  background: #eaf2fc;
+  color: #2955a3;
+}
+
+.login-lang-switcher button.active {
+  background: #1e3a68;
+  border-color: #1e3a68;
+  color: #fff;
+}
