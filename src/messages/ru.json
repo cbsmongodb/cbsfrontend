@@ -370,7 +370,8 @@
     "hospitals": "Больницы",
     "manufacturers": "Производители",
     "pharmacies": "Аптеки",
-    "plannings": "Планирование визитов"
+    "plannings": "Планирование визитов",
+    "producingCountries": "Страны-производители"
   },
   "fields": {
     "position": "Должность",

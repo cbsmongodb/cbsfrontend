@@ -370,7 +370,8 @@
     "hospitals": "ჰოსპიტლები",
     "manufacturers": "მწარმოებლები",
     "pharmacies": "აფთიაქები",
-    "plannings": "ვიზიტების დაგეგმვა"
+    "plannings": "ვიზიტების დაგეგმვა",
+    "producingCountries": "მწარმოებელი ქვეყნები"
   },
   "fields": {
     "position": "პოზიცია",

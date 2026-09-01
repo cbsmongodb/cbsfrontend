@@ -370,7 +370,8 @@
     "hospitals": "Hospitals",
     "manufacturers": "Manufacturers",
     "pharmacies": "Pharmacies",
-    "plannings": "Visit Planning"
+    "plannings": "Visit Planning",
+    "producingCountries": "Producing Countries"
   },
   "fields": {
     "position": "Position",
