@@ -46,6 +46,7 @@ const NAV = [
     items: [
       { href: 'dashboard/plannings', key: 'plannings' },
       { href: 'dashboard/doctor-entry-items', key: 'doctorEntryItems' },
+      { href: 'dashboard/sales-listing', key: 'salesListing' },
       { href: 'dashboard/budgets', key: 'budgets' },
       { href: 'dashboard/budget-requireds', key: 'budgetRequireds' },
     ],

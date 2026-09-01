@@ -65,7 +65,8 @@
         "plannings": "ვიზიტების დაგეგმვა",
         "doctorEntryItems": "გაყიდვების შეყვანა",
         "budgets": "ბიუჯეტები",
-        "budgetRequireds": "ბიუჯეტის მოთხოვნები"
+        "budgetRequireds": "ბიუჯეტის მოთხოვნები",
+        "salesListing": "გაყიდვების სია"
       },
       "reports": {
         "label": "რეპორტები",

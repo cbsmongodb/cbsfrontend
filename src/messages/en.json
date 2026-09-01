@@ -65,7 +65,8 @@
         "plannings": "Visit Planning",
         "doctorEntryItems": "Sales Entry",
         "budgets": "Budgets",
-        "budgetRequireds": "Budget Requests"
+        "budgetRequireds": "Budget Requests",
+        "salesListing": "Sales Listing"
       },
       "reports": {
         "label": "Reports",

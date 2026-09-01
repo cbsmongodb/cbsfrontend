@@ -65,7 +65,8 @@
         "plannings": "Планирование визитов",
         "doctorEntryItems": "Ввод продаж",
         "budgets": "Бюджеты",
-        "budgetRequireds": "Заявки на бюджет"
+        "budgetRequireds": "Заявки на бюджет",
+        "salesListing": "Список продаж"
       },
       "reports": {
         "label": "Отчёты",
