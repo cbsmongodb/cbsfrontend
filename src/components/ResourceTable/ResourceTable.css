@@ -283,3 +283,12 @@ tbody tr:hover {
   font-size: 13px;
   color: #94a3b8;
 }
+
+.resource-form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid #e8ecf1;
+}

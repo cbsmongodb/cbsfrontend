@@ -391,14 +391,16 @@ export default function ResourceTable({ title, endpoint, fields }) {
 
       <form className="resource-form" onSubmit={handleSubmit}>
         {fields.map((f) => renderInput(f))}
-        <button type="submit" className="btn">
-          <span>{editingId ? t('save') : t('add')}</span>
-        </button>
-        {editingId && (
-          <button type="button" className="btn-gray" onClick={cancelEdit}>
-            <span>{t('cancel')}</span>
+        <div className="resource-form-actions">
+          <button type="submit" className="btn">
+            <span>{editingId ? t('save') : t('add')}</span>
           </button>
-        )}
+          {editingId && (
+            <button type="button" className="btn-gray" onClick={cancelEdit}>
+              <span>{t('cancel')}</span>
+            </button>
+          )}
+        </div>
       </form>
 
       {error && <p className="resource-error">{error}</p>}
