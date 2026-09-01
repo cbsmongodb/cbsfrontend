@@ -369,7 +369,8 @@
     "groups": "ჯგუფები",
     "hospitals": "ჰოსპიტლები",
     "manufacturers": "მწარმოებლები",
-    "pharmacies": "აფთიაქები"
+    "pharmacies": "აფთიაქები",
+    "plannings": "ვიზიტების დაგეგმვა"
   },
   "fields": {
     "position": "პოზიცია",
@@ -407,6 +408,17 @@
     "note": "შენიშვნა",
     "address": "მისამართი",
     "location": "მდებარეობა",
-    "country": "ქვეყანა"
+    "country": "ქვეყანა",
+    "planType": "ტიპი",
+    "hospitalOption": "ჰოსპიტალი",
+    "pharmacyOption": "აფთიაქი",
+    "general": "ზოგადი",
+    "doubleVisit": "ორმაგი ვიზიტი",
+    "date": "თარიღი",
+    "hospital": "ჰოსპიტალი",
+    "pharmacy": "აფთიაქი",
+    "performer": "შემსრულებელი",
+    "comment": "კომენტარი",
+    "assignmentContent": "დავალების შინაარსი"
   }
 }

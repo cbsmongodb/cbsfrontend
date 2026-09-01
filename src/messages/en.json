@@ -369,7 +369,8 @@
     "groups": "Groups",
     "hospitals": "Hospitals",
     "manufacturers": "Manufacturers",
-    "pharmacies": "Pharmacies"
+    "pharmacies": "Pharmacies",
+    "plannings": "Visit Planning"
   },
   "fields": {
     "position": "Position",
@@ -407,6 +408,17 @@
     "note": "Note",
     "address": "Address",
     "location": "Location",
-    "country": "Country"
+    "country": "Country",
+    "planType": "Type",
+    "hospitalOption": "Hospital",
+    "pharmacyOption": "Pharmacy",
+    "general": "General",
+    "doubleVisit": "Double Visit",
+    "date": "Date",
+    "hospital": "Hospital",
+    "pharmacy": "Pharmacy",
+    "performer": "Performer",
+    "comment": "Comment",
+    "assignmentContent": "Assignment Content"
   }
 }

@@ -369,7 +369,8 @@
     "groups": "Группы",
     "hospitals": "Больницы",
     "manufacturers": "Производители",
-    "pharmacies": "Аптеки"
+    "pharmacies": "Аптеки",
+    "plannings": "Планирование визитов"
   },
   "fields": {
     "position": "Должность",
@@ -407,6 +408,17 @@
     "note": "Заметка",
     "address": "Адрес",
     "location": "Местоположение",
-    "country": "Страна"
+    "country": "Страна",
+    "planType": "Тип",
+    "hospitalOption": "Больница",
+    "pharmacyOption": "Аптека",
+    "general": "Общее",
+    "doubleVisit": "Двойной визит",
+    "date": "Дата",
+    "hospital": "Больница",
+    "pharmacy": "Аптека",
+    "performer": "Исполнитель",
+    "comment": "Комментарий",
+    "assignmentContent": "Содержание задания"
   }
 }
