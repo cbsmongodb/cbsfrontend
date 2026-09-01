@@ -306,5 +306,56 @@
       "sat": "შაბ",
       "sun": "კვი"
     }
+  },
+  "roles": {
+    "createTitle": "ახალი როლის დამატება",
+    "listTitle": "როლები და უფლებები",
+    "addRoleButton": "ახალი როლის დამატება",
+    "nameLabel": "როლის სახელი",
+    "namePlaceholder": "მაგ. საწყობის მენეჯერი",
+    "nameRequired": "ჯერ ჩაწერეთ როლის სახელი",
+    "permissionsLabel": "მონიშნეთ რისი ნახვა/მართვა შეუძლია ამ როლს",
+    "pageHeader": "გვერდი",
+    "createButton": "როლის შექმნა",
+    "cancel": "გაუქმება",
+    "loading": "იტვირთება...",
+    "fullAccess": "სრული წვდომა ყველგან",
+    "hasAccessTo": "{count} გვერდზე აქვს წვდომა",
+    "delete": "წაშლა",
+    "confirmDeleteRole": "წავშალო ეს როლი?",
+    "savePermissions": "უფლებების შენახვა",
+    "saved": "შენახულია ✓",
+    "resources": {
+      "home": "დეშბორდი",
+      "attendances": "Live Feed / დასწრება",
+      "plannings": "ვიზიტების დაგეგმვა",
+      "sales": "გაყიდვების შეყვანა",
+      "budgets": "ბიუჯეტები",
+      "drugs": "მედიკამენტები",
+      "product_types": "პროდუქტის ტიპები",
+      "manufacturers": "მწარმოებლები",
+      "manufacturer_countries": "მწარმოებელი ქვეყნები",
+      "doctors": "ექიმები",
+      "doctor_categories": "ექიმის კატეგორიები",
+      "doctor_sub_categories": "ექიმის ქვეკატეგორიები",
+      "hospitals": "ჰოსპიტლები",
+      "pharmacies": "აფთიაქები",
+      "profiles": "პროფილები",
+      "efficiency_report": "ეფექტურობის რეპორტი",
+      "reimbursement_report": "ანაზღაურების რეპორტი",
+      "employees": "თანამშრომლები",
+      "roles": "როლები",
+      "designations": "პოზიციები",
+      "sections": "სექციები",
+      "groups": "ჯგუფები",
+      "regions": "რეგიონები",
+      "leaves": "შვებულებები"
+    },
+    "actions": {
+      "read": "ნახვა",
+      "add": "დამატება",
+      "update": "რედაქტირება",
+      "delete": "წაშლა"
+    }
   }
 }

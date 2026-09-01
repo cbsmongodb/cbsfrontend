@@ -306,5 +306,56 @@
       "sat": "Sat",
       "sun": "Sun"
     }
+  },
+  "roles": {
+    "createTitle": "Add New Role",
+    "listTitle": "Roles & Permissions",
+    "addRoleButton": "Add New Role",
+    "nameLabel": "Role Name",
+    "namePlaceholder": "e.g. Warehouse Manager",
+    "nameRequired": "Please enter a role name",
+    "permissionsLabel": "Select what this role can view/manage",
+    "pageHeader": "Page",
+    "createButton": "Create Role",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "fullAccess": "Full access everywhere",
+    "hasAccessTo": "{count} pages accessible",
+    "delete": "Delete",
+    "confirmDeleteRole": "Delete this role?",
+    "savePermissions": "Save permissions",
+    "saved": "Saved ✓",
+    "resources": {
+      "home": "Dashboard",
+      "attendances": "Live Feed / Attendance",
+      "plannings": "Visit Planning",
+      "sales": "Sales Entry",
+      "budgets": "Budgets",
+      "drugs": "Drugs",
+      "product_types": "Product Types",
+      "manufacturers": "Manufacturers",
+      "manufacturer_countries": "Producing Countries",
+      "doctors": "Doctors",
+      "doctor_categories": "Doctor Categories",
+      "doctor_sub_categories": "Doctor Subcategories",
+      "hospitals": "Hospitals",
+      "pharmacies": "Pharmacies",
+      "profiles": "Profiles",
+      "efficiency_report": "Efficiency Report",
+      "reimbursement_report": "Reimbursement Report",
+      "employees": "Employees",
+      "roles": "Roles",
+      "designations": "Designations",
+      "sections": "Sections",
+      "groups": "Groups",
+      "regions": "Regions",
+      "leaves": "Leaves"
+    },
+    "actions": {
+      "read": "View",
+      "add": "Add",
+      "update": "Edit",
+      "delete": "Delete"
+    }
   }
 }

@@ -3,47 +3,23 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import './RolePermissions.css'
 
-const RESOURCES = [
-  { key: 'home', label: 'დეშბორდი' },
-  { key: 'attendances', label: 'Live Feed / დასწრება' },
-  { key: 'plannings', label: 'ვიზიტების დაგეგმვა' },
-  { key: 'sales', label: 'გაყიდვების შეყვანა' },
-  { key: 'budgets', label: 'ბიუჯეტები' },
-  { key: 'drugs', label: 'მედიკამენტები' },
-  { key: 'product_types', label: 'პროდუქტის ტიპები' },
-  { key: 'manufacturers', label: 'მწარმოებლები' },
-  { key: 'manufacturer_countries', label: 'მწარმოებელი ქვეყნები' },
-  { key: 'doctors', label: 'ექიმები' },
-  { key: 'doctor_categories', label: 'ექიმის კატეგორიები' },
-  { key: 'doctor_sub_categories', label: 'ექიმის ქვეკატეგორიები' },
-  { key: 'hospitals', label: 'ჰოსპიტლები' },
-  { key: 'pharmacies', label: 'აფთიაქები' },
-  { key: 'profiles', label: 'პროფილები' },
-  { key: 'efficiency_report', label: 'ეფექტურობის რეპორტი' },
-  { key: 'reimbursement_report', label: 'ანაზღაურების რეპორტი' },
-  { key: 'employees', label: 'თანამშრომლები' },
-  { key: 'roles', label: 'როლები' },
-  { key: 'designations', label: 'პოზიციები' },
-  { key: 'sections', label: 'სექციები' },
-  { key: 'groups', label: 'ჯგუფები' },
-  { key: 'regions', label: 'რეგიონები' },
-  { key: 'leaves', label: 'შვებულებები' },
+const RESOURCE_KEYS = [
+  'home', 'attendances', 'plannings', 'sales', 'budgets', 'drugs', 'product_types',
+  'manufacturers', 'manufacturer_countries', 'doctors', 'doctor_categories', 'doctor_sub_categories',
+  'hospitals', 'pharmacies', 'profiles', 'efficiency_report', 'reimbursement_report',
+  'employees', 'roles', 'designations', 'sections', 'groups', 'regions', 'leaves',
 ]
 
-const ACTIONS = [
-  { key: 'read', label: 'ნახვა' },
-  { key: 'add', label: 'დამატება' },
-  { key: 'update', label: 'რედაქტირება' },
-  { key: 'delete', label: 'წაშლა' },
-]
+const ACTION_KEYS = ['read', 'add', 'update', 'delete']
 
 function emptyPrivileges() {
   const p = {}
-  RESOURCES.forEach((r) => {
-    p[r.key] = { read: 0, add: 0, update: 0, delete: 0, import: 0, export: 0, dashboard: 0, live_feeds: 0, last_locations: 0, analytics: 0 }
+  RESOURCE_KEYS.forEach((key) => {
+    p[key] = { read: 0, add: 0, update: 0, delete: 0, import: 0, export: 0, dashboard: 0, live_feeds: 0, last_locations: 0, analytics: 0 }
   })
   return p
 }
@@ -54,6 +30,7 @@ function countActiveResources(privileges) {
 }
 
 export default function RolePermissions() {
+  const t = useTranslations('roles')
   const { locale } = useParams()
   const [roles, setRoles] = useState([])
   const [expandedRoleId, setExpandedRoleId] = useState(null)
@@ -106,10 +83,10 @@ export default function RolePermissions() {
 
   function toggleRow(resourceKey) {
     setPrivilegesDraft((prev) => {
-      const allOn = ACTIONS.every((a) => prev[resourceKey][a.key] === 1)
+      const allOn = ACTION_KEYS.every((a) => prev[resourceKey][a] === 1)
       const next = { ...prev[resourceKey] }
-      ACTIONS.forEach((a) => {
-        next[a.key] = allOn ? 0 : 1
+      ACTION_KEYS.forEach((a) => {
+        next[a] = allOn ? 0 : 1
       })
       return { ...prev, [resourceKey]: next }
     })
@@ -134,7 +111,7 @@ export default function RolePermissions() {
   }
 
   async function handleDeleteRole(roleId) {
-    if (!confirm('წავშალო ეს როლი?')) return
+    if (!confirm(t('confirmDeleteRole'))) return
     try {
       await apiFetch(`/api/admin/roles/${roleId}`, { method: 'DELETE' })
       if (expandedRoleId === roleId) setExpandedRoleId(null)
@@ -144,14 +121,14 @@ export default function RolePermissions() {
     }
   }
 
-  if (loading) return <p>იტვირთება...</p>
+  if (loading) return <p>{t('loading')}</p>
 
   return (
     <div className="role-permissions">
       <div className="role-permissions-header">
-        <h1>როლები და უფლებები</h1>
+        <h1>{t('listTitle')}</h1>
         <Link href={`/${locale}/dashboard/roles/new`} className="btn">
-          <span>ახალი როლის დამატება</span>
+          <span>{t('addRoleButton')}</span>
         </Link>
       </div>
 
@@ -172,7 +149,7 @@ export default function RolePermissions() {
                 <div className="role-accordion-header-info">
                   <div className="role-accordion-name">{r.name}</div>
                   <div className="role-accordion-sub">
-                    {isAdmin ? 'სრული წვდომა ყველგან' : `${countActiveResources(r.privileges)} გვერდზე აქვს წვდომა`}
+                    {isAdmin ? t('fullAccess') : t('hasAccessTo', { count: countActiveResources(r.privileges) })}
                   </div>
                 </div>
                 <div className="role-accordion-header-actions">
@@ -186,7 +163,7 @@ export default function RolePermissions() {
                         handleDeleteRole(r._id)
                       }}
                     >
-                      წაშლა
+                      {t('delete')}
                     </span>
                   )}
                   {!isAdmin && <span className="role-accordion-chevron">{isExpanded ? '▾' : '▸'}</span>}
@@ -199,24 +176,24 @@ export default function RolePermissions() {
                     <table className="role-permissions-table">
                       <thead>
                         <tr>
-                          <th>გვერდი</th>
-                          {ACTIONS.map((a) => (
-                            <th key={a.key}>{a.label}</th>
+                          <th>{t('pageHeader')}</th>
+                          {ACTION_KEYS.map((a) => (
+                            <th key={a}>{t(`actions.${a}`)}</th>
                           ))}
                         </tr>
                       </thead>
                       <tbody>
-                        {RESOURCES.map((res) => (
-                          <tr key={res.key}>
-                            <td className="role-permissions-resource" onClick={() => toggleRow(res.key)}>
-                              {res.label}
+                        {RESOURCE_KEYS.map((res) => (
+                          <tr key={res}>
+                            <td className="role-permissions-resource" onClick={() => toggleRow(res)}>
+                              {t(`resources.${res}`)}
                             </td>
-                            {ACTIONS.map((a) => (
-                              <td key={a.key} style={{ textAlign: 'center' }}>
+                            {ACTION_KEYS.map((a) => (
+                              <td key={a} style={{ textAlign: 'center' }}>
                                 <input
                                   type="checkbox"
-                                  checked={privilegesDraft[res.key]?.[a.key] === 1}
-                                  onChange={() => toggle(res.key, a.key)}
+                                  checked={privilegesDraft[res]?.[a] === 1}
+                                  onChange={() => toggle(res, a)}
                                 />
                               </td>
                             ))}
@@ -233,10 +210,10 @@ export default function RolePermissions() {
                       onClick={() => handleSave(r._id)}
                       disabled={savingId === r._id}
                     >
-                      <span>{savingId === r._id ? '...' : 'უფლებების შენახვა'}</span>
+                      <span>{savingId === r._id ? '...' : t('savePermissions')}</span>
                     </button>
                     {successRoleId === r._id && (
-                      <span style={{ color: '#16a34a', fontSize: 13 }}>შენახულია ✓</span>
+                      <span style={{ color: '#16a34a', fontSize: 13 }}>{t('saved')}</span>
                     )}
                   </div>
                 </div>

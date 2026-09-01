@@ -306,5 +306,56 @@
       "sat": "Сб",
       "sun": "Вс"
     }
+  },
+  "roles": {
+    "createTitle": "Добавить новую роль",
+    "listTitle": "Роли и права доступа",
+    "addRoleButton": "Добавить новую роль",
+    "nameLabel": "Название роли",
+    "namePlaceholder": "напр. Менеджер склада",
+    "nameRequired": "Сначала введите название роли",
+    "permissionsLabel": "Выберите, что может видеть/управлять эта роль",
+    "pageHeader": "Страница",
+    "createButton": "Создать роль",
+    "cancel": "Отмена",
+    "loading": "Загрузка...",
+    "fullAccess": "Полный доступ везде",
+    "hasAccessTo": "Доступ к {count} страницам",
+    "delete": "Удалить",
+    "confirmDeleteRole": "Удалить эту роль?",
+    "savePermissions": "Сохранить права",
+    "saved": "Сохранено ✓",
+    "resources": {
+      "home": "Панель управления",
+      "attendances": "Live Feed / Посещаемость",
+      "plannings": "Планирование визитов",
+      "sales": "Ввод продаж",
+      "budgets": "Бюджеты",
+      "drugs": "Препараты",
+      "product_types": "Типы продукции",
+      "manufacturers": "Производители",
+      "manufacturer_countries": "Страны-производители",
+      "doctors": "Врачи",
+      "doctor_categories": "Категории врачей",
+      "doctor_sub_categories": "Подкатегории врачей",
+      "hospitals": "Больницы",
+      "pharmacies": "Аптеки",
+      "profiles": "Профили",
+      "efficiency_report": "Отчёт об эффективности",
+      "reimbursement_report": "Отчёт о возмещении",
+      "employees": "Сотрудники",
+      "roles": "Роли",
+      "designations": "Должности",
+      "sections": "Секции",
+      "groups": "Группы",
+      "regions": "Регионы",
+      "leaves": "Отпуска"
+    },
+    "actions": {
+      "read": "Просмотр",
+      "add": "Добавление",
+      "update": "Редактирование",
+      "delete": "Удаление"
+    }
   }
 }
