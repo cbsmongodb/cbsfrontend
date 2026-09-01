@@ -45,7 +45,11 @@ export default function Dashboard() {
 
         const openVisit = dayData.visits?.find((v) => v.checkinTime && !v.checkoutTime)
         if (openVisit) {
-          setCheckinStatus({ state: 'open', hospitalName: openVisit.hospitalName })
+          const hospitalName =
+            openVisit.hospitalName === 'სტანდარტული ჩექინი'
+              ? t('status.standaloneCheckin')
+              : openVisit.hospitalName
+          setCheckinStatus({ state: 'open', hospitalName })
         } else if (dayData.visits?.length > 0) {
           setCheckinStatus({ state: 'done', count: dayData.visits.length })
         } else {
