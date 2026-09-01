@@ -160,5 +160,23 @@
       "offToday": "Сегодня не работает"
     },
     "emptyFilter": "Никого нет в этом фильтре"
+  },
+  "drugImport": {
+    "title": "Массовое добавление препаратов (CSV)",
+    "description1": "Вставьте полное содержимое CSV-файла (со строкой заголовков):",
+    "description2": "Препарат с таким же названием, если уже существует, будет пропущен автоматически.",
+    "placeholder": "Вставьте текст CSV здесь (с заголовком)...",
+    "previewCount": "Обнаружено {count} препаратов. Пример: {name} ({type})",
+    "noType": "без типа",
+    "addButton": "Добавить ({count})",
+    "loading": "Загрузка...",
+    "summaryAdded": "✅ Добавлено: {created} | Пропущено (уже существовало): {skipped}",
+    "summaryFailed": " | Не удалось: {failed}",
+    "autoCreatedLabel": "Автоматически создано:",
+    "productTypesLabel": "Типы продукции:",
+    "profilesLabel": "Профили:",
+    "countriesLabel": "Страны:",
+    "manufacturersLabel": "Производители:",
+    "failedListLabel": "Не удалось добавить:"
   }
 }

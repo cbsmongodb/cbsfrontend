@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 
 function parseCSV(text) {
@@ -81,6 +82,7 @@ function parseDrugRows(text) {
 }
 
 export default function DrugImport() {
+  const t = useTranslations('drugImport')
   const [text, setText] = useState('')
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
@@ -108,18 +110,18 @@ export default function DrugImport() {
 
   return (
     <div className="resource-table">
-      <h1>მედიკამენტების მასობრივი დამატება (CSV)</h1>
+      <h1>{t('title')}</h1>
 
       <p style={{ fontSize: 13, color: '#64748b', marginBottom: 12 }}>
-        ჩასვით CSV ფაილის სრული შემცველობა (თავზე სათაურის ხაზით): <strong>Name, Product type,
-        Profile, Manufacturer, Country, General description, Input components</strong>. ერთი და იგივე
-        სახელის მედიკამენტი, თუ უკვე არსებობს, ავტომატურად გამოტოვდება.
+        {t('description1')}{' '}
+        <strong>Name, Product type, Profile, Manufacturer, Country, General description, Input components</strong>.{' '}
+        {t('description2')}
       </p>
 
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="ჩასვით CSV ტექსტი აქ (თავზე header-ითურთ)..."
+        placeholder={t('placeholder')}
         rows={12}
         className="field-input"
         style={{ width: '100%', minWidth: '100%', height: 'auto', padding: 12, fontFamily: 'monospace', fontSize: 12 }}
@@ -127,7 +129,11 @@ export default function DrugImport() {
 
       {preview.length > 0 && (
         <p style={{ fontSize: 13, color: '#64748b', margin: '8px 0' }}>
-          ამოცნობილია {preview.length} მედიკამენტი. მაგალითი: {preview[0].name} ({preview[0].productType || 'ტიპის გარეშე'})
+          {t('previewCount', {
+            count: preview.length,
+            name: preview[0].name,
+            type: preview[0].productType || t('noType'),
+          })}
         </p>
       )}
 
@@ -138,7 +144,7 @@ export default function DrugImport() {
         disabled={loading || preview.length === 0}
         style={{ marginTop: 8 }}
       >
-        <span>{loading ? 'იტვირთება...' : `დამატება (${preview.length})`}</span>
+        <span>{loading ? t('loading') : t('addButton', { count: preview.length })}</span>
       </button>
 
       {error && <p className="resource-error" style={{ marginTop: 12 }}>{error}</p>}
@@ -146,32 +152,32 @@ export default function DrugImport() {
       {result && (
         <div style={{ marginTop: 12, fontSize: 14 }}>
           <p>
-            ✅ დაემატა: {result.created} | გამოტოვებული (უკვე არსებობდა): {result.skipped}
-            {result.failed > 0 && <> | ვერ დაემატა: {result.failed}</>}
+            {t('summaryAdded', { created: result.created, skipped: result.skipped })}
+            {result.failed > 0 && t('summaryFailed', { failed: result.failed })}
           </p>
           {(result.createdEntities?.productTypes?.length > 0 ||
             result.createdEntities?.profiles?.length > 0 ||
             result.createdEntities?.countries?.length > 0 ||
             result.createdEntities?.manufacturers?.length > 0) && (
             <p style={{ fontSize: 13, color: '#64748b', marginTop: 6 }}>
-              ავტომატურად შეიქმნა:
+              {t('autoCreatedLabel')}
               {result.createdEntities.productTypes.length > 0 && (
-                <> პროდუქტის ტიპები: {result.createdEntities.productTypes.join(', ')}; </>
+                <> {t('productTypesLabel')} {result.createdEntities.productTypes.join(', ')}; </>
               )}
               {result.createdEntities.profiles.length > 0 && (
-                <> პროფილები: {result.createdEntities.profiles.join(', ')}; </>
+                <> {t('profilesLabel')} {result.createdEntities.profiles.join(', ')}; </>
               )}
               {result.createdEntities.countries.length > 0 && (
-                <> ქვეყნები: {result.createdEntities.countries.join(', ')}; </>
+                <> {t('countriesLabel')} {result.createdEntities.countries.join(', ')}; </>
               )}
               {result.createdEntities.manufacturers.length > 0 && (
-                <> მწარმოებლები: {result.createdEntities.manufacturers.join(', ')}</>
+                <> {t('manufacturersLabel')} {result.createdEntities.manufacturers.join(', ')}</>
               )}
             </p>
           )}
           {result.failedRows?.length > 0 && (
             <div style={{ marginTop: 8 }}>
-              <strong style={{ fontSize: 13 }}>ვერ დაემატა:</strong>
+              <strong style={{ fontSize: 13 }}>{t('failedListLabel')}</strong>
               <ul style={{ fontSize: 12.5, color: '#b45309', marginTop: 4 }}>
                 {result.failedRows.map((f, i) => (
                   <li key={i}>{f.name} — {f.reason}</li>

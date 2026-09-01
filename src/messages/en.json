@@ -160,5 +160,23 @@
       "offToday": "Not working today"
     },
     "emptyFilter": "No one matches this filter"
+  },
+  "drugImport": {
+    "title": "Bulk Add Drugs (CSV)",
+    "description1": "Paste the full CSV file content (with a header row):",
+    "description2": "A drug with the same name will be skipped automatically if it already exists.",
+    "placeholder": "Paste CSV text here (with header)...",
+    "previewCount": "{count} drugs detected. Example: {name} ({type})",
+    "noType": "no type",
+    "addButton": "Add ({count})",
+    "loading": "Loading...",
+    "summaryAdded": "✅ Added: {created} | Skipped (already existed): {skipped}",
+    "summaryFailed": " | Failed: {failed}",
+    "autoCreatedLabel": "Automatically created:",
+    "productTypesLabel": "Product types:",
+    "profilesLabel": "Profiles:",
+    "countriesLabel": "Countries:",
+    "manufacturersLabel": "Manufacturers:",
+    "failedListLabel": "Failed to add:"
   }
 }

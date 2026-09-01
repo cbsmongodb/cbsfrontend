@@ -160,5 +160,23 @@
       "offToday": "დღეს არ მუშაობს"
     },
     "emptyFilter": "ამ ფილტრში არავინ არის"
+  },
+  "drugImport": {
+    "title": "მედიკამენტების მასობრივი დამატება (CSV)",
+    "description1": "ჩასვით CSV ფაილის სრული შემცველობა (თავზე სათაურის ხაზით):",
+    "description2": "ერთი და იგივე სახელის მედიკამენტი, თუ უკვე არსებობს, ავტომატურად გამოტოვდება.",
+    "placeholder": "ჩასვით CSV ტექსტი აქ (თავზე header-ითურთ)...",
+    "previewCount": "ამოცნობილია {count} მედიკამენტი. მაგალითი: {name} ({type})",
+    "noType": "ტიპის გარეშე",
+    "addButton": "დამატება ({count})",
+    "loading": "იტვირთება...",
+    "summaryAdded": "✅ დაემატა: {created} | გამოტოვებული (უკვე არსებობდა): {skipped}",
+    "summaryFailed": " | ვერ დაემატა: {failed}",
+    "autoCreatedLabel": "ავტომატურად შეიქმნა:",
+    "productTypesLabel": "პროდუქტის ტიპები:",
+    "profilesLabel": "პროფილები:",
+    "countriesLabel": "ქვეყნები:",
+    "manufacturersLabel": "მწარმოებლები:",
+    "failedListLabel": "ვერ დაემატა:"
   }
 }
