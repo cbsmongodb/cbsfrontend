@@ -41,9 +41,17 @@
 
 .resource-table-scroll {
   width: 100%;
+  max-height: 65vh;
   overflow-x: auto;
+  overflow-y: auto;
   border: 1px solid #eee;
   border-radius: 10px;
+}
+
+@media (max-width: 640px) {
+  .resource-table-scroll {
+    max-height: 60vh;
+  }
 }
 
 table {
