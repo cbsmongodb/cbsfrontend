@@ -361,7 +361,8 @@
   "pages": {
     "designations": "Должности",
     "divisions": "Дивизионы",
-    "doctorCategories": "Категории врачей"
+    "doctorCategories": "Категории врачей",
+    "doctorSubcategories": "Подкатегории врачей"
   },
   "fields": {
     "position": "Должность",

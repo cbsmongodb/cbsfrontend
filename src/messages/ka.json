@@ -361,7 +361,8 @@
   "pages": {
     "designations": "პოზიციები",
     "divisions": "დივიზიონები",
-    "doctorCategories": "ექიმის კატეგორიები"
+    "doctorCategories": "ექიმის კატეგორიები",
+    "doctorSubcategories": "ექიმის ქვეკატეგორიები"
   },
   "fields": {
     "position": "პოზიცია",

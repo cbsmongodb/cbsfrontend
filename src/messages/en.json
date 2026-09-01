@@ -361,7 +361,8 @@
   "pages": {
     "designations": "Designations",
     "divisions": "Divisions",
-    "doctorCategories": "Doctor Categories"
+    "doctorCategories": "Doctor Categories",
+    "doctorSubcategories": "Doctor Subcategories"
   },
   "fields": {
     "position": "Position",
