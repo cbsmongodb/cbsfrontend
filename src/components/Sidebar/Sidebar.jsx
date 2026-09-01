@@ -137,6 +137,12 @@ export default function Sidebar() {
     setOpenGroups((prev) => ({ ...prev, [id]: !prev[id] }))
   }
 
+  function switchLocale(newLocale) {
+    const segments = pathname.split('/')
+    segments[1] = newLocale
+    router.push(segments.join('/'))
+  }
+
   function handleLogout() {
     localStorage.removeItem('token')
     localStorage.removeItem('employee')
@@ -173,6 +179,19 @@ export default function Sidebar() {
           <div className="brand-text">
             <span className="brand-cbs">Global CBS</span>
           </div>
+        </div>
+
+        <div className="lang-switcher">
+          {['en', 'ka', 'ru'].map((l) => (
+            <button
+              key={l}
+              type="button"
+              className={locale === l ? 'active' : ''}
+              onClick={() => switchLocale(l)}
+            >
+              {l.toUpperCase()}
+            </button>
+          ))}
         </div>
 
         <div className="sidebar-top">
