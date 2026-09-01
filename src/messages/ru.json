@@ -374,7 +374,8 @@
     "producingCountries": "Страны-производители",
     "productTypes": "Типы продукции",
     "profiles": "Профили",
-    "regions": "Регионы"
+    "regions": "Регионы",
+    "sections": "Секции"
   },
   "fields": {
     "position": "Должность",

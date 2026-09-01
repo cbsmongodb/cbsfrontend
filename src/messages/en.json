@@ -374,7 +374,8 @@
     "producingCountries": "Producing Countries",
     "productTypes": "Product Types",
     "profiles": "Profiles",
-    "regions": "Regions"
+    "regions": "Regions",
+    "sections": "Sections"
   },
   "fields": {
     "position": "Position",
