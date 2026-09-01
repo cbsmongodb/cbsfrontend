@@ -91,5 +91,54 @@
     "checkout": "Check Out",
     "gpsUnsupported": "This browser does not support GPS",
     "genericError": "Something went wrong"
+  },
+  "notificationsPage": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "clearAll": "Clear all",
+    "loading": "Loading...",
+    "confirmClearAll": "Delete all notifications?",
+    "empty": {
+      "title": "No notifications",
+      "sub": "New notifications will appear here"
+    },
+    "types": {
+      "Task": "Task",
+      "BudgetRequest": "Budget Request",
+      "BudgetRequird": "Required Budget",
+      "StockAlert": "Stock Alert"
+    }
+  },
+  "liveFeed": {
+    "title": "Live Feed",
+    "updated": "Updated: {time}",
+    "ago": {
+      "justNow": "just now",
+      "seconds": "{count}s ago",
+      "minutes": "{count}min ago"
+    },
+    "search": "Search by employee name...",
+    "onlyFar": "Only suspicious visits (300m+ away)",
+    "headers": {
+      "employee": "Employee",
+      "hospital": "Hospital",
+      "checkin": "Check In",
+      "checkout": "Check Out",
+      "duration": "Duration",
+      "distance": "Distance"
+    },
+    "shortVisit": "Very short visit",
+    "wholeDay": "Whole day",
+    "currentlyThere": "🟢 Currently there",
+    "empty": {
+      "noSearchResults": "No matching employee found",
+      "noFarVisits": "No suspicious visits",
+      "noneToday": "No check-ins yet today"
+    },
+    "duration": {
+      "hoursMinutes": "{h}h {m}min",
+      "hoursOnly": "{h}h",
+      "minutesOnly": "{m}min"
+    }
   }
 }

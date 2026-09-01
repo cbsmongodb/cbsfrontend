@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { io } from 'socket.io-client'
+import { useTranslations } from 'next-intl'
+import { useParams } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import './LiveFeed.css'
 
@@ -11,6 +13,7 @@ const LiveFeedMap = dynamic(() => import('./LiveFeedMap'), { ssr: false })
 const FAR_THRESHOLD_METERS = 300
 const SHORT_VISIT_MINUTES = 1
 const API_URL = process.env.NEXT_PUBLIC_API_URL
+const DATE_LOCALES = { ka: 'ka-GE', en: 'en-US', ru: 'ru-RU' }
 
 function flattenToEvents(items) {
   const events = []
@@ -20,7 +23,7 @@ function flattenToEvents(items) {
       events.push({
         groupKey: item.groupKey,
         employeeId: item.employeeId,
-        employeeName: item.employeeName || 'უცნობი',
+        employeeName: item.employeeName || '',
         hospitalName: item.hospitalName || '—',
         hospitalLat: item.hospitalLat ?? null,
         hospitalLng: item.hospitalLng ?? null,
@@ -98,22 +101,11 @@ function buildVisits(events) {
   return visits.sort((a, b) => new Date(b.sortTime) - new Date(a.sortTime))
 }
 
-function formatAgo(seconds) {
-  if (seconds < 5) return 'ახლახან'
-  if (seconds < 60) return `${seconds} წამის წინ`
-  const minutes = Math.floor(seconds / 60)
-  return `${minutes} წუთის წინ`
-}
-
-function formatDuration(minutes) {
-  if (minutes == null) return '—'
-  if (minutes < 60) return `${minutes} წთ`
-  const h = Math.floor(minutes / 60)
-  const m = minutes % 60
-  return m > 0 ? `${h} სთ ${m} წთ` : `${h} სთ`
-}
-
 export default function LiveFeed() {
+  const t = useTranslations('liveFeed')
+  const { locale } = useParams()
+  const dateLocale = DATE_LOCALES[locale] || 'en-US'
+
   const [events, setEvents] = useState([])
   const [error, setError] = useState('')
   const [focus, setFocus] = useState(null)
@@ -122,6 +114,21 @@ export default function LiveFeed() {
   const [lastUpdated, setLastUpdated] = useState(null)
   const [agoText, setAgoText] = useState('')
   const seenEmployeeForDayLink = new Set()
+
+  function formatAgo(seconds) {
+    if (seconds < 5) return t('ago.justNow')
+    if (seconds < 60) return t('ago.seconds', { count: seconds })
+    const minutes = Math.floor(seconds / 60)
+    return t('ago.minutes', { count: minutes })
+  }
+
+  function formatDuration(minutes) {
+    if (minutes == null) return '—'
+    if (minutes < 60) return t('duration.minutesOnly', { m: minutes })
+    const h = Math.floor(minutes / 60)
+    const m = minutes % 60
+    return m > 0 ? t('duration.hoursMinutes', { h, m }) : t('duration.hoursOnly', { h })
+  }
 
   async function load() {
     try {
@@ -155,6 +162,7 @@ export default function LiveFeed() {
       setAgoText(formatAgo(Math.floor((Date.now() - lastUpdated.getTime()) / 1000)))
     }, 1000)
     return () => clearInterval(tick)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastUpdated])
 
   const visits = useMemo(() => buildVisits(events), [events])
@@ -179,8 +187,8 @@ export default function LiveFeed() {
   return (
     <div className="live-feed">
       <div className="live-feed-header">
-        <h1>Live Feed</h1>
-        {lastUpdated && <span className="live-feed-updated">განახლდა: {agoText}</span>}
+        <h1>{t('title')}</h1>
+        {lastUpdated && <span className="live-feed-updated">{t('updated', { time: agoText })}</span>}
       </div>
 
       {error && <p className="live-feed-error">{error}</p>}
@@ -202,7 +210,7 @@ export default function LiveFeed() {
           </button>
           <input
             className="live-search-input"
-            placeholder="ძებნა თანამშრომლის სახელით..."
+            placeholder={t('search')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             type="text"
@@ -220,7 +228,7 @@ export default function LiveFeed() {
             checked={onlyFar}
             onChange={(e) => setOnlyFar(e.target.checked)}
           />
-          მხოლოდ საეჭვო ვიზიტები (300მ+ დაშორება)
+          {t('onlyFar')}
         </label>
       </div>
 
@@ -229,12 +237,12 @@ export default function LiveFeed() {
           <thead>
             <tr>
               <th></th>
-              <th>თანამშრომელი</th>
-              <th>ჰოსპიტალი</th>
-              <th>ჩექინი</th>
-              <th>ჩექაუთი</th>
-              <th>ხანგრძლივობა</th>
-              <th>მანძილი</th>
+              <th>{t('headers.employee')}</th>
+              <th>{t('headers.hospital')}</th>
+              <th>{t('headers.checkin')}</th>
+              <th>{t('headers.checkout')}</th>
+              <th>{t('headers.duration')}</th>
+              <th>{t('headers.distance')}</th>
             </tr>
           </thead>
           <tbody>
@@ -260,12 +268,12 @@ export default function LiveFeed() {
                   <td data-label="">
                     <span className={`dot ${visit.isFar ? 'far' : 'checkin'}`} />
                   </td>
-                  <td data-label="თანამშრომელი">
+                  <td data-label={t('headers.employee')}>
                     {visit.visitNumber != null && (
                       <span className="visit-badge">{visit.visitNumber}</span>
                     )}
                     {visit.employeeName}
-                    {visit.isShort && <span className="short-badge">ძალიან მოკლე ვიზიტი</span>}
+                    {visit.isShort && <span className="short-badge">{t('shortVisit')}</span>}
                     {showDayLink && (
                       <button
                         type="button"
@@ -275,42 +283,40 @@ export default function LiveFeed() {
                         }}
                         className="day-link"
                       >
-                        მთელი დღე
+                        {t('wholeDay')}
                       </button>
                     )}
                   </td>
-                  <td data-label="ჰოსპიტალი">{visit.hospitalName}</td>
-                  <td data-label="ჩექინი">
+                  <td data-label={t('headers.hospital')}>{visit.hospitalName}</td>
+                  <td data-label={t('headers.checkin')}>
                     {visit.checkinTime
-                      ? new Date(visit.checkinTime).toLocaleTimeString('ka-GE', {
+                      ? new Date(visit.checkinTime).toLocaleTimeString(dateLocale, {
                           hour: '2-digit',
                           minute: '2-digit',
                         })
                       : '—'}
                   </td>
-                  <td data-label="ჩექაუთი">
+                  <td data-label={t('headers.checkout')}>
                     {visit.checkoutTime ? (
-                      new Date(visit.checkoutTime).toLocaleTimeString('ka-GE', {
+                      new Date(visit.checkoutTime).toLocaleTimeString(dateLocale, {
                         hour: '2-digit',
                         minute: '2-digit',
                       })
                     ) : visit.isOpen ? (
-                      <span className="live-badge">🟢 ამჟამად იქ არის</span>
+                      <span className="live-badge">{t('currentlyThere')}</span>
                     ) : (
                       '—'
                     )}
                   </td>
-                  <td data-label="ხანგრძლივობა">
-                    {formatDuration(visit.durationMinutes)}
-                  </td>
-                  <td data-label="მანძილი">{distance != null ? `${distance}მ` : '—'}</td>
+                  <td data-label={t('headers.duration')}>{formatDuration(visit.durationMinutes)}</td>
+                  <td data-label={t('headers.distance')}>{distance != null ? `${distance}მ` : '—'}</td>
                 </tr>
               )
             })}
             {visibleVisits.length === 0 && (
               <tr>
                 <td colSpan={7}>
-                  {search ? 'ასეთი თანამშრომელი ვერ მოიძებნა' : onlyFar ? 'საეჭვო ვიზიტები არ არის' : 'დღეს ჯერ არავინ დაჩექინებულა'}
+                  {search ? t('empty.noSearchResults') : onlyFar ? t('empty.noFarVisits') : t('empty.noneToday')}
                 </td>
               </tr>
             )}

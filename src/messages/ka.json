@@ -91,5 +91,54 @@
     "checkout": "ჩექაუთი",
     "gpsUnsupported": "ეს ბრაუზერი GPS-ს არ უჭერს მხარს",
     "genericError": "შეცდომა მოხდა"
+  },
+  "notificationsPage": {
+    "title": "შეტყობინებები",
+    "markAllRead": "ყველას წაკითხულად მონიშვნა",
+    "clearAll": "ყველას წაშლა",
+    "loading": "იტვირთება...",
+    "confirmClearAll": "წავშალო ყველა შეტყობინება?",
+    "empty": {
+      "title": "შეტყობინებები არ არის",
+      "sub": "ახალი შეტყობინების მოსვლისას, აქ გამოჩნდება"
+    },
+    "types": {
+      "Task": "დავალება",
+      "BudgetRequest": "ბიუჯეტის მოთხოვნა",
+      "BudgetRequird": "საჭირო ბიუჯეტი",
+      "StockAlert": "მარაგის გაფრთხილება"
+    }
+  },
+  "liveFeed": {
+    "title": "Live Feed",
+    "updated": "განახლდა: {time}",
+    "ago": {
+      "justNow": "ახლახან",
+      "seconds": "{count} წამის წინ",
+      "minutes": "{count} წუთის წინ"
+    },
+    "search": "ძებნა თანამშრომლის სახელით...",
+    "onlyFar": "მხოლოდ საეჭვო ვიზიტები (300მ+ დაშორება)",
+    "headers": {
+      "employee": "თანამშრომელი",
+      "hospital": "ჰოსპიტალი",
+      "checkin": "ჩექინი",
+      "checkout": "ჩექაუთი",
+      "duration": "ხანგრძლივობა",
+      "distance": "მანძილი"
+    },
+    "shortVisit": "ძალიან მოკლე ვიზიტი",
+    "wholeDay": "მთელი დღე",
+    "currentlyThere": "🟢 ამჟამად იქ არის",
+    "empty": {
+      "noSearchResults": "ასეთი თანამშრომელი ვერ მოიძებნა",
+      "noFarVisits": "საეჭვო ვიზიტები არ არის",
+      "noneToday": "დღეს ჯერ არავინ დაჩექინებულა"
+    },
+    "duration": {
+      "hoursMinutes": "{h} სთ {m} წთ",
+      "hoursOnly": "{h} სთ",
+      "minutesOnly": "{m} წთ"
+    }
   }
 }

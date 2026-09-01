@@ -91,5 +91,54 @@
     "checkout": "Отметить уход",
     "gpsUnsupported": "Этот браузер не поддерживает GPS",
     "genericError": "Произошла ошибка"
+  },
+  "notificationsPage": {
+    "title": "Уведомления",
+    "markAllRead": "Отметить все как прочитанные",
+    "clearAll": "Удалить все",
+    "loading": "Загрузка...",
+    "confirmClearAll": "Удалить все уведомления?",
+    "empty": {
+      "title": "Уведомлений нет",
+      "sub": "Новые уведомления появятся здесь"
+    },
+    "types": {
+      "Task": "Задача",
+      "BudgetRequest": "Заявка на бюджет",
+      "BudgetRequird": "Требуемый бюджет",
+      "StockAlert": "Предупреждение о запасах"
+    }
+  },
+  "liveFeed": {
+    "title": "Live Feed",
+    "updated": "Обновлено: {time}",
+    "ago": {
+      "justNow": "только что",
+      "seconds": "{count} сек назад",
+      "minutes": "{count} мин назад"
+    },
+    "search": "Поиск по имени сотрудника...",
+    "onlyFar": "Только подозрительные визиты (300м+)",
+    "headers": {
+      "employee": "Сотрудник",
+      "hospital": "Больница",
+      "checkin": "Приход",
+      "checkout": "Уход",
+      "duration": "Длительность",
+      "distance": "Расстояние"
+    },
+    "shortVisit": "Очень короткий визит",
+    "wholeDay": "Весь день",
+    "currentlyThere": "🟢 Сейчас там",
+    "empty": {
+      "noSearchResults": "Сотрудник не найден",
+      "noFarVisits": "Подозрительных визитов нет",
+      "noneToday": "Сегодня ещё никто не отметился"
+    },
+    "duration": {
+      "hoursMinutes": "{h}ч {m}мин",
+      "hoursOnly": "{h}ч",
+      "minutesOnly": "{m}мин"
+    }
   }
 }

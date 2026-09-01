@@ -1,15 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
+import { useParams } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import './Notifications.css'
 
-const TYPE_LABELS = {
-  Task: 'დავალება',
-  BudgetRequest: 'ბიუჯეტის მოთხოვნა',
-  BudgetRequird: 'საჭირო ბიუჯეტი',
-  StockAlert: 'მარაგის გაფრთხილება',
-}
+const DATE_LOCALES = { ka: 'ka-GE', en: 'en-US', ru: 'ru-RU' }
 
 function NotificationIcon({ type }) {
   const common = { width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' }
@@ -44,6 +41,8 @@ function NotificationIcon({ type }) {
 }
 
 export default function Notifications() {
+  const t = useTranslations('notificationsPage')
+  const { locale } = useParams()
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -84,7 +83,7 @@ export default function Notifications() {
   }
 
   async function handleClearAll() {
-    if (!confirm('წავშალო ყველა შეტყობინება?')) return
+    if (!confirm(t('confirmClearAll'))) return
     try {
       await apiFetch('/api/notifications', { method: 'DELETE' })
       setNotifications([])
@@ -95,20 +94,21 @@ export default function Notifications() {
   }
 
   const unreadCount = notifications.filter((n) => !n.read).length
+  const dateLocale = DATE_LOCALES[locale] || 'en-US'
 
   return (
     <div className="notifications-page">
       <div className="notifications-header">
         <h1>
-          შეტყობინებები
+          {t('title')}
           {unreadCount > 0 && <span className="unread-badge">{unreadCount}</span>}
         </h1>
         <div style={{ display: 'flex', gap: 8 }}>
           <button type="button" className="btn-gray btn-sm" onClick={handleMarkAllRead}>
-            <span>ყველას წაკითხულად მონიშვნა</span>
+            <span>{t('markAllRead')}</span>
           </button>
           <button type="button" className="btn-gray btn-sm" onClick={handleClearAll}>
-            <span>ყველას წაშლა</span>
+            <span>{t('clearAll')}</span>
           </button>
         </div>
       </div>
@@ -116,7 +116,7 @@ export default function Notifications() {
       {error && <p className="resource-error">{error}</p>}
 
       {loading ? (
-        <p>იტვირთება...</p>
+        <p>{t('loading')}</p>
       ) : notifications.length === 0 ? (
         <div className="notifications-empty">
           <div className="notifications-empty-icon">
@@ -125,8 +125,8 @@ export default function Notifications() {
               <path d="M13.73 21a2 2 0 0 1-3.46 0" />
             </svg>
           </div>
-          <div className="notifications-empty-title">შეტყობინებები არ არის</div>
-          <div className="notifications-empty-sub">ახალი შეტყობინების მოსვლისას, აქ გამოჩნდება</div>
+          <div className="notifications-empty-title">{t('empty.title')}</div>
+          <div className="notifications-empty-sub">{t('empty.sub')}</div>
         </div>
       ) : (
         <div className="notifications-list">
@@ -139,11 +139,11 @@ export default function Notifications() {
             >
               <div className="notification-type">
                 <NotificationIcon type={n.notifiableType} />
-                {TYPE_LABELS[n.notifiableType] || n.notifiableType}
+                {t(`types.${n.notifiableType}`, { fallback: n.notifiableType })}
               </div>
               <div className="notification-message">{n.message}</div>
               <div className="notification-time">
-                {new Date(n.createdAt).toLocaleString('ka-GE', {
+                {new Date(n.createdAt).toLocaleString(dateLocale, {
                   day: '2-digit',
                   month: '2-digit',
                   hour: '2-digit',
