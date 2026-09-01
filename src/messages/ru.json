@@ -359,10 +359,12 @@
     }
   },
   "pages": {
-    "designations": "Должности"
+    "designations": "Должности",
+    "divisions": "Дивизионы"
   },
   "fields": {
     "position": "Должность",
-    "isActive": "Активен"
+    "isActive": "Активен",
+    "name": "Название"
   }
 }

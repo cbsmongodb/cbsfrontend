@@ -359,10 +359,12 @@
     }
   },
   "pages": {
-    "designations": "პოზიციები"
+    "designations": "პოზიციები",
+    "divisions": "დივიზიონები"
   },
   "fields": {
     "position": "პოზიცია",
-    "isActive": "აქტიური"
+    "isActive": "აქტიური",
+    "name": "სახელი"
   }
 }

@@ -359,10 +359,12 @@
     }
   },
   "pages": {
-    "designations": "Designations"
+    "designations": "Designations",
+    "divisions": "Divisions"
   },
   "fields": {
     "position": "Position",
-    "isActive": "Active"
+    "isActive": "Active",
+    "name": "Name"
   }
 }
