@@ -366,7 +366,8 @@
     "doctors": "Doctors",
     "drugs": "Drugs",
     "employees": "Employees",
-    "groups": "Groups"
+    "groups": "Groups",
+    "hospitals": "Hospitals"
   },
   "fields": {
     "position": "Position",
@@ -401,6 +402,8 @@
     "workDays": "Work Days",
     "region": "Region",
     "section": "Section",
-    "note": "Note"
+    "note": "Note",
+    "address": "Address",
+    "location": "Location"
   }
 }
