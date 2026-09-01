@@ -363,7 +363,8 @@
     "divisions": "Дивизионы",
     "doctorCategories": "Категории врачей",
     "doctorSubcategories": "Подкатегории врачей",
-    "doctors": "Врачи"
+    "doctors": "Врачи",
+    "drugs": "Препараты"
   },
   "fields": {
     "position": "Должность",
@@ -377,6 +378,13 @@
     "phoneNumber": "Телефон",
     "profile": "Профиль",
     "category": "Категория",
-    "isBudgeted": "С бюджетом"
+    "isBudgeted": "С бюджетом",
+    "productType": "Тип продукции",
+    "profiles": "Профили",
+    "manufacturers": "Производители",
+    "price": "Цена",
+    "stocks": "Запас",
+    "bonus": "Бонус",
+    "monthlyTarget": "Месячная цель"
   }
 }

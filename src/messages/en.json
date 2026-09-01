@@ -363,7 +363,8 @@
     "divisions": "Divisions",
     "doctorCategories": "Doctor Categories",
     "doctorSubcategories": "Doctor Subcategories",
-    "doctors": "Doctors"
+    "doctors": "Doctors",
+    "drugs": "Drugs"
   },
   "fields": {
     "position": "Position",
@@ -377,6 +378,13 @@
     "phoneNumber": "Phone",
     "profile": "Profile",
     "category": "Category",
-    "isBudgeted": "Budgeted"
+    "isBudgeted": "Budgeted",
+    "productType": "Product Type",
+    "profiles": "Profiles",
+    "manufacturers": "Manufacturers",
+    "price": "Price",
+    "stocks": "Stock",
+    "bonus": "Bonus",
+    "monthlyTarget": "Monthly Target"
   }
 }

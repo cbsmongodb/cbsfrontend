@@ -1,34 +1,40 @@
+'use client'
+
+import { useTranslations } from "next-intl";
 import ResourceTable from "@/components/ResourceTable/ResourceTable";
+
 export default function Page() {
+  const t = useTranslations();
+
   return (
     <ResourceTable
-      title="მედიკამენტები"
+      title={t('pages.drugs')}
       endpoint="/api/drugs"
       fields={[
-        { name: "name", label: "სახელი" },
+        { name: "name", label: t('fields.name') },
         {
           name: "productType",
-          label: "პროდუქტის ტიპი",
+          label: t('fields.productType'),
           type: "select",
           optionsEndpoint: "/api/product-types",
         },
         {
           name: "profiles",
-          label: "პროფილები",
+          label: t('fields.profiles'),
           type: "multiselect-search",
           optionsEndpoint: "/api/profiles",
         },
         {
           name: "manufacturers",
-          label: "მწარმოებლები",
+          label: t('fields.manufacturers'),
           type: "multiselect-search",
           optionsEndpoint: "/api/manufacturers",
         },
-        { name: "price", label: "ფასი", type: "number" },
-        { name: "stocks", label: "მარაგი", type: "number" },
-        { name: "bonus", label: "ბონუსი", type: "number" },
-        { name: "monthlyTarget", label: "თვიური მიზანი", type: "number" },
-        { name: "isActive", label: "აქტიური", type: "checkbox" },
+        { name: "price", label: t('fields.price'), type: "number" },
+        { name: "stocks", label: t('fields.stocks'), type: "number" },
+        { name: "bonus", label: t('fields.bonus'), type: "number" },
+        { name: "monthlyTarget", label: t('fields.monthlyTarget'), type: "number" },
+        { name: "isActive", label: t('fields.isActive'), type: "checkbox" },
       ]}
     />
   );

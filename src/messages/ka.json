@@ -363,7 +363,8 @@
     "divisions": "დივიზიონები",
     "doctorCategories": "ექიმის კატეგორიები",
     "doctorSubcategories": "ექიმის ქვეკატეგორიები",
-    "doctors": "ექიმები"
+    "doctors": "ექიმები",
+    "drugs": "მედიკამენტები"
   },
   "fields": {
     "position": "პოზიცია",
@@ -377,6 +378,13 @@
     "phoneNumber": "ტელეფონი",
     "profile": "პროფილი",
     "category": "კატეგორია",
-    "isBudgeted": "ბიუჯეტირებული"
+    "isBudgeted": "ბიუჯეტირებული",
+    "productType": "პროდუქტის ტიპი",
+    "profiles": "პროფილები",
+    "manufacturers": "მწარმოებლები",
+    "price": "ფასი",
+    "stocks": "მარაგი",
+    "bonus": "ბონუსი",
+    "monthlyTarget": "თვიური მიზანი"
   }
 }
