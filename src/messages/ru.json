@@ -367,7 +367,8 @@
     "drugs": "Препараты",
     "employees": "Сотрудники",
     "groups": "Группы",
-    "hospitals": "Больницы"
+    "hospitals": "Больницы",
+    "manufacturers": "Производители"
   },
   "fields": {
     "position": "Должность",
@@ -404,6 +405,7 @@
     "section": "Секция",
     "note": "Заметка",
     "address": "Адрес",
-    "location": "Местоположение"
+    "location": "Местоположение",
+    "country": "Страна"
   }
 }

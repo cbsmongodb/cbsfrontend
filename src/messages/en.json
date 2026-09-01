@@ -367,7 +367,8 @@
     "drugs": "Drugs",
     "employees": "Employees",
     "groups": "Groups",
-    "hospitals": "Hospitals"
+    "hospitals": "Hospitals",
+    "manufacturers": "Manufacturers"
   },
   "fields": {
     "position": "Position",
@@ -404,6 +405,7 @@
     "section": "Section",
     "note": "Note",
     "address": "Address",
-    "location": "Location"
+    "location": "Location",
+    "country": "Country"
   }
 }

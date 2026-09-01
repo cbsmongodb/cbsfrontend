@@ -367,7 +367,8 @@
     "drugs": "მედიკამენტები",
     "employees": "თანამშრომლები",
     "groups": "ჯგუფები",
-    "hospitals": "ჰოსპიტლები"
+    "hospitals": "ჰოსპიტლები",
+    "manufacturers": "მწარმოებლები"
   },
   "fields": {
     "position": "პოზიცია",
@@ -404,6 +405,7 @@
     "section": "სექცია",
     "note": "შენიშვნა",
     "address": "მისამართი",
-    "location": "მდებარეობა"
+    "location": "მდებარეობა",
+    "country": "ქვეყანა"
   }
 }
