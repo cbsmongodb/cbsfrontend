@@ -371,7 +371,8 @@
     "manufacturers": "Производители",
     "pharmacies": "Аптеки",
     "plannings": "Планирование визитов",
-    "producingCountries": "Страны-производители"
+    "producingCountries": "Страны-производители",
+    "productTypes": "Типы продукции"
   },
   "fields": {
     "position": "Должность",
