@@ -357,5 +357,12 @@
       "update": "Редактирование",
       "delete": "Удаление"
     }
+  },
+  "pages": {
+    "designations": "Должности"
+  },
+  "fields": {
+    "position": "Должность",
+    "isActive": "Активен"
   }
 }

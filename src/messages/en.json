@@ -357,5 +357,12 @@
       "update": "Edit",
       "delete": "Delete"
     }
+  },
+  "pages": {
+    "designations": "Designations"
+  },
+  "fields": {
+    "position": "Position",
+    "isActive": "Active"
   }
 }

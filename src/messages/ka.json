@@ -357,5 +357,12 @@
       "update": "რედაქტირება",
       "delete": "წაშლა"
     }
+  },
+  "pages": {
+    "designations": "პოზიციები"
+  },
+  "fields": {
+    "position": "პოზიცია",
+    "isActive": "აქტიური"
   }
 }
