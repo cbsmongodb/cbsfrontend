@@ -372,7 +372,8 @@
     "pharmacies": "Pharmacies",
     "plannings": "Visit Planning",
     "producingCountries": "Producing Countries",
-    "productTypes": "Product Types"
+    "productTypes": "Product Types",
+    "profiles": "Profiles"
   },
   "fields": {
     "position": "Position",
