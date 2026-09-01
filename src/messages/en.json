@@ -8,7 +8,29 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "logout": "Log Out"
+    "logout": "Log Out",
+    "greeting": {
+      "night": "Good night",
+      "morning": "Good morning",
+      "day": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "status": {
+      "label": "Today's Status",
+      "live": "🟢 Currently in the field",
+      "done": "✓ {count} visits recorded today",
+      "none": "Not checked in yet today"
+    },
+    "leaveBalance": {
+      "label": "Leave Balance",
+      "paid": "Paid",
+      "sick": "Sick"
+    },
+    "notifications": {
+      "label": "Notifications",
+      "unread": "{count} new",
+      "none": "No new notifications"
+    }
   },
   "sidebar": {
     "dashboard": "Dashboard",

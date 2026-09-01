@@ -11,14 +11,6 @@ function currentYear() {
   return new Date().getFullYear()
 }
 
-function getGreeting() {
-  const h = new Date().getHours()
-  if (h < 6) return 'ღამე მშვიდობისა'
-  if (h < 12) return 'დილა მშვიდობისა'
-  if (h < 18) return 'დღე მშვიდობისა'
-  return 'საღამო მშვიდობისა'
-}
-
 function initials(first, last) {
   return `${(first || '')[0] || ''}${(last || '')[0] || ''}`.toUpperCase()
 }
@@ -71,6 +63,14 @@ export default function Dashboard() {
     loadWidgets()
   }, [employee])
 
+  function getGreeting() {
+    const h = new Date().getHours()
+    if (h < 6) return t('greeting.night')
+    if (h < 12) return t('greeting.morning')
+    if (h < 18) return t('greeting.day')
+    return t('greeting.evening')
+  }
+
   return (
     <div className="dashboard-page">
       <div className="dashboard-hero">
@@ -94,20 +94,20 @@ export default function Dashboard() {
                   <circle cx="12" cy="10" r="3" />
                 </svg>
               </div>
-              <div className="dashboard-widget-label">დღევანდელი სტატუსი</div>
+              <div className="dashboard-widget-label">{t('status.label')}</div>
               {checkinStatus.state === 'open' && (
                 <>
-                  <div className="dashboard-widget-main live">🟢 ამჟამად ველზე ხართ</div>
+                  <div className="dashboard-widget-main live">{t('status.live')}</div>
                   {checkinStatus.hospitalName && (
                     <div className="dashboard-widget-sub">{checkinStatus.hospitalName}</div>
                   )}
                 </>
               )}
               {checkinStatus.state === 'done' && (
-                <div className="dashboard-widget-main">✓ დღეს {checkinStatus.count} ვიზიტი დაფიქსირდა</div>
+                <div className="dashboard-widget-main">{t('status.done', { count: checkinStatus.count })}</div>
               )}
               {checkinStatus.state === 'none' && (
-                <div className="dashboard-widget-main muted">დღეს ჯერ არ დაჩექინებულხართ</div>
+                <div className="dashboard-widget-main muted">{t('status.none')}</div>
               )}
             </div>
           )}
@@ -122,13 +122,13 @@ export default function Dashboard() {
                   <line x1="3" y1="10" x2="21" y2="10" />
                 </svg>
               </div>
-              <div className="dashboard-widget-label">შვებულების ბალანსი</div>
+              <div className="dashboard-widget-label">{t('leaveBalance.label')}</div>
               <div className="dashboard-widget-leave-row">
-                <span>ანაზღაურებადი</span>
+                <span>{t('leaveBalance.paid')}</span>
                 <strong>{balance.paid.remaining} / {balance.paid.total}</strong>
               </div>
               <div className="dashboard-widget-leave-row">
-                <span>ავადმყოფობის</span>
+                <span>{t('leaveBalance.sick')}</span>
                 <strong>{balance.sick.remaining} / {balance.sick.total}</strong>
               </div>
             </div>
@@ -141,12 +141,12 @@ export default function Dashboard() {
                 <path d="M13.73 21a2 2 0 0 1-3.46 0" />
               </svg>
             </div>
-            <div className="dashboard-widget-label">შეტყობინებები</div>
+            <div className="dashboard-widget-label">{t('notifications.label')}</div>
             <div className="dashboard-widget-main">
               {unreadCount > 0 ? (
-                <span className="dashboard-widget-badge">{unreadCount} ახალი</span>
+                <span className="dashboard-widget-badge">{t('notifications.unread', { count: unreadCount })}</span>
               ) : (
-                <span className="muted">ახალი შეტყობინება არ არის</span>
+                <span className="muted">{t('notifications.none')}</span>
               )}
             </div>
           </Link>
