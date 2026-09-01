@@ -1,11 +1,27 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import LocationPickerModal from './LocationPickerModal'
 import MultiSelectSearch from './MultiSelectSearch'
 import './ResourceTable.css'
 
 export default function ResourceTable({ title, endpoint, fields }) {
+  const t = useTranslations('resourceTable')
+  const WEEKDAYS = [
+    { value: 1, label: t('weekdaysShort.mon') },
+    { value: 2, label: t('weekdaysShort.tue') },
+    { value: 3, label: t('weekdaysShort.wed') },
+    { value: 4, label: t('weekdaysShort.thu') },
+    { value: 5, label: t('weekdaysShort.fri') },
+    { value: 6, label: t('weekdaysShort.sat') },
+    { value: 0, label: t('weekdaysShort.sun') },
+  ]
+  const WEEKDAY_LABELS_SHORT = {
+    0: t('weekdaysShort.sun'), 1: t('weekdaysShort.mon'), 2: t('weekdaysShort.tue'),
+    3: t('weekdaysShort.wed'), 4: t('weekdaysShort.thu'), 5: t('weekdaysShort.fri'), 6: t('weekdaysShort.sat'),
+  }
+
   const [items, setItems] = useState([])
   const [form, setForm] = useState({})
   const [editingId, setEditingId] = useState(null)
@@ -120,7 +136,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
   }
 
   async function handleDelete(id) {
-    if (!confirm('წავშალო?')) return
+    if (!confirm(t('confirmDelete'))) return
     try {
       await apiFetch(`${endpoint}/${id}`, { method: 'DELETE' })
       load()
@@ -132,19 +148,10 @@ export default function ResourceTable({ title, endpoint, fields }) {
   function renderInput(f) {
     if (f.type === 'weekdays') {
       const selected = form[f.name] || []
-      const DAYS = [
-        { value: 1, label: 'ორშ' },
-        { value: 2, label: 'სამშ' },
-        { value: 3, label: 'ოთხშ' },
-        { value: 4, label: 'ხუთშ' },
-        { value: 5, label: 'პარ' },
-        { value: 6, label: 'შაბ' },
-        { value: 0, label: 'კვი' },
-      ]
       return (
         <div key={f.name} className="resource-field-weekdays" style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
           <span style={{ fontSize: 12, color: '#64748b', marginRight: 4 }}>{f.label}:</span>
-          {DAYS.map((d) => {
+          {WEEKDAYS.map((d) => {
             const isChecked = selected.includes(d.value)
             return (
               <button
@@ -194,7 +201,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
           }}
         >
           <span style={{ color: hasLocation ? '#16a34a' : '#94a3b8' }}>
-            {hasLocation ? `📍 ${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}` : 'მდებარეობა არ არის მითითებული'}
+            {hasLocation ? `📍 ${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}` : t('locationNotSet')}
           </span>
           <button
             type="button"
@@ -202,7 +209,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
             onClick={() => setLocationPickerField(f)}
             style={{ marginLeft: 'auto' }}
           >
-            <span>{hasLocation ? 'შესწორება' : 'რუკიდან არჩევა'}</span>
+            <span>{hasLocation ? t('locationEdit') : t('locationPick')}</span>
           </button>
         </div>
       )
@@ -262,7 +269,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
       )
     }
 
-        if (f.type === 'multiselect') {
+    if (f.type === 'multiselect') {
       const options = optionsByField[f.name] || []
       const selected = form[f.name] || []
       return (
@@ -339,11 +346,10 @@ export default function ResourceTable({ title, endpoint, fields }) {
 
   function renderCell(f, item) {
     if (f.type === 'weekdays') {
-      const DAY_LABELS = { 0: 'კვ', 1: 'ორ', 2: 'სმ', 3: 'ოთ', 4: 'ხთ', 5: 'პრ', 6: 'შბ' }
       const value = item[f.name]
       if (!Array.isArray(value) || value.length === 0) return '—'
       const sorted = [...value].sort()
-      return sorted.map((d) => DAY_LABELS[d]).join(', ')
+      return sorted.map((d) => WEEKDAY_LABELS_SHORT[d]).join(', ')
     }
     if (f.type === 'location') {
       const lat = item[f.latField]
@@ -386,11 +392,11 @@ export default function ResourceTable({ title, endpoint, fields }) {
       <form className="resource-form" onSubmit={handleSubmit}>
         {fields.map((f) => renderInput(f))}
         <button type="submit" className="btn">
-          <span>{editingId ? 'შენახვა' : 'დამატება'}</span>
+          <span>{editingId ? t('save') : t('add')}</span>
         </button>
         {editingId && (
           <button type="button" className="btn-gray" onClick={cancelEdit}>
-            <span>გაუქმება</span>
+            <span>{t('cancel')}</span>
           </button>
         )}
       </form>
@@ -411,7 +417,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
         </button>
         <input
           className="resource-search-input"
-          placeholder="ძებნა..."
+          placeholder={t('searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           type="text"
@@ -424,7 +430,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
       </form>
 
       {loading ? (
-        <p>იტვირთება...</p>
+        <p>{t('loading')}</p>
       ) : (
         <div className="resource-table-scroll">
         <table>
@@ -444,10 +450,10 @@ export default function ResourceTable({ title, endpoint, fields }) {
                 ))}
                 <td className="resource-actions">
                   <button className="btn-gray btn-sm" onClick={() => startEdit(item)}>
-                    <span>რედაქტირება</span>
+                    <span>{t('edit')}</span>
                   </button>
                   <button className="btn-gray btn-sm" onClick={() => handleDelete(item._id)}>
-                    <span>წაშლა</span>
+                    <span>{t('delete')}</span>
                   </button>
                 </td>
               </tr>
@@ -455,7 +461,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
             {visibleItems.length === 0 && (
               <tr>
                 <td colSpan={fields.filter((f) => !f.hideInTable).length + 1}>
-                  {search ? 'ვერაფერი მოიძებნა' : 'ცარიელია'}
+                  {search ? t('noSearchResults') : t('empty')}
                 </td>
               </tr>
             )}

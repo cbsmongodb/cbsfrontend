@@ -1,8 +1,10 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 export default function MultiSelectSearch({ options, selected, optionsLabel, placeholder, onChange }) {
+  const t = useTranslations('resourceTable')
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
   const wrapRef = useRef(null)
@@ -83,7 +85,7 @@ export default function MultiSelectSearch({ options, selected, optionsLabel, pla
 
       {open && query && filtered.length === 0 && (
         <div className="mss-dropdown">
-          <div className="mss-empty">ვერაფერი მოიძებნა</div>
+          <div className="mss-empty">{t('noOptionsFound')}</div>
         </div>
       )}
     </div>

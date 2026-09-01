@@ -215,7 +215,10 @@
     "clickHint": "დააჭირეთ რუკაზე ზუსტად იმ წერტილს, სადაც ეს ჰოსპიტალია",
     "selected": "✓ არჩეულია: {lat}, {lng}",
     "save": "შენახვა",
-    "cancel": "გაუქმება"
+    "cancel": "გაუქმება",
+    "selectLocationTitle": "მდებარეობის არჩევა",
+    "selectLocationBody": "მოძებნეთ მისამართით, ან პირდაპირ დააჭირეთ რუკაზე ზუსტ წერტილს",
+    "useThisLocation": "ამ მდებარეობის გამოყენება"
   },
   "leaves": {
     "title": "შვებულებები",
@@ -278,5 +281,30 @@
     "checkin": "ჩექინი",
     "checkout": "ჩექაუთი",
     "doneLabel": "დასრულებულია"
+  },
+  "resourceTable": {
+    "save": "შენახვა",
+    "add": "დამატება",
+    "cancel": "გაუქმება",
+    "edit": "რედაქტირება",
+    "delete": "წაშლა",
+    "loading": "იტვირთება...",
+    "searchPlaceholder": "ძებნა...",
+    "noSearchResults": "ვერაფერი მოიძებნა",
+    "empty": "ცარიელია",
+    "confirmDelete": "წავშალო?",
+    "locationNotSet": "მდებარეობა არ არის მითითებული",
+    "locationEdit": "შესწორება",
+    "locationPick": "რუკიდან არჩევა",
+    "noOptionsFound": "ვერაფერი მოიძებნა",
+    "weekdaysShort": {
+      "mon": "ორშ",
+      "tue": "სამშ",
+      "wed": "ოთხშ",
+      "thu": "ხუთშ",
+      "fri": "პარ",
+      "sat": "შაბ",
+      "sun": "კვი"
+    }
   }
 }

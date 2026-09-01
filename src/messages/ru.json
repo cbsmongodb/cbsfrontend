@@ -215,7 +215,10 @@
     "clickHint": "Кликните на карте точно там, где находится эта больница",
     "selected": "✓ Выбрано: {lat}, {lng}",
     "save": "Сохранить",
-    "cancel": "Отмена"
+    "cancel": "Отмена",
+    "selectLocationTitle": "Выбор местоположения",
+    "selectLocationBody": "Найдите по адресу или кликните прямо на нужную точку на карте",
+    "useThisLocation": "Использовать это местоположение"
   },
   "leaves": {
     "title": "Отпуска",
@@ -278,5 +281,30 @@
     "checkin": "Отметить приход",
     "checkout": "Отметить уход",
     "doneLabel": "Завершено"
+  },
+  "resourceTable": {
+    "save": "Сохранить",
+    "add": "Добавить",
+    "cancel": "Отмена",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "loading": "Загрузка...",
+    "searchPlaceholder": "Поиск...",
+    "noSearchResults": "Ничего не найдено",
+    "empty": "Пусто",
+    "confirmDelete": "Удалить?",
+    "locationNotSet": "Местоположение не указано",
+    "locationEdit": "Изменить",
+    "locationPick": "Выбрать на карте",
+    "noOptionsFound": "Ничего не найдено",
+    "weekdaysShort": {
+      "mon": "Пн",
+      "tue": "Вт",
+      "wed": "Ср",
+      "thu": "Чт",
+      "fri": "Пт",
+      "sat": "Сб",
+      "sun": "Вс"
+    }
   }
 }

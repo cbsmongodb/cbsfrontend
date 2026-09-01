@@ -215,7 +215,10 @@
     "clickHint": "Click the exact point on the map where this hospital is",
     "selected": "✓ Selected: {lat}, {lng}",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "selectLocationTitle": "Select Location",
+    "selectLocationBody": "Search by address, or click directly on the exact point on the map",
+    "useThisLocation": "Use this location"
   },
   "leaves": {
     "title": "Leaves",
@@ -278,5 +281,30 @@
     "checkin": "Check In",
     "checkout": "Check Out",
     "doneLabel": "Completed"
+  },
+  "resourceTable": {
+    "save": "Save",
+    "add": "Add",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "searchPlaceholder": "Search...",
+    "noSearchResults": "Nothing found",
+    "empty": "Empty",
+    "confirmDelete": "Delete?",
+    "locationNotSet": "Location not set",
+    "locationEdit": "Edit",
+    "locationPick": "Pick from map",
+    "noOptionsFound": "Nothing found",
+    "weekdaysShort": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    }
   }
 }
