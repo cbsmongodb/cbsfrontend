@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet'
+import { useTranslations } from 'next-intl'
 import L from 'leaflet'
 import { apiFetch } from '@/lib/api'
 import 'leaflet/dist/leaflet.css'
@@ -46,6 +47,7 @@ function FlyTo({ position }) {
 }
 
 export default function HospitalPinMap({ position, onPick, initialQuery }) {
+  const t = useTranslations('mapPicker')
   const [query, setQuery] = useState(initialQuery || '')
   const [results, setResults] = useState([])
   const [searching, setSearching] = useState(false)
@@ -60,7 +62,7 @@ export default function HospitalPinMap({ position, onPick, initialQuery }) {
     setResults([])
     try {
       const data = await apiFetch(`/api/hospitals/geocode-search?q=${encodeURIComponent(query)}`)
-      if (data.length === 0) setSearchError('ვერაფერი მოიძებნა — სცადეთ სხვა ტექსტი, ან პირდაპირ დააჭირეთ რუკას')
+      if (data.length === 0) setSearchError(t('noResults'))
       setResults(data)
     } catch (err) {
       setSearchError(err.message)
@@ -82,12 +84,12 @@ export default function HospitalPinMap({ position, onPick, initialQuery }) {
           type="text"
           className="field-input"
           style={{ flex: 1, minWidth: 0, height: '2.3em' }}
-          placeholder="მოძებნეთ მისამართი ან ჰოსპიტლის სახელი..."
+          placeholder={t('searchPlaceholder')}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
         <button type="submit" className="btn-gray btn-sm" disabled={searching}>
-          <span>{searching ? '...' : '🔍 ძებნა'}</span>
+          <span>{searching ? t('searching') : `🔍 ${t('searchButton')}`}</span>
         </button>
       </form>
 

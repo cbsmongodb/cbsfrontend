@@ -2,25 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
+import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import HospitalPinModal from './HospitalPinModal'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-const FORMAT_INSTRUCTIONS = `მომეცი ჰოსპიტლების სია ზუსტად ამ ფორმატში, თითო ჰოსპიტალი ცალკე ხაზზე, სვეტები Tab-ით გამოყოფილი (არა მძიმით):
-
-სახელი [Tab] რეგიონი [Tab] მისამართი [Tab] ტელეფონი [Tab] ელფოსტა
-
-წესები:
-- სვეტებს შორის ერთი Tab იყოს (Enter-ის ტექსტში სივრცეები არ ჩაანაცვლო Tab-ით)
-- თუ ტელეფონი ან ელფოსტა არ იცი, ის სვეტი ცარიელი დატოვე, მაგრამ Tab მაინც დატოვე ადგილზე
-- მისამართი რაც შეიძლება სრული და ზუსტი იყოს (ქალაქი/დაბა და ქუჩა მაინც), რომ რუკაზე სწორად მოინახოს
-- ქართულად ან ინგლისურად — არა აქვს მნიშვნელობა, მთავარია ფორმატი დაცული იყოს
-- არანაირი დამატებითი ტექსტი, ნუმერაცია ან სათაური არ დაამატო — მხოლოდ მწკრივები
-
-მაგალითი:
-სტომატოლოგია ლუქსი [Tab] თბილისი [Tab] 12 ჭავჭავაძის გამზირი, თბილისი [Tab] 555123456 [Tab] info@lux.ge
-ჯანმრთელობის ცენტრი [Tab] ბათუმი [Tab] 5 რუსთაველის ქუჩა, ბათუმი [Tab] [Tab]`
 
 function parseRows(text) {
   return text
@@ -41,14 +27,14 @@ function parseRows(text) {
     .filter((row) => row.name)
 }
 
-function InstructionsCard() {
+function InstructionsCard({ t }) {
   const [expanded, setExpanded] = useState(false)
-  const [copyLabel, setCopyLabel] = useState('კოპირება')
+  const [copyLabel, setCopyLabel] = useState(t('copyButton'))
 
   function copyInstructions() {
-    navigator.clipboard.writeText(FORMAT_INSTRUCTIONS).then(() => {
-      setCopyLabel('დაკოპირდა ✓')
-      setTimeout(() => setCopyLabel('კოპირება'), 2000)
+    navigator.clipboard.writeText(t('formatText')).then(() => {
+      setCopyLabel(t('copiedButton'))
+      setTimeout(() => setCopyLabel(t('copyButton')), 2000)
     })
   }
 
@@ -79,13 +65,8 @@ function InstructionsCard() {
           🤖
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 2 }}>
-            გაქვთ ჰოსპიტლების სია, მაგრამ არ იცით ფორმატში მოწესრიგება?
-          </div>
-          <div style={{ fontSize: 13, color: '#64748b' }}>
-            დააკოპირეთ ეს ინსტრუქცია, გაუგზავნეთ ChatGPT-ს თქვენს სიასთან ერთად — ის დაგიბრუნებთ
-            პირდაპირ ჩასასმელ ტექსტს.
-          </div>
+          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 2 }}>{t('aiCardHeading')}</div>
+          <div style={{ fontSize: 13, color: '#64748b' }}>{t('aiCardBody')}</div>
         </div>
       </div>
 
@@ -94,7 +75,7 @@ function InstructionsCard() {
           <span>📋 {copyLabel}</span>
         </button>
         <button type="button" className="btn-gray" onClick={() => setExpanded((v) => !v)}>
-          <span>{expanded ? 'დამალვა' : 'ნახე რას აკოპირებ'}</span>
+          <span>{expanded ? t('hideButton') : t('showButton')}</span>
         </button>
       </div>
 
@@ -114,7 +95,7 @@ function InstructionsCard() {
             overflowY: 'auto',
           }}
         >
-          {FORMAT_INSTRUCTIONS}
+          {t('formatText')}
         </pre>
       )}
     </div>
@@ -122,6 +103,7 @@ function InstructionsCard() {
 }
 
 export default function HospitalImport() {
+  const t = useTranslations('hospitalImport')
   const [text, setText] = useState('')
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
@@ -205,19 +187,16 @@ export default function HospitalImport() {
 
   return (
     <div className="resource-table">
-      <h1>ჰოსპიტლების მასობრივი დამატება</h1>
+      <h1>{t('title')}</h1>
 
-      <InstructionsCard />
+      <InstructionsCard t={t} />
 
-      <p style={{ fontSize: 13, color: '#64748b', marginBottom: 12 }}>
-        დააკოპირეთ spreadsheet-იდან (ან ChatGPT-ს მიერ მომზადებული ტექსტიდან) რამდენიმე მწკრივი
-        (Hospital, Region, Address, Phone, Email სვეტებით) და ჩასვით აქ — თითო მწკრივი ცალკე ხაზზე.
-      </p>
+      <p style={{ fontSize: 13, color: '#64748b', marginBottom: 12 }}>{t('importDescription')}</p>
 
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="ჩასვით მწკრივები აქ..."
+        placeholder={t('placeholder')}
         rows={10}
         className="field-input"
         style={{ width: '100%', minWidth: '100%', height: 'auto', padding: 12, fontFamily: 'monospace', fontSize: 12 }}
@@ -225,7 +204,7 @@ export default function HospitalImport() {
 
       {preview.length > 0 && (
         <p style={{ fontSize: 13, color: '#64748b', margin: '8px 0' }}>
-          ამოცნობილია {preview.length} ჰოსპიტალი. მაგალითი: {preview[0].name} ({preview[0].region || 'რეგიონის გარეშე'})
+          {t('previewCount', { count: preview.length, name: preview[0].name, region: preview[0].region || t('noRegion') })}
         </p>
       )}
 
@@ -236,34 +215,29 @@ export default function HospitalImport() {
         disabled={loading || preview.length === 0}
         style={{ marginTop: 8 }}
       >
-        <span>{loading ? 'იტვირთება...' : `დამატება (${preview.length})`}</span>
+        <span>{loading ? t('loading') : t('addButton', { count: preview.length })}</span>
       </button>
 
       {error && <p className="resource-error" style={{ marginTop: 12 }}>{error}</p>}
 
       {result && (
         <p style={{ marginTop: 12, fontSize: 14 }}>
-          ✅ დაემატა: {result.created} | გამოტოვებული (უკვე არსებობდა): {result.skipped}
-          {result.regionsCreated.length > 0 && (
-            <> | ახალი რეგიონები: {result.regionsCreated.join(', ')}</>
-          )}
+          {t('summaryAdded', { created: result.created, skipped: result.skipped })}
+          {result.regionsCreated.length > 0 && t('regionsCreatedLabel', { regions: result.regionsCreated.join(', ') })}
         </p>
       )}
 
       <hr style={{ margin: '24px 0', border: 'none', borderTop: '1px solid #e2e8f0' }} />
 
-      <h2 style={{ fontSize: 15, marginBottom: 8 }}>რუკის კოორდინატები</h2>
-      <p style={{ fontSize: 13, color: '#64748b', marginBottom: 12 }}>
-        ყველა ჰოსპიტალს, ვისაც ჯერ არ აქვს lat/lng, მისამართის მიხედვით ავტომატურად მოვძებნით
-        კოორდინატებს.
-      </p>
+      <h2 style={{ fontSize: 15, marginBottom: 8 }}>{t('coordinatesHeading')}</h2>
+      <p style={{ fontSize: 13, color: '#64748b', marginBottom: 12 }}>{t('coordinatesDescription')}</p>
 
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <button type="button" className="btn-gray" onClick={handleGeocode} disabled={geocoding}>
-          <span>{geocoding ? 'მიმდინარეობს...' : 'კოორდინატების ავტომატური მოძებნა'}</span>
+          <span>{geocoding ? t('geocoding') : t('autoGeocodeButton')}</span>
         </button>
         <button type="button" className="btn-gray" onClick={loadMissing} disabled={missingLoading}>
-          <span>{missingLoading ? 'იტვირთება...' : 'ვისი მდებარეობაც ჯერ არ ვიცით'}</span>
+          <span>{missingLoading ? t('missingLoading') : t('missingListButton')}</span>
         </button>
       </div>
 
@@ -280,7 +254,7 @@ export default function HospitalImport() {
             />
           </div>
           <p style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>
-            {progress.processed} / {progress.total || '...'} დამუშავებულია ({progressPercent}%)
+            {t('progressText', { processed: progress.processed, total: progress.total || '...', percent: progressPercent })}
           </p>
         </div>
       )}
@@ -290,15 +264,13 @@ export default function HospitalImport() {
 
       {geocodeResult && (
         <p style={{ marginTop: 12, fontSize: 14 }}>
-          ✅ სულ: {geocodeResult.total} | ნაპოვნია: {geocodeResult.geocoded} | ვერ მოიძებნა: {geocodeResult.failed}
+          {t('geocodeSummary', { total: geocodeResult.total, geocoded: geocodeResult.geocoded, failed: geocodeResult.failed })}
         </p>
       )}
 
       {missing.length > 0 && (
         <div style={{ marginTop: 16 }}>
-          <h3 style={{ fontSize: 14, marginBottom: 8 }}>
-            რუკაზე არ არის დამატებული ({missing.length})
-          </h3>
+          <h3 style={{ fontSize: 14, marginBottom: 8 }}>{t('missingHeading', { count: missing.length })}</h3>
           {missing.map((h) => (
             <div
               key={h._id}
@@ -317,7 +289,7 @@ export default function HospitalImport() {
                 <div style={{ color: '#64748b', fontSize: 12 }}>{h.address}</div>
               </div>
               <button type="button" className="btn-gray btn-sm" onClick={() => setPinTarget(h)}>
-                <span>📍 რუკაზე მონიშვნა</span>
+                <span>{t('pinButton')}</span>
               </button>
             </div>
           ))}

@@ -178,5 +178,43 @@
     "countriesLabel": "Countries:",
     "manufacturersLabel": "Manufacturers:",
     "failedListLabel": "Failed to add:"
+  },
+  "hospitalImport": {
+    "title": "Bulk Add Hospitals",
+    "aiCardHeading": "Have a list of hospitals but not sure how to format it?",
+    "aiCardBody": "Copy this instruction, send it to ChatGPT along with your list — it'll give you back text ready to paste in.",
+    "copyButton": "Copy",
+    "copiedButton": "Copied ✓",
+    "showButton": "Show what you're copying",
+    "hideButton": "Hide",
+    "formatText": "Give me a list of hospitals in exactly this format, one hospital per line, columns separated by Tab (not commas):\n\nName [Tab] Region [Tab] Address [Tab] Phone [Tab] Email\n\nRules:\n- Exactly one Tab between columns (don't replace Tabs with spaces)\n- If phone or email is unknown, leave that column empty but keep the Tab in place\n- Address should be as complete and precise as possible (at least city/town and street), so it can be located on the map correctly\n- English or Georgian, doesn't matter — the format is what counts\n- No extra text, numbering, or headers — only the rows\n\nExample:\nLuxury Dental [Tab] Tbilisi [Tab] 12 Chavchavadze Ave, Tbilisi [Tab] 555123456 [Tab] info@lux.ge\nHealth Center [Tab] Batumi [Tab] 5 Rustaveli St, Batumi [Tab] [Tab]",
+    "importDescription": "Paste a few rows from a spreadsheet (or ChatGPT-prepared text) with Hospital, Region, Address, Phone, Email columns and paste them here — one row per line.",
+    "placeholder": "Paste rows here...",
+    "previewCount": "{count} hospitals detected. Example: {name} ({region})",
+    "noRegion": "no region",
+    "addButton": "Add ({count})",
+    "loading": "Loading...",
+    "summaryAdded": "✅ Added: {created} | Skipped (already existed): {skipped}",
+    "regionsCreatedLabel": " | New regions: {regions}",
+    "coordinatesHeading": "Map Coordinates",
+    "coordinatesDescription": "For all hospitals without lat/lng yet, we'll automatically look up coordinates by address.",
+    "autoGeocodeButton": "Automatic coordinate lookup",
+    "geocoding": "In progress...",
+    "missingListButton": "See who's location we don't know yet",
+    "missingLoading": "Loading...",
+    "progressText": "{processed} / {total} processed ({percent}%)",
+    "geocodeSummary": "✅ Total: {total} | Found: {geocoded} | Not found: {failed}",
+    "missingHeading": "Not yet on the map ({count})",
+    "pinButton": "📍 Pin on map"
+  },
+  "mapPicker": {
+    "searchPlaceholder": "Search address or hospital name...",
+    "searchButton": "Search",
+    "searching": "...",
+    "noResults": "Nothing found — try different text, or click directly on the map",
+    "clickHint": "Click the exact point on the map where this hospital is",
+    "selected": "✓ Selected: {lat}, {lng}",
+    "save": "Save",
+    "cancel": "Cancel"
   }
 }

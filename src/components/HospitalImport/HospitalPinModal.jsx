@@ -2,11 +2,13 @@
 
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
+import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 
 const HospitalPinMap = dynamic(() => import('./HospitalPinMap'), { ssr: false })
 
 export default function HospitalPinModal({ hospital, onClose, onSaved }) {
+  const t = useTranslations('mapPicker')
   const [position, setPosition] = useState(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -67,15 +69,13 @@ export default function HospitalPinModal({ hospital, onClose, onSaved }) {
           </button>
         </div>
 
-        <p style={{ fontSize: 13, color: '#64748b', marginBottom: 10 }}>
-          დააჭირეთ რუკაზე ზუსტად იმ წერტილს, სადაც ეს ჰოსპიტალია
-        </p>
+        <p style={{ fontSize: 13, color: '#64748b', marginBottom: 10 }}>{t('clickHint')}</p>
 
         <HospitalPinMap position={position} onPick={(lat, lng) => setPosition([lat, lng])} initialQuery={hospital.address} />
 
         {position && (
           <p style={{ fontSize: 12, color: '#16a34a', marginTop: 8 }}>
-            ✓ არჩეულია: {position[0].toFixed(5)}, {position[1].toFixed(5)}
+            {t('selected', { lat: position[0].toFixed(5), lng: position[1].toFixed(5) })}
           </p>
         )}
 
@@ -83,10 +83,10 @@ export default function HospitalPinModal({ hospital, onClose, onSaved }) {
 
         <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
           <button type="button" className="btn" disabled={!position || saving} onClick={handleSave}>
-            <span>{saving ? '...' : 'შენახვა'}</span>
+            <span>{saving ? '...' : t('save')}</span>
           </button>
           <button type="button" className="btn-gray" onClick={onClose}>
-            <span>გაუქმება</span>
+            <span>{t('cancel')}</span>
           </button>
         </div>
       </div>
