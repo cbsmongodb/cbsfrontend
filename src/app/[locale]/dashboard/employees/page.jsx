@@ -21,7 +21,6 @@ export default function Page() {
           required: false,
           hideInTable: true,
         },
-        { name: "username", label: t('fields.username'), required: false },
         { name: "personnelNumber", label: t('fields.personnelNumber'), required: false },
         { name: "phoneNumber", label: t('fields.phoneNumber'), required: false },
         {
