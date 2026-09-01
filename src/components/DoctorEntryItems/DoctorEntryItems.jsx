@@ -224,10 +224,12 @@ export default function DoctorEntryItems() {
       // the backend returns the recalculated items (coefficient, totalBudget,
       // plannedBudget, difference, etc.) — use them to refresh the computed
       // fields immediately, without needing a separate "load"
-      const refreshed = groupItemsIntoDoctorEntries(result.items || [])
-      if (refreshed.length > 0) setDoctorEntries(refreshed)
       setSuccess('შენახულია')
       setTimeout(() => setSuccess(''), 3000)
+      // clear the form for the next employee — keep the period, since a
+      // whole batch of employees is usually entered for the same month
+      setEmployeeId('')
+      setDoctorEntries([emptyDoctorEntry()])
     } catch (err) {
       setError(err.message)
     } finally {
