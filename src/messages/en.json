@@ -258,5 +258,25 @@
       "name": "Name"
     },
     "noRestDays": "No rest days"
+  },
+  "todayVisits": {
+    "title": "My Visits Today",
+    "refreshLocation": "Refresh location",
+    "gpsUnsupported": "This browser does not support GPS",
+    "locationUnavailable": "Location not available yet — click \"Refresh location\"",
+    "locationFailed": "Could not get location",
+    "unknownName": "Unknown",
+    "noVisits": "No visits planned for today",
+    "distanceFar": "⚠ {distance}m away",
+    "distanceNormal": "{distance}m away",
+    "statuses": {
+      "planned": "Planned",
+      "i_went": "Checked in",
+      "i_left": "Checked out",
+      "completed": "Completed"
+    },
+    "checkin": "Check In",
+    "checkout": "Check Out",
+    "doneLabel": "Completed"
   }
 }

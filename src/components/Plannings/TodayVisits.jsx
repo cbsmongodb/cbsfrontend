@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import './TodayVisits.css'
 
@@ -17,6 +18,7 @@ function distanceInMeters(lat1, lng1, lat2, lng2) {
 }
 
 export default function TodayVisits() {
+  const t = useTranslations('todayVisits')
   const [me, setMe] = useState(null)
   const [plans, setPlans] = useState([])
   const [position, setPosition] = useState(null)
@@ -48,12 +50,12 @@ export default function TodayVisits() {
   function refreshLocation() {
     setLocError('')
     if (!navigator.geolocation) {
-      setLocError('ეს ბრაუზერი GPS-ს არ უჭერს მხარს')
+      setLocError(t('gpsUnsupported'))
       return
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => setPosition({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      (err) => setLocError(err.message || 'ლოკაციის მიღება ვერ მოხერხდა'),
+      (err) => setLocError(err.message || t('locationFailed')),
       { enableHighAccuracy: true }
     )
   }
@@ -63,6 +65,7 @@ export default function TodayVisits() {
       .then((employee) => loadPlans(employee._id))
       .catch((err) => setError(err.message))
     refreshLocation()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function reload() {
@@ -71,7 +74,7 @@ export default function TodayVisits() {
 
   async function handleCheckin(plan) {
     if (!position) {
-      setLocError('ჯერ ლოკაცია არ არის ხელმისაწვდომი — დააჭირეთ "ლოკაციის განახლება"-ს')
+      setLocError(t('locationUnavailable'))
       return
     }
     setBusyId(plan._id)
@@ -91,7 +94,7 @@ export default function TodayVisits() {
 
   async function handleCheckout(plan) {
     if (!position) {
-      setLocError('ჯერ ლოკაცია არ არის ხელმისაწვდომი — დააჭირეთ "ლოკაციის განახლება"-ს')
+      setLocError(t('locationUnavailable'))
       return
     }
     setBusyId(plan._id)
@@ -127,20 +130,20 @@ export default function TodayVisits() {
   return (
     <div className="today-visits">
       <div className="today-visits-header">
-        <h2>დღევანდელი ჩემი ვიზიტები</h2>
+        <h2>{t('title')}</h2>
         <button type="button" className="btn-gray btn-sm" onClick={refreshLocation}>
-          <span>ლოკაციის განახლება</span>
+          <span>{t('refreshLocation')}</span>
         </button>
       </div>
 
       {locError && <p className="today-visits-warning">{locError}</p>}
       {error && <p className="resource-error">{error}</p>}
 
-      {withDistance.length === 0 && <p>დღეს დანიშნული ვიზიტები არ არის</p>}
+      {withDistance.length === 0 && <p>{t('noVisits')}</p>}
 
       <div className="today-visits-list">
         {withDistance.map(({ plan, distance }) => {
-          const name = plan.hospital?.name || plan.pharmacy?.pharmacyName || 'უცნობი'
+          const name = plan.hospital?.name || plan.pharmacy?.pharmacyName || t('unknownName')
           const isFar = distance != null && distance > FAR_THRESHOLD_METERS
           const canCheckin = plan.status === 'planned'
           const canCheckout = plan.status === 'i_went'
@@ -150,11 +153,11 @@ export default function TodayVisits() {
             <div key={plan._id} className={`today-visit-card ${isFar ? 'far' : ''}`}>
               <div className="today-visit-main">
                 <span className="today-visit-name">{name}</span>
-                <span className="today-visit-status">{plan.status}</span>
+                <span className="today-visit-status">{t(`statuses.${plan.status}`)}</span>
               </div>
               {distance != null && (
                 <div className={`today-visit-distance ${isFar ? 'far' : ''}`}>
-                  {isFar ? `⚠ ${distance}მ დაშორებული` : `${distance}მ დაშორებული`}
+                  {isFar ? t('distanceFar', { distance }) : t('distanceNormal', { distance })}
                 </div>
               )}
               <div className="today-visit-actions">
@@ -165,7 +168,7 @@ export default function TodayVisits() {
                     disabled={busyId === plan._id}
                     onClick={() => handleCheckin(plan)}
                   >
-                    <span>{busyId === plan._id ? '...' : 'ჩექინი'}</span>
+                    <span>{busyId === plan._id ? '...' : t('checkin')}</span>
                   </button>
                 )}
                 {canCheckout && (
@@ -175,10 +178,10 @@ export default function TodayVisits() {
                     disabled={busyId === plan._id}
                     onClick={() => handleCheckout(plan)}
                   >
-                    <span>{busyId === plan._id ? '...' : 'ჩექაუთი'}</span>
+                    <span>{busyId === plan._id ? '...' : t('checkout')}</span>
                   </button>
                 )}
-                {isDone && <span className="today-visit-done">დასრულებულია</span>}
+                {isDone && <span className="today-visit-done">{t('doneLabel')}</span>}
               </div>
             </div>
           )

@@ -258,5 +258,25 @@
       "name": "Название"
     },
     "noRestDays": "Выходных дней нет"
+  },
+  "todayVisits": {
+    "title": "Мои визиты сегодня",
+    "refreshLocation": "Обновить местоположение",
+    "gpsUnsupported": "Этот браузер не поддерживает GPS",
+    "locationUnavailable": "Местоположение пока недоступно — нажмите «Обновить местоположение»",
+    "locationFailed": "Не удалось получить местоположение",
+    "unknownName": "Неизвестно",
+    "noVisits": "На сегодня визиты не запланированы",
+    "distanceFar": "⚠ {distance}м от места",
+    "distanceNormal": "{distance}м от места",
+    "statuses": {
+      "planned": "Запланировано",
+      "i_went": "Отметился",
+      "i_left": "Ушёл",
+      "completed": "Завершено"
+    },
+    "checkin": "Отметить приход",
+    "checkout": "Отметить уход",
+    "doneLabel": "Завершено"
   }
 }

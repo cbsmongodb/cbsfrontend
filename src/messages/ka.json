@@ -258,5 +258,25 @@
       "name": "სახელი"
     },
     "noRestDays": "უქმე დღეები არ არის"
+  },
+  "todayVisits": {
+    "title": "დღევანდელი ჩემი ვიზიტები",
+    "refreshLocation": "ლოკაციის განახლება",
+    "gpsUnsupported": "ეს ბრაუზერი GPS-ს არ უჭერს მხარს",
+    "locationUnavailable": "ჯერ ლოკაცია არ არის ხელმისაწვდომი — დააჭირეთ \"ლოკაციის განახლება\"-ს",
+    "locationFailed": "ლოკაციის მიღება ვერ მოხერხდა",
+    "unknownName": "უცნობი",
+    "noVisits": "დღეს დანიშნული ვიზიტები არ არის",
+    "distanceFar": "⚠ {distance}მ დაშორებული",
+    "distanceNormal": "{distance}მ დაშორებული",
+    "statuses": {
+      "planned": "დაგეგმილია",
+      "i_went": "დაჩექინდა",
+      "i_left": "დაჩექაუთდა",
+      "completed": "დასრულებულია"
+    },
+    "checkin": "ჩექინი",
+    "checkout": "ჩექაუთი",
+    "doneLabel": "დასრულებულია"
   }
 }
