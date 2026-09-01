@@ -52,10 +52,40 @@
   width: 100%;
   flex: 1;
   min-height: 0;
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow-x: scroll;
+  overflow-y: scroll;
   border: 1px solid #eee;
   border-radius: 10px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: auto;
+  scrollbar-color: #1e3a68 #eef2f7;
+}
+
+.resource-table-scroll::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.resource-table-scroll::-webkit-scrollbar-track {
+  background: #eef2f7;
+  border-radius: 10px;
+}
+
+.resource-table-scroll::-webkit-scrollbar-thumb {
+  background-color: #1e3a68;
+  border-radius: 10px;
+  border: 2px solid #eef2f7;
+}
+
+.resource-table-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: #2955a3;
+}
+
+@media (max-width: 640px) {
+  .resource-table-scroll::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -315,4 +345,15 @@ tbody tr:hover {
   margin-top: 6px;
   padding-top: 12px;
   border-top: 1px solid #e8ecf1;
+}
+
+.resource-table-scroll {
+  overscroll-behavior: contain;
+}
+
+@media (max-width: 640px) {
+  .resource-table-scroll {
+    overflow-x: auto;
+    overflow-y: auto;
+  }
 }

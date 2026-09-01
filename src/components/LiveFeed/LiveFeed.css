@@ -342,3 +342,43 @@
   border-radius: calc(0.5rem - 2px);
   overflow: hidden;
 }
+
+.live-feed-table-wrap {
+  overflow-x: scroll;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: auto;
+  scrollbar-color: #1e3a68 #eef2f7;
+}
+
+.live-feed-table-wrap::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.live-feed-table-wrap::-webkit-scrollbar-track {
+  background: #eef2f7;
+  border-radius: 10px;
+}
+
+.live-feed-table-wrap::-webkit-scrollbar-thumb {
+  background-color: #1e3a68;
+  border-radius: 10px;
+  border: 2px solid #eef2f7;
+}
+
+.live-feed-table-wrap::-webkit-scrollbar-thumb:hover {
+  background-color: #2955a3;
+}
+
+@media (max-width: 640px) {
+  .live-feed-table-wrap::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+.live-feed-table-wrap {
+  overflow-y: visible;
+  overscroll-behavior-x: contain;
+}
