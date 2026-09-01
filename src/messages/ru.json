@@ -9,5 +9,59 @@
   "dashboard": {
     "title": "Панель управления",
     "logout": "Выйти"
+  },
+  "sidebar": {
+    "dashboard": "Панель управления",
+    "notifications": "Уведомления",
+    "liveFeed": "Live Feed",
+    "teamStatus": "Статус полевой команды",
+    "logout": "Выйти",
+    "openMenu": "Открыть меню",
+    "closeMenu": "Закрыть меню",
+    "groups": {
+      "configureProduct": {
+        "label": "Настройка продукта",
+        "drugs": "Препараты",
+        "drugsImport": "Импорт препаратов",
+        "productTypes": "Типы продукции",
+        "manufacturers": "Производители",
+        "producingCountries": "Страны-производители"
+      },
+      "configureMarket": {
+        "label": "Настройка рынка",
+        "doctors": "Врачи",
+        "doctorCategories": "Категории врачей",
+        "doctorSubcategories": "Подкатегории врачей",
+        "hospitals": "Больницы",
+        "hospitalsImport": "Импорт больниц",
+        "pharmacies": "Аптеки",
+        "profiles": "Профили"
+      },
+      "planningSales": {
+        "label": "Планирование и продажи",
+        "plannings": "Планирование визитов",
+        "doctorEntryItems": "Ввод продаж",
+        "budgets": "Бюджеты",
+        "budgetRequireds": "Заявки на бюджет"
+      },
+      "reports": {
+        "label": "Отчёты",
+        "efficiency": "Эффективность сотрудников",
+        "reimbursement": "Возмещение транспорта",
+        "attendances": "Отчёт о посещаемости"
+      },
+      "administration": {
+        "label": "Администрирование",
+        "employees": "Сотрудники",
+        "roles": "Роли",
+        "designations": "Должности",
+        "sections": "Секции",
+        "groups": "Группы",
+        "regions": "Регионы",
+        "divisions": "Дивизионы",
+        "leaves": "Отпуска",
+        "settings": "Системные настройки"
+      }
+    }
   }
 }

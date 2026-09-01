@@ -9,5 +9,59 @@
   "dashboard": {
     "title": "Dashboard",
     "logout": "Log Out"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "notifications": "Notifications",
+    "liveFeed": "Live Feed",
+    "teamStatus": "Field Team Status",
+    "logout": "Log Out",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "groups": {
+      "configureProduct": {
+        "label": "Product Configuration",
+        "drugs": "Drugs",
+        "drugsImport": "Import Drugs",
+        "productTypes": "Product Types",
+        "manufacturers": "Manufacturers",
+        "producingCountries": "Producing Countries"
+      },
+      "configureMarket": {
+        "label": "Market Configuration",
+        "doctors": "Doctors",
+        "doctorCategories": "Doctor Categories",
+        "doctorSubcategories": "Doctor Subcategories",
+        "hospitals": "Hospitals",
+        "hospitalsImport": "Import Hospitals",
+        "pharmacies": "Pharmacies",
+        "profiles": "Profiles"
+      },
+      "planningSales": {
+        "label": "Planning & Sales",
+        "plannings": "Visit Planning",
+        "doctorEntryItems": "Sales Entry",
+        "budgets": "Budgets",
+        "budgetRequireds": "Budget Requests"
+      },
+      "reports": {
+        "label": "Reports",
+        "efficiency": "Employee Efficiency",
+        "reimbursement": "Transport Reimbursement",
+        "attendances": "Attendance Report"
+      },
+      "administration": {
+        "label": "Administration",
+        "employees": "Employees",
+        "roles": "Roles",
+        "designations": "Designations",
+        "sections": "Sections",
+        "groups": "Groups",
+        "regions": "Regions",
+        "divisions": "Divisions",
+        "leaves": "Leaves",
+        "settings": "System Settings"
+      }
+    }
   }
 }

@@ -9,5 +9,59 @@
   "dashboard": {
     "title": "დეშბორდი",
     "logout": "გასვლა"
+  },
+  "sidebar": {
+    "dashboard": "დეშბორდი",
+    "notifications": "შეტყობინებები",
+    "liveFeed": "Live Feed",
+    "teamStatus": "საველე გუნდის სტატუსი",
+    "logout": "გასვლა",
+    "openMenu": "მენიუს გახსნა",
+    "closeMenu": "მენიუს დახურვა",
+    "groups": {
+      "configureProduct": {
+        "label": "პროდუქტის კონფიგურაცია",
+        "drugs": "მედიკამენტები",
+        "drugsImport": "მედიკამენტების იმპორტი",
+        "productTypes": "პროდუქტის ტიპები",
+        "manufacturers": "მწარმოებლები",
+        "producingCountries": "მწარმოებელი ქვეყნები"
+      },
+      "configureMarket": {
+        "label": "ბაზრის კონფიგურაცია",
+        "doctors": "ექიმები",
+        "doctorCategories": "ექიმის კატეგორიები",
+        "doctorSubcategories": "ექიმის ქვეკატეგორიები",
+        "hospitals": "ჰოსპიტლები",
+        "hospitalsImport": "ჰოსპიტლების იმპორტი",
+        "pharmacies": "აფთიაქები",
+        "profiles": "პროფილები"
+      },
+      "planningSales": {
+        "label": "დაგეგმვა და გაყიდვები",
+        "plannings": "ვიზიტების დაგეგმვა",
+        "doctorEntryItems": "გაყიდვების შეყვანა",
+        "budgets": "ბიუჯეტები",
+        "budgetRequireds": "ბიუჯეტის მოთხოვნები"
+      },
+      "reports": {
+        "label": "რეპორტები",
+        "efficiency": "თანამშრომლის ეფექტურობა",
+        "reimbursement": "ტრანსპორტის ანაზღაურება",
+        "attendances": "დასწრების რეპორტი"
+      },
+      "administration": {
+        "label": "ადმინისტრაცია",
+        "employees": "თანამშრომლები",
+        "roles": "როლები",
+        "designations": "პოზიციები",
+        "sections": "სექციები",
+        "groups": "ჯგუფები",
+        "regions": "რეგიონები",
+        "divisions": "დივიზიონები",
+        "leaves": "შვებულებები",
+        "settings": "სისტემის პარამეტრები"
+      }
+    }
   }
 }
