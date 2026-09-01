@@ -216,5 +216,47 @@
     "selected": "✓ Выбрано: {lat}, {lng}",
     "save": "Сохранить",
     "cancel": "Отмена"
+  },
+  "leaves": {
+    "title": "Отпуска",
+    "loading": "Загрузка...",
+    "sectionBalance": "Баланс",
+    "sectionEntries": "Записи отпусков",
+    "sectionRestDays": "Выходные дни компании",
+    "selectEmployeePlaceholder": "Выберите сотрудника...",
+    "employeePlaceholder": "Сотрудник...",
+    "types": {
+      "paid": "Оплачиваемый",
+      "unpaid": "Неоплачиваемый",
+      "sick": "Больничный"
+    },
+    "daysUnit": "дн.",
+    "usedLabel": "Использовано: {count}",
+    "formLabels": {
+      "paidTotal": "Оплачиваемый (всего)",
+      "unpaidTotal": "Неоплачиваемый (всего)",
+      "sickTotal": "Больничный (всего)"
+    },
+    "saveLimits": "Сохранить лимиты",
+    "notePlaceholder": "Заметка",
+    "addButton": "Добавить",
+    "validationError": "Заполните сотрудника, даты начала и окончания",
+    "confirmDelete": "Удалить?",
+    "entriesHeaders": {
+      "employee": "Сотрудник",
+      "type": "Тип",
+      "start": "Начало",
+      "end": "Окончание",
+      "days": "Дней",
+      "note": "Заметка"
+    },
+    "noEntries": "Записей нет",
+    "deleteButton": "Удалить",
+    "restDayLabelPlaceholder": "Название (напр. Новый год)",
+    "restDayHeaders": {
+      "date": "Дата",
+      "name": "Название"
+    },
+    "noRestDays": "Выходных дней нет"
   }
 }

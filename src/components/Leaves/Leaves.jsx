@@ -1,16 +1,18 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import './Leaves.css'
-
-const TYPE_LABELS = { paid: 'ანაზღაურებადი', unpaid: 'არაანაზღაურებადი', sick: 'ავადმყოფობის' }
 
 function currentYear() {
   return new Date().getFullYear()
 }
 
 export default function Leaves() {
+  const t = useTranslations('leaves')
+  const TYPE_LABELS = { paid: t('types.paid'), unpaid: t('types.unpaid'), sick: t('types.sick') }
+
   const [employees, setEmployees] = useState([])
   const [selectedEmployee, setSelectedEmployee] = useState('')
   const [year, setYear] = useState(currentYear())
@@ -94,7 +96,7 @@ export default function Leaves() {
     e.preventDefault()
     setError('')
     if (!entryForm.employee || !entryForm.startDate || !entryForm.endDate) {
-      setError('შეავსეთ თანამშრომელი, დაწყების და დასრულების თარიღები')
+      setError(t('validationError'))
       return
     }
     try {
@@ -111,7 +113,7 @@ export default function Leaves() {
   }
 
   async function handleDeleteEntry(id, employeeId) {
-    if (!confirm('წავშალო?')) return
+    if (!confirm(t('confirmDelete'))) return
     try {
       await apiFetch(`/api/leaves/${id}`, { method: 'DELETE' })
       loadEntries()
@@ -138,7 +140,7 @@ export default function Leaves() {
   }
 
   async function handleDeleteRestDay(id) {
-    if (!confirm('წავშალო?')) return
+    if (!confirm(t('confirmDelete'))) return
     try {
       await apiFetch(`/api/leaves/rest-days/${id}`, { method: 'DELETE' })
       loadRestDays()
@@ -147,23 +149,23 @@ export default function Leaves() {
     }
   }
 
-  if (loading) return <p>იტვირთება...</p>
+  if (loading) return <p>{t('loading')}</p>
 
   return (
     <div className="leaves-page">
-      <h1>შვებულებები</h1>
+      <h1>{t('title')}</h1>
       {error && <p className="resource-error">{error}</p>}
 
       {/* Balance section */}
       <section className="leaves-section">
-        <h2>ბალანსი</h2>
+        <h2>{t('sectionBalance')}</h2>
         <div className="leaves-balance-controls">
           <select
             className="field-select"
             value={selectedEmployee}
             onChange={(e) => setSelectedEmployee(e.target.value)}
           >
-            <option value="">აირჩიეთ თანამშრომელი...</option>
+            <option value="">{t('selectEmployeePlaceholder')}</option>
             {employees.map((emp) => (
               <option key={emp._id} value={emp._id}>
                 {emp.name || `${emp.firstName} ${emp.lastName}`}
@@ -187,16 +189,16 @@ export default function Leaves() {
                   <div className="balance-card-label">{TYPE_LABELS[type]}</div>
                   <div className="balance-card-numbers">
                     <span className="remaining">{balance[type].remaining}</span>
-                    <span className="of-total"> / {balance[type].total} დღე</span>
+                    <span className="of-total"> / {balance[type].total} {t('daysUnit')}</span>
                   </div>
-                  <div className="used-label">გამოყენებულია: {balance[type].used}</div>
+                  <div className="used-label">{t('usedLabel', { count: balance[type].used })}</div>
                 </div>
               ))}
             </div>
 
             <form className="leaves-balance-edit" onSubmit={handleSaveBalance}>
               <label>
-                ანაზღაურებადი (სულ)
+                {t('formLabels.paidTotal')}
                 <input
                   type="number"
                   className="field-input"
@@ -205,7 +207,7 @@ export default function Leaves() {
                 />
               </label>
               <label>
-                არაანაზღაურებადი (სულ)
+                {t('formLabels.unpaidTotal')}
                 <input
                   type="number"
                   className="field-input"
@@ -214,7 +216,7 @@ export default function Leaves() {
                 />
               </label>
               <label>
-                ავადმყოფობის (სულ)
+                {t('formLabels.sickTotal')}
                 <input
                   type="number"
                   className="field-input"
@@ -223,7 +225,7 @@ export default function Leaves() {
                 />
               </label>
               <button type="submit" className="btn-gray btn-sm">
-                <span>ლიმიტების შენახვა</span>
+                <span>{t('saveLimits')}</span>
               </button>
             </form>
           </>
@@ -232,7 +234,7 @@ export default function Leaves() {
 
       {/* Entries section */}
       <section className="leaves-section">
-        <h2>შვებულების ჩანაწერები</h2>
+        <h2>{t('sectionEntries')}</h2>
 
         <form className="resource-form" onSubmit={handleAddEntry}>
           <select
@@ -240,7 +242,7 @@ export default function Leaves() {
             value={entryForm.employee}
             onChange={(e) => setEntryForm((p) => ({ ...p, employee: e.target.value }))}
           >
-            <option value="">თანამშრომელი...</option>
+            <option value="">{t('employeePlaceholder')}</option>
             {employees.map((emp) => (
               <option key={emp._id} value={emp._id}>
                 {emp.name || `${emp.firstName} ${emp.lastName}`}
@@ -252,9 +254,9 @@ export default function Leaves() {
             value={entryForm.type}
             onChange={(e) => setEntryForm((p) => ({ ...p, type: e.target.value }))}
           >
-            <option value="paid">ანაზღაურებადი</option>
-            <option value="unpaid">არაანაზღაურებადი</option>
-            <option value="sick">ავადმყოფობის</option>
+            <option value="paid">{t('types.paid')}</option>
+            <option value="unpaid">{t('types.unpaid')}</option>
+            <option value="sick">{t('types.sick')}</option>
           </select>
           <input
             type="date"
@@ -271,24 +273,24 @@ export default function Leaves() {
           <input
             type="text"
             className="field-input"
-            placeholder="შენიშვნა"
+            placeholder={t('notePlaceholder')}
             value={entryForm.note}
             onChange={(e) => setEntryForm((p) => ({ ...p, note: e.target.value }))}
           />
           <button type="submit" className="btn">
-            <span>დამატება</span>
+            <span>{t('addButton')}</span>
           </button>
         </form>
 
         <table>
           <thead>
             <tr>
-              <th>თანამშრომელი</th>
-              <th>ტიპი</th>
-              <th>დაწყება</th>
-              <th>დასრულება</th>
-              <th>დღეები</th>
-              <th>შენიშვნა</th>
+              <th>{t('entriesHeaders.employee')}</th>
+              <th>{t('entriesHeaders.type')}</th>
+              <th>{t('entriesHeaders.start')}</th>
+              <th>{t('entriesHeaders.end')}</th>
+              <th>{t('entriesHeaders.days')}</th>
+              <th>{t('entriesHeaders.note')}</th>
               <th></th>
             </tr>
           </thead>
@@ -306,14 +308,14 @@ export default function Leaves() {
                     className="btn-gray btn-sm"
                     onClick={() => handleDeleteEntry(entry._id, entry.employee?._id)}
                   >
-                    <span>წაშლა</span>
+                    <span>{t('deleteButton')}</span>
                   </button>
                 </td>
               </tr>
             ))}
             {entries.length === 0 && (
               <tr>
-                <td colSpan={7}>ჩანაწერები არ არის</td>
+                <td colSpan={7}>{t('noEntries')}</td>
               </tr>
             )}
           </tbody>
@@ -322,7 +324,7 @@ export default function Leaves() {
 
       {/* Rest days section */}
       <section className="leaves-section">
-        <h2>უქმე დღეები</h2>
+        <h2>{t('sectionRestDays')}</h2>
 
         <form className="resource-form" onSubmit={handleAddRestDay}>
           <input
@@ -334,20 +336,20 @@ export default function Leaves() {
           <input
             type="text"
             className="field-input"
-            placeholder="სახელი (მაგ. ახალი წელი)"
+            placeholder={t('restDayLabelPlaceholder')}
             value={restDayForm.label}
             onChange={(e) => setRestDayForm((p) => ({ ...p, label: e.target.value }))}
           />
           <button type="submit" className="btn">
-            <span>დამატება</span>
+            <span>{t('addButton')}</span>
           </button>
         </form>
 
         <table>
           <thead>
             <tr>
-              <th>თარიღი</th>
-              <th>სახელი</th>
+              <th>{t('restDayHeaders.date')}</th>
+              <th>{t('restDayHeaders.name')}</th>
               <th></th>
             </tr>
           </thead>
@@ -358,14 +360,14 @@ export default function Leaves() {
                 <td>{rd.label}</td>
                 <td>
                   <button className="btn-gray btn-sm" onClick={() => handleDeleteRestDay(rd._id)}>
-                    <span>წაშლა</span>
+                    <span>{t('deleteButton')}</span>
                   </button>
                 </td>
               </tr>
             ))}
             {restDays.length === 0 && (
               <tr>
-                <td colSpan={3}>უქმე დღეები არ არის</td>
+                <td colSpan={3}>{t('noRestDays')}</td>
               </tr>
             )}
           </tbody>

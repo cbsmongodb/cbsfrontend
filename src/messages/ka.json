@@ -216,5 +216,47 @@
     "selected": "✓ არჩეულია: {lat}, {lng}",
     "save": "შენახვა",
     "cancel": "გაუქმება"
+  },
+  "leaves": {
+    "title": "შვებულებები",
+    "loading": "იტვირთება...",
+    "sectionBalance": "ბალანსი",
+    "sectionEntries": "შვებულების ჩანაწერები",
+    "sectionRestDays": "უქმე დღეები",
+    "selectEmployeePlaceholder": "აირჩიეთ თანამშრომელი...",
+    "employeePlaceholder": "თანამშრომელი...",
+    "types": {
+      "paid": "ანაზღაურებადი",
+      "unpaid": "არაანაზღაურებადი",
+      "sick": "ავადმყოფობის"
+    },
+    "daysUnit": "დღე",
+    "usedLabel": "გამოყენებულია: {count}",
+    "formLabels": {
+      "paidTotal": "ანაზღაურებადი (სულ)",
+      "unpaidTotal": "არაანაზღაურებადი (სულ)",
+      "sickTotal": "ავადმყოფობის (სულ)"
+    },
+    "saveLimits": "ლიმიტების შენახვა",
+    "notePlaceholder": "შენიშვნა",
+    "addButton": "დამატება",
+    "validationError": "შეავსეთ თანამშრომელი, დაწყების და დასრულების თარიღები",
+    "confirmDelete": "წავშალო?",
+    "entriesHeaders": {
+      "employee": "თანამშრომელი",
+      "type": "ტიპი",
+      "start": "დაწყება",
+      "end": "დასრულება",
+      "days": "დღეები",
+      "note": "შენიშვნა"
+    },
+    "noEntries": "ჩანაწერები არ არის",
+    "deleteButton": "წაშლა",
+    "restDayLabelPlaceholder": "სახელი (მაგ. ახალი წელი)",
+    "restDayHeaders": {
+      "date": "თარიღი",
+      "name": "სახელი"
+    },
+    "noRestDays": "უქმე დღეები არ არის"
   }
 }

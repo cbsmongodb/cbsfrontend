@@ -216,5 +216,47 @@
     "selected": "✓ Selected: {lat}, {lng}",
     "save": "Save",
     "cancel": "Cancel"
+  },
+  "leaves": {
+    "title": "Leaves",
+    "loading": "Loading...",
+    "sectionBalance": "Balance",
+    "sectionEntries": "Leave Entries",
+    "sectionRestDays": "Company Rest Days",
+    "selectEmployeePlaceholder": "Select employee...",
+    "employeePlaceholder": "Employee...",
+    "types": {
+      "paid": "Paid",
+      "unpaid": "Unpaid",
+      "sick": "Sick"
+    },
+    "daysUnit": "days",
+    "usedLabel": "Used: {count}",
+    "formLabels": {
+      "paidTotal": "Paid (total)",
+      "unpaidTotal": "Unpaid (total)",
+      "sickTotal": "Sick (total)"
+    },
+    "saveLimits": "Save limits",
+    "notePlaceholder": "Note",
+    "addButton": "Add",
+    "validationError": "Fill in employee, start and end dates",
+    "confirmDelete": "Delete?",
+    "entriesHeaders": {
+      "employee": "Employee",
+      "type": "Type",
+      "start": "Start",
+      "end": "End",
+      "days": "Days",
+      "note": "Note"
+    },
+    "noEntries": "No entries",
+    "deleteButton": "Delete",
+    "restDayLabelPlaceholder": "Name (e.g. New Year)",
+    "restDayHeaders": {
+      "date": "Date",
+      "name": "Name"
+    },
+    "noRestDays": "No rest days"
   }
 }
