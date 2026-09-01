@@ -31,10 +31,6 @@ export default function SalesListing() {
   const [drugSearch, setDrugSearch] = useState('')
 
   const [items, setItems] = useState([])
-  const [editValues, setEditValues] = useState({})
-  const [savingId, setSavingId] = useState(null)
-  const [savedId, setSavedId] = useState(null)
-
   const [loaded, setLoaded] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -51,20 +47,6 @@ export default function SalesListing() {
     loadEmployees()
   }, [])
 
-  function itemsToEditValues(list) {
-    const map = {}
-    for (const item of list) {
-      map[item._id] = {
-        quota: item.quota || 0,
-        prescription: item.prescription || 0,
-        sale: item.sale || 0,
-        budget: item.budget || 0,
-        issuedBudget: item.issuedBudget || 0,
-      }
-    }
-    return map
-  }
-
   async function handleLoad() {
     if (!employeeId) {
       setError('ჯერ აირჩიეთ თანამშრომელი')
@@ -75,9 +57,7 @@ export default function SalesListing() {
     try {
       const period = monthValueToPeriod(monthValue)
       const data = await apiFetch(`/api/doctor-entry-items?employee=${employeeId}&period=${encodeURIComponent(period)}`)
-      const list = data.items || []
-      setItems(list)
-      setEditValues(itemsToEditValues(list))
+      setItems(data.items || [])
       setLoaded(true)
     } catch (err) {
       setError(err.message)
@@ -89,43 +69,6 @@ export default function SalesListing() {
   function doctorLabel(doctor) {
     if (!doctor) return '—'
     return `${doctor.firstName || ''} ${doctor.lastName || ''}`.trim() || '—'
-  }
-
-  function updateEditField(itemId, field, value) {
-    setEditValues((prev) => ({
-      ...prev,
-      [itemId]: { ...prev[itemId], [field]: value },
-    }))
-  }
-
-  async function handleSaveRow(itemId) {
-    setSavingId(itemId)
-    setSavedId(null)
-    setError('')
-    try {
-      const values = editValues[itemId]
-      const updated = await apiFetch(`/api/doctor-entry-items/${itemId}`, {
-        method: 'PUT',
-        body: JSON.stringify(values),
-      })
-      setItems((prev) => prev.map((it) => (it._id === itemId ? { ...it, ...updated } : it)))
-      setEditValues((prev) => ({
-        ...prev,
-        [itemId]: {
-          quota: updated.quota || 0,
-          prescription: updated.prescription || 0,
-          sale: updated.sale || 0,
-          budget: updated.budget || 0,
-          issuedBudget: updated.issuedBudget || 0,
-        },
-      }))
-      setSavedId(itemId)
-      setTimeout(() => setSavedId((cur) => (cur === itemId ? null : cur)), 2000)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setSavingId(null)
-    }
   }
 
   const visibleItems = useMemo(() => {
@@ -189,88 +132,45 @@ export default function SalesListing() {
                 <th>ექიმი</th>
                 <th>წამალი</th>
                 <th>ჰოსპიტალი</th>
+                <th>ბანკი</th>
                 <th>Quota</th>
                 <th>Prescription</th>
                 <th>Sale</th>
                 <th>Budget Rate</th>
-                <th>Issued Budget</th>
                 <th>Coefficient</th>
                 <th>Total Budget</th>
+                <th>Issued Budget</th>
                 <th>Planned Budget</th>
                 <th>Difference</th>
-                <th></th>
+                <th>Prev. Analysis</th>
+                <th>Budget Calc.</th>
+                <th>Curr. Analysis</th>
               </tr>
             </thead>
             <tbody>
-              {visibleItems.map((item) => {
-                const vals = editValues[item._id] || {}
-                return (
-                  <tr key={item._id}>
-                    <td>{doctorLabel(item.doctor)}</td>
-                    <td>{item.drug?.name || '—'}</td>
-                    <td>{item.hospital?.name || '—'}</td>
-                    <td>
-                      <input
-                        type="number"
-                        className="sales-listing-edit-input"
-                        value={vals.quota ?? 0}
-                        onChange={(e) => updateEditField(item._id, 'quota', e.target.valueAsNumber || 0)}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        className="sales-listing-edit-input"
-                        value={vals.prescription ?? 0}
-                        onChange={(e) => updateEditField(item._id, 'prescription', e.target.valueAsNumber || 0)}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        className="sales-listing-edit-input"
-                        value={vals.sale ?? 0}
-                        onChange={(e) => updateEditField(item._id, 'sale', e.target.valueAsNumber || 0)}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        className="sales-listing-edit-input"
-                        value={vals.budget ?? 0}
-                        onChange={(e) => updateEditField(item._id, 'budget', e.target.valueAsNumber || 0)}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        className="sales-listing-edit-input"
-                        value={vals.issuedBudget ?? 0}
-                        onChange={(e) => updateEditField(item._id, 'issuedBudget', e.target.valueAsNumber || 0)}
-                      />
-                    </td>
-                    <td>{fmtPercent(item.coefficient)}</td>
-                    <td>{fmt(item.totalBudget)}</td>
-                    <td>{fmt(item.plannedBudget)}</td>
-                    <td className={item.difference < 0 ? 'negative' : ''}>{fmt(item.difference)}</td>
-                    <td>
-                      <button
-                        type="button"
-                        className="btn-gray btn-sm"
-                        onClick={() => handleSaveRow(item._id)}
-                        disabled={savingId === item._id}
-                      >
-                        <span>
-                          {savingId === item._id ? '...' : savedId === item._id ? '✓' : 'შენახვა'}
-                        </span>
-                      </button>
-                    </td>
-                  </tr>
-                )
-              })}
+              {visibleItems.map((item) => (
+                <tr key={item._id}>
+                  <td>{doctorLabel(item.doctor)}</td>
+                  <td>{item.drug?.name || '—'}</td>
+                  <td>{item.hospital?.name || '—'}</td>
+                  <td>{item.bank || '—'}</td>
+                  <td>{fmt(item.quota)}</td>
+                  <td>{fmt(item.prescription)}</td>
+                  <td>{fmt(item.sale)}</td>
+                  <td>{fmt(item.budget)}</td>
+                  <td>{fmtPercent(item.coefficient)}</td>
+                  <td>{fmt(item.totalBudget)}</td>
+                  <td>{fmt(item.issuedBudget)}</td>
+                  <td>{fmt(item.plannedBudget)}</td>
+                  <td className={item.difference < 0 ? 'negative' : ''}>{fmt(item.difference)}</td>
+                  <td>{fmt(item.analysisOfPreviousMonth)}</td>
+                  <td className={item.budgetCalculation < 0 ? 'negative' : ''}>{fmt(item.budgetCalculation)}</td>
+                  <td>{fmt(item.analysisOfCurrentMonth)}</td>
+                </tr>
+              ))}
               {visibleItems.length === 0 && (
                 <tr>
-                  <td colSpan={13}>{drugSearch ? 'ასეთი წამალი ვერ მოიძებნა' : 'ამ თვეზე ჩანაწერები არ არის'}</td>
+                  <td colSpan={16}>{drugSearch ? 'ასეთი წამალი ვერ მოიძებნა' : 'ამ თვეზე ჩანაწერები არ არის'}</td>
                 </tr>
               )}
             </tbody>
