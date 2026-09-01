@@ -141,5 +141,24 @@
       "hoursOnly": "{h}ч",
       "minutesOnly": "{m}мин"
     }
+  },
+  "teamStatus": {
+    "title": "Статус полевой команды",
+    "filters": {
+      "all": "Все",
+      "onField": "В поле",
+      "notCheckedIn": "Ещё не отметился",
+      "absent": "Не явился",
+      "done": "Закончил сегодня",
+      "offToday": "Сегодня не работает"
+    },
+    "detail": {
+      "onField": "{hospital} · там уже {time}",
+      "done": "{count} визитов сегодня",
+      "notCheckedIn": "Ещё не отметился",
+      "absent": "Не явился сегодня",
+      "offToday": "Сегодня не работает"
+    },
+    "emptyFilter": "Никого нет в этом фильтре"
   }
 }

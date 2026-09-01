@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { io } from 'socket.io-client'
+import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import './FieldTeamStatus.css'
 
@@ -37,14 +38,6 @@ function buildVisits(items) {
     })
   })
   return visits
-}
-
-function formatSince(iso) {
-  const minutes = Math.round((Date.now() - new Date(iso).getTime()) / 60000)
-  if (minutes < 60) return `${minutes} წთ`
-  const h = Math.floor(minutes / 60)
-  const m = minutes % 60
-  return m > 0 ? `${h} სთ ${m} წთ` : `${h} სთ`
 }
 
 function FilterIcon({ type }) {
@@ -96,22 +89,26 @@ function FilterIcon({ type }) {
   return null
 }
 
-const STATUS_FILTERS = [
-  { key: 'all', label: 'ყველა' },
-  { key: 'onField', label: 'ველზეა' },
-  { key: 'notCheckedIn', label: 'ჯერ არ დაჩექინებულა' },
-  { key: 'absent', label: 'არ გამოცხადებულა' },
-  { key: 'done', label: 'დღეს დაასრულა' },
-  { key: 'offToday', label: 'დღეს არ მუშაობს' },
-]
+const STATUS_KEYS = ['all', 'onField', 'notCheckedIn', 'absent', 'done', 'offToday']
 
 export default function FieldTeamStatus() {
+  const t = useTranslations('teamStatus')
+  const tLive = useTranslations('liveFeed')
+
   const [employees, setEmployees] = useState([])
   const [visits, setVisits] = useState([])
   const [workStartTime, setWorkStartTime] = useState('10:00')
   const [error, setError] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [, forceTick] = useState(0)
+
+  function formatSince(iso) {
+    const minutes = Math.round((Date.now() - new Date(iso).getTime()) / 60000)
+    if (minutes < 60) return tLive('duration.minutesOnly', { m: minutes })
+    const h = Math.floor(minutes / 60)
+    const m = minutes % 60
+    return m > 0 ? tLive('duration.hoursMinutes', { h, m }) : tLive('duration.hoursOnly', { h })
+  }
 
   async function loadFeed() {
     try {
@@ -209,64 +206,64 @@ export default function FieldTeamStatus() {
 
   const visibleTeamStatus = useMemo(() => {
     if (statusFilter === 'all') return teamStatus
-    return teamStatus.filter((t) => t.status === statusFilter)
+    return teamStatus.filter((s) => s.status === statusFilter)
   }, [teamStatus, statusFilter])
 
   const statusCounts = useMemo(() => {
     const counts = { onField: 0, notCheckedIn: 0, absent: 0, done: 0, offToday: 0 }
-    teamStatus.forEach((t) => counts[t.status]++)
+    teamStatus.forEach((s) => counts[s.status]++)
     return counts
   }, [teamStatus])
 
   return (
     <div className="field-team-status">
-      <h1>საველე გუნდის სტატუსი</h1>
+      <h1>{t('title')}</h1>
 
       {error && <p className="live-feed-error">{error}</p>}
 
       <div className="team-status-filters">
-        {STATUS_FILTERS.map((f) => (
+        {STATUS_KEYS.map((key) => (
           <button
-            key={f.key}
+            key={key}
             type="button"
-            className={`team-status-filter-btn ${statusFilter === f.key ? 'active' : ''}`}
-            onClick={() => setStatusFilter(f.key)}
+            className={`team-status-filter-btn ${statusFilter === key ? 'active' : ''}`}
+            onClick={() => setStatusFilter(key)}
           >
-            {f.key !== 'all' && <FilterIcon type={f.key} />}
-            {f.label}
-            {f.key !== 'all' && <span className="team-status-count">{statusCounts[f.key]}</span>}
+            {key !== 'all' && <FilterIcon type={key} />}
+            {t(`filters.${key}`)}
+            {key !== 'all' && <span className="team-status-count">{statusCounts[key]}</span>}
           </button>
         ))}
       </div>
 
       <div className="team-status-list">
-        {visibleTeamStatus.map((t) => (
-          <div key={t.employeeId} className={`team-status-card status-${t.status}`}>
-            <span className={`team-status-dot status-${t.status}`} />
+        {visibleTeamStatus.map((s) => (
+          <div key={s.employeeId} className={`team-status-card status-${s.status}`}>
+            <span className={`team-status-dot status-${s.status}`} />
             <div className="team-status-info">
-              <div className="team-status-name">{t.employeeName}</div>
-              {t.status === 'onField' && (
+              <div className="team-status-name">{s.employeeName}</div>
+              {s.status === 'onField' && (
                 <div className="team-status-detail">
-                  {t.hospitalName} · {formatSince(t.checkinTime)}-ია იქ
+                  {t('detail.onField', { hospital: s.hospitalName, time: formatSince(s.checkinTime) })}
                 </div>
               )}
-              {t.status === 'done' && (
-                <div className="team-status-detail">დღეს {t.visitCount} ვიზიტი</div>
+              {s.status === 'done' && (
+                <div className="team-status-detail">{t('detail.done', { count: s.visitCount })}</div>
               )}
-              {t.status === 'notCheckedIn' && (
-                <div className="team-status-detail muted">ჯერ არ დაჩექინებულა</div>
+              {s.status === 'notCheckedIn' && (
+                <div className="team-status-detail muted">{t('detail.notCheckedIn')}</div>
               )}
-              {t.status === 'absent' && (
-                <div className="team-status-detail absent">არ გამოცხადებულა დღეს</div>
+              {s.status === 'absent' && (
+                <div className="team-status-detail absent">{t('detail.absent')}</div>
               )}
-              {t.status === 'offToday' && (
-                <div className="team-status-detail muted">დღეს არ მუშაობს</div>
+              {s.status === 'offToday' && (
+                <div className="team-status-detail muted">{t('detail.offToday')}</div>
               )}
             </div>
           </div>
         ))}
         {visibleTeamStatus.length === 0 && (
-          <p style={{ color: '#94a3b8', fontSize: 13 }}>ამ ფილტრში არავინ არის</p>
+          <p style={{ color: '#94a3b8', fontSize: 13 }}>{t('emptyFilter')}</p>
         )}
       </div>
     </div>

@@ -141,5 +141,24 @@
       "hoursOnly": "{h}h",
       "minutesOnly": "{m}min"
     }
+  },
+  "teamStatus": {
+    "title": "Field Team Status",
+    "filters": {
+      "all": "All",
+      "onField": "On field",
+      "notCheckedIn": "Not checked in yet",
+      "absent": "Did not show up",
+      "done": "Finished today",
+      "offToday": "Not working today"
+    },
+    "detail": {
+      "onField": "{hospital} · there for {time}",
+      "done": "{count} visits today",
+      "notCheckedIn": "Not checked in yet",
+      "absent": "Did not show up today",
+      "offToday": "Not working today"
+    },
+    "emptyFilter": "No one matches this filter"
   }
 }

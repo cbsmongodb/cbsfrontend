@@ -141,5 +141,24 @@
       "hoursOnly": "{h} სთ",
       "minutesOnly": "{m} წთ"
     }
+  },
+  "teamStatus": {
+    "title": "საველე გუნდის სტატუსი",
+    "filters": {
+      "all": "ყველა",
+      "onField": "ველზეა",
+      "notCheckedIn": "ჯერ არ დაჩექინებულა",
+      "absent": "არ გამოცხადებულა",
+      "done": "დღეს დაასრულა",
+      "offToday": "დღეს არ მუშაობს"
+    },
+    "detail": {
+      "onField": "{hospital} · {time}-ია იქ",
+      "done": "დღეს {count} ვიზიტი",
+      "notCheckedIn": "ჯერ არ დაჩექინებულა",
+      "absent": "არ გამოცხადებულა დღეს",
+      "offToday": "დღეს არ მუშაობს"
+    },
+    "emptyFilter": "ამ ფილტრში არავინ არის"
   }
 }
