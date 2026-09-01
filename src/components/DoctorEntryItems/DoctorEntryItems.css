@@ -89,3 +89,46 @@
 .doctor-entry-drug-number input {
   min-width: 0;
 }
+
+.doctor-entry-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.doctor-entry-summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.doctor-entry-summary-item span {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.doctor-entry-summary-item strong {
+  font-size: 14px;
+  color: #1e293b;
+}
+
+.doctor-entry-summary-item strong.negative {
+  color: #dc2626;
+}
+
+.doctor-entry-drug-computed {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11.5px;
+  color: #64748b;
+  white-space: nowrap;
+  padding: 0 6px;
+}

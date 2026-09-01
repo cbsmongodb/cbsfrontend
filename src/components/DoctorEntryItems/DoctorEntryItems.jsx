@@ -16,14 +16,16 @@ function monthValueToPeriod(monthValue) {
   return `${mm}/${yyyy}`
 }
 
-function periodToMonthValue(period) {
-  if (!period) return currentPeriodValue()
-  const d = new Date(period)
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-}
-
 function emptyDrugRow() {
-  return { drugId: '', quota: 0, prescription: 0, sale: 0, budget: 0 }
+  return {
+    drugId: '',
+    quota: 0,
+    prescription: 0,
+    sale: 0,
+    budget: 0,
+    coefficient: null,
+    totalBudget: null,
+  }
 }
 
 function emptyDoctorEntry() {
@@ -33,8 +35,51 @@ function emptyDoctorEntry() {
     bank: '',
     visits: '',
     issuedBudget: 0,
+    plannedBudget: null,
+    difference: null,
+    analysisOfPreviousMonth: null,
+    budgetCalculation: null,
+    analysisOfCurrentMonth: null,
     drugs: [emptyDrugRow()],
   }
+}
+
+function groupItemsIntoDoctorEntries(items) {
+  const byDoctor = new Map()
+  for (const item of items) {
+    const docId = item.doctor?._id
+    if (!docId) continue
+    if (!byDoctor.has(docId)) {
+      byDoctor.set(docId, {
+        doctorId: docId,
+        hospitalId: item.hospital?._id || '',
+        bank: item.bank || '',
+        visits: item.visits || '',
+        issuedBudget: item.issuedBudget || 0,
+        plannedBudget: item.plannedBudget ?? null,
+        difference: item.difference ?? null,
+        analysisOfPreviousMonth: item.analysisOfPreviousMonth ?? null,
+        budgetCalculation: item.budgetCalculation ?? null,
+        analysisOfCurrentMonth: item.analysisOfCurrentMonth ?? null,
+        drugs: [],
+      })
+    }
+    byDoctor.get(docId).drugs.push({
+      drugId: item.drug?._id || '',
+      quota: item.quota || 0,
+      prescription: item.prescription || 0,
+      sale: item.sale || 0,
+      budget: item.budget || 0,
+      coefficient: item.coefficient ?? null,
+      totalBudget: item.totalBudget ?? null,
+    })
+  }
+  return [...byDoctor.values()]
+}
+
+function fmt(n) {
+  if (n == null) return '—'
+  return Number(n).toLocaleString('ka-GE', { maximumFractionDigits: 2 })
 }
 
 export default function DoctorEntryItems() {
@@ -91,31 +136,7 @@ export default function DoctorEntryItems() {
     try {
       const period = monthValueToPeriod(monthValue)
       const data = await apiFetch(`/api/doctor-entry-items?employee=${employeeId}&period=${encodeURIComponent(period)}`)
-
-      const byDoctor = new Map()
-      for (const item of data.items || []) {
-        const docId = item.doctor?._id
-        if (!docId) continue
-        if (!byDoctor.has(docId)) {
-          byDoctor.set(docId, {
-            doctorId: docId,
-            hospitalId: item.hospital?._id || '',
-            bank: item.bank || '',
-            visits: item.visits || '',
-            issuedBudget: item.issuedBudget || 0,
-            drugs: [],
-          })
-        }
-        byDoctor.get(docId).drugs.push({
-          drugId: item.drug?._id || '',
-          quota: item.quota || 0,
-          prescription: item.prescription || 0,
-          sale: item.sale || 0,
-          budget: item.budget || 0,
-        })
-      }
-
-      const loaded = [...byDoctor.values()]
+      const loaded = groupItemsIntoDoctorEntries(data.items || [])
       setDoctorEntries(loaded.length > 0 ? loaded : [emptyDoctorEntry()])
       if (loaded.length === 0) setSuccess('ამ თვეზე ჩანაწერები ჯერ არ არსებობს — შეგიძლიათ ახლიდან შეავსოთ')
     } catch (err) {
@@ -196,10 +217,15 @@ export default function DoctorEntryItems() {
     setSuccess('')
     try {
       const period = monthValueToPeriod(monthValue)
-      await apiFetch('/api/doctor-entry-items/submit', {
+      const result = await apiFetch('/api/doctor-entry-items/submit', {
         method: 'POST',
         body: JSON.stringify({ employee: employeeId, period, doctorEntries: cleanEntries }),
       })
+      // the backend returns the recalculated items (coefficient, totalBudget,
+      // plannedBudget, difference, etc.) — use them to refresh the computed
+      // fields immediately, without needing a separate "load"
+      const refreshed = groupItemsIntoDoctorEntries(result.items || [])
+      if (refreshed.length > 0) setDoctorEntries(refreshed)
       setSuccess('შენახულია ✓')
     } catch (err) {
       setError(err.message)
@@ -250,6 +276,7 @@ export default function DoctorEntryItems() {
 
       {doctorEntries.map((entry, doctorIndex) => {
         const doc = selectedDoctor(entry.doctorId)
+        const hasComputedSummary = entry.plannedBudget != null
         return (
           <div key={doctorIndex} className="doctor-entry-card">
             <div className="doctor-entry-card-header">
@@ -336,6 +363,27 @@ export default function DoctorEntryItems() {
               </div>
             </div>
 
+            {hasComputedSummary && (
+              <div className="doctor-entry-summary">
+                <div className="doctor-entry-summary-item">
+                  <span>Planned Budget</span>
+                  <strong>{fmt(entry.plannedBudget)}</strong>
+                </div>
+                <div className="doctor-entry-summary-item">
+                  <span>Difference</span>
+                  <strong className={entry.difference < 0 ? 'negative' : ''}>{fmt(entry.difference)}</strong>
+                </div>
+                <div className="doctor-entry-summary-item">
+                  <span>წინა თვის ანალიზი</span>
+                  <strong>{fmt(entry.analysisOfPreviousMonth)}</strong>
+                </div>
+                <div className="doctor-entry-summary-item">
+                  <span>Budget Calculation</span>
+                  <strong className={entry.budgetCalculation < 0 ? 'negative' : ''}>{fmt(entry.budgetCalculation)}</strong>
+                </div>
+              </div>
+            )}
+
             <div className="doctor-entry-drugs">
               <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 8 }}>წამლები</div>
               {entry.drugs.map((row, drugIndex) => (
@@ -391,6 +439,13 @@ export default function DoctorEntryItems() {
                           onChange={(e) => updateDrugField(doctorIndex, drugIndex, 'budget', e.target.valueAsNumber || 0)}
                         />
                       </div>
+
+                      {row.totalBudget != null && (
+                        <div className="doctor-entry-drug-computed">
+                          <span>Coeff: {fmt(row.coefficient != null ? row.coefficient * 100 : null)}%</span>
+                          <span>Total: {fmt(row.totalBudget)}</span>
+                        </div>
+                      )}
                     </>
                   )}
 
