@@ -37,13 +37,6 @@ export default function Page() {
           optionsEndpoint: "/api/admin/roles",
         },
         {
-          name: "designation",
-          label: t('fields.designation'),
-          type: "select",
-          optionsEndpoint: "/api/admin/designations",
-          required: false,
-        },
-        {
           name: "group",
           label: t('fields.group'),
           type: "select",
