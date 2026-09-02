@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, useParams, usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
+import Aurora from '@/components/Aurora/Aurora'
 import './Login.css'
 
 export default function Login() {
@@ -16,6 +17,15 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showAurora, setShowAurora] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)')
+    setShowAurora(mq.matches)
+    const handler = (e) => setShowAurora(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   function switchLocale(newLocale) {
     const segments = pathname.split('/')
@@ -47,6 +57,11 @@ export default function Login() {
 
   return (
     <div className="login-container">
+      {showAurora && (
+        <div className="login-aurora-wrap">
+          <Aurora colorStops={['#a9cbff', '#c7cdd6', '#a3e8bd']} amplitude={0.6} blend={0.6} speed={0.5} lightMode={true} />
+        </div>
+      )}
       <div className="login-card">
         <div className="login-brand">
           <span className="login-brand-text">Global CBS</span>
@@ -95,7 +110,7 @@ export default function Login() {
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="9" />
                 <line x1="12" y1="8" x2="12" y2="13" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
+                <line x1="12.01" y1="16" x2="12.01" y2="16" />
               </svg>
               {error}
             </p>

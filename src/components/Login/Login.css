@@ -1,10 +1,23 @@
 .login-container {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   padding: 20px;
-  background: radial-gradient(ellipse at top, #eef3fb 0%, #f4f5f6 55%, #eef8f0 100%);
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.login-aurora-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
 }
 
 .login-card {
