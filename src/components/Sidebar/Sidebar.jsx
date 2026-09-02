@@ -85,6 +85,13 @@ export default function Sidebar() {
   const [unreadCount, setUnreadCount] = useState(0)
 
   useEffect(() => {
+    document.body.style.overflow = mobileOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [mobileOpen])
+
+  useEffect(() => {
     async function loadUnread() {
       try {
         const data = await apiFetch('/api/notifications')
