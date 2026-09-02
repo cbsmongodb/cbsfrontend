@@ -1,10 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import './ChangePassword.css'
 
 export default function ChangePassword() {
+  const { locale } = useParams()
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -45,6 +48,9 @@ export default function ChangePassword() {
 
   return (
     <div className="change-password-page">
+      <Link href={`/${locale}/dashboard`} className="change-password-back">
+        ← უკან დეშბორდზე
+      </Link>
       <h1>პაროლის შეცვლა</h1>
 
       <form className="change-password-form" onSubmit={handleSubmit}>

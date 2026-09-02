@@ -78,17 +78,23 @@ export default function Dashboard() {
   return (
     <div className="dashboard-page">
       <div className="dashboard-hero">
-        <div className="dashboard-avatar">{initials(employee?.firstName, employee?.lastName)}</div>
-        <div className="dashboard-hero-text">
-          <div className="dashboard-greeting">{getGreeting()}</div>
-          <h1 className="dashboard-name">
-            {employee?.firstName} {employee?.lastName}
-          </h1>
-          {employee?.role?.name && <span className="dashboard-role-badge">{employee.role.name}</span>}
-          <Link href={`/${locale}/dashboard/change-password`} className="dashboard-change-password-link">
-            პაროლის შეცვლა
-          </Link>
+        <div className="dashboard-hero-left">
+          <div className="dashboard-avatar">{initials(employee?.firstName, employee?.lastName)}</div>
+          <div className="dashboard-hero-text">
+            <div className="dashboard-greeting">{getGreeting()}</div>
+            <h1 className="dashboard-name">
+              {employee?.firstName} {employee?.lastName}
+            </h1>
+            {employee?.role?.name && <span className="dashboard-role-badge">{employee.role.name}</span>}
+          </div>
         </div>
+        <Link href={`/${locale}/dashboard/change-password`} className="dashboard-change-password-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          პაროლის შეცვლა
+        </Link>
       </div>
 
       {!loading && (
