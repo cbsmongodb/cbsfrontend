@@ -52,17 +52,23 @@ function pinIcon(color, number, isFar) {
 
 function hospitalIcon() {
   const svg = `
-    <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="15" cy="15" r="13" fill="#1e3a68" stroke="#fff" stroke-width="2.5" />
-      <path d="M15 8v14M8 15h14" stroke="#fff" stroke-width="3" stroke-linecap="round" />
+    <svg width="40" height="54" viewBox="0 0 40 54" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M20 0C9 0 0 9 0 20c0 15 20 34 20 34s20-19 20-34C40 9 31 0 20 0z"
+        fill="#7c3aed"
+        stroke="#fff"
+        stroke-width="2.5"
+      />
+      <circle cx="20" cy="20" r="13" fill="rgba(255,255,255,0.15)" />
+      <path d="M20 12v16M12 20h16" stroke="#fff" stroke-width="4" stroke-linecap="round" />
     </svg>
   `
   return L.divIcon({
     html: svg,
     className: 'gmaps-style-pin',
-    iconSize: [30, 30],
-    iconAnchor: [15, 15],
-    popupAnchor: [0, -15],
+    iconSize: [40, 54],
+    iconAnchor: [20, 54],
+    popupAnchor: [0, -48],
   })
 }
 
@@ -143,10 +149,11 @@ export default function LiveFeedMap({ events = [], focusKey }) {
                 [event.hospitalLat, event.hospitalLng],
               ]}
               pathOptions={{
-                color: event.isFar ? '#f59e0b' : '#94a3b8',
-                weight: 2,
-                dashArray: '4 6',
-                opacity: 0.85,
+                color: event.isFar ? '#f59e0b' : '#7c3aed',
+                weight: 3.5,
+                dashArray: '2 10',
+                opacity: 0.9,
+                lineCap: 'round',
               }}
             >
               <Tooltip permanent direction="center" className="distance-tooltip">
