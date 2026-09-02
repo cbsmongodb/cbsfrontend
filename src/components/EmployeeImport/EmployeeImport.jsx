@@ -107,11 +107,13 @@ export default function EmployeeImport() {
 
       <p style={{ fontSize: 13, color: '#64748b', marginBottom: 12 }}>
         ჩასვით CSV ფაილის სრული შემცველობა (თავზე სათაურის ხაზით): <strong>Name, Designation,
-        Email, Phone Number, Status</strong>. ერთი და იგივე ელფოსტის თანამშრომელი, თუ უკვე
-        არსებობს, ავტომატურად გამოტოვდება. ყველა ახალ თანამშრომელს დაუყენდება საწყისი პაროლი{' '}
-        <strong>123456</strong>. <strong>Designation</strong> უნდა ემთხვეოდეს უკვე არსებული როლის
-        სახელს (მაგ. "Representative", "Sales Manager") — თუ ემთხვევა არ მოიძებნა, ის მწკრივი
-        გამოტოვდება და "ვერ დაემატა" სიაში ჩნდება.
+        Email, Phone Number, Status</strong>. თუ ელფოსტა უკვე არსებობს — თანამშრომელი
+        <strong> განახლდება</strong> (როლი, პოზიცია, ტელეფონი, აქტიურობა), პაროლი კი უცვლელი
+        დარჩება. ახალი თანამშრომლის შემთხვევაში, საწყისი პაროლი იქნება <strong>123456</strong>.{' '}
+        <strong>Designation</strong> ერთდროულად ადგენს **როლს** და **პოზიციას** — ორივე უნდა
+        ემთხვეოდეს არსებულ სახელს (მაგ. "Representative"), თუ როლი ვერ მოიძებნა, მწკრივი
+        გამოტოვდება. <strong>ჯგუფი და დივიზიონი</strong> ამ CSV-ში არ შედის — ეს ცალკე,
+        თითოეული თანამშრომლის რედაქტირებით უნდა შეავსოთ.
       </p>
 
       <textarea
@@ -136,7 +138,7 @@ export default function EmployeeImport() {
         disabled={loading || preview.length === 0}
         style={{ marginTop: 8 }}
       >
-        <span>{loading ? 'იტვირთება...' : `დამატება (${preview.length})`}</span>
+        <span>{loading ? 'იტვირთება...' : `დამატება/განახლება (${preview.length})`}</span>
       </button>
 
       {error && <p className="resource-error" style={{ marginTop: 12 }}>{error}</p>}
@@ -144,7 +146,7 @@ export default function EmployeeImport() {
       {result && (
         <div style={{ marginTop: 12, fontSize: 14 }}>
           <p>
-            ✅ დაემატა: {result.created} | გამოტოვებული (უკვე არსებობდა): {result.skipped}
+            ✅ ახალი: {result.created} | განახლდა: {result.updated}
             {result.failed > 0 && <> | ვერ დაემატა: {result.failed}</>}
           </p>
           {result.failedRows?.length > 0 && (
