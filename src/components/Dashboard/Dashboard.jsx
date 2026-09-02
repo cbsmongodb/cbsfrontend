@@ -85,6 +85,9 @@ export default function Dashboard() {
             {employee?.firstName} {employee?.lastName}
           </h1>
           {employee?.role?.name && <span className="dashboard-role-badge">{employee.role.name}</span>}
+          <Link href={`/${locale}/dashboard/change-password`} className="dashboard-change-password-link">
+            პაროლის შეცვლა
+          </Link>
         </div>
       </div>
 

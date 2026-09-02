@@ -187,3 +187,15 @@
     font-size: 19px;
   }
 }
+
+.dashboard-change-password-link {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #64748b;
+  text-decoration: underline;
+}
+
+.dashboard-change-password-link:hover {
+  color: #2955a3;
+}
