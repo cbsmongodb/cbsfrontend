@@ -1,11 +1,12 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import './ResourceTable.css'
 
-export default function SearchableSelect({ options, value, onChange, getLabel, placeholder }) {
+export default function SearchableSelect({ options, value, onChange, getLabel, placeholder, onCreate }) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
+  const [creating, setCreating] = useState(false)
+  const [createError, setCreateError] = useState('')
   const wrapRef = useRef(null)
 
   useEffect(() => {
@@ -13,6 +14,7 @@ export default function SearchableSelect({ options, value, onChange, getLabel, p
       if (wrapRef.current && !wrapRef.current.contains(e.target)) {
         setOpen(false)
         setQuery('')
+        setCreateError('')
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
@@ -26,15 +28,32 @@ export default function SearchableSelect({ options, value, onChange, getLabel, p
     .filter((o) => getLabel(o).toLowerCase().includes(query.toLowerCase()))
     .slice(0, 40)
 
+  const exactMatch = options.some((o) => getLabel(o).toLowerCase() === query.trim().toLowerCase())
+  const showCreateOption = onCreate && query.trim().length > 0 && !exactMatch
+
   function pick(opt) {
     onChange(opt._id)
     setQuery('')
     setOpen(false)
+    setCreateError('')
   }
 
   function clear() {
     onChange('')
     setQuery('')
+  }
+
+  async function handleCreate() {
+    setCreating(true)
+    setCreateError('')
+    try {
+      const created = await onCreate(query.trim())
+      pick(created)
+    } catch (err) {
+      setCreateError(err.message || 'ვერ შეიქმნა')
+    } finally {
+      setCreating(false)
+    }
   }
 
   return (
@@ -49,6 +68,7 @@ export default function SearchableSelect({ options, value, onChange, getLabel, p
           onChange={(e) => {
             setQuery(e.target.value)
             setOpen(true)
+            setCreateError('')
           }}
           onFocus={() => {
             setQuery('')
@@ -62,9 +82,8 @@ export default function SearchableSelect({ options, value, onChange, getLabel, p
         )}
       </div>
 
-      {open && (
+      {open && (filtered.length > 0 || showCreateOption) && (
         <div className="searchable-select-dropdown">
-          {filtered.length === 0 && <div className="searchable-select-empty">ვერაფერი მოიძებნა</div>}
           {filtered.map((opt) => (
             <button
               key={opt._id}
@@ -75,8 +94,26 @@ export default function SearchableSelect({ options, value, onChange, getLabel, p
               {getLabel(opt)}
             </button>
           ))}
+          {showCreateOption && (
+            <button
+              type="button"
+              className="searchable-select-create"
+              onClick={handleCreate}
+              disabled={creating}
+            >
+              {creating ? '...' : `+ შექმენი "${query.trim()}"`}
+            </button>
+          )}
         </div>
       )}
+
+      {open && query && filtered.length === 0 && !showCreateOption && (
+        <div className="searchable-select-dropdown">
+          <div className="searchable-select-empty">ვერაფერი მოიძებნა</div>
+        </div>
+      )}
+
+      {createError && <p style={{ color: '#dc2626', fontSize: 12, marginTop: 4 }}>{createError}</p>}
     </div>
   )
 }

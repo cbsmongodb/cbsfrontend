@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import LocationPickerModal from './LocationPickerModal'
 import MultiSelectSearch from './MultiSelectSearch'
+import SearchableSelect from './SearchableSelect'
 import './ResourceTable.css'
 
 export default function ResourceTable({ title, endpoint, fields }) {
@@ -44,7 +45,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
   }
 
   async function loadOptions() {
-    const optionFields = fields.filter((f) => f.type === 'select' || f.type === 'multiselect' || f.type === 'multiselect-search')
+    const optionFields = fields.filter((f) => f.type === 'select' || f.type === 'multiselect' || f.type === 'multiselect-search' || f.type === 'searchable-select')
     if (optionFields.length === 0) return
 
     const entries = await Promise.all(
@@ -99,7 +100,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
       }
       const raw = item[f.name]
       if (f.type === 'weekdays') next[f.name] = Array.isArray(raw) ? raw : [1, 2, 3, 4, 5]
-      else if (f.type === 'select') next[f.name] = relationId(raw)
+      else if (f.type === 'select' || f.type === 'searchable-select') next[f.name] = relationId(raw)
       else if (f.type === 'multiselect' || f.type === 'multiselect-search') next[f.name] = relationIds(raw)
       else if (f.type === 'checkbox') next[f.name] = !!raw
       else if (f.type === 'date') next[f.name] = raw ? String(raw).slice(0, 10) : ''
@@ -215,7 +216,36 @@ export default function ResourceTable({ title, endpoint, fields }) {
       )
     }
 
-    if (f.type === 'select') {
+    if (f.type === 'searchable-select') {
+      const options = optionsByField[f.name] || []
+      const labelKey = f.optionsLabel || 'name'
+      const handleCreateOption = f.creatable
+        ? async (typedValue) => {
+            const created = await apiFetch(f.optionsEndpoint, {
+              method: 'POST',
+              body: JSON.stringify({ [labelKey]: typedValue }),
+            })
+            setOptionsByField((prev) => ({
+              ...prev,
+              [f.name]: [...(prev[f.name] || []), created],
+            }))
+            return created
+          }
+        : undefined
+      return (
+        <SearchableSelect
+          key={f.name}
+          options={options}
+          value={form[f.name] || ''}
+          onChange={(val) => handleChange(f.name, val)}
+          getLabel={(opt) => opt[labelKey]}
+          placeholder={f.label}
+          onCreate={handleCreateOption}
+        />
+      )
+    }
+
+        if (f.type === 'select') {
       const options = optionsByField[f.name] || []
       return (
         <select
@@ -361,7 +391,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
     if (f.type === 'enum') {
       return value ? f.optionLabels?.[value] || value : '—'
     }
-    if (f.type === 'select') {
+    if (f.type === 'select' || f.type === 'searchable-select') {
       if (value && typeof value === 'object') return value[f.optionsLabel || 'name'] || '—'
       return '—'
     }

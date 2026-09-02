@@ -31,14 +31,19 @@ export default function Page() {
           {
             name: "hospital",
             label: t('fields.hospital'),
-            type: "select",
+            type: "searchable-select",
             optionsEndpoint: "/api/hospitals",
+            required: false,
+            creatable: true,
           },
           {
             name: "pharmacy",
             label: t('fields.pharmacy'),
-            type: "select",
+            type: "searchable-select",
             optionsEndpoint: "/api/pharmacies",
+            optionsLabel: "pharmacyName",
+            required: false,
+            creatable: true,
           },
           {
             name: "performer",

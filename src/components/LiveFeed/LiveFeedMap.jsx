@@ -1,6 +1,6 @@
 'use client'
 
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, Polyline, Tooltip, useMap } from 'react-leaflet'
 import { useEffect, useRef } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -8,6 +8,17 @@ import 'leaflet/dist/leaflet.css'
 const TBILISI = [41.7151, 44.8271]
 const CHECKIN_COLOR = '#16a34a'
 const CHECKOUT_COLOR = '#dc2626'
+
+function distanceInMeters(lat1, lng1, lat2, lng2) {
+  const R = 6371000
+  const toRad = (deg) => (deg * Math.PI) / 180
+  const dLat = toRad(lat2 - lat1)
+  const dLng = toRad(lng2 - lng1)
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2
+  return Math.round(2 * R * Math.asin(Math.sqrt(a)))
+}
 
 function pinIcon(color, number, isFar) {
   const ringColor = isFar ? '#f59e0b' : '#ffffff'
@@ -39,6 +50,22 @@ function pinIcon(color, number, isFar) {
   })
 }
 
+function hospitalIcon() {
+  const svg = `
+    <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="15" cy="15" r="13" fill="#1e3a68" stroke="#fff" stroke-width="2.5" />
+      <path d="M15 8v14M8 15h14" stroke="#fff" stroke-width="3" stroke-linecap="round" />
+    </svg>
+  `
+  return L.divIcon({
+    html: svg,
+    className: 'gmaps-style-pin',
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -15],
+  })
+}
+
 function FitBounds({ events, focusKey }) {
   const map = useMap()
   const eventsRef = useRef(events)
@@ -48,13 +75,20 @@ function FitBounds({ events, focusKey }) {
     const current = eventsRef.current
     if (!current || current.length === 0) return
 
+    const points = []
+    current.forEach((e) => {
+      points.push([e.lat, e.lng])
+      if (e.hospitalLat != null && e.hospitalLng != null) {
+        points.push([e.hospitalLat, e.hospitalLng])
+      }
+    })
+
     map.whenReady(() => {
-      if (current.length === 1) {
-        map.setView([current[0].lat, current[0].lng], 17)
+      if (points.length === 1) {
+        map.setView(points[0], 17)
         return
       }
-      const bounds = current.map((e) => [e.lat, e.lng])
-      map.fitBounds(bounds, { padding: [60, 60], maxZoom: 18 })
+      map.fitBounds(points, { padding: [60, 60], maxZoom: 18 })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focusKey, map])
@@ -66,6 +100,17 @@ export default function LiveFeedMap({ events = [], focusKey }) {
   const center = events[0] ? [events[0].lat, events[0].lng] : TBILISI
   const orderedEvents = [...events].sort((a, b) => new Date(a.time) - new Date(b.time))
   const routePoints = orderedEvents.map((e) => [e.lat, e.lng])
+
+  // unique hospital positions among the currently shown events
+  const hospitalMarkers = []
+  const seenHospitals = new Set()
+  for (const e of events) {
+    if (e.hospitalLat == null || e.hospitalLng == null) continue
+    const key = `${e.hospitalLat},${e.hospitalLng}`
+    if (seenHospitals.has(key)) continue
+    seenHospitals.add(key)
+    hospitalMarkers.push({ lat: e.hospitalLat, lng: e.hospitalLng, name: e.hospitalName })
+  }
 
   return (
     <div className="map-gradient-border">
@@ -84,6 +129,40 @@ export default function LiveFeedMap({ events = [], focusKey }) {
             pathOptions={{ color: '#2563eb', weight: 3, opacity: 0.6, dashArray: '6 8' }}
           />
         )}
+
+        {events.map((event, i) => {
+          if (event.hospitalLat == null || event.hospitalLng == null) return null
+          const distance =
+            event.distanceFromHospital ??
+            distanceInMeters(event.lat, event.lng, event.hospitalLat, event.hospitalLng)
+          return (
+            <Polyline
+              key={`link-${i}`}
+              positions={[
+                [event.lat, event.lng],
+                [event.hospitalLat, event.hospitalLng],
+              ]}
+              pathOptions={{
+                color: event.isFar ? '#f59e0b' : '#94a3b8',
+                weight: 2,
+                dashArray: '4 6',
+                opacity: 0.85,
+              }}
+            >
+              <Tooltip permanent direction="center" className="distance-tooltip">
+                {distance}მ
+              </Tooltip>
+            </Polyline>
+          )
+        })}
+
+        {hospitalMarkers.map((h, i) => (
+          <Marker key={`hospital-${i}`} position={[h.lat, h.lng]} icon={hospitalIcon()}>
+            <Popup>
+              <strong>{h.name}</strong>
+            </Popup>
+          </Marker>
+        ))}
 
         {events.map((event, i) => {
           const color = event.type === 'checkin' ? CHECKIN_COLOR : CHECKOUT_COLOR
