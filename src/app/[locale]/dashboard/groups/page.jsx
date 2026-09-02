@@ -24,6 +24,14 @@ export default function Page() {
           type: "select",
           optionsEndpoint: "/api/admin/sections",
         },
+        {
+          name: "head",
+          label: t('fields.head'),
+          type: "select",
+          optionsEndpoint: "/api/employees",
+          optionsLabel: "name",
+          required: false,
+        },
         { name: "note", label: t('fields.note') },
         { name: "isActive", label: t('fields.isActive'), type: "checkbox" },
       ]}

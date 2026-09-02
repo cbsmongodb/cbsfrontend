@@ -427,6 +427,8 @@
     "performer": "Performer",
     "comment": "Comment",
     "assignmentContent": "Assignment Content",
-    "reimbursementPerDay": "Reimbursement / Day"
+    "reimbursementPerDay": "Reimbursement / Day",
+    "head": "Manager",
+    "parentRegion": "Parent Region"
   }
 }

@@ -427,6 +427,8 @@
     "performer": "შემსრულებელი",
     "comment": "კომენტარი",
     "assignmentContent": "დავალების შინაარსი",
-    "reimbursementPerDay": "ანაზღაურება/დღე"
+    "reimbursementPerDay": "ანაზღაურება/დღე",
+    "head": "ხელმძღვანელი",
+    "parentRegion": "მშობელი რეგიონი"
   }
 }

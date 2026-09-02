@@ -427,6 +427,8 @@
     "performer": "Исполнитель",
     "comment": "Комментарий",
     "assignmentContent": "Содержание задания",
-    "reimbursementPerDay": "Возмещение/день"
+    "reimbursementPerDay": "Возмещение/день",
+    "head": "Руководитель",
+    "parentRegion": "Родительский регион"
   }
 }
