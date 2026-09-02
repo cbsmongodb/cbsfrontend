@@ -63,6 +63,7 @@ const NAV = [
     id: 'administration',
     items: [
       { href: 'dashboard/employees', key: 'employees' },
+      { href: 'dashboard/employees/import', key: 'employeesImport' },
       { href: 'dashboard/roles', key: 'roles' },
       { href: 'dashboard/designations', key: 'designations' },
       { href: 'dashboard/sections', key: 'sections' },

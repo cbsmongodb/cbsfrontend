@@ -84,7 +84,8 @@
         "regions": "Regions",
         "divisions": "Divisions",
         "leaves": "Leaves",
-        "settings": "System Settings"
+        "settings": "System Settings",
+        "employeesImport": "Import Employees"
       }
     }
   },
