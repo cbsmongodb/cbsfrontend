@@ -311,3 +311,68 @@ a.role-back-link:hover {
     border: 2px solid #eef2f7;
   }
 }
+
+@media (max-width: 640px) {
+  .role-permissions-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .role-permissions-header .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .role-accordion-header {
+    padding: 14px 12px;
+    flex-wrap: wrap;
+  }
+
+  .role-accordion-name {
+    font-size: 14px;
+  }
+
+  .role-accordion-body {
+    padding: 0 12px 16px;
+  }
+
+  .role-quick-actions {
+    flex-wrap: wrap;
+  }
+
+  .role-quick-actions .btn-gray {
+    flex: 1;
+    min-width: 130px;
+    text-align: center;
+  }
+
+  .role-group-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 10px 4px;
+  }
+
+  .role-group-actions {
+    gap: 14px;
+  }
+
+  .role-group-actions button {
+    font-size: 12.5px;
+    padding: 4px 0;
+  }
+
+  .role-permissions-table {
+    font-size: 12.5px;
+  }
+
+  .role-permissions-table th,
+  .role-permissions-table td {
+    padding: 10px 10px;
+  }
+
+  .role-permissions-table input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+  }
+}
