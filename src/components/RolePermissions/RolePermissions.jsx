@@ -119,6 +119,22 @@ export default function RolePermissions() {
     })
   }
 
+  // quick action — set every permission (read/add/update/delete) for
+  // every resource within one group at once
+  function setGroupAll(keys, value) {
+    setPrivilegesDraft((prev) => {
+      const next = { ...prev }
+      keys.forEach((key) => {
+        const updated = { ...next[key] }
+        ACTION_KEYS.forEach((a) => {
+          updated[a] = value ? 1 : 0
+        })
+        next[key] = updated
+      })
+      return next
+    })
+  }
+
   async function handleSave(roleId) {
     setSavingId(roleId)
     setError('')
@@ -214,9 +230,12 @@ export default function RolePermissions() {
                         <span>{group.label}</span>
                         <div className="role-group-actions">
                           <button type="button" onClick={() => setGroupRead(group.keys, true)}>
-                            ✓ ამ ჯგუფის ნახვა
+                            ✓ ნახვა
                           </button>
-                          <button type="button" onClick={() => setGroupRead(group.keys, false)}>
+                          <button type="button" onClick={() => setGroupAll(group.keys, true)}>
+                            ✓ ყველა უფლება
+                          </button>
+                          <button type="button" onClick={() => setGroupAll(group.keys, false)}>
                             მოხსნა
                           </button>
                         </div>
