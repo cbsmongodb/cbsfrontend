@@ -61,7 +61,7 @@ export default function EfficiencyReport() {
       if (to) params.set('to', to)
       if (employeeId) params.set('employee', employeeId)
       if (hospitalId) params.set('hospital', hospitalId)
-      const data = await apiFetch(`/api/plannings/reports/efficiency?${params}`)
+      const data = await apiFetch(`/api/reports/efficiency?${params}`)
       setGroups(data)
       setLoaded(true)
     } catch (err) {

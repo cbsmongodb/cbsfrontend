@@ -54,7 +54,7 @@ export default function ReimbursementReport() {
       if (from) params.set('from', from)
       if (to) params.set('to', to)
       if (employeeId) params.set('employee', employeeId)
-      const data = await apiFetch(`/api/plannings/reports/reimbursement?${params}`)
+      const data = await apiFetch(`/api/reports/reimbursement?${params}`)
       setRows(data)
       setLoaded(true)
     } catch (err) {
