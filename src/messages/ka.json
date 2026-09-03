@@ -87,7 +87,8 @@
         "settings": "სისტემის პარამეტრები",
         "employeesImport": "თანამშრომლების იმპორტი"
       }
-    }
+    },
+    "attendanceStatus": "დასწრების სტატუსი"
   },
   "checkin": {
     "checkin": "ჩექინი",

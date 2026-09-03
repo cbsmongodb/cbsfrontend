@@ -57,6 +57,7 @@ const NAV = [
   { type: 'link', href: 'dashboard/notifications', key: 'notifications' },
   { type: 'link', href: 'dashboard/live-feeds', key: 'liveFeed' },
   { type: 'link', href: 'dashboard/team-status', key: 'teamStatus' },
+  { type: 'link', href: 'dashboard/attendance-status', key: 'attendanceStatus' },
   {
     type: 'group',
     id: 'configureProduct',

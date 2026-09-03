@@ -87,7 +87,8 @@
         "settings": "Системные настройки",
         "employeesImport": "Импорт сотрудников"
       }
-    }
+    },
+    "attendanceStatus": "Статус посещаемости"
   },
   "checkin": {
     "checkin": "Отметить приход",

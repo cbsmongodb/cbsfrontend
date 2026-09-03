@@ -72,7 +72,6 @@ export default function FieldTeamStatus() {
       const q = search.trim().toLowerCase()
       list = list.filter((p) => performerName(p).toLowerCase().includes(q))
     }
-    // on-site first, then planned, then completed
     const order = { i_went: 0, planned: 1, i_left: 2, completed: 2 }
     return [...list].sort((a, b) => (order[a.status] ?? 3) - (order[b.status] ?? 3))
   }, [plans, search])
@@ -91,7 +90,7 @@ export default function FieldTeamStatus() {
 
   return (
     <div className="field-team-status">
-      <h1>საველე გუნდის სტატუსი</h1>
+      <h1>დღევანდელი ვიზიტების სტატუსი</h1>
 
       {error && <p className="live-feed-error">{error}</p>}
 

@@ -87,7 +87,8 @@
         "settings": "System Settings",
         "employeesImport": "Import Employees"
       }
-    }
+    },
+    "attendanceStatus": "Attendance Status"
   },
   "checkin": {
     "checkin": "Check In",
