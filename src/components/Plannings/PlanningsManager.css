@@ -1,0 +1,107 @@
+.planning-form-card,
+.planning-filters-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.planning-form-card h2 {
+  font-size: 15px;
+  margin-bottom: 14px;
+}
+
+.planning-form-grid,
+.planning-filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  align-items: end;
+}
+
+.planning-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.planning-field label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.planning-field-actions {
+  flex-direction: row;
+  gap: 8px;
+}
+
+.planning-date-range {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.planning-date-range input {
+  min-width: 0;
+  flex: 1;
+}
+
+.planning-search-btn {
+  align-self: end;
+}
+
+.planning-quicksearch-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.planning-showcount {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.planning-showcount select {
+  padding: 5px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+
+.planning-table-scroll {
+  overflow-x: auto;
+  border: 1px solid #eee;
+  border-radius: 10px;
+}
+
+.planning-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.planning-table th,
+.planning-table td {
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid #eee;
+  white-space: nowrap;
+}
+
+.planning-table thead th {
+  background: #fff;
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.planning-table .btn-sm {
+  margin-right: 6px;
+}
