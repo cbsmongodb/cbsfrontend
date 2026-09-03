@@ -105,3 +105,32 @@
 .planning-table .btn-sm {
   margin-right: 6px;
 }
+
+.planning-doctor-list {
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 6px;
+  background: #fff;
+}
+
+.planning-doctor-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13.5px;
+}
+
+.planning-doctor-row:hover {
+  background: #f8fafc;
+}
+
+.planning-doctor-row input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}

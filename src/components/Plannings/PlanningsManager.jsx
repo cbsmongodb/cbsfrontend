@@ -44,6 +44,10 @@ function typeLabel(id) {
   return PLAN_TYPES.find((t) => t._id === id)?.name || id
 }
 
+function doctorLabel(doc) {
+  return `${doc.firstName || ''} ${doc.lastName || ''}`.trim() || doc.name || 'უცნობი'
+}
+
 export default function PlanningsManager() {
   const [employees, setEmployees] = useState([])
   const [hospitals, setHospitals] = useState([])
@@ -64,6 +68,14 @@ export default function PlanningsManager() {
   const [filterStatus, setFilterStatus] = useState('')
   const [search, setSearch] = useState('')
   const [showCount, setShowCount] = useState(100)
+
+  // doctors editing (only shown while editing an existing plan)
+  const [availableDoctors, setAvailableDoctors] = useState([])
+  const [selectedDoctorIds, setSelectedDoctorIds] = useState([])
+  const [originalDoctorIds, setOriginalDoctorIds] = useState([])
+  const [pcdByDoctorId, setPcdByDoctorId] = useState(new Map())
+  const [doctorSearch, setDoctorSearch] = useState('')
+  const [loadingDoctors, setLoadingDoctors] = useState(false)
 
   useEffect(() => {
     async function loadOptions() {
@@ -121,7 +133,7 @@ export default function PlanningsManager() {
     setForm((prev) => ({ ...prev, [field]: value }))
   }
 
-  function startEdit(plan) {
+  async function startEdit(plan) {
     setEditingId(plan._id)
     setForm({
       planType: plan.planType || 'hospital',
@@ -131,12 +143,51 @@ export default function PlanningsManager() {
       performer: plan.performer?._id || '',
       status: plan.status || 'planned',
     })
+    setDoctorSearch('')
     window.scrollTo({ top: 0, behavior: 'smooth' })
+
+    const existingIds = (plan.doctors || []).map((d) => d._id)
+    setSelectedDoctorIds(existingIds)
+    setOriginalDoctorIds(existingIds)
+
+    setLoadingDoctors(true)
+    try {
+      const [available, full] = await Promise.all([
+        apiFetch(`/api/plannings/${plan._id}/doctors-available`),
+        apiFetch(`/api/plannings/${plan._id}`),
+      ])
+      // merge in already-selected doctors even if they fall outside the
+      // hospital filter, so nothing "disappears" from the list
+      const byId = new Map(available.map((d) => [d._id, d]))
+      ;(plan.doctors || []).forEach((d) => {
+        if (!byId.has(d._id)) byId.set(d._id, d)
+      })
+      setAvailableDoctors([...byId.values()])
+
+      const pcdMap = new Map(
+        (full.planConfigurationDoctors || []).map((pcd) => [String(pcd.doctor?._id), pcd._id])
+      )
+      setPcdByDoctorId(pcdMap)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoadingDoctors(false)
+    }
+  }
+
+  function toggleDoctor(id) {
+    setSelectedDoctorIds((prev) =>
+      prev.includes(id) ? prev.filter((d) => d !== id) : [...prev, id]
+    )
   }
 
   function cancelEdit() {
     setEditingId(null)
     setForm(emptyForm())
+    setSelectedDoctorIds([])
+    setOriginalDoctorIds([])
+    setAvailableDoctors([])
+    setPcdByDoctorId(new Map())
   }
 
   async function handleSubmit(e) {
@@ -162,6 +213,23 @@ export default function PlanningsManager() {
           method: 'PUT',
           body: JSON.stringify(payload),
         })
+
+        // sync doctor selection: add newly checked, remove newly unchecked
+        const toAdd = selectedDoctorIds.filter((id) => !originalDoctorIds.includes(id))
+        const toRemove = originalDoctorIds.filter((id) => !selectedDoctorIds.includes(id))
+
+        for (const doctorId of toAdd) {
+          await apiFetch(`/api/plannings/${editingId}/doctors`, {
+            method: 'POST',
+            body: JSON.stringify({ doctorId }),
+          })
+        }
+        for (const doctorId of toRemove) {
+          const pcdId = pcdByDoctorId.get(String(doctorId))
+          if (pcdId) {
+            await apiFetch(`/api/plannings/${editingId}/doctors/${pcdId}`, { method: 'DELETE' })
+          }
+        }
       } else {
         await apiFetch('/api/plannings', {
           method: 'POST',
@@ -204,6 +272,10 @@ export default function PlanningsManager() {
     setPharmacies((prev) => [...prev, created])
     return created
   }
+
+  const filteredDoctors = availableDoctors.filter((d) =>
+    doctorLabel(d).toLowerCase().includes(doctorSearch.toLowerCase())
+  )
 
   return (
     <div>
@@ -280,6 +352,36 @@ export default function PlanningsManager() {
               placeholder="აირჩიეთ..."
             />
           </div>
+
+          {editingId && (
+            <div className="planning-field" style={{ gridColumn: '1 / -1' }}>
+              <label>ექიმები, ვინც ნახეს</label>
+              <input
+                type="text"
+                className="field-input"
+                placeholder="ჩაწერეთ სახელი..."
+                value={doctorSearch}
+                onChange={(e) => setDoctorSearch(e.target.value)}
+                style={{ marginBottom: 8 }}
+              />
+              <div className="planning-doctor-list">
+                {loadingDoctors && <p style={{ fontSize: 13, color: '#64748b' }}>იტვირთება...</p>}
+                {!loadingDoctors && filteredDoctors.length === 0 && (
+                  <p style={{ fontSize: 13, color: '#64748b' }}>ექიმი ვერ მოიძებნა</p>
+                )}
+                {filteredDoctors.map((doc) => (
+                  <label key={doc._id} className="planning-doctor-row">
+                    <input
+                      type="checkbox"
+                      checked={selectedDoctorIds.includes(doc._id)}
+                      onChange={() => toggleDoctor(doc._id)}
+                    />
+                    <span>{doctorLabel(doc)}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="planning-field planning-field-actions">
             <button type="submit" className="btn" disabled={saving}>
@@ -375,6 +477,7 @@ export default function PlanningsManager() {
               <th>პერიოდი</th>
               <th>ჰოსპიტალი/აფთიაქი</th>
               <th>შემსრულებელი</th>
+              <th>ექიმები</th>
               <th>სტატუსი</th>
               <th></th>
             </tr>
@@ -386,6 +489,7 @@ export default function PlanningsManager() {
                 <td>{plan.period ? new Date(plan.period).toLocaleDateString('ka-GE') : '—'}</td>
                 <td>{plan.hospital?.name || plan.pharmacy?.pharmacyName || '—'}</td>
                 <td>{plan.performer?.name || `${plan.performer?.firstName || ''} ${plan.performer?.lastName || ''}`}</td>
+                <td>{plan.doctors?.length > 0 ? plan.doctors.map(doctorLabel).join(', ') : '—'}</td>
                 <td>{statusLabel(plan.status)}</td>
                 <td>
                   <button type="button" className="btn-gray btn-sm" onClick={() => startEdit(plan)}>
@@ -399,7 +503,7 @@ export default function PlanningsManager() {
             ))}
             {visiblePlans.length === 0 && (
               <tr>
-                <td colSpan={6}>ჩანაწერები არ არის</td>
+                <td colSpan={7}>ჩანაწერები არ არის</td>
               </tr>
             )}
           </tbody>
