@@ -79,14 +79,14 @@
 
 .btn-cancel-visit {
   font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: 15px;
+  font-weight: 600;
+  font-size: 13px;
   text-transform: uppercase;
   font-feature-settings: "case" on;
-  padding: 12px 26px;
-  border: 2px solid #fca5a5;
+  padding: 10px 22px;
+  border: 1px solid #fca5a5;
   background: #fff;
-  border-radius: 30px;
+  border-radius: 999px;
   color: #dc2626;
   cursor: pointer;
   transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;

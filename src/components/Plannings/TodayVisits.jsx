@@ -241,16 +241,6 @@ export default function TodayVisits() {
                     <span>{busyId === plan._id ? '...' : t('checkin')}</span>
                   </button>
                 )}
-                {canCancel && (
-                  <button
-                    type="button"
-                    className="btn-cancel-visit"
-                    disabled={busyId === plan._id}
-                    onClick={() => setCancelingPlan(plan)}
-                  >
-                    <span>გაუქმება</span>
-                  </button>
-                )}
                 {canCheckout && (
                   <button
                     type="button"
@@ -259,6 +249,16 @@ export default function TodayVisits() {
                     onClick={() => openCheckoutModal(plan)}
                   >
                     <span>{busyId === plan._id ? '...' : t('checkout')}</span>
+                  </button>
+                )}
+                {canCancel && (
+                  <button
+                    type="button"
+                    className="btn-cancel-visit"
+                    disabled={busyId === plan._id}
+                    onClick={() => setCancelingPlan(plan)}
+                  >
+                    <span>გაუქმება</span>
                   </button>
                 )}
                 {isDone && <span className="today-visit-done">{t('doneLabel')}</span>}
