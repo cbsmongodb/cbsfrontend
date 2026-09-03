@@ -38,6 +38,7 @@ export default function TodayVisits() {
   const [doctorSearch, setDoctorSearch] = useState('')
   const [loadingDoctors, setLoadingDoctors] = useState(false)
   const [confirmingCheckout, setConfirmingCheckout] = useState(false)
+  const [locationUpdated, setLocationUpdated] = useState(false)
 
   async function loadMe() {
     const employee = await apiFetch('/api/auth/me')
@@ -67,7 +68,11 @@ export default function TodayVisits() {
       return
     }
     navigator.geolocation.getCurrentPosition(
-      (pos) => setPosition({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      (pos) => {
+        setPosition({ lat: pos.coords.latitude, lng: pos.coords.longitude })
+        setLocationUpdated(true)
+        setTimeout(() => setLocationUpdated(false), 2500)
+      },
       (err) => setLocError(err.message || t('locationFailed')),
       { enableHighAccuracy: true }
     )
@@ -201,7 +206,7 @@ export default function TodayVisits() {
       <div className="today-visits-header">
         <h2>{t('title')}</h2>
         <button type="button" className="btn-gray btn-sm" onClick={refreshLocation}>
-          <span>{t('refreshLocation')}</span>
+          <span>{locationUpdated ? '✓ ლოკაცია განახლებულია' : t('refreshLocation')}</span>
         </button>
       </div>
 
