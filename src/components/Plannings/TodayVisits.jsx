@@ -25,6 +25,7 @@ export default function TodayVisits() {
   const [locError, setLocError] = useState('')
   const [error, setError] = useState('')
   const [busyId, setBusyId] = useState(null)
+  const [cancelingPlan, setCancelingPlan] = useState(null)
 
   async function loadMe() {
     const employee = await apiFetch('/api/auth/me')
@@ -92,10 +93,10 @@ export default function TodayVisits() {
     }
   }
 
-  async function handleCancel(plan) {
-    const confirmed = window.confirm('ნამდვილად გსურთ ამ ვიზიტის გაუქმება?')
-    if (!confirmed) return
-
+  async function confirmCancel() {
+    const plan = cancelingPlan
+    if (!plan) return
+    setCancelingPlan(null)
     setBusyId(plan._id)
     setError('')
     try {
@@ -195,7 +196,7 @@ export default function TodayVisits() {
                     type="button"
                     className="btn-cancel-visit"
                     disabled={busyId === plan._id}
-                    onClick={() => handleCancel(plan)}
+                    onClick={() => setCancelingPlan(plan)}
                   >
                     <span>გაუქმება</span>
                   </button>
@@ -216,6 +217,29 @@ export default function TodayVisits() {
           )
         })}
       </div>
+      {cancelingPlan && (
+        <div className="cancel-modal-overlay" onClick={() => setCancelingPlan(null)}>
+          <div className="cancel-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="cancel-modal-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="9" />
+                <line x1="12" y1="8" x2="12" y2="13" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+            </div>
+            <h3>ნამდვილად გსურთ გაუქმება?</h3>
+            <p>ეს ვიზიტი გაუქმებულად მონიშნება — ეს მოქმედება შექცევადი არაა.</p>
+            <div className="cancel-modal-actions">
+              <button type="button" className="btn-gray" onClick={() => setCancelingPlan(null)}>
+                <span>არა, დავტოვო</span>
+              </button>
+              <button type="button" className="btn-red" onClick={confirmCancel}>
+                <span>დიახ, გავაუქმო</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
