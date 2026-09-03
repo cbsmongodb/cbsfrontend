@@ -270,3 +270,44 @@ a.role-back-link:hover {
 .role-group-actions button:hover {
   text-decoration: underline;
 }
+
+@media (min-width: 641px) {
+  .role-permissions {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 48px);
+  }
+
+  .role-permissions-header {
+    flex-shrink: 0;
+  }
+
+  .role-accordion {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: auto;
+    scrollbar-color: #1e3a68 #eef2f7;
+    padding-right: 4px;
+  }
+
+  .role-accordion-item {
+    flex-shrink: 0;
+  }
+
+  .role-accordion::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  .role-accordion::-webkit-scrollbar-track {
+    background: #eef2f7;
+    border-radius: 10px;
+  }
+
+  .role-accordion::-webkit-scrollbar-thumb {
+    background-color: #1e3a68;
+    border-radius: 10px;
+    border: 2px solid #eef2f7;
+  }
+}
