@@ -21,14 +21,16 @@ export default function SearchableSelect({ options, value, onChange, getLabel, p
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  const safeLabel = (o) => getLabel(o) || ''
+
   const selected = options.find((o) => o._id === value)
-  const displayValue = open ? query : selected ? getLabel(selected) : ''
+  const displayValue = open ? query : selected ? safeLabel(selected) : ''
 
   const filtered = options
-    .filter((o) => getLabel(o).toLowerCase().includes(query.toLowerCase()))
+    .filter((o) => safeLabel(o).toLowerCase().includes(query.toLowerCase()))
     .slice(0, 40)
 
-  const exactMatch = options.some((o) => getLabel(o).toLowerCase() === query.trim().toLowerCase())
+  const exactMatch = options.some((o) => safeLabel(o).toLowerCase() === query.trim().toLowerCase())
   const showCreateOption = onCreate && query.trim().length > 0 && !exactMatch
 
   function pick(opt) {
@@ -91,7 +93,7 @@ export default function SearchableSelect({ options, value, onChange, getLabel, p
               className="searchable-select-option"
               onClick={() => pick(opt)}
             >
-              {getLabel(opt)}
+              {safeLabel(opt)}
             </button>
           ))}
           {showCreateOption && (
