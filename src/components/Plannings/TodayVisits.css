@@ -76,3 +76,24 @@
   font-size: 13px;
   color: #64748b;
 }
+
+.btn-cancel-visit {
+  padding: 8px 14px;
+  border: 1px solid #fca5a5;
+  background: #fff;
+  border-radius: 999px;
+  color: #dc2626;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btn-cancel-visit:hover {
+  background: #fef2f2;
+}
+
+.btn-cancel-visit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

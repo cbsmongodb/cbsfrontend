@@ -92,6 +92,25 @@ export default function TodayVisits() {
     }
   }
 
+  async function handleCancel(plan) {
+    const confirmed = window.confirm('ნამდვილად გსურთ ამ ვიზიტის გაუქმება?')
+    if (!confirmed) return
+
+    setBusyId(plan._id)
+    setError('')
+    try {
+      await apiFetch(`/api/plannings/${plan._id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ status: 'canceled' }),
+      })
+      await reload()
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setBusyId(null)
+    }
+  }
+
   async function handleCheckout(plan) {
     if (!position) {
       setLocError(t('locationUnavailable'))
@@ -169,6 +188,16 @@ export default function TodayVisits() {
                     onClick={() => handleCheckin(plan)}
                   >
                     <span>{busyId === plan._id ? '...' : t('checkin')}</span>
+                  </button>
+                )}
+                {canCheckin && (
+                  <button
+                    type="button"
+                    className="btn-cancel-visit"
+                    disabled={busyId === plan._id}
+                    onClick={() => handleCancel(plan)}
+                  >
+                    <span>გაუქმება</span>
                   </button>
                 )}
                 {canCheckout && (
