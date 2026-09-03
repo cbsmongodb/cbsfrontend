@@ -50,6 +50,17 @@ function FilterIcon({ type }) {
       </svg>
     )
   }
+  if (type === 'hasPlan') {
+    return (
+      <svg {...common}>
+        <rect x="3" y="4" width="18" height="18" rx="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+        <path d="M9 16l2 2 4-4" />
+      </svg>
+    )
+  }
   if (type === 'notCheckedIn') {
     return (
       <svg {...common}>
@@ -89,7 +100,7 @@ function FilterIcon({ type }) {
   return null
 }
 
-const STATUS_KEYS = ['all', 'onField', 'notCheckedIn', 'absent', 'done', 'offToday']
+const STATUS_KEYS = ['all', 'onField', 'hasPlan', 'notCheckedIn', 'absent', 'done', 'offToday']
 
 export default function FieldTeamStatus() {
   const t = useTranslations('teamStatus')
@@ -97,6 +108,7 @@ export default function FieldTeamStatus() {
 
   const [employees, setEmployees] = useState([])
   const [visits, setVisits] = useState([])
+  const [plans, setPlans] = useState([])
   const [workStartTime, setWorkStartTime] = useState('10:00')
   const [error, setError] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
@@ -114,6 +126,23 @@ export default function FieldTeamStatus() {
     try {
       const items = await apiFetch('/api/attendance/live-feed')
       setVisits(buildVisits(items))
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  async function loadPlans() {
+    try {
+      const startOfDay = new Date()
+      startOfDay.setHours(0, 0, 0, 0)
+      const endOfDay = new Date()
+      endOfDay.setHours(23, 59, 59, 999)
+      const params = new URLSearchParams({
+        period_from: startOfDay.toISOString(),
+        period_to: endOfDay.toISOString(),
+      })
+      const data = await apiFetch(`/api/plannings?${params}`)
+      setPlans(data)
     } catch (err) {
       setError(err.message)
     }
@@ -140,14 +169,21 @@ export default function FieldTeamStatus() {
 
   useEffect(() => {
     loadFeed()
+    loadPlans()
     loadEmployees()
     loadConfig()
-    const interval = setInterval(loadFeed, 60000)
+    const interval = setInterval(() => {
+      loadFeed()
+      loadPlans()
+    }, 60000)
 
     let socket
     if (API_URL) {
       socket = io(API_URL, { transports: ['websocket'] })
-      socket.on('attendance:new', () => loadFeed())
+      socket.on('attendance:new', () => {
+        loadFeed()
+        loadPlans()
+      })
     }
 
     return () => {
@@ -173,25 +209,41 @@ export default function FieldTeamStatus() {
   }, [workStartTime, forceTick])
 
   const teamStatus = useMemo(() => {
-    const byEmployee = new Map()
+    const visitsByEmployee = new Map()
     visits.forEach((v) => {
       const key = String(v.employeeId)
-      if (!byEmployee.has(key)) byEmployee.set(key, [])
-      byEmployee.get(key).push(v)
+      if (!visitsByEmployee.has(key)) visitsByEmployee.set(key, [])
+      visitsByEmployee.get(key).push(v)
+    })
+
+    const plansByEmployee = new Map()
+    plans.forEach((p) => {
+      const key = String(p.performer?._id || p.performer)
+      if (!plansByEmployee.has(key)) plansByEmployee.set(key, [])
+      plansByEmployee.get(key).push(p)
     })
 
     return employees.map((emp) => {
-      const empVisits = byEmployee.get(String(emp._id)) || []
+      const key = String(emp._id)
+      const empVisits = visitsByEmployee.get(key) || []
+      const empPlans = plansByEmployee.get(key) || []
       const openVisit = empVisits.find((v) => v.isOpen)
+      const pendingPlans = empPlans.filter((p) => p.status === 'planned')
+
       const workDays = Array.isArray(emp.workDays) && emp.workDays.length > 0 ? emp.workDays : [1, 2, 3, 4, 5]
       const worksToday = workDays.includes(todayWeekday)
 
       let status
       if (openVisit) status = 'onField'
       else if (empVisits.length > 0) status = 'done'
+      else if (pendingPlans.length > 0) status = 'hasPlan'
       else if (!worksToday) status = 'offToday'
       else if (isPastAbsentCutoff) status = 'absent'
       else status = 'notCheckedIn'
+
+      const planHospitalNames = pendingPlans
+        .map((p) => p.hospital?.name || p.pharmacy?.pharmacyName)
+        .filter(Boolean)
 
       return {
         employeeId: emp._id,
@@ -200,9 +252,10 @@ export default function FieldTeamStatus() {
         hospitalName: openVisit?.hospitalName,
         checkinTime: openVisit?.checkinTime,
         visitCount: empVisits.length,
+        planHospitalNames,
       }
     })
-  }, [employees, visits, isPastAbsentCutoff, todayWeekday])
+  }, [employees, visits, plans, isPastAbsentCutoff, todayWeekday])
 
   const visibleTeamStatus = useMemo(() => {
     if (statusFilter === 'all') return teamStatus
@@ -210,7 +263,7 @@ export default function FieldTeamStatus() {
   }, [teamStatus, statusFilter])
 
   const statusCounts = useMemo(() => {
-    const counts = { onField: 0, notCheckedIn: 0, absent: 0, done: 0, offToday: 0 }
+    const counts = { onField: 0, hasPlan: 0, notCheckedIn: 0, absent: 0, done: 0, offToday: 0 }
     teamStatus.forEach((s) => counts[s.status]++)
     return counts
   }, [teamStatus])
@@ -249,6 +302,12 @@ export default function FieldTeamStatus() {
               )}
               {s.status === 'done' && (
                 <div className="team-status-detail">{t('detail.done', { count: s.visitCount })}</div>
+              )}
+              {s.status === 'hasPlan' && (
+                <div className="team-status-detail plan">
+                  {t('detail.hasPlan')}
+                  {s.planHospitalNames.length > 0 && `: ${s.planHospitalNames.join(', ')}`}
+                </div>
               )}
               {s.status === 'notCheckedIn' && (
                 <div className="team-status-detail muted">{t('detail.notCheckedIn')}</div>

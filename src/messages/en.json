@@ -152,14 +152,16 @@
       "notCheckedIn": "Not checked in yet",
       "absent": "Did not show up",
       "done": "Finished today",
-      "offToday": "Not working today"
+      "offToday": "Not working today",
+      "hasPlan": "Planned"
     },
     "detail": {
       "onField": "{hospital} · there for {time}",
       "done": "{count} visits today",
       "notCheckedIn": "Not checked in yet",
       "absent": "Did not show up today",
-      "offToday": "Not working today"
+      "offToday": "Not working today",
+      "hasPlan": "Has a planned visit today"
     },
     "emptyFilter": "No one matches this filter"
   },

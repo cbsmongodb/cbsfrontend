@@ -114,3 +114,16 @@
   align-items: center;
   gap: 6px;
 }
+
+.team-status-dot.status-hasPlan {
+  background: #2955a3;
+}
+
+.team-status-card.status-hasPlan {
+  border-color: #bfdbfe;
+}
+
+.team-status-detail.plan {
+  color: #2955a3;
+  font-weight: 600;
+}
