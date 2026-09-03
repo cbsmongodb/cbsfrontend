@@ -226,3 +226,47 @@ a.role-back-link:hover {
 .role-permissions-header h1 {
   margin-bottom: 0;
 }
+
+.role-quick-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.role-group {
+  margin-bottom: 18px;
+}
+
+.role-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e3a68;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.role-group-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.role-group-actions button {
+  border: none;
+  background: none;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #2955a3;
+  cursor: pointer;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.role-group-actions button:hover {
+  text-decoration: underline;
+}

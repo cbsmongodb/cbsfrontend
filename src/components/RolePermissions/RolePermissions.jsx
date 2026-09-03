@@ -7,13 +7,18 @@ import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import './RolePermissions.css'
 
-const RESOURCE_KEYS = [
-  'home', 'attendances', 'plannings', 'sales', 'budgets', 'drugs', 'product_types',
-  'manufacturers', 'manufacturer_countries', 'doctors', 'doctor_categories', 'doctor_sub_categories',
-  'hospitals', 'pharmacies', 'profiles', 'efficiency_report', 'reimbursement_report',
-  'employees', 'roles', 'designations', 'sections', 'groups', 'regions', 'leaves',
+// grouped to mirror the Sidebar's own structure, so it's clear which
+// checkbox controls which menu section
+const RESOURCE_GROUPS = [
+  { label: 'ძირითადი', keys: ['home', 'attendances'] },
+  { label: 'პროდუქტის კონფიგურაცია', keys: ['drugs', 'product_types', 'manufacturers', 'manufacturer_countries'] },
+  { label: 'ბაზრის კონფიგურაცია', keys: ['doctors', 'doctor_categories', 'doctor_sub_categories', 'hospitals', 'pharmacies', 'profiles'] },
+  { label: 'დაგეგმვა და გაყიდვები', keys: ['plannings', 'sales', 'budgets'] },
+  { label: 'რეპორტები', keys: ['efficiency_report', 'reimbursement_report'] },
+  { label: 'ადმინისტრაცია', keys: ['employees', 'roles', 'designations', 'sections', 'groups', 'regions', 'leaves'] },
 ]
 
+const RESOURCE_KEYS = RESOURCE_GROUPS.flatMap((g) => g.keys)
 const ACTION_KEYS = ['read', 'add', 'update', 'delete']
 
 function emptyPrivileges() {
@@ -89,6 +94,28 @@ export default function RolePermissions() {
         next[a] = allOn ? 0 : 1
       })
       return { ...prev, [resourceKey]: next }
+    })
+  }
+
+  // quick action — set "read" for every resource at once (or clear it)
+  function setAllRead(value) {
+    setPrivilegesDraft((prev) => {
+      const next = { ...prev }
+      RESOURCE_KEYS.forEach((key) => {
+        next[key] = { ...next[key], read: value ? 1 : 0 }
+      })
+      return next
+    })
+  }
+
+  // quick action — set "read" for every resource within one group
+  function setGroupRead(keys, value) {
+    setPrivilegesDraft((prev) => {
+      const next = { ...prev }
+      keys.forEach((key) => {
+        next[key] = { ...next[key], read: value ? 1 : 0 }
+      })
+      return next
     })
   }
 
@@ -172,36 +199,60 @@ export default function RolePermissions() {
 
               {isExpanded && (
                 <div className="role-accordion-body">
-                  <div className="role-permissions-table-wrap">
-                    <table className="role-permissions-table">
-                      <thead>
-                        <tr>
-                          <th>{t('pageHeader')}</th>
-                          {ACTION_KEYS.map((a) => (
-                            <th key={a}>{t(`actions.${a}`)}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {RESOURCE_KEYS.map((res) => (
-                          <tr key={res}>
-                            <td className="role-permissions-resource" onClick={() => toggleRow(res)}>
-                              {t(`resources.${res}`)}
-                            </td>
-                            {ACTION_KEYS.map((a) => (
-                              <td key={a} style={{ textAlign: 'center' }}>
-                                <input
-                                  type="checkbox"
-                                  checked={privilegesDraft[res]?.[a] === 1}
-                                  onChange={() => toggle(res, a)}
-                                />
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                  <div className="role-quick-actions">
+                    <button type="button" className="btn-gray btn-sm" onClick={() => setAllRead(true)}>
+                      <span>✓ ყველას ნახვა</span>
+                    </button>
+                    <button type="button" className="btn-gray btn-sm" onClick={() => setAllRead(false)}>
+                      <span>ყველას მოხსნა</span>
+                    </button>
                   </div>
+
+                  {RESOURCE_GROUPS.map((group) => (
+                    <div key={group.label} className="role-group">
+                      <div className="role-group-header">
+                        <span>{group.label}</span>
+                        <div className="role-group-actions">
+                          <button type="button" onClick={() => setGroupRead(group.keys, true)}>
+                            ✓ ამ ჯგუფის ნახვა
+                          </button>
+                          <button type="button" onClick={() => setGroupRead(group.keys, false)}>
+                            მოხსნა
+                          </button>
+                        </div>
+                      </div>
+                      <div className="role-permissions-table-wrap">
+                        <table className="role-permissions-table">
+                          <thead>
+                            <tr>
+                              <th>{t('pageHeader')}</th>
+                              {ACTION_KEYS.map((a) => (
+                                <th key={a}>{t(`actions.${a}`)}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {group.keys.map((res) => (
+                              <tr key={res}>
+                                <td className="role-permissions-resource" onClick={() => toggleRow(res)}>
+                                  {t(`resources.${res}`)}
+                                </td>
+                                {ACTION_KEYS.map((a) => (
+                                  <td key={a} style={{ textAlign: 'center' }}>
+                                    <input
+                                      type="checkbox"
+                                      checked={privilegesDraft[res]?.[a] === 1}
+                                      onChange={() => toggle(res, a)}
+                                    />
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  ))}
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 14 }}>
                     <button
