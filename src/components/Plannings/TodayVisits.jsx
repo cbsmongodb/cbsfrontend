@@ -17,6 +17,10 @@ function distanceInMeters(lat1, lng1, lat2, lng2) {
   return Math.round(2 * R * Math.asin(Math.sqrt(a)))
 }
 
+function doctorLabel(doc) {
+  return `${doc.firstName || ''} ${doc.lastName || ''}`.trim() || doc.name || 'უცნობი'
+}
+
 export default function TodayVisits() {
   const t = useTranslations('todayVisits')
   const [me, setMe] = useState(null)
@@ -25,7 +29,15 @@ export default function TodayVisits() {
   const [locError, setLocError] = useState('')
   const [error, setError] = useState('')
   const [busyId, setBusyId] = useState(null)
+
   const [cancelingPlan, setCancelingPlan] = useState(null)
+
+  const [checkoutPlan, setCheckoutPlan] = useState(null)
+  const [availableDoctors, setAvailableDoctors] = useState([])
+  const [selectedDoctorIds, setSelectedDoctorIds] = useState([])
+  const [doctorSearch, setDoctorSearch] = useState('')
+  const [loadingDoctors, setLoadingDoctors] = useState(false)
+  const [confirmingCheckout, setConfirmingCheckout] = useState(false)
 
   async function loadMe() {
     const employee = await apiFetch('/api/auth/me')
@@ -93,6 +105,59 @@ export default function TodayVisits() {
     }
   }
 
+  // checkout now opens the "which doctors did you see" modal first —
+  // the actual checkout call happens in confirmCheckout()
+  async function openCheckoutModal(plan) {
+    if (!position) {
+      setLocError(t('locationUnavailable'))
+      return
+    }
+    setCheckoutPlan(plan)
+    setSelectedDoctorIds([])
+    setDoctorSearch('')
+    setLoadingDoctors(true)
+    setError('')
+    try {
+      const doctors = await apiFetch(`/api/plannings/${plan._id}/doctors-available`)
+      setAvailableDoctors(doctors)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoadingDoctors(false)
+    }
+  }
+
+  function toggleDoctor(id) {
+    setSelectedDoctorIds((prev) =>
+      prev.includes(id) ? prev.filter((d) => d !== id) : [...prev, id]
+    )
+  }
+
+  async function confirmCheckout() {
+    const plan = checkoutPlan
+    if (!plan) return
+    setConfirmingCheckout(true)
+    setError('')
+    try {
+      for (const doctorId of selectedDoctorIds) {
+        await apiFetch(`/api/plannings/${plan._id}/doctors`, {
+          method: 'POST',
+          body: JSON.stringify({ doctorId }),
+        })
+      }
+      await apiFetch(`/api/plannings/${plan._id}/checkout`, {
+        method: 'POST',
+        body: JSON.stringify({ lat: position.lat, lng: position.lng, address: '' }),
+      })
+      setCheckoutPlan(null)
+      await reload()
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setConfirmingCheckout(false)
+    }
+  }
+
   async function confirmCancel() {
     const plan = cancelingPlan
     if (!plan) return
@@ -103,26 +168,6 @@ export default function TodayVisits() {
       await apiFetch(`/api/plannings/${plan._id}`, {
         method: 'PUT',
         body: JSON.stringify({ status: 'canceled' }),
-      })
-      await reload()
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setBusyId(null)
-    }
-  }
-
-  async function handleCheckout(plan) {
-    if (!position) {
-      setLocError(t('locationUnavailable'))
-      return
-    }
-    setBusyId(plan._id)
-    setError('')
-    try {
-      await apiFetch(`/api/plannings/${plan._id}/checkout`, {
-        method: 'POST',
-        body: JSON.stringify({ lat: position.lat, lng: position.lng, address: '' }),
       })
       await reload()
     } catch (err) {
@@ -146,6 +191,10 @@ export default function TodayVisits() {
     if (b.distance == null) return -1
     return a.distance - b.distance
   })
+
+  const filteredDoctors = availableDoctors.filter((d) =>
+    doctorLabel(d).toLowerCase().includes(doctorSearch.toLowerCase())
+  )
 
   return (
     <div className="today-visits">
@@ -207,7 +256,7 @@ export default function TodayVisits() {
                     type="button"
                     className="btn-gray"
                     disabled={busyId === plan._id}
-                    onClick={() => handleCheckout(plan)}
+                    onClick={() => openCheckoutModal(plan)}
                   >
                     <span>{busyId === plan._id ? '...' : t('checkout')}</span>
                   </button>
@@ -218,6 +267,7 @@ export default function TodayVisits() {
           )
         })}
       </div>
+
       {cancelingPlan && (
         <div className="cancel-modal-overlay" onClick={() => setCancelingPlan(null)}>
           <div className="cancel-modal" onClick={(e) => e.stopPropagation()}>
@@ -236,6 +286,70 @@ export default function TodayVisits() {
               </button>
               <button type="button" className="btn-red" onClick={confirmCancel}>
                 <span>დიახ, გავაუქმო</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {checkoutPlan && (
+        <div className="cancel-modal-overlay" onClick={() => !confirmingCheckout && setCheckoutPlan(null)}>
+          <div className="checkout-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>რომელი ექიმები ნახეთ?</h3>
+            <p className="checkout-modal-sub">
+              {checkoutPlan.hospital?.name || checkoutPlan.pharmacy?.pharmacyName}
+            </p>
+
+            <input
+              type="text"
+              className="field-input"
+              placeholder="ჩაწერეთ სახელი..."
+              value={doctorSearch}
+              onChange={(e) => setDoctorSearch(e.target.value)}
+              style={{ width: '100%', marginBottom: 12 }}
+            />
+
+            <div className="checkout-doctor-list">
+              {loadingDoctors && <p style={{ fontSize: 13, color: '#64748b' }}>იტვირთება...</p>}
+              {!loadingDoctors && filteredDoctors.length === 0 && (
+                <p style={{ fontSize: 13, color: '#64748b' }}>
+                  ამ ჰოსპიტალთან დაკავშირებული ექიმი ვერ მოიძებნა
+                </p>
+              )}
+              {filteredDoctors.map((doc) => (
+                <label key={doc._id} className="checkout-doctor-row">
+                  <input
+                    type="checkbox"
+                    checked={selectedDoctorIds.includes(doc._id)}
+                    onChange={() => toggleDoctor(doc._id)}
+                  />
+                  <span>{doctorLabel(doc)}</span>
+                </label>
+              ))}
+            </div>
+
+            <div className="checkout-modal-actions">
+              <button
+                type="button"
+                className="btn-gray"
+                disabled={confirmingCheckout}
+                onClick={() => setCheckoutPlan(null)}
+              >
+                <span>გაუქმება</span>
+              </button>
+              <button
+                type="button"
+                className="btn"
+                disabled={confirmingCheckout}
+                onClick={confirmCheckout}
+              >
+                <span>
+                  {confirmingCheckout
+                    ? '...'
+                    : selectedDoctorIds.length > 0
+                    ? `დადასტურება (${selectedDoctorIds.length})`
+                    : 'ექიმის გარეშე დადასტურება'}
+                </span>
               </button>
             </div>
           </div>
