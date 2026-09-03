@@ -167,6 +167,7 @@ export default function TodayVisits() {
           const isFar = distance != null && distance > FAR_THRESHOLD_METERS
           const canCheckin = plan.status === 'planned'
           const canCheckout = plan.status === 'i_went'
+          const canCancel = plan.status === 'planned' || plan.status === 'i_went'
           const isDone = plan.status === 'i_left' || plan.status === 'completed'
 
           return (
@@ -191,7 +192,7 @@ export default function TodayVisits() {
                     <span>{busyId === plan._id ? '...' : t('checkin')}</span>
                   </button>
                 )}
-                {canCheckin && (
+                {canCancel && (
                   <button
                     type="button"
                     className="btn-cancel-visit"
