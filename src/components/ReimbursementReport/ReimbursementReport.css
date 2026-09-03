@@ -1,0 +1,117 @@
+.reimbursement-report h1 {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.reimbursement-filters-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+.reimbursement-filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  align-items: end;
+}
+
+.reimbursement-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reimbursement-field label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.reimbursement-search-btn {
+  align-self: end;
+}
+
+.reimbursement-summary {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.reimbursement-summary-item {
+  flex: 1;
+  min-width: 140px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  text-align: center;
+}
+
+.reimbursement-summary-item.highlight {
+  background: linear-gradient(135deg, #1e3a68, #123324);
+  border-color: transparent;
+}
+
+.reimbursement-summary-item.highlight span {
+  color: #fff;
+}
+
+.reimbursement-summary-item.highlight label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.reimbursement-summary-item span {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  color: #1e3a68;
+}
+
+.reimbursement-summary-item label {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.reimbursement-table-scroll {
+  overflow-x: auto;
+  border: 1px solid #eee;
+  border-radius: 10px;
+}
+
+.reimbursement-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.reimbursement-table th,
+.reimbursement-table td {
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid #eee;
+  white-space: nowrap;
+}
+
+.reimbursement-table thead th {
+  background: #fff;
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.reimbursement-amount {
+  font-weight: 700;
+  color: #16a34a;
+}
+
+@media (max-width: 640px) {
+  .reimbursement-search-btn {
+    width: 100%;
+  }
+}
