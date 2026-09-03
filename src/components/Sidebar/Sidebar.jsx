@@ -11,6 +11,47 @@ import './Sidebar.css'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
+const RESOURCE_KEY = {
+  'dashboard/live-feeds': 'attendances',
+  'dashboard/team-status': 'attendances',
+  'dashboard/drugs': 'drugs',
+  'dashboard/drugs/import': 'drugs',
+  'dashboard/product-types': 'product_types',
+  'dashboard/manufacturers': 'manufacturers',
+  'dashboard/producing-countries': 'manufacturer_countries',
+  'dashboard/doctors': 'doctors',
+  'dashboard/doctor-categories': 'doctor_categories',
+  'dashboard/doctor-subcategories': 'doctor_sub_categories',
+  'dashboard/hospitals': 'hospitals',
+  'dashboard/hospitals/import': 'hospitals',
+  'dashboard/pharmacies': 'pharmacies',
+  'dashboard/profiles': 'profiles',
+  'dashboard/plannings': 'plannings',
+  'dashboard/doctor-entry-items': 'sales',
+  'dashboard/sales-listing': 'sales',
+  'dashboard/reports/efficiency': 'efficiency_report',
+  'dashboard/reports/reimbursement': 'reimbursement_report',
+  'dashboard/reports/attendances': 'attendances',
+  'dashboard/employees': 'employees',
+  'dashboard/employees/import': 'employees',
+  'dashboard/roles': 'roles',
+  'dashboard/designations': 'designations',
+  'dashboard/sections': 'sections',
+  'dashboard/groups': 'groups',
+  'dashboard/regions': 'regions',
+  'dashboard/divisions': 'regions',
+  'dashboard/leaves': 'leaves',
+  'dashboard/settings': 'employees',
+}
+
+function hasAccess(privileges, isAdmin, href) {
+  if (isAdmin) return true
+  const key = RESOURCE_KEY[href]
+  if (!key) return true // no mapping (e.g. dashboard, notifications) — always visible
+  if (!privileges) return false
+  return !!privileges[key]?.read
+}
+
 const NAV = [
   { type: 'link', href: 'dashboard', key: 'dashboard' },
   { type: 'link', href: 'dashboard/notifications', key: 'notifications' },
@@ -84,6 +125,14 @@ export default function Sidebar() {
 
   const [mobileOpen, setMobileOpen] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
+
+  const [employee, setEmployee] = useState(null)
+  useEffect(() => {
+    const stored = localStorage.getItem('employee')
+    if (stored) setEmployee(JSON.parse(stored))
+  }, [])
+  const isAdmin = employee?.role?.name?.toLowerCase() === 'admin'
+  const privileges = employee?.role?.privileges
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
@@ -217,6 +266,7 @@ export default function Sidebar() {
         <nav className="sidebar-nav">
           {NAV.map((entry) => {
             if (entry.type === 'link') {
+              if (!hasAccess(privileges, isAdmin, entry.href)) return null
               const href = `/${locale}/${entry.href}`
               const active = pathname === href
               return (
@@ -230,6 +280,9 @@ export default function Sidebar() {
                 </Link>
               )
             }
+
+            const visibleItems = entry.items.filter((item) => hasAccess(privileges, isAdmin, item.href))
+            if (visibleItems.length === 0) return null
 
             const isOpen = openGroups[entry.id]
             return (
@@ -245,7 +298,7 @@ export default function Sidebar() {
 
                 {isOpen && (
                   <div className="sidebar-group-items">
-                    {entry.items.map((item) => {
+                    {visibleItems.map((item) => {
                       const href = `/${locale}/${item.href}`
                       const active = pathname === href
                       return (
