@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import './ResourceTable.css'
 
 export default function SearchableSelect({ options, value, onChange, getLabel, placeholder, onCreate }) {
   const [query, setQuery] = useState('')
