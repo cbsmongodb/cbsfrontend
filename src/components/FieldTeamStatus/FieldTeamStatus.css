@@ -3,127 +3,204 @@
   margin-bottom: 16px;
 }
 
-.team-status-filters {
+.team-status-summary {
   display: flex;
-  gap: 6px;
+  gap: 12px;
+  margin-bottom: 18px;
   flex-wrap: wrap;
-  margin-bottom: 16px;
 }
 
-.team-status-filter-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  font-size: 12.5px;
-  cursor: pointer;
-  color: var(--color-text-muted);
+.team-status-summary-item {
+  flex: 1;
+  min-width: 120px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  text-align: center;
 }
 
-.team-status-filter-btn.active {
-  background: #1e293b;
-  color: #fff;
-  border-color: #1e293b;
+.team-status-summary-item span {
+  display: block;
+  font-size: 24px;
+  font-weight: 800;
+  color: #1e293b;
 }
 
-.team-status-count {
-  background: rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-  padding: 0 6px;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.team-status-filter-btn.active .team-status-count {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.team-status-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 8px;
-}
-
-.team-status-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  padding: 10px 12px;
-  background: var(--color-surface);
-}
-
-.team-status-card.status-onField {
-  border-color: #bbf7d0;
-  background: #f0fdf4;
-}
-
-.team-status-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.team-status-dot.status-onField {
-  background: #16a34a;
-}
-
-.team-status-dot.status-done {
-  background: #2563eb;
-}
-
-.team-status-dot.status-notCheckedIn {
-  background: #cbd5e1;
-}
-
-.team-status-name {
-  font-size: 13.5px;
-  font-weight: 600;
-}
-
-.team-status-detail {
+.team-status-summary-item label {
   font-size: 11.5px;
-  color: var(--color-text-muted);
-}
-
-.team-status-detail.muted {
-  color: #94a3b8;
-}
-
-.team-status-card.status-absent {
-  border-color: #fecaca;
-  background: #fef2f2;
-}
-
-.team-status-dot.status-absent {
-  background: #dc2626;
-}
-
-.team-status-detail.absent {
-  color: #dc2626;
+  color: #64748b;
   font-weight: 600;
+  text-transform: uppercase;
 }
 
-.team-status-filter-btn {
-  display: inline-flex;
+.team-status-summary-item.onsite span {
+  color: #16a34a;
+}
+
+.team-status-summary-item.planned span {
+  color: #2955a3;
+}
+
+.team-status-summary-item.done span {
+  color: #6b7280;
+}
+
+.tracker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tracker-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px 20px;
+  background: #fff;
+}
+
+.tracker-card-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tracker-name {
+  font-weight: 700;
+  font-size: 14.5px;
+  color: #1e293b;
+}
+
+.tracker-place {
+  font-size: 12.5px;
+  color: #64748b;
+}
+
+.tracker {
+  display: flex;
+  align-items: flex-start;
+}
+
+.tracker-step-wrap {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  last-child: none;
+}
+
+.tracker-step-wrap:last-child {
+  flex: 0 0 auto;
+}
+
+.tracker-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 70px;
+}
+
+.tracker-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #94a3b8;
+  border: 2px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.tracker-step.done .tracker-circle {
+  background: linear-gradient(135deg, #34d399, #16a34a);
+  color: #fff;
+  border-color: transparent;
+}
+
+.tracker-step.current .tracker-circle {
+  background: linear-gradient(135deg, #5b9bff, #2955a3);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 0 0 4px rgba(74, 157, 236, 0.2);
+}
+
+.tracker-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.tracker-step.done .tracker-label,
+.tracker-step.current .tracker-label {
+  color: #1e293b;
+}
+
+.tracker-line {
+  flex: 1;
+  height: 3px;
+  background: #e2e8f0;
+  margin: 0 2px;
+  margin-bottom: 20px;
+  border-radius: 2px;
+  transition: background-color 0.2s ease;
+}
+
+.tracker-line.filled {
+  background: linear-gradient(90deg, #34d399, #16a34a);
+}
+
+.tracker-canceled-section {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.tracker-canceled-section h3 {
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.tracker-canceled-list {
+  display: flex;
+  flex-direction: column;
   gap: 6px;
 }
 
-.team-status-dot.status-hasPlan {
-  background: #2955a3;
+.tracker-canceled-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: #94a3b8;
+  padding: 8px 12px;
+  background: #fafafa;
+  border-radius: 8px;
+  text-decoration: line-through;
 }
 
-.team-status-card.status-hasPlan {
-  border-color: #bfdbfe;
-}
+@media (max-width: 480px) {
+  .tracker-label {
+    font-size: 9.5px;
+    white-space: normal;
+  }
 
-.team-status-detail.plan {
-  color: #2955a3;
-  font-weight: 600;
+  .tracker-circle {
+    width: 26px;
+    height: 26px;
+    font-size: 11.5px;
+  }
+
+  .tracker-step {
+    min-width: 50px;
+  }
 }
