@@ -1,11 +1,8 @@
 'use client'
-
 import { useTranslations } from "next-intl";
 import ResourceTable from "@/components/ResourceTable/ResourceTable";
-
 export default function Page() {
   const t = useTranslations();
-
   return (
     <ResourceTable
       title={t('pages.groups')}
@@ -34,6 +31,22 @@ export default function Page() {
         },
         { name: "note", label: t('fields.note') },
         { name: "isActive", label: t('fields.isActive'), type: "checkbox" },
+        {
+          name: "members",
+          label: t('fields.members') || "წევრები",
+          type: "multiselect-search",
+          optionsEndpoint: "/api/employees",
+          optionsLabel: "name",
+          hideInTable: true,
+        },
+        {
+          name: "drugs",
+          label: t('fields.drugs') || "პრეპარატები",
+          type: "multiselect-search",
+          optionsEndpoint: "/api/drugs",
+          optionsLabel: "name",
+          hideInTable: true,
+        },
       ]}
     />
   );
