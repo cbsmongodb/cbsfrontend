@@ -12,19 +12,19 @@ export default function Page() {
         {
           name: "region",
           label: t('fields.region'),
-          type: "select",
+          type: "searchable-select",
           optionsEndpoint: "/api/admin/regions",
         },
         {
           name: "section",
           label: t('fields.section'),
-          type: "select",
+          type: "searchable-select",
           optionsEndpoint: "/api/admin/sections",
         },
         {
           name: "head",
           label: t('fields.head'),
-          type: "select",
+          type: "searchable-select",
           optionsEndpoint: "/api/employees",
           optionsLabel: "name",
           required: false,
