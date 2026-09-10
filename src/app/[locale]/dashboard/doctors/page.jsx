@@ -1,15 +1,14 @@
 'use client'
-
 import { useTranslations } from "next-intl";
 import ResourceTable from "@/components/ResourceTable/ResourceTable";
-
 export default function Page() {
   const t = useTranslations();
-
   return (
     <ResourceTable
       title={t('pages.doctors')}
       endpoint="/api/doctors"
+      paginated
+      pageSize={100}
       fields={[
         { name: "firstName", label: t('fields.firstName') },
         { name: "lastName", label: t('fields.lastName') },
