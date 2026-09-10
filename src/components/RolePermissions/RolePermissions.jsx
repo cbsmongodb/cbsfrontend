@@ -38,12 +38,17 @@ export default function RolePermissions() {
   const t = useTranslations('roles')
   const { locale } = useParams()
   const [roles, setRoles] = useState([])
+  const [employeeCounts, setEmployeeCounts] = useState({})
   const [expandedRoleId, setExpandedRoleId] = useState(null)
   const [privilegesDraft, setPrivilegesDraft] = useState({})
   const [loading, setLoading] = useState(true)
   const [savingId, setSavingId] = useState(null)
   const [error, setError] = useState('')
   const [successRoleId, setSuccessRoleId] = useState(null)
+
+  const [roleEmployees, setRoleEmployees] = useState([])
+  const [roleEmployeesLoading, setRoleEmployeesLoading] = useState(false)
+  const [reassigningId, setReassigningId] = useState(null)
 
   async function loadRoles() {
     setLoading(true)
@@ -57,13 +62,37 @@ export default function RolePermissions() {
     }
   }
 
+  async function loadEmployeeCounts() {
+    try {
+      const data = await apiFetch('/api/admin/roles/employee-counts')
+      setEmployeeCounts(data)
+    } catch {
+      // non-critical — page still works without counts
+    }
+  }
+
+  async function loadRoleEmployees(roleId) {
+    setRoleEmployeesLoading(true)
+    try {
+      const data = await apiFetch(`/api/admin/roles/${roleId}/employees`)
+      setRoleEmployees(data)
+    } catch (err) {
+      setError(err.message)
+      setRoleEmployees([])
+    } finally {
+      setRoleEmployeesLoading(false)
+    }
+  }
+
   useEffect(() => {
     loadRoles()
+    loadEmployeeCounts()
   }, [])
 
   function toggleExpand(role) {
     if (expandedRoleId === role._id) {
       setExpandedRoleId(null)
+      setRoleEmployees([])
       return
     }
     const merged = emptyPrivileges()
@@ -74,6 +103,7 @@ export default function RolePermissions() {
     setPrivilegesDraft(merged)
     setExpandedRoleId(role._id)
     setSuccessRoleId(null)
+    loadRoleEmployees(role._id)
   }
 
   function toggle(resourceKey, actionKey) {
@@ -159,8 +189,27 @@ export default function RolePermissions() {
       await apiFetch(`/api/admin/roles/${roleId}`, { method: 'DELETE' })
       if (expandedRoleId === roleId) setExpandedRoleId(null)
       loadRoles()
+      loadEmployeeCounts()
     } catch (err) {
       setError(err.message)
+    }
+  }
+
+  async function handleReassign(employeeId, newRoleId) {
+    if (!newRoleId) return
+    setReassigningId(employeeId)
+    setError('')
+    try {
+      await apiFetch(`/api/employees/${employeeId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ role: newRoleId }),
+      })
+      if (expandedRoleId) loadRoleEmployees(expandedRoleId)
+      loadEmployeeCounts()
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setReassigningId(null)
     }
   }
 
@@ -181,6 +230,7 @@ export default function RolePermissions() {
         {roles.map((r) => {
           const isExpanded = expandedRoleId === r._id
           const isAdmin = r.name === 'admin'
+          const count = employeeCounts[r._id] ?? null
           return (
             <div key={r._id} className={`role-accordion-item ${isExpanded ? 'open' : ''}`}>
               <button
@@ -193,6 +243,9 @@ export default function RolePermissions() {
                   <div className="role-accordion-name">{r.name}</div>
                   <div className="role-accordion-sub">
                     {isAdmin ? t('fullAccess') : t('hasAccessTo', { count: countActiveResources(r.privileges) })}
+                    {!isAdmin && count !== null && (
+                      <span className="role-employee-count-badge">{count} თანამშრომელი</span>
+                    )}
                   </div>
                 </div>
                 <div className="role-accordion-header-actions">
@@ -215,6 +268,44 @@ export default function RolePermissions() {
 
               {isExpanded && (
                 <div className="role-accordion-body">
+                  <div className="role-employees-section">
+                    <div className="role-employees-title">
+                      თანამშრომლები ამ როლზე {count !== null && `(${count})`}
+                    </div>
+                    {roleEmployeesLoading ? (
+                      <p className="role-employees-loading">იტვირთება...</p>
+                    ) : roleEmployees.length === 0 ? (
+                      <p className="role-employees-empty">არავინ არის მინიჭებული</p>
+                    ) : (
+                      <div className="role-employees-list">
+                        {roleEmployees.map((emp) => (
+                          <div key={emp._id} className="role-employee-row">
+                            <span className="role-employee-name">
+                              {emp.firstName} {emp.lastName}
+                            </span>
+                            <select
+                              className="field-select role-employee-reassign"
+                              value=""
+                              disabled={reassigningId === emp._id}
+                              onChange={(e) => handleReassign(emp._id, e.target.value)}
+                            >
+                              <option value="">
+                                {reassigningId === emp._id ? '...' : 'გადაყვანა სხვა როლზე'}
+                              </option>
+                              {roles
+                                .filter((other) => other._id !== r._id)
+                                .map((other) => (
+                                  <option key={other._id} value={other._id}>
+                                    {other.name}
+                                  </option>
+                                ))}
+                            </select>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
                   <div className="role-quick-actions">
                     <button type="button" className="btn-gray btn-sm" onClick={() => setAllRead(true)}>
                       <span>✓ ყველას ნახვა</span>
