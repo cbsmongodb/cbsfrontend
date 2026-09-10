@@ -7,7 +7,7 @@ import MultiSelectSearch from './MultiSelectSearch'
 import SearchableSelect from './SearchableSelect'
 import './ResourceTable.css'
 
-export default function ResourceTable({ title, endpoint, fields }) {
+export default function ResourceTable({ title, endpoint, fields, paginated = false, pageSize = 50 }) {
   const t = useTranslations('resourceTable')
   const WEEKDAYS = [
     { value: 1, label: t('weekdaysShort.mon') },
@@ -31,12 +31,24 @@ export default function ResourceTable({ title, endpoint, fields }) {
   const [optionsByField, setOptionsByField] = useState({})
   const [locationPickerField, setLocationPickerField] = useState(null)
   const [search, setSearch] = useState('')
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [total, setTotal] = useState(0)
 
   async function load() {
     setLoading(true)
     try {
-      const data = await apiFetch(endpoint)
-      setItems(data)
+      if (paginated) {
+        const params = new URLSearchParams({ page: String(page), limit: String(pageSize) })
+        if (search.trim()) params.set('search', search.trim())
+        const data = await apiFetch(`${endpoint}?${params.toString()}`)
+        setItems(data.docs || [])
+        setTotalPages(data.pages || 1)
+        setTotal(data.total || 0)
+      } else {
+        const data = await apiFetch(endpoint)
+        setItems(data)
+      }
     } catch (err) {
       setError(err.message)
     } finally {
@@ -62,10 +74,26 @@ export default function ResourceTable({ title, endpoint, fields }) {
   }
 
   useEffect(() => {
-    load()
+    setPage(1)
     loadOptions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [endpoint])
+
+  useEffect(() => {
+    if (!paginated) return
+    setPage(1)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search])
+
+  useEffect(() => {
+    if (!paginated) {
+      load()
+      return
+    }
+    const timer = setTimeout(load, 400)
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [endpoint, page, paginated, search])
 
   function relationId(value) {
     if (value && typeof value === 'object') return value._id || ''
@@ -405,6 +433,7 @@ export default function ResourceTable({ title, endpoint, fields }) {
   }
 
   function itemMatchesSearch(item) {
+    if (paginated) return true // backend already filtered
     if (!search.trim()) return true
     const q = search.trim().toLowerCase()
     return fields.some((f) => {
@@ -499,6 +528,30 @@ export default function ResourceTable({ title, endpoint, fields }) {
             )}
           </tbody>
         </table>
+        </div>
+      )}
+
+      {paginated && totalPages > 1 && (
+        <div className="resource-pagination">
+          <button
+            type="button"
+            className="btn-gray btn-sm"
+            disabled={page <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+          >
+            <span>←</span>
+          </button>
+          <span className="resource-pagination-info">
+            {page} / {totalPages} ({total})
+          </span>
+          <button
+            type="button"
+            className="btn-gray btn-sm"
+            disabled={page >= totalPages}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          >
+            <span>→</span>
+          </button>
         </div>
       )}
 
