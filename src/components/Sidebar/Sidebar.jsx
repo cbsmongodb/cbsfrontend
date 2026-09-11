@@ -14,6 +14,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL
 const RESOURCE_KEY = {
   'dashboard/live-feeds': 'attendances',
   'dashboard/team-status': 'attendances',
+  'dashboard/attendance-status': 'attendances',
   'dashboard/drugs': 'drugs',
   'dashboard/drugs/import': 'drugs',
   'dashboard/product-types': 'product_types',
@@ -41,7 +42,6 @@ const RESOURCE_KEY = {
   'dashboard/regions': 'regions',
   'dashboard/divisions': 'regions',
   'dashboard/leaves': 'leaves',
-  'dashboard/settings': 'employees',
 }
 
 function hasAccess(privileges, isAdmin, href) {
@@ -54,7 +54,6 @@ function hasAccess(privileges, isAdmin, href) {
 
 const NAV = [
   { type: 'link', href: 'dashboard', key: 'dashboard' },
-  { type: 'link', href: 'dashboard/notifications', key: 'notifications' },
   { type: 'link', href: 'dashboard/live-feeds', key: 'liveFeed' },
   { type: 'link', href: 'dashboard/team-status', key: 'teamStatus' },
   { type: 'link', href: 'dashboard/attendance-status', key: 'attendanceStatus' },
@@ -113,7 +112,6 @@ const NAV = [
       { href: 'dashboard/regions', key: 'regions' },
       { href: 'dashboard/divisions', key: 'divisions' },
       { href: 'dashboard/leaves', key: 'leaves' },
-      { href: 'dashboard/settings', key: 'settings' },
     ],
   },
 ]
@@ -187,8 +185,16 @@ export default function Sidebar() {
     return initial
   })
 
-  function toggleGroup(id) {
-    setOpenGroups((prev) => ({ ...prev, [id]: !prev[id] }))
+    function toggleGroup(id) {
+    setOpenGroups((prev) => {
+      const isCurrentlyOpen = prev[id]
+      const next = {}
+      NAV.forEach((entry) => {
+        if (entry.type === 'group') next[entry.id] = false
+      })
+      next[id] = !isCurrentlyOpen
+      return next
+    })
   }
 
   function switchLocale(newLocale) {
@@ -297,7 +303,7 @@ export default function Sidebar() {
                   <span className="sidebar-chevron">{isOpen ? '▾' : '▸'}</span>
                 </button>
 
-                {isOpen && (
+                              <div className={`sidebar-group-items-wrapper${isOpen ? ' open' : ''}`}>
                   <div className="sidebar-group-items">
                     {visibleItems.map((item) => {
                       const href = `/${locale}/${item.href}`
@@ -309,7 +315,7 @@ export default function Sidebar() {
                       )
                     })}
                   </div>
-                )}
+                </div>
               </div>
             )
           })}

@@ -10,7 +10,7 @@ import './RolePermissions.css'
 // grouped to mirror the Sidebar's own structure, so it's clear which
 // checkbox controls which menu section
 const RESOURCE_GROUPS = [
-  { label: 'ძირითადი', keys: ['home', 'attendances'] },
+  { label: 'ძირითადი', keys: ['attendances'] },
   { label: 'პროდუქტის კონფიგურაცია', keys: ['drugs', 'product_types', 'manufacturers', 'manufacturer_countries'] },
   { label: 'ბაზრის კონფიგურაცია', keys: ['doctors', 'doctor_categories', 'doctor_sub_categories', 'hospitals', 'pharmacies', 'profiles'] },
   { label: 'დაგეგმვა და გაყიდვები', keys: ['plannings', 'sales', 'budgets'] },
