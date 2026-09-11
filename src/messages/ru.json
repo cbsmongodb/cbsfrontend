@@ -432,6 +432,8 @@
     "assignmentContent": "Содержание задания",
     "reimbursementPerDay": "Возмещение/день",
     "head": "Руководитель",
-    "parentRegion": "Родительский регион"
+    "parentRegion": "Родительский регион",
+    "drugs": "Препараты",
+    "members": "Участники"
   }
 }

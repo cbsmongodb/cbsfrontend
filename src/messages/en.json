@@ -432,6 +432,8 @@
     "assignmentContent": "Assignment Content",
     "reimbursementPerDay": "Reimbursement / Day",
     "head": "Manager",
-    "parentRegion": "Parent Region"
+    "parentRegion": "Parent Region",
+    "drugs": "Drugs",
+    "members": "Members"
   }
 }

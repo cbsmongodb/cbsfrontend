@@ -31,6 +31,9 @@
       "label": "შეტყობინებები",
       "unread": "{count} ახალი",
       "none": "ახალი შეტყობინება არ არის"
+    },
+    "groups": {
+      "fields": {}
     }
   },
   "sidebar": {
@@ -432,6 +435,8 @@
     "assignmentContent": "დავალების შინაარსი",
     "reimbursementPerDay": "ანაზღაურება/დღე",
     "head": "ხელმძღვანელი",
-    "parentRegion": "მშობელი რეგიონი"
+    "parentRegion": "მშობელი რეგიონი",
+    "drugs": "პრეპარატები",
+    "members": "წევრები"
   }
 }
