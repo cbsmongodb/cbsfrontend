@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
+import TodayVisits from '@/components/Plannings/TodayVisits'
 import './Dashboard.css'
 
 function currentYear() {
@@ -147,22 +148,31 @@ export default function Dashboard() {
             </div>
           )}
 
-          <Link href={`/${locale}/dashboard/notifications`} className="dashboard-widget dashboard-widget-link accent-gray">
-            <div className="dashboard-widget-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
-                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-              </svg>
-            </div>
-            <div className="dashboard-widget-label">{t('notifications.label')}</div>
-            <div className="dashboard-widget-main">
-              {unreadCount > 0 ? (
-                <span className="dashboard-widget-badge">{t('notifications.unread', { count: unreadCount })}</span>
-              ) : (
-                <span className="muted">{t('notifications.none')}</span>
-              )}
-            </div>
-          </Link>
+          {/* temporarily hidden — flip to `true` to bring back */}
+          {false && (
+            <Link href={`/${locale}/dashboard/notifications`} className="dashboard-widget dashboard-widget-link accent-gray">
+              <div className="dashboard-widget-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+              </div>
+              <div className="dashboard-widget-label">{t('notifications.label')}</div>
+              <div className="dashboard-widget-main">
+                {unreadCount > 0 ? (
+                  <span className="dashboard-widget-badge">{t('notifications.unread', { count: unreadCount })}</span>
+                ) : (
+                  <span className="muted">{t('notifications.none')}</span>
+                )}
+              </div>
+            </Link>
+          )}
+        </div>
+      )}
+
+      {!loading && employee?.employeeType === 'field' && (
+        <div className="dashboard-today-visits-section">
+          <TodayVisits />
         </div>
       )}
     </div>
