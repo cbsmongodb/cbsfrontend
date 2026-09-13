@@ -274,23 +274,31 @@ export default function LiveFeed() {
                     <span className={`dot ${visit.isFar ? 'far' : 'checkin'}`} />
                   </td>
                   <td data-label={t('headers.employee')}>
-                    {visit.visitNumber != null && (
-                      <span className="visit-badge">{visit.visitNumber}</span>
-                    )}
-                    {visit.employeeName}
-                    {visit.isShort && <span className="short-badge">{t('shortVisit')}</span>}
-                    {showDayLink && (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setFocus({ type: 'day', employeeId: visit.employeeId })
-                        }}
-                        className="day-link"
-                      >
-                        {t('wholeDay')}
-                      </button>
-                    )}
+                    <div className="live-feed-employee-cell">
+                      <span className="live-feed-employee-name">
+                        {visit.visitNumber != null && (
+                          <span className="visit-badge">{visit.visitNumber}</span>
+                        )}
+                        {visit.employeeName}
+                      </span>
+                      {(visit.isShort || showDayLink) && (
+                        <span className="live-feed-employee-tags">
+                          {visit.isShort && <span className="short-badge">{t('shortVisit')}</span>}
+                          {showDayLink && (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setFocus({ type: 'day', employeeId: visit.employeeId })
+                              }}
+                              className="day-link"
+                            >
+                              {t('wholeDay')}
+                            </button>
+                          )}
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td data-label={t('headers.hospital')}>{visit.hospitalName}</td>
                   <td data-label={t('headers.checkin')}>
