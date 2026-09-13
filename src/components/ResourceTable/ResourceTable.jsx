@@ -215,28 +215,17 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
       const lng = form[f.lngField]
       const hasLocation = lat !== '' && lat != null && lng !== '' && lng != null
       return (
-        <div
-          key={f.name}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            border: '2px solid transparent',
-            background: '#f3f3f3',
-            borderRadius: 10,
-            padding: '0 12px',
-            height: '2.5em',
-            fontSize: 13,
-          }}
-        >
-          <span style={{ color: hasLocation ? '#16a34a' : '#94a3b8' }}>
+        <div key={f.name} className="resource-field-location">
+          <span
+            className="resource-field-location-text"
+            style={{ color: hasLocation ? '#16a34a' : '#94a3b8' }}
+          >
             {hasLocation ? `📍 ${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}` : t('locationNotSet')}
           </span>
           <button
             type="button"
             className="btn-gray btn-sm"
             onClick={() => setLocationPickerField(f)}
-            style={{ marginLeft: 'auto' }}
           >
             <span>{hasLocation ? t('locationEdit') : t('locationPick')}</span>
           </button>
