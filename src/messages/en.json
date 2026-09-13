@@ -122,7 +122,7 @@
       "minutes": "{count}min ago"
     },
     "search": "Search by employee name...",
-    "onlyFar": "Only suspicious visits (300m+ away)",
+    "onlyFar": "Only visits 300m+ away",
     "headers": {
       "employee": "Employee",
       "hospital": "Hospital",
@@ -133,7 +133,7 @@
     },
     "shortVisit": "Very short visit",
     "wholeDay": "Whole day",
-    "currentlyThere": "🟢 Currently there",
+    "currentlyThere": "Currently there",
     "empty": {
       "noSearchResults": "No matching employee found",
       "noFarVisits": "No suspicious visits",
