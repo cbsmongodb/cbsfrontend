@@ -1,7 +1,7 @@
 'use client'
 
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Tooltip, useMap } from 'react-leaflet'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
@@ -104,6 +104,16 @@ function FitBounds({ events, focusKey }) {
 
 export default function LiveFeedMap({ events = [], focusKey }) {
   const center = events[0] ? [events[0].lat, events[0].lng] : TBILISI
+
+  const [mapHeight, setMapHeight] = useState(350)
+  useEffect(() => {
+    function updateHeight() {
+      setMapHeight(window.innerWidth <= 640 ? 250 : 350)
+    }
+    updateHeight()
+    window.addEventListener('resize', updateHeight)
+    return () => window.removeEventListener('resize', updateHeight)
+  }, [])
   const orderedEvents = [...events].sort((a, b) => new Date(a.time) - new Date(b.time))
   const routePoints = orderedEvents.map((e) => [e.lat, e.lng])
 
@@ -123,7 +133,7 @@ export default function LiveFeedMap({ events = [], focusKey }) {
       <MapContainer
         center={center}
         zoom={events.length > 0 ? 17 : 11}
-        className="live-feed-map"
+        style={{ height: `${mapHeight}px`, width: '100%' }}
         attributionControl={false}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
