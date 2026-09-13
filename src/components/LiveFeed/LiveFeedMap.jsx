@@ -123,7 +123,7 @@ export default function LiveFeedMap({ events = [], focusKey }) {
       <MapContainer
         center={center}
         zoom={events.length > 0 ? 17 : 11}
-        style={{ height: '350px', width: '100%' }}
+        className="live-feed-map"
         attributionControl={false}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
