@@ -434,6 +434,7 @@
     "head": "Manager",
     "parentRegion": "Parent Region",
     "drugs": "Drugs",
-    "members": "Members"
+    "members": "Members",
+    "groups": "Groups"
   }
 }

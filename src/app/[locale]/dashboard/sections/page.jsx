@@ -13,12 +13,26 @@ export default function Page() {
       fields={[
         { name: "name", label: t('fields.name') },
         {
+          name: "head",
+          label: t('fields.head'),
+          type: "searchable-select",
+          optionsEndpoint: "/api/employees",
+          required: false,
+        },
+        {
           name: "region",
           label: t('fields.region'),
           type: "select",
           optionsEndpoint: "/api/admin/regions",
         },
-        { name: "note", label: t('fields.note') },
+        {
+          name: "groups",
+          label: t('fields.groups'),
+          type: "multiselect-search",
+          optionsEndpoint: "/api/admin/groups",
+          required: false,
+        },
+        { name: "note", label: t('fields.note'), required: false },
         { name: "isActive", label: t('fields.isActive'), type: "checkbox" },
       ]}
     />
