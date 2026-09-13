@@ -497,3 +497,11 @@
 .leaflet-control-zoom-in {
   border-bottom: 1px solid #eef0f3 !important;
 }
+
+/* ---------- Recolor the OSM basemap with a CSS filter (no API key / tile-provider needed) ---------- */
+/* only the tile layer is filtered — markers, routes, and popups sit on separate
+   Leaflet panes and are untouched, so their colors stay accurate */
+
+.map-gradient-border .leaflet-tile-pane {
+  filter: grayscale(0.25) saturate(0.75) brightness(1.06) contrast(0.96) hue-rotate(-6deg);
+}
