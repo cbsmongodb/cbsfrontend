@@ -637,3 +637,8 @@
     animation: none;
   }
 }
+
+.distance-tooltip.is-far {
+  background: #dc2626 !important;
+  box-shadow: 0 3px 10px rgba(220, 38, 38, 0.4) !important;
+}

@@ -171,7 +171,11 @@ export default function LiveFeedMap({ events = [], focusKey }) {
                 lineCap: 'round',
               }}
             >
-              <Tooltip permanent direction="center" className="distance-tooltip">
+              <Tooltip
+                permanent
+                direction="center"
+                className={event.isFar ? "distance-tooltip is-far" : "distance-tooltip"}
+              >
                 {distance}მ
               </Tooltip>
             </Polyline>
