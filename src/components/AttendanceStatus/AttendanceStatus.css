@@ -119,4 +119,24 @@
   .attendance-status-list {
     overflow-y: visible;
   }
+
+  /* filters scroll sideways in one row instead of wrapping top-to-bottom */
+  .attendance-status-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    margin: 0 -4px 14px;
+    padding: 2px 4px 6px;
+  }
+
+  .attendance-status-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .attendance-status-filter-btn {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
 }
