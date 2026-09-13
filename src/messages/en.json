@@ -17,7 +17,7 @@
     },
     "status": {
       "label": "Today's Status",
-      "live": "🟢 Currently in the field",
+      "live": "Currently in the field",
       "done": "✓ {count} visits recorded today",
       "none": "Not checked in yet today",
       "standaloneCheckin": "Standard check-in"
