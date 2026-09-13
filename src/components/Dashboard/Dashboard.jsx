@@ -16,6 +16,68 @@ function initials(first, last) {
   return `${(first || '')[0] || ''}${(last || '')[0] || ''}`.toUpperCase()
 }
 
+const DATE_LOCALES = { ka: 'ka-GE', en: 'en-US', ru: 'ru-RU' }
+
+// WMO weather codes (Open-Meteo) collapsed into a few simple icon buckets
+function weatherIconKind(code) {
+  if (code === 0) return 'sun'
+  if ([1, 2, 3].includes(code)) return 'cloud-sun'
+  if ([45, 48].includes(code)) return 'fog'
+  if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return 'rain'
+  if ([71, 73, 75, 77, 85, 86].includes(code)) return 'snow'
+  if ([95, 96, 99].includes(code)) return 'storm'
+  return 'cloud-sun'
+}
+
+function WeatherIcon({ kind }) {
+  if (kind === 'sun') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="4.5" />
+        <path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8l1.8-1.8M18 6l1.8-1.8" />
+      </svg>
+    )
+  }
+  if (kind === 'rain') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 16.5a4.5 4.5 0 0 1 .5-8.97A6 6 0 0 1 19 9.5a4 4 0 0 1-1 7.9H7z" />
+        <path d="M8 19l-1 2M12 19l-1 2M16 19l-1 2" />
+      </svg>
+    )
+  }
+  if (kind === 'snow') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 16.5a4.5 4.5 0 0 1 .5-8.97A6 6 0 0 1 19 9.5a4 4 0 0 1-1 7.9H7z" />
+        <path d="M9 19v3M12 19v3M15 19v3" strokeDasharray="1 2" />
+      </svg>
+    )
+  }
+  if (kind === 'storm') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 15.5a4.5 4.5 0 0 1 .5-8.97A6 6 0 0 1 19 8.5a4 4 0 0 1-1 7h-3" />
+        <path d="M13 14l-2.5 4h2L11 21" />
+      </svg>
+    )
+  }
+  if (kind === 'fog') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 8h13M3 12h18M3 16h13" />
+      </svg>
+    )
+  }
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="9" cy="10" r="3.2" />
+      <path d="M13 16.5a3.5 3.5 0 0 0-.5-6.97A5 5 0 0 0 3 11" />
+      <path d="M6.5 17h11a3 3 0 0 0 0-6 4.7 4.7 0 0 0-.4.02" />
+    </svg>
+  )
+}
+
 export default function Dashboard() {
   const t = useTranslations('dashboard')
   const { locale } = useParams()
@@ -25,6 +87,21 @@ export default function Dashboard() {
   const [checkinStatus, setCheckinStatus] = useState(null)
   const [unreadCount, setUnreadCount] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [weather, setWeather] = useState(null)
+
+  useEffect(() => {
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=41.7151&longitude=44.8271&current_weather=true')
+      .then((r) => r.json())
+      .then((data) => setWeather(data.current_weather))
+      .catch(() => {})
+  }, [])
+
+  const dateLocale = DATE_LOCALES[locale] || 'en-US'
+  const todayLabel = new Intl.DateTimeFormat(dateLocale, {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  }).format(new Date())
 
   useEffect(() => {
     const stored = localStorage.getItem('employee')
@@ -89,13 +166,29 @@ export default function Dashboard() {
             {employee?.role?.name && <span className="dashboard-role-badge">{employee.role.name}</span>}
           </div>
         </div>
-        <Link href={`/${locale}/dashboard/change-password`} className="dashboard-change-password-link">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" />
-            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-          </svg>
-          პაროლის შეცვლა
-        </Link>
+        <div className="dashboard-hero-right">
+          <div className="dashboard-date-weather">
+            <span className="ddw-date">{todayLabel}</span>
+            {weather && (
+              <>
+                <span className="ddw-sep" />
+                <span className="ddw-weather">
+                  <span className="ddw-weather-icon">
+                    <WeatherIcon kind={weatherIconKind(weather.weathercode)} />
+                  </span>
+                  {Math.round(weather.temperature)}°
+                </span>
+              </>
+            )}
+          </div>
+          <Link href={`/${locale}/dashboard/change-password`} className="dashboard-change-password-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            პაროლის შეცვლა
+          </Link>
+        </div>
       </div>
 
       {!loading && (checkinStatus || balance) && (
