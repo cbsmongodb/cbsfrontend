@@ -50,12 +50,13 @@ function pinIcon(color, number, isFar) {
   })
 }
 
-function hospitalIcon() {
+function hospitalIcon(isFar) {
+  const color = isFar ? '#dc2626' : '#7c3aed'
   const svg = `
     <svg width="40" height="54" viewBox="0 0 40 54" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M20 0C9 0 0 9 0 20c0 15 20 34 20 34s20-19 20-34C40 9 31 0 20 0z"
-        fill="#7c3aed"
+        fill="${color}"
         stroke="#fff"
         stroke-width="2.5"
       />
@@ -117,15 +118,19 @@ export default function LiveFeedMap({ events = [], focusKey }) {
   const orderedEvents = [...events].sort((a, b) => new Date(a.time) - new Date(b.time))
   const routePoints = orderedEvents.map((e) => [e.lat, e.lng])
 
-  // unique hospital positions among the currently shown events
+  // unique hospital positions among the currently shown events — isFar is
+  // true if ANY event at that hospital was 300m+ away, making the pin red
   const hospitalMarkers = []
-  const seenHospitals = new Set()
+  const hospitalIndexByKey = new Map()
   for (const e of events) {
     if (e.hospitalLat == null || e.hospitalLng == null) continue
     const key = `${e.hospitalLat},${e.hospitalLng}`
-    if (seenHospitals.has(key)) continue
-    seenHospitals.add(key)
-    hospitalMarkers.push({ lat: e.hospitalLat, lng: e.hospitalLng, name: e.hospitalName })
+    if (hospitalIndexByKey.has(key)) {
+      if (e.isFar) hospitalMarkers[hospitalIndexByKey.get(key)].isFar = true
+      continue
+    }
+    hospitalIndexByKey.set(key, hospitalMarkers.length)
+    hospitalMarkers.push({ lat: e.hospitalLat, lng: e.hospitalLng, name: e.hospitalName, isFar: !!e.isFar })
   }
 
   return (
@@ -174,7 +179,7 @@ export default function LiveFeedMap({ events = [], focusKey }) {
         })}
 
         {hospitalMarkers.map((h, i) => (
-          <Marker key={`hospital-${i}`} position={[h.lat, h.lng]} icon={hospitalIcon()}>
+          <Marker key={`hospital-${i}`} position={[h.lat, h.lng]} icon={hospitalIcon(h.isFar)}>
             <Popup>
               <strong>{h.name}</strong>
             </Popup>
