@@ -7,3 +7,9 @@
   min-width: 0;
   padding: 24px;
 }
+
+@media (min-width: 769px) {
+  .dashboard-content {
+    margin-left: 252px;
+  }
+}
