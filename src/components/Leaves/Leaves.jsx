@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
+import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './Leaves.css'
 
 function currentYear() {
@@ -158,20 +159,25 @@ export default function Leaves() {
 
       {/* Balance section */}
       <section className="leaves-section">
-        <h2>{t('sectionBalance')}</h2>
+        <h2 className="leaves-section-title">
+          <span className="leaves-section-icon balance">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+          </span>
+          {t('sectionBalance')}
+        </h2>
         <div className="leaves-balance-controls">
-          <select
-            className="field-select"
+          <SearchableSelect
+            options={employees}
             value={selectedEmployee}
-            onChange={(e) => setSelectedEmployee(e.target.value)}
-          >
-            <option value="">{t('selectEmployeePlaceholder')}</option>
-            {employees.map((emp) => (
-              <option key={emp._id} value={emp._id}>
-                {emp.name || `${emp.firstName} ${emp.lastName}`}
-              </option>
-            ))}
-          </select>
+            onChange={setSelectedEmployee}
+            getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
+            placeholder={t('selectEmployeePlaceholder')}
+          />
           <input
             type="number"
             className="field-input"
@@ -234,21 +240,25 @@ export default function Leaves() {
 
       {/* Entries section */}
       <section className="leaves-section">
-        <h2>{t('sectionEntries')}</h2>
+        <h2 className="leaves-section-title">
+          <span className="leaves-section-icon entries">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 3h6a1 1 0 0 1 1 1v1h1a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h1V4a1 1 0 0 1 1-1z" />
+              <line x1="8" y1="11" x2="16" y2="11" />
+              <line x1="8" y1="15" x2="13" y2="15" />
+            </svg>
+          </span>
+          {t('sectionEntries')}
+        </h2>
 
         <form className="resource-form" onSubmit={handleAddEntry}>
-          <select
-            className="field-select"
+          <SearchableSelect
+            options={employees}
             value={entryForm.employee}
-            onChange={(e) => setEntryForm((p) => ({ ...p, employee: e.target.value }))}
-          >
-            <option value="">{t('employeePlaceholder')}</option>
-            {employees.map((emp) => (
-              <option key={emp._id} value={emp._id}>
-                {emp.name || `${emp.firstName} ${emp.lastName}`}
-              </option>
-            ))}
-          </select>
+            onChange={(val) => setEntryForm((p) => ({ ...p, employee: val }))}
+            getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
+            placeholder={t('employeePlaceholder')}
+          />
           <select
             className="field-select"
             value={entryForm.type}
@@ -282,7 +292,7 @@ export default function Leaves() {
           </button>
         </form>
 
-        <table>
+        <table className="leaves-table">
           <thead>
             <tr>
               <th>{t('entriesHeaders.employee')}</th>
@@ -324,7 +334,15 @@ export default function Leaves() {
 
       {/* Rest days section */}
       <section className="leaves-section">
-        <h2>{t('sectionRestDays')}</h2>
+        <h2 className="leaves-section-title">
+          <span className="leaves-section-icon rest">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7v5l3.5 2" />
+            </svg>
+          </span>
+          {t('sectionRestDays')}
+        </h2>
 
         <form className="resource-form" onSubmit={handleAddRestDay}>
           <input
@@ -345,7 +363,7 @@ export default function Leaves() {
           </button>
         </form>
 
-        <table>
+        <table className="leaves-table">
           <thead>
             <tr>
               <th>{t('restDayHeaders.date')}</th>

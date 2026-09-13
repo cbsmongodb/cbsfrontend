@@ -1,0 +1,148 @@
+.mss-root {
+  position: relative;
+  width: 100%;
+}
+
+.mss-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.65rem 0.9rem;
+  background: #f4f5f7;
+  border: 1px solid #e2e4e9;
+  border-radius: 0.6rem;
+  font-size: 0.9rem;
+  color: #1e3a68;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease;
+}
+
+.mss-trigger:hover,
+.mss-trigger:focus-visible {
+  border-color: #1e3a68;
+  outline: none;
+}
+
+.mss-trigger-text {
+  color: #4b5568;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mss-chevron {
+  color: #8a93a3;
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.mss-chevron-open {
+  transform: rotate(180deg);
+}
+
+.mss-panel {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e2e4e9;
+  border-radius: 0.6rem;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 320px;
+}
+
+.mss-search-input {
+  border: none;
+  border-bottom: 1px solid #eceef2;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.9rem;
+  color: #1e3a68;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.mss-search-input::placeholder {
+  color: #a3aab8;
+}
+
+.mss-empty {
+  padding: 0.9rem;
+  text-align: center;
+  color: #8a93a3;
+  font-size: 0.85rem;
+}
+
+.mss-select-all {
+  border-bottom: 1px solid #eceef2;
+  background: #fafbfc;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.mss-list {
+  overflow-y: auto;
+}
+
+.mss-option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.88rem;
+  color: #2a3550;
+  cursor: pointer;
+}
+
+.mss-option:hover {
+  background: #f4f5f7;
+}
+
+.mss-option input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #1e3a68;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mss-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.mss-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.55rem;
+  background: linear-gradient(90deg, #1e3a68 0%, #2f6f5c 100%);
+  color: #ffffff;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+.mss-chip-remove {
+  background: none;
+  border: none;
+  color: #ffffff;
+  opacity: 0.75;
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1;
+  padding: 0;
+}
+
+.mss-chip-remove:hover {
+  opacity: 1;
+}

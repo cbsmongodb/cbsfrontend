@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { apiFetch } from '@/lib/api'
+import { apiFetch, apiDownload } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './ReimbursementReport.css'
 
@@ -29,6 +29,7 @@ export default function ReimbursementReport() {
 
   const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(false)
+  const [exporting, setExporting] = useState(false)
   const [error, setError] = useState('')
   const [loaded, setLoaded] = useState(false)
 
@@ -64,6 +65,22 @@ export default function ReimbursementReport() {
     }
   }
 
+  async function handleExport() {
+    setExporting(true)
+    setError('')
+    try {
+      const params = new URLSearchParams()
+      if (from) params.set('from', from)
+      if (to) params.set('to', to)
+      if (employeeId) params.set('employee', employeeId)
+      await apiDownload(`/api/reports/reimbursement/export?${params}`)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setExporting(false)
+    }
+  }
+
   const visibleRows = useMemo(() => {
     if (!search.trim()) return rows
     const q = search.trim().toLowerCase()
@@ -80,7 +97,20 @@ export default function ReimbursementReport() {
 
   return (
     <div className="reimbursement-report">
-      <h1>ტრანსპორტის ანაზღაურების რეპორტი</h1>
+      <div className="reimbursement-header">
+        <h1>ტრანსპორტის ანაზღაურების რეპორტი</h1>
+        <button
+          type="button"
+          className="btn reimbursement-export-btn"
+          onClick={handleExport}
+          disabled={exporting || loading}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 15V3M12 15l-4-4M12 15l4-4M2 17l.6 3a2 2 0 0 0 2 1.6h14.8a2 2 0 0 0 2-1.6l.6-3" />
+          </svg>
+          <span>{exporting ? 'იტვირთება...' : 'Excel-ში ექსპორტი'}</span>
+        </button>
+      </div>
 
       <div className="reimbursement-filters-card">
         <div className="reimbursement-filters-grid">

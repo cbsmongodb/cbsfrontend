@@ -187,15 +187,7 @@ export default function LiveFeed() {
   return (
     <div className="live-feed">
       <div className="live-feed-header">
-        <div className="live-feed-title">
-          <span className="live-feed-title-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="2.2" />
-              <path d="M7.5 7.5a6.5 6.5 0 0 0 0 9M16.5 7.5a6.5 6.5 0 0 1 0 9M4.5 4.5a11 11 0 0 0 0 15M19.5 4.5a11 11 0 0 1 0 15" />
-            </svg>
-          </span>
-          <h1>{t('title')}</h1>
-        </div>
+        <h1>{t('title')}</h1>
         {lastUpdated && (
           <span className="live-feed-updated">
             <span className="live-feed-updated-dot" />

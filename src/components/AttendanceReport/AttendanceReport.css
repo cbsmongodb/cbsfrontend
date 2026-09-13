@@ -69,6 +69,8 @@
 
 .attendance-report-table-scroll {
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: calc(100vh - 280px);
   border: 1px solid #eee;
   border-radius: 10px;
 }
@@ -88,10 +90,14 @@
 }
 
 .attendance-report-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   background: #fff;
   font-size: 11px;
   color: #64748b;
   text-transform: uppercase;
+  box-shadow: 0 1px 0 #eee;
 }
 
 .attendance-report-status-badge {
