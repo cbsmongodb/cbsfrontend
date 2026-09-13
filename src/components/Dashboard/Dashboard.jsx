@@ -16,9 +16,30 @@ function initials(first, last) {
   return `${(first || '')[0] || ''}${(last || '')[0] || ''}`.toUpperCase()
 }
 
-const DATE_LOCALES = { ka: 'ka-GE', en: 'en-US', ru: 'ru-RU' }
+const WEEKDAYS = {
+  ka: ['კვირა', 'ორშაბათი', 'სამშაბათი', 'ოთხშაბათი', 'ხუთშაბათი', 'პარასკევი', 'შაბათი'],
+  en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  ru: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
+}
 
-// WMO weather codes (Open-Meteo) collapsed into a few simple icon buckets
+const MONTHS = {
+  ka: ['იანვარი', 'თებერვალი', 'მარტი', 'აპრილი', 'მაისი', 'ივნისი', 'ივლისი', 'აგვისტო', 'სექტემბერი', 'ოქტომბერი', 'ნოემბერი', 'დეკემბერი'],
+  en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+  ru: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
+}
+
+function formatToday(locale) {
+  const now = new Date()
+  const weekdays = WEEKDAYS[locale] || WEEKDAYS.en
+  const months = MONTHS[locale] || MONTHS.en
+  const weekday = weekdays[now.getDay()]
+  const month = months[now.getMonth()]
+  const day = now.getDate()
+  if (locale === 'en') return `${weekday}, ${month} ${day}`
+  return `${weekday}, ${day} ${month}`
+}
+
+// WMO weather codes (Open-Meteo) collapsed into a few icon buckets
 function weatherIconKind(code) {
   if (code === 0) return 'sun'
   if ([1, 2, 3].includes(code)) return 'cloud-sun'
@@ -32,48 +53,75 @@ function weatherIconKind(code) {
 function WeatherIcon({ kind }) {
   if (kind === 'sun') {
     return (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="4.5" />
-        <path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8l1.8-1.8M18 6l1.8-1.8" />
+      <svg viewBox="0 0 40 40">
+        <circle cx="20" cy="20" r="9" fill="#f4b740" />
+        <g stroke="#f4b740" strokeWidth="2.4" strokeLinecap="round">
+          <line x1="20" y1="2" x2="20" y2="7" />
+          <line x1="20" y1="33" x2="20" y2="38" />
+          <line x1="2" y1="20" x2="7" y2="20" />
+          <line x1="33" y1="20" x2="38" y2="20" />
+          <line x1="7" y1="7" x2="10.5" y2="10.5" />
+          <line x1="29.5" y1="29.5" x2="33" y2="33" />
+          <line x1="7" y1="33" x2="10.5" y2="29.5" />
+          <line x1="29.5" y1="10.5" x2="33" y2="7" />
+        </g>
+      </svg>
+    )
+  }
+  if (kind === 'cloud-sun') {
+    return (
+      <svg viewBox="0 0 40 40">
+        <circle cx="15" cy="14" r="7" fill="#f4b740" />
+        <path d="M10 30a8 8 0 0 1 1-16 9.5 9.5 0 0 1 18 3 6.5 6.5 0 0 1-1 13H10z" fill="#b9c4d4" />
       </svg>
     )
   }
   if (kind === 'rain') {
     return (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M7 16.5a4.5 4.5 0 0 1 .5-8.97A6 6 0 0 1 19 9.5a4 4 0 0 1-1 7.9H7z" />
-        <path d="M8 19l-1 2M12 19l-1 2M16 19l-1 2" />
+      <svg viewBox="0 0 40 40">
+        <path d="M9 24a8 8 0 0 1 1-16 9.5 9.5 0 0 1 18 3 6.5 6.5 0 0 1-1 13H9z" fill="#9aa7ba" />
+        <g stroke="#4a90d9" strokeWidth="2.2" strokeLinecap="round">
+          <line x1="13" y1="30" x2="11" y2="35" />
+          <line x1="20" y1="30" x2="18" y2="35" />
+          <line x1="27" y1="30" x2="25" y2="35" />
+        </g>
       </svg>
     )
   }
   if (kind === 'snow') {
     return (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M7 16.5a4.5 4.5 0 0 1 .5-8.97A6 6 0 0 1 19 9.5a4 4 0 0 1-1 7.9H7z" />
-        <path d="M9 19v3M12 19v3M15 19v3" strokeDasharray="1 2" />
+      <svg viewBox="0 0 40 40">
+        <path d="M9 24a8 8 0 0 1 1-16 9.5 9.5 0 0 1 18 3 6.5 6.5 0 0 1-1 13H9z" fill="#b9c4d4" />
+        <g fill="#9fd3f0">
+          <circle cx="13" cy="32" r="1.8" />
+          <circle cx="20" cy="35" r="1.8" />
+          <circle cx="27" cy="32" r="1.8" />
+        </g>
       </svg>
     )
   }
   if (kind === 'storm') {
     return (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M7 15.5a4.5 4.5 0 0 1 .5-8.97A6 6 0 0 1 19 8.5a4 4 0 0 1-1 7h-3" />
-        <path d="M13 14l-2.5 4h2L11 21" />
+      <svg viewBox="0 0 40 40">
+        <path d="M9 22a8 8 0 0 1 1-16 9.5 9.5 0 0 1 18 3 6.5 6.5 0 0 1-1 13H9z" fill="#8792a3" />
+        <path d="M21 24l-6 9h5l-3 7 9-11h-5l4-5z" fill="#f4b740" />
       </svg>
     )
   }
   if (kind === 'fog') {
     return (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 8h13M3 12h18M3 16h13" />
+      <svg viewBox="0 0 40 40">
+        <g stroke="#aab3c0" strokeWidth="3" strokeLinecap="round">
+          <line x1="6" y1="14" x2="34" y2="14" />
+          <line x1="6" y1="20" x2="34" y2="20" />
+          <line x1="6" y1="26" x2="26" y2="26" />
+        </g>
       </svg>
     )
   }
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="9" cy="10" r="3.2" />
-      <path d="M13 16.5a3.5 3.5 0 0 0-.5-6.97A5 5 0 0 0 3 11" />
-      <path d="M6.5 17h11a3 3 0 0 0 0-6 4.7 4.7 0 0 0-.4.02" />
+    <svg viewBox="0 0 40 40">
+      <path d="M9 24a8 8 0 0 1 1-16 9.5 9.5 0 0 1 18 3 6.5 6.5 0 0 1-1 13H9z" fill="#b9c4d4" />
     </svg>
   )
 }
@@ -96,12 +144,7 @@ export default function Dashboard() {
       .catch(() => {})
   }, [])
 
-  const dateLocale = DATE_LOCALES[locale] || 'en-US'
-  const todayLabel = new Intl.DateTimeFormat(dateLocale, {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  }).format(new Date())
+  const todayLabel = formatToday(locale)
 
   useEffect(() => {
     const stored = localStorage.getItem('employee')
