@@ -610,7 +610,7 @@
   left: 0;
   bottom: 0;
   width: 4px;
-  background: linear-gradient(120deg, #14284a 0%, #1e3a68 60%, #1c5c46 130%);
+  background: linear-gradient(180deg, var(--blue) 0%, #c3cad4 50%, var(--green) 100%);
 }
 
 .live-feed-title {
