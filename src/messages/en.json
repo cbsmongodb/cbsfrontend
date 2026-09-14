@@ -91,7 +91,8 @@
       },
       "marketingPerformance": {
         "label": "Marketing Performance",
-        "prescriptions": "Prescriptions"
+        "prescriptions": "Prescriptions",
+        "employeeTargets": "Employee Targets"
       }
     },
     "attendanceStatus": "Attendance Status"
