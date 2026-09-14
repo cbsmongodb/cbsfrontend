@@ -31,7 +31,8 @@
       "label": "Уведомления",
       "unread": "{count} новых",
       "none": "Нет новых уведомлений"
-    }
+    },
+    "changePassword": "Изменить пароль"
   },
   "sidebar": {
     "dashboard": "Панель управления",
@@ -300,7 +301,8 @@
       "noDoctorsFound": "Врачи для этой больницы не найдены",
       "confirmWithCount": "Подтвердить ({count})",
       "confirmNoDoctor": "Подтвердить без врача"
-    }
+    },
+    "loading": "Загрузка..."
   },
   "resourceTable": {
     "save": "Сохранить",

@@ -34,7 +34,8 @@
     },
     "groups": {
       "fields": {}
-    }
+    },
+    "changePassword": "პაროლის შეცვლა"
   },
   "sidebar": {
     "dashboard": "დეშბორდი",
@@ -303,7 +304,8 @@
       "noDoctorsFound": "ამ ჰოსპიტალთან დაკავშირებული ექიმი ვერ მოიძებნა",
       "confirmWithCount": "დადასტურება ({count})",
       "confirmNoDoctor": "ექიმის გარეშე დადასტურება"
-    }
+    },
+    "loading": "იტვირთება..."
   },
   "resourceTable": {
     "save": "შენახვა",

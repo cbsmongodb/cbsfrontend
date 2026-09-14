@@ -31,7 +31,8 @@
       "label": "Notifications",
       "unread": "{count} new",
       "none": "No new notifications"
-    }
+    },
+    "changePassword": "Change password"
   },
   "sidebar": {
     "dashboard": "Dashboard",
@@ -300,7 +301,8 @@
       "noDoctorsFound": "No doctors found for this hospital",
       "confirmWithCount": "Confirm ({count})",
       "confirmNoDoctor": "Confirm without a doctor"
-    }
+    },
+    "loading": "Loading..."
   },
   "resourceTable": {
     "save": "Save",
