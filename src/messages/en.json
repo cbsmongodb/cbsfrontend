@@ -88,6 +88,10 @@
         "leaves": "Leaves",
         "settings": "System Settings",
         "employeesImport": "Import Employees"
+      },
+      "marketingPerformance": {
+        "label": "Marketing Performance",
+        "prescriptions": "Prescriptions"
       }
     },
     "attendanceStatus": "Attendance Status"

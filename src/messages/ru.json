@@ -88,6 +88,10 @@
         "leaves": "Отпуска",
         "settings": "Системные настройки",
         "employeesImport": "Импорт сотрудников"
+      },
+      "marketingPerformance": {
+        "label": "Эффективность маркетинга",
+        "prescriptions": "Назначения"
       }
     },
     "attendanceStatus": "Статус посещаемости"

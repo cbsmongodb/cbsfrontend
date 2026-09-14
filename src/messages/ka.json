@@ -91,6 +91,10 @@
         "leaves": "შვებულებები",
         "settings": "სისტემის პარამეტრები",
         "employeesImport": "თანამშრომლების იმპორტი"
+      },
+      "marketingPerformance": {
+        "label": "მარკეტინგის შესრულება",
+        "prescriptions": "დანიშნულებები"
       }
     },
     "attendanceStatus": "დასწრების სტატუსი"

@@ -34,6 +34,7 @@ const RESOURCE_KEY = {
   'dashboard/reports/reimbursement': 'reimbursement_report',
   'dashboard/reports/attendances': 'attendances',
   'dashboard/reports/staff-performance': 'staff_performance_report',
+  'dashboard/prescriptions': 'prescriptions',
   'dashboard/employees': 'employees',
   'dashboard/employees/import': 'employees',
   'dashboard/roles': 'roles',
@@ -119,6 +120,12 @@ const Icon = {
       <path d="M9.3 12.2l1.9 1.9 3.6-3.8" />
     </svg>
   ),
+  marketingPerformance: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 11l18-5v12L3 14v-3z" />
+      <path d="M11.6 16.8a2 2 0 0 1-3.8-1.2" />
+    </svg>
+  ),
 }
 
 const NAV = [
@@ -187,6 +194,14 @@ const NAV = [
       { href: 'dashboard/regions', key: 'regions' },
       { href: 'dashboard/divisions', key: 'divisions' },
       { href: 'dashboard/leaves', key: 'leaves' },
+    ],
+  },
+  {
+    type: 'group',
+    id: 'marketingPerformance',
+    icon: 'marketingPerformance',
+    items: [
+      { href: 'dashboard/prescriptions', key: 'prescriptions' },
     ],
   },
 ]
