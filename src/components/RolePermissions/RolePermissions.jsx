@@ -14,7 +14,7 @@ const RESOURCE_GROUPS = [
   { label: 'პროდუქტის კონფიგურაცია', keys: ['drugs', 'product_types', 'manufacturers', 'manufacturer_countries'] },
   { label: 'ბაზრის კონფიგურაცია', keys: ['doctors', 'doctor_categories', 'doctor_sub_categories', 'hospitals', 'pharmacies', 'profiles'] },
   { label: 'დაგეგმვა და გაყიდვები', keys: ['plannings', 'sales', 'budgets'] },
-  { label: 'რეპორტები', keys: ['efficiency_report', 'reimbursement_report'] },
+  { label: 'რეპორტები', keys: ['efficiency_report', 'reimbursement_report', 'staff_performance_report'] },
   { label: 'ადმინისტრაცია', keys: ['employees', 'roles', 'designations', 'sections', 'groups', 'regions', 'leaves'] },
 ]
 

@@ -72,7 +72,8 @@
         "label": "Reports",
         "efficiency": "Employee Efficiency",
         "reimbursement": "Transport Reimbursement",
-        "attendances": "Attendance Report"
+        "attendances": "Attendance Report",
+        "staffPerformance": "Staff Performance"
       },
       "administration": {
         "label": "Administration",

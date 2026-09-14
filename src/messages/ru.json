@@ -72,7 +72,8 @@
         "label": "Отчёты",
         "efficiency": "Эффективность сотрудников",
         "reimbursement": "Возмещение транспорта",
-        "attendances": "Отчёт о посещаемости"
+        "attendances": "Отчёт о посещаемости",
+        "staffPerformance": "Эффективность сотрудников"
       },
       "administration": {
         "label": "Администрирование",

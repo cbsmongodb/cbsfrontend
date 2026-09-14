@@ -75,7 +75,8 @@
         "label": "რეპორტები",
         "efficiency": "თანამშრომლის ეფექტურობა",
         "reimbursement": "ტრანსპორტის ანაზღაურება",
-        "attendances": "დასწრების რეპორტი"
+        "attendances": "დასწრების რეპორტი",
+        "staffPerformance": "თანამშრომელთა შესრულება"
       },
       "administration": {
         "label": "ადმინისტრაცია",
