@@ -96,7 +96,8 @@
         "label": "მარკეტინგის შესრულება",
         "prescriptions": "დანიშნულებები",
         "employeeTargets": "თანამშრომლების სამიზნეები",
-        "employeeSales": "თანამშრომლების გაყიდვები"
+        "employeeSales": "თანამშრომლების გაყიდვები",
+        "doctorSales": "ექიმების გაყიდვები"
       }
     },
     "attendanceStatus": "დასწრების სტატუსი"

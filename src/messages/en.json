@@ -93,7 +93,8 @@
         "label": "Marketing Performance",
         "prescriptions": "Prescriptions",
         "employeeTargets": "Employee Targets",
-        "employeeSales": "Employee Sales"
+        "employeeSales": "Employee Sales",
+        "doctorSales": "Doctor Sales"
       }
     },
     "attendanceStatus": "Attendance Status"
