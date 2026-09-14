@@ -95,7 +95,8 @@
       "marketingPerformance": {
         "label": "მარკეტინგის შესრულება",
         "prescriptions": "დანიშნულებები",
-        "employeeTargets": "თანამშრომლების სამიზნეები"
+        "employeeTargets": "თანამშრომლების სამიზნეები",
+        "employeeSales": "თანამშრომლების გაყიდვები"
       }
     },
     "attendanceStatus": "დასწრების სტატუსი"

@@ -92,7 +92,8 @@
       "marketingPerformance": {
         "label": "Эффективность маркетинга",
         "prescriptions": "Назначения",
-        "employeeTargets": "Цели сотрудников"
+        "employeeTargets": "Цели сотрудников",
+        "employeeSales": "Продажи сотрудников"
       }
     },
     "attendanceStatus": "Статус посещаемости"
