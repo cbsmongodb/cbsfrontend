@@ -289,7 +289,21 @@
     },
     "checkin": "ჩექინი",
     "checkout": "ჩექაუთი",
-    "doneLabel": "დასრულებულია"
+    "doneLabel": "დასრულებულია",
+    "cancel": "გაუქმება",
+    "cancelModal": {
+      "title": "ნამდვილად გსურთ გაუქმება?",
+      "body": "ეს ვიზიტი გაუქმებულად მონიშნება — ეს მოქმედება შექცევადი არაა.",
+      "no": "არა, დავტოვო",
+      "yes": "დიახ, გავაუქმო"
+    },
+    "checkoutModal": {
+      "title": "რომელი ექიმები ნახეთ?",
+      "searchPlaceholder": "ჩაწერეთ სახელი...",
+      "noDoctorsFound": "ამ ჰოსპიტალთან დაკავშირებული ექიმი ვერ მოიძებნა",
+      "confirmWithCount": "დადასტურება ({count})",
+      "confirmNoDoctor": "ექიმის გარეშე დადასტურება"
+    }
   },
   "resourceTable": {
     "save": "შენახვა",
@@ -440,5 +454,68 @@
     "drugs": "პრეპარატები",
     "members": "წევრები",
     "groups": "ჯგუფები"
+  },
+  "plannings": {
+    "title": {
+      "new": "ახალი ვიზიტი",
+      "edit": "ვიზიტის რედაქტირება"
+    },
+    "fields": {
+      "planType": "გეგმის ტიპი",
+      "period": "პერიოდი",
+      "pharmacy": "აფთიაქი",
+      "hospital": "ჰოსპიტალი",
+      "performer": "შემსრულებელი",
+      "status": "სტატუსი",
+      "doctorsVisited": "ექიმები, ვინც ნახეს"
+    },
+    "placeholders": {
+      "select": "აირჩიეთ...",
+      "typeName": "ჩაწერეთ სახელი...",
+      "search": "ძიება..."
+    },
+    "loading": "იტვირთება...",
+    "noDoctorsFound": "ექიმი ვერ მოიძებნა",
+    "buttons": {
+      "add": "დამატება",
+      "update": "განახლება",
+      "cancel": "გაუქმება",
+      "search": "ძებნა",
+      "edit": "რედაქტირება",
+      "delete": "წაშლა"
+    },
+    "validation": {
+      "performerRequired": "შემსრულებელი სავალდებულოა"
+    },
+    "filters": {
+      "all": "ყველა"
+    },
+    "showCount": {
+      "prefix": "აჩვენე",
+      "suffix": "ჩანაწერი"
+    },
+    "table": {
+      "type": "ტიპი",
+      "period": "პერიოდი",
+      "place": "ჰოსპიტალი/აფთიაქი",
+      "performer": "შემსრულებელი",
+      "doctors": "ექიმები",
+      "status": "სტატუსი",
+      "noRecords": "ჩანაწერები არ არის"
+    },
+    "planTypes": {
+      "hospital": "საავადმყოფო",
+      "pharmacy": "აფთიაქი",
+      "general": "მთავარი",
+      "doubleVisit": "ორმაგი ვიზიტი"
+    },
+    "statuses": {
+      "planned": "დაგეგმილია",
+      "i_went": "მივედი",
+      "i_left": "წავედი",
+      "canceled": "გაუქმებულია",
+      "completed": "დასრულებულია"
+    },
+    "unknownDoctor": "უცნობი"
   }
 }

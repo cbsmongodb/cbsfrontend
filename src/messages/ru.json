@@ -286,7 +286,21 @@
     },
     "checkin": "Отметить приход",
     "checkout": "Отметить уход",
-    "doneLabel": "Завершено"
+    "doneLabel": "Завершено",
+    "cancel": "Отмена",
+    "cancelModal": {
+      "title": "Точно хотите отменить?",
+      "body": "Этот визит будет отмечен как отменённый — это действие необратимо.",
+      "no": "Нет, оставить",
+      "yes": "Да, отменить"
+    },
+    "checkoutModal": {
+      "title": "Каких врачей вы посетили?",
+      "searchPlaceholder": "Введите имя...",
+      "noDoctorsFound": "Врачи для этой больницы не найдены",
+      "confirmWithCount": "Подтвердить ({count})",
+      "confirmNoDoctor": "Подтвердить без врача"
+    }
   },
   "resourceTable": {
     "save": "Сохранить",
@@ -437,5 +451,68 @@
     "drugs": "Препараты",
     "members": "Участники",
     "groups": "Группы"
+  },
+  "plannings": {
+    "title": {
+      "new": "Новый визит",
+      "edit": "Редактировать визит"
+    },
+    "fields": {
+      "planType": "Тип плана",
+      "period": "Период",
+      "pharmacy": "Аптека",
+      "hospital": "Больница",
+      "performer": "Исполнитель",
+      "status": "Статус",
+      "doctorsVisited": "Посещённые врачи"
+    },
+    "placeholders": {
+      "select": "Выберите...",
+      "typeName": "Введите имя...",
+      "search": "Поиск..."
+    },
+    "loading": "Загрузка...",
+    "noDoctorsFound": "Врачи не найдены",
+    "buttons": {
+      "add": "Добавить",
+      "update": "Обновить",
+      "cancel": "Отмена",
+      "search": "Поиск",
+      "edit": "Редактировать",
+      "delete": "Удалить"
+    },
+    "validation": {
+      "performerRequired": "Исполнитель обязателен"
+    },
+    "filters": {
+      "all": "Все"
+    },
+    "showCount": {
+      "prefix": "Показать",
+      "suffix": "записей"
+    },
+    "table": {
+      "type": "Тип",
+      "period": "Период",
+      "place": "Больница/Аптека",
+      "performer": "Исполнитель",
+      "doctors": "Врачи",
+      "status": "Статус",
+      "noRecords": "Записей нет"
+    },
+    "planTypes": {
+      "hospital": "Больница",
+      "pharmacy": "Аптека",
+      "general": "Общее",
+      "doubleVisit": "Двойной визит"
+    },
+    "statuses": {
+      "planned": "Запланировано",
+      "i_went": "Прибыл",
+      "i_left": "Убыл",
+      "canceled": "Отменено",
+      "completed": "Завершено"
+    },
+    "unknownDoctor": "Неизвестно"
   }
 }

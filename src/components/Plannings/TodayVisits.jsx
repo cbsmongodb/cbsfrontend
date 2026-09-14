@@ -263,7 +263,7 @@ export default function TodayVisits() {
                     disabled={busyId === plan._id}
                     onClick={() => setCancelingPlan(plan)}
                   >
-                    <span>გაუქმება</span>
+                    <span>{t('cancel')}</span>
                   </button>
                 )}
                 {isDone && <span className="today-visit-done">{t('doneLabel')}</span>}
@@ -283,14 +283,14 @@ export default function TodayVisits() {
                 <line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
             </div>
-            <h3>ნამდვილად გსურთ გაუქმება?</h3>
-            <p>ეს ვიზიტი გაუქმებულად მონიშნება — ეს მოქმედება შექცევადი არაა.</p>
+            <h3>{t('cancelModal.title')}</h3>
+            <p>{t('cancelModal.body')}</p>
             <div className="cancel-modal-actions">
               <button type="button" className="btn-gray" onClick={() => setCancelingPlan(null)}>
-                <span>არა, დავტოვო</span>
+                <span>{t('cancelModal.no')}</span>
               </button>
               <button type="button" className="btn-red" onClick={confirmCancel}>
-                <span>დიახ, გავაუქმო</span>
+                <span>{t('cancelModal.yes')}</span>
               </button>
             </div>
           </div>
@@ -300,7 +300,7 @@ export default function TodayVisits() {
       {checkoutPlan && (
         <div className="cancel-modal-overlay" onClick={() => !confirmingCheckout && setCheckoutPlan(null)}>
           <div className="checkout-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>რომელი ექიმები ნახეთ?</h3>
+            <h3>{t('checkoutModal.title')}</h3>
             <p className="checkout-modal-sub">
               {checkoutPlan.hospital?.name || checkoutPlan.pharmacy?.pharmacyName}
             </p>
@@ -308,17 +308,17 @@ export default function TodayVisits() {
             <input
               type="text"
               className="field-input"
-              placeholder="ჩაწერეთ სახელი..."
+              placeholder={t('checkoutModal.searchPlaceholder')}
               value={doctorSearch}
               onChange={(e) => setDoctorSearch(e.target.value)}
               style={{ width: '100%', marginBottom: 12 }}
             />
 
             <div className="checkout-doctor-list">
-              {loadingDoctors && <p style={{ fontSize: 13, color: '#64748b' }}>იტვირთება...</p>}
+              {loadingDoctors && <p style={{ fontSize: 13, color: '#64748b' }}>{t('loading')}</p>}
               {!loadingDoctors && filteredDoctors.length === 0 && (
                 <p style={{ fontSize: 13, color: '#64748b' }}>
-                  ამ ჰოსპიტალთან დაკავშირებული ექიმი ვერ მოიძებნა
+                  {t('checkoutModal.noDoctorsFound')}
                 </p>
               )}
               {filteredDoctors.map((doc) => (
@@ -340,7 +340,7 @@ export default function TodayVisits() {
                 disabled={confirmingCheckout}
                 onClick={() => setCheckoutPlan(null)}
               >
-                <span>გაუქმება</span>
+                <span>{t('cancel')}</span>
               </button>
               <button
                 type="button"
@@ -352,8 +352,8 @@ export default function TodayVisits() {
                   {confirmingCheckout
                     ? '...'
                     : selectedDoctorIds.length > 0
-                    ? `დადასტურება (${selectedDoctorIds.length})`
-                    : 'ექიმის გარეშე დადასტურება'}
+                    ? t('checkoutModal.confirmWithCount', { count: selectedDoctorIds.length })
+                    : t('checkoutModal.confirmNoDoctor')}
                 </span>
               </button>
             </div>

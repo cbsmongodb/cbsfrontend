@@ -286,7 +286,21 @@
     },
     "checkin": "Check In",
     "checkout": "Check Out",
-    "doneLabel": "Completed"
+    "doneLabel": "Completed",
+    "cancel": "Cancel",
+    "cancelModal": {
+      "title": "Are you sure you want to cancel?",
+      "body": "This visit will be marked canceled — this action cannot be undone.",
+      "no": "No, keep it",
+      "yes": "Yes, cancel"
+    },
+    "checkoutModal": {
+      "title": "Which doctors did you see?",
+      "searchPlaceholder": "Type a name...",
+      "noDoctorsFound": "No doctors found for this hospital",
+      "confirmWithCount": "Confirm ({count})",
+      "confirmNoDoctor": "Confirm without a doctor"
+    }
   },
   "resourceTable": {
     "save": "Save",
@@ -437,5 +451,68 @@
     "drugs": "Drugs",
     "members": "Members",
     "groups": "Groups"
+  },
+  "plannings": {
+    "title": {
+      "new": "New Visit",
+      "edit": "Edit Visit"
+    },
+    "fields": {
+      "planType": "Plan Type",
+      "period": "Period",
+      "pharmacy": "Pharmacy",
+      "hospital": "Hospital",
+      "performer": "Performer",
+      "status": "Status",
+      "doctorsVisited": "Doctors seen"
+    },
+    "placeholders": {
+      "select": "Select...",
+      "typeName": "Type a name...",
+      "search": "Search..."
+    },
+    "loading": "Loading...",
+    "noDoctorsFound": "No doctors found",
+    "buttons": {
+      "add": "Add",
+      "update": "Update",
+      "cancel": "Cancel",
+      "search": "Search",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "validation": {
+      "performerRequired": "Performer is required"
+    },
+    "filters": {
+      "all": "All"
+    },
+    "showCount": {
+      "prefix": "Show",
+      "suffix": "entries"
+    },
+    "table": {
+      "type": "Type",
+      "period": "Period",
+      "place": "Hospital/Pharmacy",
+      "performer": "Performer",
+      "doctors": "Doctors",
+      "status": "Status",
+      "noRecords": "No records"
+    },
+    "planTypes": {
+      "hospital": "Hospital",
+      "pharmacy": "Pharmacy",
+      "general": "General",
+      "doubleVisit": "Double Visit"
+    },
+    "statuses": {
+      "planned": "Planned",
+      "i_went": "Checked in",
+      "i_left": "Checked out",
+      "canceled": "Canceled",
+      "completed": "Completed"
+    },
+    "unknownDoctor": "Unknown"
   }
 }
