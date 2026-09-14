@@ -161,6 +161,14 @@ const NAV = [
   },
   {
     type: 'group',
+    id: 'marketingPerformance',
+    icon: 'marketingPerformance',
+    items: [
+      { href: 'dashboard/prescriptions', key: 'prescriptions' },
+    ],
+  },
+  {
+    type: 'group',
     id: 'planningSales',
     icon: 'planningSales',
     items: [
@@ -194,14 +202,6 @@ const NAV = [
       { href: 'dashboard/regions', key: 'regions' },
       { href: 'dashboard/divisions', key: 'divisions' },
       { href: 'dashboard/leaves', key: 'leaves' },
-    ],
-  },
-  {
-    type: 'group',
-    id: 'marketingPerformance',
-    icon: 'marketingPerformance',
-    items: [
-      { href: 'dashboard/prescriptions', key: 'prescriptions' },
     ],
   },
 ]
