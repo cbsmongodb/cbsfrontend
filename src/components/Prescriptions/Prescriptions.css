@@ -1,0 +1,228 @@
+.prescriptions-page {
+  --ink: #0f2744;
+  --ink-soft: #5b6b82;
+  --ink-faint: #93a1b4;
+  --line: #e9ebef;
+  --blue: #3f74d6;
+  --green: #2f9e6e;
+  --tint: rgba(63, 116, 214, 0.07);
+}
+
+.prescriptions-page h1 {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid;
+  border-image: linear-gradient(90deg, var(--blue) 0%, #c3cad4 50%, var(--green) 100%) 1;
+}
+
+.prescriptions-filters {
+  padding: 20px 22px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+.prescriptions-filters-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 14px;
+}
+
+.prescriptions-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+}
+
+.prescriptions-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.prescriptions-search-btn {
+  align-self: flex-end;
+}
+
+.prescriptions-quicksearch-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.prescriptions-quicksearch-row .field-input {
+  flex: 1;
+  min-width: 240px;
+}
+
+.prescriptions-inactive-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.prescriptions-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.prescriptions-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.prescriptions-table th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-faint);
+  background: #fbfbfa;
+  white-space: nowrap;
+}
+
+.prescriptions-table td {
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.prescriptions-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.prescriptions-table tbody tr:hover {
+  background: var(--tint);
+}
+
+.prescriptions-table td[colspan] {
+  text-align: center;
+  padding: 32px 12px;
+  color: var(--ink-faint);
+}
+
+.prescriptions-doctor-budgeted {
+  color: var(--blue);
+  font-weight: 700;
+}
+
+.prescriptions-drug-cell {
+  max-width: 320px;
+  white-space: normal;
+  color: var(--ink-soft);
+  font-size: 12.5px;
+}
+
+.prescriptions-active-toggle {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  border-radius: 999px;
+  border: none;
+  background: #dde3ea;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease;
+}
+
+.prescriptions-active-toggle span {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(15, 39, 68, 0.25);
+  transition: transform 0.2s ease;
+}
+
+.prescriptions-active-toggle.is-on {
+  background: var(--green);
+}
+
+.prescriptions-active-toggle.is-on span {
+  transform: translateX(14px);
+}
+
+.prescriptions-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.prescriptions-pagination-info {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 640px) {
+  .prescriptions-filters {
+    padding: 16px;
+  }
+
+  .prescriptions-filters-grid {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .prescriptions-field {
+    min-width: 0;
+  }
+
+  .prescriptions-table thead {
+    display: none;
+  }
+
+  .prescriptions-table,
+  .prescriptions-table tbody,
+  .prescriptions-table tr,
+  .prescriptions-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .prescriptions-table tr {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    padding: 10px 12px;
+  }
+
+  .prescriptions-table td {
+    border-bottom: none;
+    padding: 4px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .prescriptions-table td[data-label]:not([data-label=""])::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--ink-faint);
+    font-size: 10.5px;
+    flex-shrink: 0;
+  }
+}

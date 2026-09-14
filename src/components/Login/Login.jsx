@@ -1,10 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter, useParams, usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
-import Aurora from '@/components/Aurora/Aurora'
 import './Login.css'
 
 export default function Login() {
@@ -17,15 +16,6 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [showAurora, setShowAurora] = useState(false)
-
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 768px)')
-    setShowAurora(mq.matches)
-    const handler = (e) => setShowAurora(e.matches)
-    mq.addEventListener('change', handler)
-    return () => mq.removeEventListener('change', handler)
-  }, [])
 
   function switchLocale(newLocale) {
     const segments = pathname.split('/')
@@ -57,11 +47,12 @@ export default function Login() {
 
   return (
     <div className="login-container">
-      {showAurora && (
-        <div className="login-aurora-wrap">
-          <Aurora colorStops={['#a9cbff', '#c7cdd6', '#a3e8bd']} amplitude={0.6} blend={0.6} speed={0.5} lightMode={true} />
-        </div>
-      )}
+      <div className="login-bg" aria-hidden="true">
+        <span className="login-glow glow-blue" />
+        <span className="login-glow glow-green" />
+        <span className="login-bg-grid" />
+      </div>
+
       <div className="login-card">
         <div className="login-brand">
           <span className="login-brand-text">Global CBS</span>

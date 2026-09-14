@@ -1,25 +1,14 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import TodayVisits from './TodayVisits'
 import './PlanningsManager.css'
 
-const PLAN_TYPES = [
-  { _id: 'hospital', name: 'საავადმყოფო' },
-  { _id: 'pharmacy', name: 'აფთიაქი' },
-  { _id: 'general', name: 'მთავარი' },
-  { _id: 'double visit', name: 'ორმაგი ვიზიტი' },
-]
-
-const STATUSES = [
-  { _id: 'planned', name: 'დაგეგმილია' },
-  { _id: 'i_went', name: 'მივედი' },
-  { _id: 'i_left', name: 'წავედი' },
-  { _id: 'canceled', name: 'გაუქმებულია' },
-  { _id: 'completed', name: 'დასრულებულია' },
-]
+const PLAN_TYPE_IDS = ['hospital', 'pharmacy', 'general', 'double visit']
+const STATUS_IDS = ['planned', 'i_went', 'i_left', 'canceled', 'completed']
 
 function todayValue() {
   return new Date().toISOString().slice(0, 10)
@@ -36,19 +25,24 @@ function emptyForm() {
   }
 }
 
-function statusLabel(id) {
-  return STATUSES.find((s) => s._id === id)?.name || id
-}
-
-function typeLabel(id) {
-  return PLAN_TYPES.find((t) => t._id === id)?.name || id
-}
-
-function doctorLabel(doc) {
-  return `${doc.firstName || ''} ${doc.lastName || ''}`.trim() || doc.name || 'უცნობი'
-}
-
 export default function PlanningsManager() {
+  const t = useTranslations('plannings')
+
+  const PLAN_TYPES = PLAN_TYPE_IDS.map((id) => ({ _id: id, name: t(`planTypes.${id === 'double visit' ? 'doubleVisit' : id}`) }))
+  const STATUSES = STATUS_IDS.map((id) => ({ _id: id, name: t(`statuses.${id}`) }))
+
+  function statusLabel(id) {
+    return STATUSES.find((s) => s._id === id)?.name || id
+  }
+
+  function typeLabel(id) {
+    return PLAN_TYPES.find((p) => p._id === id)?.name || id
+  }
+
+  function doctorLabel(doc) {
+    return `${doc.firstName || ''} ${doc.lastName || ''}`.trim() || doc.name || t('unknownDoctor')
+  }
+
   const [employees, setEmployees] = useState([])
   const [hospitals, setHospitals] = useState([])
   const [pharmacies, setPharmacies] = useState([])
@@ -193,7 +187,7 @@ export default function PlanningsManager() {
   async function handleSubmit(e) {
     e.preventDefault()
     if (!form.performer) {
-      setError('შემსრულებელი სავალდებულოა')
+      setError(t('validation.performerRequired'))
       return
     }
     setSaving(true)
@@ -282,21 +276,21 @@ export default function PlanningsManager() {
       <TodayVisits />
 
       <div className="planning-form-card">
-        <h2>{editingId ? 'ვიზიტის რედაქტირება' : 'ახალი ვიზიტი'}</h2>
+        <h2>{editingId ? t('title.edit') : t('title.new')}</h2>
         <form onSubmit={handleSubmit} className="planning-form-grid">
           <div className="planning-field">
-            <label>გეგმის ტიპი</label>
+            <label>{t('fields.planType')}</label>
             <SearchableSelect
               options={PLAN_TYPES}
               value={form.planType}
               onChange={(v) => updateField('planType', v)}
               getLabel={(o) => o.name}
-              placeholder="აირჩიეთ..."
+              placeholder={t('placeholders.select')}
             />
           </div>
 
           <div className="planning-field">
-            <label>პერიოდი</label>
+            <label>{t('fields.period')}</label>
             <input
               type="date"
               className="field-input"
@@ -307,67 +301,67 @@ export default function PlanningsManager() {
 
           {form.planType === 'pharmacy' ? (
             <div className="planning-field">
-              <label>აფთიაქი</label>
+              <label>{t('fields.pharmacy')}</label>
               <SearchableSelect
                 options={pharmacies}
                 value={form.pharmacy}
                 onChange={(v) => updateField('pharmacy', v)}
                 getLabel={(o) => o.pharmacyName}
-                placeholder="ჩაწერეთ სახელი..."
+                placeholder={t('placeholders.typeName')}
                 onCreate={handleCreatePharmacy}
               />
             </div>
           ) : (
             <div className="planning-field">
-              <label>ჰოსპიტალი</label>
+              <label>{t('fields.hospital')}</label>
               <SearchableSelect
                 options={hospitals}
                 value={form.hospital}
                 onChange={(v) => updateField('hospital', v)}
                 getLabel={(o) => o.name}
-                placeholder="ჩაწერეთ სახელი..."
+                placeholder={t('placeholders.typeName')}
                 onCreate={handleCreateHospital}
               />
             </div>
           )}
 
           <div className="planning-field">
-            <label>შემსრულებელი</label>
+            <label>{t('fields.performer')}</label>
             <SearchableSelect
               options={employees}
               value={form.performer}
               onChange={(v) => updateField('performer', v)}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="ჩაწერეთ სახელი..."
+              placeholder={t('placeholders.typeName')}
             />
           </div>
 
           <div className="planning-field">
-            <label>სტატუსი</label>
+            <label>{t('fields.status')}</label>
             <SearchableSelect
               options={STATUSES}
               value={form.status}
               onChange={(v) => updateField('status', v)}
               getLabel={(o) => o.name}
-              placeholder="აირჩიეთ..."
+              placeholder={t('placeholders.select')}
             />
           </div>
 
           {editingId && (
             <div className="planning-field" style={{ gridColumn: '1 / -1' }}>
-              <label>ექიმები, ვინც ნახეს</label>
+              <label>{t('fields.doctorsVisited')}</label>
               <input
                 type="text"
                 className="field-input"
-                placeholder="ჩაწერეთ სახელი..."
+                placeholder={t('placeholders.typeName')}
                 value={doctorSearch}
                 onChange={(e) => setDoctorSearch(e.target.value)}
                 style={{ marginBottom: 8 }}
               />
               <div className="planning-doctor-list">
-                {loadingDoctors && <p style={{ fontSize: 13, color: '#64748b' }}>იტვირთება...</p>}
+                {loadingDoctors && <p style={{ fontSize: 13, color: '#64748b' }}>{t('loading')}</p>}
                 {!loadingDoctors && filteredDoctors.length === 0 && (
-                  <p style={{ fontSize: 13, color: '#64748b' }}>ექიმი ვერ მოიძებნა</p>
+                  <p style={{ fontSize: 13, color: '#64748b' }}>{t('noDoctorsFound')}</p>
                 )}
                 {filteredDoctors.map((doc) => (
                   <label key={doc._id} className="planning-doctor-row">
@@ -385,11 +379,11 @@ export default function PlanningsManager() {
 
           <div className="planning-field planning-field-actions">
             <button type="submit" className="btn" disabled={saving}>
-              <span>{saving ? '...' : editingId ? 'განახლება' : 'დამატება'}</span>
+              <span>{saving ? '...' : editingId ? t('buttons.update') : t('buttons.add')}</span>
             </button>
             {editingId && (
               <button type="button" className="btn-gray" onClick={cancelEdit}>
-                <span>გაუქმება</span>
+                <span>{t('buttons.cancel')}</span>
               </button>
             )}
           </div>
@@ -401,18 +395,18 @@ export default function PlanningsManager() {
       <div className="planning-filters-card">
         <div className="planning-filters-grid">
           <div className="planning-field">
-            <label>გეგმის ტიპი</label>
+            <label>{t('fields.planType')}</label>
             <SearchableSelect
               options={PLAN_TYPES}
               value={filterType}
               onChange={setFilterType}
               getLabel={(o) => o.name}
-              placeholder="ყველა"
+              placeholder={t('filters.all')}
             />
           </div>
 
           <div className="planning-field">
-            <label>პერიოდი</label>
+            <label>{t('fields.period')}</label>
             <div className="planning-date-range">
               <input type="date" className="field-input" value={filterFrom} onChange={(e) => setFilterFrom(e.target.value)} />
               <span>–</span>
@@ -421,29 +415,29 @@ export default function PlanningsManager() {
           </div>
 
           <div className="planning-field">
-            <label>შემსრულებელი</label>
+            <label>{t('fields.performer')}</label>
             <SearchableSelect
               options={employees}
               value={filterPerformer}
               onChange={setFilterPerformer}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="ყველა"
+              placeholder={t('filters.all')}
             />
           </div>
 
           <div className="planning-field">
-            <label>სტატუსი</label>
+            <label>{t('fields.status')}</label>
             <SearchableSelect
               options={STATUSES}
               value={filterStatus}
               onChange={setFilterStatus}
               getLabel={(o) => o.name}
-              placeholder="ყველა"
+              placeholder={t('filters.all')}
             />
           </div>
 
           <button type="button" className="btn planning-search-btn" onClick={loadPlans} disabled={loadingList}>
-            <span>{loadingList ? '...' : 'ძებნა'}</span>
+            <span>{loadingList ? '...' : t('buttons.search')}</span>
           </button>
         </div>
 
@@ -451,20 +445,20 @@ export default function PlanningsManager() {
           <input
             type="text"
             className="field-input"
-            placeholder="ძიება..."
+            placeholder={t('placeholders.search')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{ maxWidth: 280 }}
           />
           <div className="planning-showcount">
-            <span>აჩვენე</span>
+            <span>{t('showCount.prefix')}</span>
             <select value={showCount} onChange={(e) => setShowCount(Number(e.target.value))}>
               <option value={25}>25</option>
               <option value={50}>50</option>
               <option value={100}>100</option>
               <option value={250}>250</option>
             </select>
-            <span>ჩანაწერი</span>
+            <span>{t('showCount.suffix')}</span>
           </div>
         </div>
       </div>
@@ -473,12 +467,12 @@ export default function PlanningsManager() {
         <table className="planning-table">
           <thead>
             <tr>
-              <th>ტიპი</th>
-              <th>პერიოდი</th>
-              <th>ჰოსპიტალი/აფთიაქი</th>
-              <th>შემსრულებელი</th>
-              <th>ექიმები</th>
-              <th>სტატუსი</th>
+              <th>{t('table.type')}</th>
+              <th>{t('table.period')}</th>
+              <th>{t('table.place')}</th>
+              <th>{t('table.performer')}</th>
+              <th>{t('table.doctors')}</th>
+              <th>{t('table.status')}</th>
               <th></th>
             </tr>
           </thead>
@@ -493,17 +487,17 @@ export default function PlanningsManager() {
                 <td>{statusLabel(plan.status)}</td>
                 <td>
                   <button type="button" className="btn-gray btn-sm" onClick={() => startEdit(plan)}>
-                    <span>რედაქტირება</span>
+                    <span>{t('buttons.edit')}</span>
                   </button>
                   <button type="button" className="btn-gray btn-sm" onClick={() => handleDelete(plan._id)}>
-                    <span>წაშლა</span>
+                    <span>{t('buttons.delete')}</span>
                   </button>
                 </td>
               </tr>
             ))}
             {visiblePlans.length === 0 && (
               <tr>
-                <td colSpan={7}>ჩანაწერები არ არის</td>
+                <td colSpan={7}>{t('table.noRecords')}</td>
               </tr>
             )}
           </tbody>
