@@ -128,7 +128,7 @@
 
 .identity-role {
   font-size: 11px;
-  color: var(--blue);
+  color: var(--theme-accent, var(--blue));
   font-weight: 600;
 }
 
@@ -304,7 +304,7 @@
 
 .sidebar-group-header.open .sidebar-chevron {
   transform: rotate(90deg);
-  color: var(--blue);
+  color: var(--theme-accent, var(--blue));
 }
 
 .sidebar-group-items-wrapper {
@@ -347,7 +347,7 @@
 
 .sidebar-group-items a.active {
   background: var(--tint);
-  color: var(--blue);
+  color: var(--theme-accent, var(--blue));
   font-weight: 700;
 }
 
@@ -543,4 +543,36 @@
 
 .sidebar.theme-warehouse {
   background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #2a1608 0%, #4a2c1b 15%, #6b3f1e 30%, #9c5a2b 50%, #6b3f1e 65%, #4d2e16 85%, #2a1608 100%);
+}
+
+/* ---------- Per-theme accent colors (active pill, role text, chevron) ---------- */
+
+.sidebar.theme-gold {
+  --active-grad: linear-gradient(120deg, #57503a 0%, #8a7a52 60%, #b89b5e 130%);
+  --theme-accent: #d4af6a;
+}
+
+.sidebar.theme-division1 {
+  --active-grad: linear-gradient(120deg, #16294d 0%, #2955a3 60%, #4a90d9 130%);
+  --theme-accent: #7fb3ff;
+}
+
+.sidebar.theme-division2 {
+  --active-grad: linear-gradient(120deg, #4d1616 0%, #9c2b2b 60%, #d94a4a 130%);
+  --theme-accent: #ff9a8b;
+}
+
+.sidebar.theme-division3 {
+  --active-grad: linear-gradient(120deg, #164d33 0%, #2b9c66 60%, #4ad98a 130%);
+  --theme-accent: #7fe0a0;
+}
+
+.sidebar.theme-office {
+  --active-grad: linear-gradient(120deg, #33164d 0%, #6b2b9c 60%, #9d5ad9 130%);
+  --theme-accent: #c9a8ff;
+}
+
+.sidebar.theme-warehouse {
+  --active-grad: linear-gradient(120deg, #4d2e16 0%, #9c5a2b 60%, #d98a4a 130%);
+  --theme-accent: #ffb87a;
 }
