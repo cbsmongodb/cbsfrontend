@@ -35,6 +35,7 @@ const RESOURCE_KEY = {
   'dashboard/reports/attendances': 'attendances',
   'dashboard/reports/staff-performance': 'staff_performance_report',
   'dashboard/prescriptions': 'prescriptions',
+  'dashboard/employee-accounts': 'employee_accounts',
   'dashboard/employee-targets': 'employee_targets',
   'dashboard/employee-sales': 'employee_sales',
   'dashboard/doctor-sales': 'doctor_sales',
@@ -169,6 +170,7 @@ const NAV = [
     icon: 'marketingPerformance',
     items: [
       { href: 'dashboard/prescriptions', key: 'prescriptions' },
+      { href: 'dashboard/employee-accounts', key: 'employeeAccounts' },
       { href: 'dashboard/employee-targets', key: 'employeeTargets' },
       { href: 'dashboard/employee-sales', key: 'employeeSales' },
       { href: 'dashboard/doctor-sales', key: 'doctorSales' },

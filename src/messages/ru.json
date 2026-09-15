@@ -95,7 +95,8 @@
         "employeeTargets": "Цели сотрудников",
         "employeeSales": "Продажи сотрудников",
         "doctorSales": "Продажи врачей",
-        "doctorTargets": "Цели врачей"
+        "doctorTargets": "Цели врачей",
+        "employeeAccounts": "Счета сотрудников"
       }
     },
     "attendanceStatus": "Статус посещаемости"

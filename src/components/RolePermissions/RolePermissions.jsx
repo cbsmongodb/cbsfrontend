@@ -15,7 +15,7 @@ const RESOURCE_GROUPS = [
   { label: 'ბაზრის კონფიგურაცია', keys: ['doctors', 'doctor_categories', 'doctor_sub_categories', 'hospitals', 'pharmacies', 'profiles'] },
   { label: 'დაგეგმვა და გაყიდვები', keys: ['plannings', 'sales', 'budgets'] },
   { label: 'რეპორტები', keys: ['efficiency_report', 'reimbursement_report', 'staff_performance_report'] },
-    { label: 'მარკეტინგის შესრულება', keys: ['prescriptions', 'employee_targets', 'employee_sales', 'doctor_sales', 'doctor_targets'] },
+    { label: 'მარკეტინგის შესრულება', keys: ['prescriptions', 'employee_accounts', 'employee_targets', 'employee_sales', 'doctor_sales', 'doctor_targets'] },
   { label: 'ადმინისტრაცია', keys: ['employees', 'roles', 'designations', 'sections', 'groups', 'regions', 'leaves'] },
 ]
 

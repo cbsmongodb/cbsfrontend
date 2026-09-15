@@ -98,7 +98,8 @@
         "employeeTargets": "თანამშრომლების სამიზნეები",
         "employeeSales": "თანამშრომლების გაყიდვები",
         "doctorSales": "ექიმების გაყიდვები",
-        "doctorTargets": "ექიმების სამიზნეები"
+        "doctorTargets": "ექიმების სამიზნეები",
+        "employeeAccounts": "თანამშრომლების ანგარიშები"
       }
     },
     "attendanceStatus": "დასწრების სტატუსი"

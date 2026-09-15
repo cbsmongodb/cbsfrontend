@@ -95,7 +95,8 @@
         "employeeTargets": "Employee Targets",
         "employeeSales": "Employee Sales",
         "doctorSales": "Doctor Sales",
-        "doctorTargets": "Doctor Target"
+        "doctorTargets": "Doctor Target",
+        "employeeAccounts": "Employee Accounts"
       }
     },
     "attendanceStatus": "Attendance Status"
