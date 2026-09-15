@@ -165,11 +165,19 @@
 }
 
 .checkin-button.checkin {
-  background: var(--green);
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .checkin-button.checkout {
-  background: #c0392b;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 120, 100, 0.45);
+  color: #ffd9d0;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .checkin-button:disabled {
