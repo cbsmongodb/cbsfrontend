@@ -76,7 +76,8 @@
         "attendances": "Attendance Report",
         "staffPerformance": "Staff Performance",
         "analytics": "Analytics",
-        "budgets": "Budgets"
+        "budgets": "Budgets",
+        "directorDashboard": "Director Dashboard"
       },
       "administration": {
         "label": "Administration",
@@ -391,7 +392,8 @@
       "doctor_targets": "Doctor Target",
       "staff_performance_report": "Staff Performance",
       "analytics": "Analytics",
-      "budgets_report": "Budgets (Report)"
+      "budgets_report": "Budgets (Report)",
+      "director_dashboard": "Director Dashboard"
     },
     "actions": {
       "read": "View",

@@ -76,7 +76,8 @@
         "attendances": "Отчёт о посещаемости",
         "staffPerformance": "Эффективность сотрудников",
         "analytics": "Аналитика",
-        "budgets": "Бюджеты"
+        "budgets": "Бюджеты",
+        "directorDashboard": "Панель директора"
       },
       "administration": {
         "label": "Администрирование",
@@ -391,7 +392,8 @@
       "doctor_targets": "Цели врачей",
       "staff_performance_report": "Эффективность сотрудников",
       "analytics": "Аналитика",
-      "budgets_report": "Бюджеты (Отчёт)"
+      "budgets_report": "Бюджеты (Отчёт)",
+      "director_dashboard": "Панель директора"
     },
     "actions": {
       "read": "Просмотр",

@@ -79,7 +79,8 @@
         "attendances": "დასწრების რეპორტი",
         "staffPerformance": "თანამშრომელთა შესრულება",
         "analytics": "ანალიტიკა",
-        "budgets": "ბიუჯეტები"
+        "budgets": "ბიუჯეტები",
+        "directorDashboard": "დირექტორის დაფა"
       },
       "administration": {
         "label": "ადმინისტრაცია",
@@ -394,7 +395,8 @@
       "doctor_targets": "ექიმების სამიზნეები",
       "staff_performance_report": "თანამშრომელთა შესრულება",
       "analytics": "ანალიტიკა",
-      "budgets_report": "ბიუჯეტები (რეპორტი)"
+      "budgets_report": "ბიუჯეტები (რეპორტი)",
+      "director_dashboard": "დირექტორის დაფა"
     },
     "actions": {
       "read": "ნახვა",
