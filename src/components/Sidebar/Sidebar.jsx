@@ -35,6 +35,7 @@ const RESOURCE_KEY = {
   'dashboard/reports/attendances': 'attendances',
   'dashboard/reports/staff-performance': 'staff_performance_report',
   'dashboard/analytics': 'analytics',
+  'dashboard/budgets-list': 'budgets',
   'dashboard/prescriptions': 'prescriptions',
   'dashboard/employee-accounts': 'employee_accounts',
   'dashboard/employee-targets': 'employee_targets',
@@ -198,6 +199,7 @@ const NAV = [
       { href: 'dashboard/reports/attendances', key: 'attendances' },
       { href: 'dashboard/reports/staff-performance', key: 'staffPerformance' },
       { href: 'dashboard/analytics', key: 'analytics' },
+      { href: 'dashboard/budgets-list', key: 'budgets' },
     ],
   },
   {
@@ -238,6 +240,16 @@ export default function Sidebar() {
   }, [])
   const isAdmin = employee?.role?.name?.toLowerCase() === 'admin'
   const privileges = employee?.role?.privileges
+
+  const [theme, setTheme] = useState(null)
+  useEffect(() => {
+    if (!employee) return
+    apiFetch('/api/employees/me/theme')
+      .then(setTheme)
+      .catch((err) => console.error('loadTheme failed:', err))
+  }, [employee])
+
+  const DIVISION_ROMAN = { 1: 'I', 2: 'II', 3: 'III' }
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
@@ -340,7 +352,7 @@ export default function Sidebar() {
         <div className="sidebar-overlay" onClick={() => setMobileOpen(false)} />
       )}
 
-      <aside className={`sidebar${mobileOpen ? ' open' : ''}`}>
+      <aside className={`sidebar${mobileOpen ? ' open' : ''}${theme ? ` theme-${theme.scheme}` : ''}`}>
         <div className="sidebar-top">
           <button
             type="button"
@@ -378,7 +390,12 @@ export default function Sidebar() {
               <span className="identity-name">
                 {employee.firstName} {employee.lastName}
               </span>
-              {employee.role?.name && <span className="identity-role">{employee.role.name}</span>}
+              {theme?.label && (
+                <span className="identity-role">
+                  {theme.label}
+                  {theme.divisionNumber && ` · Division ${DIVISION_ROMAN[theme.divisionNumber]}`}
+                </span>
+              )}
             </div>
           </div>
         )}

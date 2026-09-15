@@ -519,3 +519,28 @@
     transition: none;
   }
 }
+/* ---------- Role/Division themes ---------- */
+
+.sidebar.theme-gold {
+  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, gray 0%, #645c45 15%, #857c55 30%, #9d8c5d 50%, #756842 65%, #584d32 85%, #707070 100%);
+}
+
+.sidebar.theme-division1 {
+  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #0a1128 0%, #1b2a4a 15%, #1e3a68 30%, #2955a3 50%, #1e3a68 65%, #16294d 85%, #0a1128 100%);
+}
+
+.sidebar.theme-division2 {
+  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #2a0a0a 0%, #4a1b1b 15%, #6b1e1e 30%, #9c2b2b 50%, #6b1e1e 65%, #4d1616 85%, #2a0a0a 100%);
+}
+
+.sidebar.theme-division3 {
+  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #0a2a1a 0%, #1b4a30 15%, #1e6b45 30%, #2b9c66 50%, #1e6b45 65%, #164d33 85%, #0a2a1a 100%);
+}
+
+.sidebar.theme-office {
+  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #1a0a2a 0%, #2f1b4a 15%, #4a1e6b 30%, #6b2b9c 50%, #4a1e6b 65%, #33164d 85%, #1a0a2a 100%);
+}
+
+.sidebar.theme-warehouse {
+  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #2a1608 0%, #4a2c1b 15%, #6b3f1e 30%, #9c5a2b 50%, #6b3f1e 65%, #4d2e16 85%, #2a1608 100%);
+}
