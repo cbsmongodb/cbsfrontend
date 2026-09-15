@@ -588,10 +588,11 @@
 }
 
 .sidebar.theme-gold .brand-cbs {
-  background: linear-gradient(90deg, #fff5d9 0%, #d4af6a 55%, #8a7a52 100%);
+  background: linear-gradient(90deg, #ffffff 0%, #f4d78a 45%, #6b5a35 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45));
 }
 
 .sidebar.theme-division1 {
