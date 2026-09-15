@@ -545,7 +545,7 @@
 }
 
 .sidebar.theme-division3 {
-  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #0a2a1a 0%, #1b4a30 15%, #1e6b45 30%, #2b9c66 50%, #1e6b45 65%, #164d33 85%, #0a2a1a 100%);
+  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, gray 0%, #3d4a3f 15%, #4d5c4f 30%, #5a6b52 50%, #445840 65%, #313d2f 85%, #707070 100%);
 }
 
 .sidebar.theme-office {
@@ -574,8 +574,8 @@
 }
 
 .sidebar.theme-division3 {
-  --active-grad: linear-gradient(120deg, #164d33 0%, #2b9c66 60%, #4ad98a 130%);
-  --theme-accent: #7fe0a0;
+  --active-grad: linear-gradient(120deg, #313d2f 0%, #4d5c4f 60%, #5a6b52 130%);
+  --theme-accent: #a3c9a8;
 }
 
 .sidebar.theme-office {
@@ -645,7 +645,7 @@
 }
 
 .sidebar.theme-division3 .brand-cbs {
-  background: linear-gradient(90deg, #e8fff2 0%, #7fe0a0 55%, #2b9c66 100%);
+  background: linear-gradient(90deg, #ffffff 0%, #cfe0d2 45%, #5a6b52 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -695,7 +695,7 @@
 }
 
 .sidebar.theme-division3 {
-  --role-label-color: #1f7a4d;
+  --role-label-color: #3d5240;
 }
 
 .sidebar.theme-office {
