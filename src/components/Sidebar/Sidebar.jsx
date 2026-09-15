@@ -335,6 +335,7 @@ export default function Sidebar() {
   function handleLogout() {
     localStorage.removeItem('token')
     localStorage.removeItem('employee')
+    localStorage.removeItem('sidebarTheme')
     router.replace(`/${locale}/login`)
   }
 
