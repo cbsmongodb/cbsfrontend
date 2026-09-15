@@ -592,7 +592,7 @@
 
 .sidebar.theme-gold {
   --ink: #fff8ec;
-  --ink-soft: #fff3d9;
+  --ink-soft: #f5f5f7;
   --ink-faint: #e0cd9c;
   --line: rgba(255, 255, 255, 0.15);
   --tint: rgba(255, 255, 255, 0.08);
@@ -608,7 +608,7 @@
 
 .sidebar.theme-division1 {
   --ink: #f0f6ff;
-  --ink-soft: #e8f0ff;
+  --ink-soft: #f5f5f7;
   --ink-faint: #b8ccf0;
   --line: rgba(255, 255, 255, 0.15);
   --tint: rgba(255, 255, 255, 0.08);
@@ -623,7 +623,7 @@
 
 .sidebar.theme-division2 {
   --ink: #fff0ee;
-  --ink-soft: #ffe8e5;
+  --ink-soft: #f5f5f7;
   --ink-faint: #f0b8b0;
   --line: rgba(255, 255, 255, 0.15);
   --tint: rgba(255, 255, 255, 0.08);
@@ -638,7 +638,7 @@
 
 .sidebar.theme-division3 {
   --ink: #eefff6;
-  --ink-soft: #e0fff0;
+  --ink-soft: #f5f5f7;
   --ink-faint: #a8ecc4;
   --line: rgba(255, 255, 255, 0.15);
   --tint: rgba(255, 255, 255, 0.08);
@@ -653,7 +653,7 @@
 
 .sidebar.theme-office {
   --ink: #f6f0ff;
-  --ink-soft: #f0e5ff;
+  --ink-soft: #f5f5f7;
   --ink-faint: #d4b8f5;
   --line: rgba(255, 255, 255, 0.15);
   --tint: rgba(255, 255, 255, 0.08);
@@ -668,7 +668,7 @@
 
 .sidebar.theme-warehouse {
   --ink: #fff5ea;
-  --ink-soft: #ffe9d4;
+  --ink-soft: #f5f5f7;
   --ink-faint: #f0c090;
   --line: rgba(255, 255, 255, 0.15);
   --tint: rgba(255, 255, 255, 0.08);
