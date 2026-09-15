@@ -1,0 +1,166 @@
+.analytics-page {
+  --ink: #0f2744;
+  --ink-soft: #5b6b82;
+  --ink-faint: #93a1b4;
+  --line: #e9ebef;
+  --blue: #3f74d6;
+  --green: #2f9e6e;
+  --tint: rgba(63, 116, 214, 0.07);
+}
+
+.analytics-page h1 {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid;
+  border-image: linear-gradient(90deg, var(--blue) 0%, #c3cad4 50%, var(--green) 100%) 1;
+}
+
+.analytics-filters {
+  padding: 20px 22px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+.analytics-filters-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.analytics-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 160px;
+}
+
+.analytics-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.analytics-search-btn {
+  align-self: flex-end;
+}
+
+.analytics-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.analytics-table {
+  width: 100%;
+  min-width: 1180px;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.analytics-table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--ink-faint);
+  background: #fbfbfa;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--line);
+}
+
+.analytics-group-row th {
+  text-align: center;
+  border-bottom: none;
+}
+
+.analytics-group-target {
+  background: rgba(63, 116, 214, 0.06) !important;
+  color: var(--blue) !important;
+}
+
+.analytics-group-prescription {
+  background: rgba(201, 160, 92, 0.1) !important;
+  color: #a5722c !important;
+}
+
+.analytics-group-sales {
+  background: rgba(47, 158, 110, 0.08) !important;
+  color: var(--green) !important;
+}
+
+.analytics-table td {
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.analytics-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.analytics-table tbody tr:hover {
+  background: var(--tint);
+}
+
+.analytics-table td[colspan] {
+  text-align: center;
+  padding: 32px 12px;
+  color: var(--ink-faint);
+}
+
+.analytics-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.analytics-doctor-budgeted {
+  color: var(--blue);
+  font-weight: 700;
+}
+
+.analytics-delta-positive {
+  color: var(--green);
+  font-weight: 600;
+}
+
+.analytics-delta-negative {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.analytics-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.analytics-pagination-info {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 640px) {
+  .analytics-filters {
+    padding: 16px;
+  }
+
+  .analytics-filters-grid {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .analytics-field {
+    min-width: 0;
+  }
+}

@@ -77,7 +77,8 @@
         "efficiency": "თანამშრომლის ეფექტურობა",
         "reimbursement": "ტრანსპორტის ანაზღაურება",
         "attendances": "დასწრების რეპორტი",
-        "staffPerformance": "თანამშრომელთა შესრულება"
+        "staffPerformance": "თანამშრომელთა შესრულება",
+        "analytics": "ანალიტიკა"
       },
       "administration": {
         "label": "ადმინისტრაცია",
