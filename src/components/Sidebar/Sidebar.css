@@ -80,7 +80,7 @@
 }
 
 .lang-switcher button.active {
-  background: var(--ink);
+  background: #0f2744;
   color: #fff;
 }
 
