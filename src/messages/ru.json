@@ -390,7 +390,8 @@
       "doctor_sales": "Продажи врачей",
       "doctor_targets": "Цели врачей",
       "staff_performance_report": "Эффективность сотрудников",
-      "analytics": "Аналитика"
+      "analytics": "Аналитика",
+      "budgets_report": "Бюджеты (Отчёт)"
     },
     "actions": {
       "read": "Просмотр",

@@ -35,7 +35,7 @@ const RESOURCE_KEY = {
   'dashboard/reports/attendances': 'attendances',
   'dashboard/reports/staff-performance': 'staff_performance_report',
   'dashboard/analytics': 'analytics',
-  'dashboard/budgets-list': 'budgets',
+  'dashboard/budgets-list': 'budgets_report',
   'dashboard/prescriptions': 'prescriptions',
   'dashboard/employee-accounts': 'employee_accounts',
   'dashboard/employee-targets': 'employee_targets',

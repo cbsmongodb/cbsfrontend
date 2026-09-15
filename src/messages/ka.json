@@ -393,7 +393,8 @@
       "doctor_sales": "ექიმების გაყიდვები",
       "doctor_targets": "ექიმების სამიზნეები",
       "staff_performance_report": "თანამშრომელთა შესრულება",
-      "analytics": "ანალიტიკა"
+      "analytics": "ანალიტიკა",
+      "budgets_report": "ბიუჯეტები (რეპორტი)"
     },
     "actions": {
       "read": "ნახვა",

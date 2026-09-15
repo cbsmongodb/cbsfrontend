@@ -390,7 +390,8 @@
       "doctor_sales": "Doctor Sales",
       "doctor_targets": "Doctor Target",
       "staff_performance_report": "Staff Performance",
-      "analytics": "Analytics"
+      "analytics": "Analytics",
+      "budgets_report": "Budgets (Report)"
     },
     "actions": {
       "read": "View",
