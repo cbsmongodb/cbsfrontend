@@ -128,7 +128,7 @@
 
 .identity-role {
   font-size: 11px;
-  color: var(--theme-accent, var(--blue));
+  color: var(--role-label-color, var(--blue));
   font-weight: 600;
 }
 
@@ -672,3 +672,29 @@
   background-clip: text;
   color: transparent;
 }
+
+/* ---------- Identity-chip role label — deeper shade for white card ---------- */
+.sidebar.theme-gold {
+  --role-label-color: #8a6d2f;
+}
+
+.sidebar.theme-division1 {
+  --role-label-color: #2955a3;
+}
+
+.sidebar.theme-division2 {
+  --role-label-color: #b8342f;
+}
+
+.sidebar.theme-division3 {
+  --role-label-color: #1f7a4d;
+}
+
+.sidebar.theme-office {
+  --role-label-color: #6b2b9c;
+}
+
+.sidebar.theme-warehouse {
+  --role-label-color: #9c5a2b;
+}
+
