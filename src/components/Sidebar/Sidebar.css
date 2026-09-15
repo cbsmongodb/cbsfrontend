@@ -358,7 +358,7 @@
 
 .sidebar-group-items a.active {
   background: var(--tint);
-  color: var(--theme-accent, var(--blue));
+  color: #ffffff;
   font-weight: 700;
 }
 
