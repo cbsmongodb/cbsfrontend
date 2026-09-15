@@ -241,11 +241,22 @@ export default function Sidebar() {
   const isAdmin = employee?.role?.name?.toLowerCase() === 'admin'
   const privileges = employee?.role?.privileges
 
-  const [theme, setTheme] = useState(null)
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === 'undefined') return null
+    try {
+      const cached = localStorage.getItem('sidebarTheme')
+      return cached ? JSON.parse(cached) : null
+    } catch {
+      return null
+    }
+  })
   useEffect(() => {
     if (!employee) return
     apiFetch('/api/employees/me/theme')
-      .then(setTheme)
+      .then((data) => {
+        setTheme(data)
+        localStorage.setItem('sidebarTheme', JSON.stringify(data))
+      })
       .catch((err) => console.error('loadTheme failed:', err))
   }, [employee])
 
