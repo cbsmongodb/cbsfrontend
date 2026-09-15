@@ -38,6 +38,7 @@ const RESOURCE_KEY = {
   'dashboard/employee-targets': 'employee_targets',
   'dashboard/employee-sales': 'employee_sales',
   'dashboard/doctor-sales': 'doctor_sales',
+  'dashboard/doctor-targets': 'doctor_targets',
   'dashboard/employees': 'employees',
   'dashboard/employees/import': 'employees',
   'dashboard/roles': 'roles',
@@ -171,6 +172,7 @@ const NAV = [
       { href: 'dashboard/employee-targets', key: 'employeeTargets' },
       { href: 'dashboard/employee-sales', key: 'employeeSales' },
       { href: 'dashboard/doctor-sales', key: 'doctorSales' },
+      { href: 'dashboard/doctor-targets', key: 'doctorTargets' },
     ],
   },
   {

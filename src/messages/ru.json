@@ -94,7 +94,8 @@
         "prescriptions": "Назначения",
         "employeeTargets": "Цели сотрудников",
         "employeeSales": "Продажи сотрудников",
-        "doctorSales": "Продажи врачей"
+        "doctorSales": "Продажи врачей",
+        "doctorTargets": "Цели врачей"
       }
     },
     "attendanceStatus": "Статус посещаемости"

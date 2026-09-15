@@ -97,7 +97,8 @@
         "prescriptions": "დანიშნულებები",
         "employeeTargets": "თანამშრომლების სამიზნეები",
         "employeeSales": "თანამშრომლების გაყიდვები",
-        "doctorSales": "ექიმების გაყიდვები"
+        "doctorSales": "ექიმების გაყიდვები",
+        "doctorTargets": "ექიმების სამიზნეები"
       }
     },
     "attendanceStatus": "დასწრების სტატუსი"
