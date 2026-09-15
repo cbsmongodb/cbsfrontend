@@ -662,10 +662,11 @@
 }
 
 .sidebar.theme-office .brand-cbs {
-  background: linear-gradient(90deg, #f5ecff 0%, #c9a8ff 55%, #6b2b9c 100%);
+  background: linear-gradient(90deg, #ffffff 0%, #d9c2ff 50%, #c9a8ff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
 }
 
 .sidebar.theme-warehouse {
