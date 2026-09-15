@@ -553,7 +553,7 @@
 }
 
 .sidebar.theme-warehouse {
-  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #2a1608 0%, #4a2c1b 15%, #6b3f1e 30%, #9c5a2b 50%, #6b3f1e 65%, #4d2e16 85%, #2a1608 100%);
+  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #2a1608 0%, #4a2c1b 15%, #7a4a20 30%, #b8752f 50%, #7a4a20 65%, #4a2c1b 85%, #2a1608 100%);
 }
 
 /* ---------- Per-theme accent colors (active pill, role text, chevron) ---------- */
@@ -584,8 +584,8 @@
 }
 
 .sidebar.theme-warehouse {
-  --active-grad: linear-gradient(120deg, #4d2e16 0%, #9c5a2b 60%, #d98a4a 130%);
-  --theme-accent: #ffb87a;
+  --active-grad: linear-gradient(120deg, #4a2c1b 0%, #7a4a20 60%, #b8752f 130%);
+  --theme-accent: #f0b87a;
 }
 
 /* ---------- Full per-theme text/brand coloring ---------- */
@@ -677,10 +677,11 @@
 }
 
 .sidebar.theme-warehouse .brand-cbs {
-  background: linear-gradient(90deg, #fff2e0 0%, #ffb87a 55%, #9c5a2b 100%);
+  background: linear-gradient(90deg, #ffffff 0%, #f0c896 50%, #f0b87a 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
 }
 
 /* ---------- Identity-chip role label — deeper shade for white card ---------- */
@@ -705,6 +706,6 @@
 }
 
 .sidebar.theme-warehouse {
-  --role-label-color: #9c5a2b;
+  --role-label-color: #7a4a20;
 }
 
