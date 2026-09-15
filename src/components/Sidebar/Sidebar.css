@@ -545,7 +545,7 @@
 }
 
 .sidebar.theme-division3 {
-  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, gray 0%, #1b4332 15%, #2d6a4f 30%, #40916c 50%, #2d6a4f 65%, #1b4332 85%, #707070 100%);
+  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #0f2a20 0%, #1b4332 15%, #2d6a4f 30%, #40916c 50%, #2d6a4f 65%, #1b4332 85%, #0f2a20 100%);
 }
 
 .sidebar.theme-office {
