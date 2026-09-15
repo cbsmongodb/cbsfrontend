@@ -75,7 +75,8 @@
         "reimbursement": "Возмещение транспорта",
         "attendances": "Отчёт о посещаемости",
         "staffPerformance": "Эффективность сотрудников",
-        "analytics": "Аналитика"
+        "analytics": "Аналитика",
+        "budgets": "Бюджеты"
       },
       "administration": {
         "label": "Администрирование",
@@ -381,7 +382,15 @@
       "sections": "Секции",
       "groups": "Группы",
       "regions": "Регионы",
-      "leaves": "Отпуска"
+      "leaves": "Отпуска",
+      "prescriptions": "Назначения",
+      "employee_accounts": "Счета сотрудников",
+      "employee_targets": "Цели сотрудников",
+      "employee_sales": "Продажи сотрудников",
+      "doctor_sales": "Продажи врачей",
+      "doctor_targets": "Цели врачей",
+      "staff_performance_report": "Эффективность сотрудников",
+      "analytics": "Аналитика"
     },
     "actions": {
       "read": "Просмотр",

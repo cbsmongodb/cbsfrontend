@@ -75,7 +75,8 @@
         "reimbursement": "Transport Reimbursement",
         "attendances": "Attendance Report",
         "staffPerformance": "Staff Performance",
-        "analytics": "Analytics"
+        "analytics": "Analytics",
+        "budgets": "Budgets"
       },
       "administration": {
         "label": "Administration",
@@ -381,7 +382,15 @@
       "sections": "Sections",
       "groups": "Groups",
       "regions": "Regions",
-      "leaves": "Leaves"
+      "leaves": "Leaves",
+      "prescriptions": "Prescriptions",
+      "employee_accounts": "Employee Accounts",
+      "employee_targets": "Employee Targets",
+      "employee_sales": "Employee Sales",
+      "doctor_sales": "Doctor Sales",
+      "doctor_targets": "Doctor Target",
+      "staff_performance_report": "Staff Performance",
+      "analytics": "Analytics"
     },
     "actions": {
       "read": "View",

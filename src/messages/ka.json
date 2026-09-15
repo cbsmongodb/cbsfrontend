@@ -78,7 +78,8 @@
         "reimbursement": "ტრანსპორტის ანაზღაურება",
         "attendances": "დასწრების რეპორტი",
         "staffPerformance": "თანამშრომელთა შესრულება",
-        "analytics": "ანალიტიკა"
+        "analytics": "ანალიტიკა",
+        "budgets": "ბიუჯეტები"
       },
       "administration": {
         "label": "ადმინისტრაცია",
@@ -384,7 +385,15 @@
       "sections": "სექციები",
       "groups": "ჯგუფები",
       "regions": "რეგიონები",
-      "leaves": "შვებულებები"
+      "leaves": "შვებულებები",
+      "prescriptions": "დანიშნულებები",
+      "employee_accounts": "თანამშრომლების ანგარიშები",
+      "employee_targets": "თანამშრომლების სამიზნეები",
+      "employee_sales": "თანამშრომლების გაყიდვები",
+      "doctor_sales": "ექიმების გაყიდვები",
+      "doctor_targets": "ექიმების სამიზნეები",
+      "staff_performance_report": "თანამშრომელთა შესრულება",
+      "analytics": "ანალიტიკა"
     },
     "actions": {
       "read": "ნახვა",
