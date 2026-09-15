@@ -270,7 +270,7 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
           className="field-select"
           value={form[f.name] || ''}
           onChange={(e) => handleChange(f.name, e.target.value)}
-          required
+          required={f.required !== undefined ? f.required : true}
         >
           <option value="">{f.label}...</option>
           {options.map((opt) => (
@@ -289,7 +289,7 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
           className="field-select"
           value={form[f.name] || ''}
           onChange={(e) => handleChange(f.name, e.target.value)}
-          required
+          required={f.required !== undefined ? f.required : true}
         >
           <option value="">{f.label}...</option>
           {(f.options || []).map((opt) => (
