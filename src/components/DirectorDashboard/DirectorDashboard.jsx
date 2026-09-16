@@ -112,9 +112,14 @@ function DualBarChart({ data, labelKey, targetKey, soldKey }) {
 export default function DirectorDashboard() {
   const [tab, setTab] = useState('product-sale')
 
+  const today = new Date().toLocaleDateString('ka-GE', { weekday: 'long', day: 'numeric', month: 'long' })
+
   return (
     <div className="director-dashboard-page">
-      <h1>Dashboard</h1>
+      <div className="director-header">
+        <h1>Dashboard</h1>
+        <p className="director-header-subtitle">{today}</p>
+      </div>
 
       <div className="director-tabs">
         <button type="button" className={tab === 'product-sale' ? 'active' : ''} onClick={() => setTab('product-sale')}>
