@@ -2,6 +2,17 @@
 
 import { useEffect, useState } from 'react'
 import { apiFetch } from '@/lib/api'
+import {
+  BarChart as RBarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Cell,
+} from 'recharts'
 import './DirectorDashboard.css'
 
 function fmtMoney(n) {
@@ -9,56 +20,84 @@ function fmtMoney(n) {
   return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
-function BarChart({ data, valueKey, labelKey, color = '#3f74d6' }) {
-  const max = Math.max(...data.map((d) => d[valueKey]), 1)
+function PremiumTooltip({ active, payload, label }) {
+  if (!active || !payload || !payload.length) return null
   return (
-    <div className="director-bar-chart">
-      {data.map((d, i) => (
-        <div className="director-bar-row" key={i}>
-          <div className="director-bar-track">
-            <div
-              className="director-bar-fill"
-              style={{ width: `${(d[valueKey] / max) * 100}%`, background: color }}
-            />
-          </div>
-          <span className="director-bar-value">{d[valueKey]?.toLocaleString?.() ?? d[valueKey]}</span>
-          <span className="director-bar-label">{d[labelKey]}</span>
+    <div className="director-recharts-tooltip">
+      <div className="director-recharts-tooltip-label">{label}</div>
+      {payload.map((p) => (
+        <div key={p.dataKey} className="director-recharts-tooltip-row">
+          <span className="director-recharts-tooltip-dot" style={{ background: p.color }} />
+          <span className="director-recharts-tooltip-name">{p.name}</span>
+          <span className="director-recharts-tooltip-value">{Number(p.value).toLocaleString()}</span>
         </div>
       ))}
     </div>
   )
 }
 
-function DualBarChart({ data, labelKey, targetKey, soldKey }) {
-  const max = Math.max(...data.map((d) => Math.max(d[targetKey] || 0, d[soldKey] || 0)), 1)
+function BarChart({ data, valueKey, labelKey }) {
+  const height = Math.max(data.length * 42, 200)
   return (
-    <div className="director-dual-chart">
-      <div className="director-dual-legend">
-        <span><i className="director-dual-swatch director-dual-swatch-target" />Monthly Target</span>
-        <span><i className="director-dual-swatch director-dual-swatch-sold" />Boxes Sold</span>
-      </div>
-      {data.map((d, i) => (
-        <div className="director-dual-row" key={i}>
-          <span className="director-dual-label">{d[labelKey]}</span>
-          <div className="director-dual-bars">
-            <div className="director-dual-track">
-              <div
-                className="director-dual-fill director-dual-fill-target"
-                style={{ width: `${((d[targetKey] || 0) / max) * 100}%` }}
-              />
-              <span className="director-dual-value">{(d[targetKey] || 0).toLocaleString()}</span>
-            </div>
-            <div className="director-dual-track">
-              <div
-                className="director-dual-fill director-dual-fill-sold"
-                style={{ width: `${((d[soldKey] || 0) / max) * 100}%` }}
-              />
-              <span className="director-dual-value">{(d[soldKey] || 0).toLocaleString()}</span>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
+    <ResponsiveContainer width="100%" height={height}>
+      <RBarChart data={data} layout="vertical" margin={{ top: 4, right: 24, bottom: 4, left: 4 }} barCategoryGap="28%">
+        <defs>
+          <linearGradient id="salesBarGradient" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#3f74d6" />
+            <stop offset="100%" stopColor="#2f9e6e" />
+          </linearGradient>
+        </defs>
+        <CartesianGrid horizontal={false} stroke="#eceef2" />
+        <XAxis type="number" tick={{ fontSize: 11, fill: '#9aa7ba' }} axisLine={false} tickLine={false} />
+        <YAxis
+          type="category"
+          dataKey={labelKey}
+          width={130}
+          tick={{ fontSize: 12, fontWeight: 600, fill: '#0f2744' }}
+          axisLine={false}
+          tickLine={false}
+        />
+        <Tooltip content={<PremiumTooltip />} cursor={{ fill: 'rgba(63, 116, 214, 0.05)' }} />
+        <Bar dataKey={valueKey} name="Sale Boxes" fill="url(#salesBarGradient)" radius={[0, 8, 8, 0]} maxBarSize={22} animationDuration={700} animationEasing="ease-out" />
+      </RBarChart>
+    </ResponsiveContainer>
+  )
+}
+
+function DualBarChart({ data, labelKey, targetKey, soldKey }) {
+  const height = Math.max(data.length * 42, 200)
+  return (
+    <ResponsiveContainer width="100%" height={height}>
+      <RBarChart data={data} layout="vertical" margin={{ top: 4, right: 24, bottom: 4, left: 4 }} barCategoryGap="28%" barGap={4}>
+        <defs>
+          <linearGradient id="soldBarGradient" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#3f74d6" />
+            <stop offset="100%" stopColor="#2f9e6e" />
+          </linearGradient>
+        </defs>
+        <CartesianGrid horizontal={false} stroke="#eceef2" />
+        <XAxis type="number" tick={{ fontSize: 11, fill: '#9aa7ba' }} axisLine={false} tickLine={false} />
+        <YAxis
+          type="category"
+          dataKey={labelKey}
+          width={130}
+          tick={{ fontSize: 12, fontWeight: 600, fill: '#0f2744' }}
+          axisLine={false}
+          tickLine={false}
+        />
+        <Tooltip content={<PremiumTooltip />} cursor={{ fill: 'rgba(63, 116, 214, 0.05)' }} />
+        <Legend
+          verticalAlign="top"
+          align="left"
+          height={28}
+          iconType="circle"
+          iconSize={8}
+          wrapperStyle={{ fontSize: 11, fontWeight: 600, color: '#5b6b82' }}
+        />
+        <Bar dataKey={targetKey} name="Monthly Target" fill="#c3cad4" radius={[0, 6, 6, 0]} maxBarSize={14} animationDuration={700} />
+        <Bar dataKey={soldKey} name="Boxes Sold" fill="url(#soldBarGradient)" radius={[0, 6, 6, 0]} maxBarSize={14} animationDuration={700} animationBegin={150} />
+      </RBarChart>
+    </ResponsiveContainer>
   )
 }
 
