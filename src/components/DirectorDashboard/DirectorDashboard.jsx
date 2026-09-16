@@ -263,12 +263,43 @@ const stockColumns = [
   },
 ]
 
+function StockChart({ data }) {
+  const height = 380
+  return (
+    <ResponsiveContainer width="100%" height={height}>
+      <RBarChart data={data} margin={{ top: 4, right: 12, bottom: 70, left: 4 }} barCategoryGap="30%">
+        <defs>
+          <linearGradient id="stockBarGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3f74d6" />
+            <stop offset="100%" stopColor="#2f9e6e" />
+          </linearGradient>
+        </defs>
+        <CartesianGrid vertical={false} stroke="#eceef2" />
+        <XAxis
+          dataKey="name"
+          tick={{ fontSize: 11, fontWeight: 600, fill: '#5b6b82' }}
+          axisLine={false}
+          tickLine={false}
+          angle={-35}
+          textAnchor="end"
+          interval={0}
+          height={80}
+        />
+        <YAxis tick={{ fontSize: 11, fill: '#9aa7ba' }} axisLine={false} tickLine={false} />
+        <Tooltip content={<PremiumTooltip />} cursor={{ fill: 'rgba(63, 116, 214, 0.05)' }} />
+        <Bar dataKey="stocks" name="Stocks" fill="url(#stockBarGradient)" radius={[8, 8, 0, 0]} maxBarSize={44} animationDuration={700} />
+      </RBarChart>
+    </ResponsiveContainer>
+  )
+}
+
 function StockAvailabilityTab() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [sorting, setSorting] = useState([])
   const [globalFilter, setGlobalFilter] = useState('')
+  const [chartMode, setChartMode] = useState('low')
 
   async function load() {
     setLoading(true)
@@ -321,36 +352,48 @@ function StockAvailabilityTab() {
         </div>
       )}
 
-      {data && (data.lowStock?.length > 0 || data.expired?.length > 0) && (
-        <div className="director-alert-row">
-          {data.lowStock?.length > 0 && (
-            <div className="director-alert-card director-alert-warning">
-              <h4>დაბალი მარაგი ({data.lowStock.length})</h4>
-              <div className="director-alert-scroll">
-                <div className="director-chip-grid">
-                  {data.lowStock.map((d) => (
-                    <span className="director-chip director-chip-warning" key={d.id}>
-                      {d.name} <b>{d.stock}</b>
-                    </span>
-                  ))}
-                </div>
-              </div>
+      {data && (
+        <div className="director-chart-card">
+          <div className="director-chart-toolbar">
+            <h3>{chartMode === 'low' ? 'Low Stock Drugs' : 'ყველა პროდუქტი'}</h3>
+            <div className="director-chart-toggle">
+              <button
+                type="button"
+                className={chartMode === 'low' ? 'active' : ''}
+                onClick={() => setChartMode('low')}
+              >
+                დაბალი მარაგი
+              </button>
+              <button
+                type="button"
+                className={chartMode === 'all' ? 'active' : ''}
+                onClick={() => setChartMode('all')}
+              >
+                ყველა
+              </button>
             </div>
-          )}
-          {data.expired?.length > 0 && (
-            <div className="director-alert-card director-alert-danger">
-              <h4>ვადაგასული ({data.expired.length})</h4>
-              <div className="director-alert-scroll">
-                <div className="director-chip-grid">
-                  {data.expired.map((d) => (
-                    <span className="director-chip director-chip-danger" key={d.id}>
-                      {d.name}
-                    </span>
-                  ))}
-                </div>
-              </div>
+          </div>
+          <StockChart
+            data={[...(data.docs || [])]
+              .filter((d) => d.stocks >= 0)
+              .sort((a, b) => a.stocks - b.stocks)
+              .slice(0, 15)}
+          />
+        </div>
+      )}
+
+      {data?.expired?.length > 0 && (
+        <div className="director-alert-card director-alert-danger">
+          <h4>ვადაგასული ({data.expired.length})</h4>
+          <div className="director-alert-scroll">
+            <div className="director-chip-grid">
+              {data.expired.map((d) => (
+                <span className="director-chip director-chip-danger" key={d.id}>
+                  {d.name}
+                </span>
+              ))}
             </div>
-          )}
+          </div>
         </div>
       )}
 
