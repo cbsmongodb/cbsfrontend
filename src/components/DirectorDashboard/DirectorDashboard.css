@@ -581,3 +581,42 @@
   margin-left: 3px;
   color: var(--blue);
 }
+
+/* ---------- Stock chart toolbar + toggle ---------- */
+
+.director-chart-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.director-chart-toolbar h3 {
+  margin-bottom: 0;
+}
+
+.director-chart-toggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: #f0f2f6;
+  border-radius: 9px;
+}
+
+.director-chart-toggle button {
+  padding: 6px 14px;
+  border: none;
+  background: transparent;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  border-radius: 7px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.director-chart-toggle button.active {
+  background: #fff;
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
