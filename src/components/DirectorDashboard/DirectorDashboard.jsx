@@ -29,6 +29,72 @@ function BarChart({ data, valueKey, labelKey, color = '#3f74d6' }) {
   )
 }
 
+function DualBarChart({ data, labelKey, targetKey, soldKey }) {
+  const max = Math.max(...data.map((d) => Math.max(d[targetKey] || 0, d[soldKey] || 0)), 1)
+  return (
+    <div className="director-dual-chart">
+      <div className="director-dual-legend">
+        <span><i className="director-dual-swatch director-dual-swatch-target" />Monthly Target</span>
+        <span><i className="director-dual-swatch director-dual-swatch-sold" />Boxes Sold</span>
+      </div>
+      {data.map((d, i) => (
+        <div className="director-dual-row" key={i}>
+          <span className="director-dual-label">{d[labelKey]}</span>
+          <div className="director-dual-bars">
+            <div className="director-dual-track">
+              <div
+                className="director-dual-fill director-dual-fill-target"
+                style={{ width: `${((d[targetKey] || 0) / max) * 100}%` }}
+              />
+              <span className="director-dual-value">{(d[targetKey] || 0).toLocaleString()}</span>
+            </div>
+            <div className="director-dual-track">
+              <div
+                className="director-dual-fill director-dual-fill-sold"
+                style={{ width: `${((d[soldKey] || 0) / max) * 100}%` }}
+              />
+              <span className="director-dual-value">{(d[soldKey] || 0).toLocaleString()}</span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function DualBarChart({ data, labelKey, targetKey, soldKey }) {
+  const max = Math.max(...data.map((d) => Math.max(d[targetKey] || 0, d[soldKey] || 0)), 1)
+  return (
+    <div className="director-dual-chart">
+      <div className="director-dual-legend">
+        <span><i className="director-dual-swatch director-dual-swatch-target" />Monthly Target</span>
+        <span><i className="director-dual-swatch director-dual-swatch-sold" />Boxes Sold</span>
+      </div>
+      {data.map((d, i) => (
+        <div className="director-dual-row" key={i}>
+          <span className="director-dual-label">{d[labelKey]}</span>
+          <div className="director-dual-bars">
+            <div className="director-dual-track">
+              <div
+                className="director-dual-fill director-dual-fill-target"
+                style={{ width: `${((d[targetKey] || 0) / max) * 100}%` }}
+              />
+              <span className="director-dual-value">{(d[targetKey] || 0).toLocaleString()}</span>
+            </div>
+            <div className="director-dual-track">
+              <div
+                className="director-dual-fill director-dual-fill-sold"
+                style={{ width: `${((d[soldKey] || 0) / max) * 100}%` }}
+              />
+              <span className="director-dual-value">{(d[soldKey] || 0).toLocaleString()}</span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default function DirectorDashboard() {
   const [tab, setTab] = useState('product-sale')
 
@@ -104,6 +170,20 @@ function ProductSaleTab() {
       </div>
 
       {error && <p className="resource-error">{error}</p>}
+
+      {data && data.docs.length > 0 && (
+        <div className="director-chart-card">
+          <h3>Monthly Target vs Boxes Sold</h3>
+          <DualBarChart data={data.docs} labelKey="drugName" targetKey="monthlyTarget" soldKey="saleBoxes" />
+        </div>
+      )}
+
+      {data && data.docs.length > 0 && (
+        <div className="director-chart-card">
+          <h3>Monthly Target vs Boxes Sold</h3>
+          <DualBarChart data={data.docs} labelKey="drugName" targetKey="monthlyTarget" soldKey="saleBoxes" />
+        </div>
+      )}
 
       {data && data.docs.length > 0 && (
         <div className="director-chart-card">
