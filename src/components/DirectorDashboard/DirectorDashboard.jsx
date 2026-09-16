@@ -270,26 +270,51 @@ function StockAvailabilityTab() {
     <div className="director-tab-panel">
       {error && <p className="resource-error">{error}</p>}
 
+      {data && (
+        <div className="director-kpi-row">
+          <div className="director-kpi-card">
+            <span className="director-kpi-label">სულ პროდუქტი</span>
+            <span className="director-kpi-value">{data.total?.toLocaleString()}</span>
+          </div>
+          <div className="director-kpi-card director-kpi-warning">
+            <span className="director-kpi-label">დაბალი მარაგი</span>
+            <span className="director-kpi-value">{data.lowStock?.length?.toLocaleString() || 0}</span>
+          </div>
+          <div className="director-kpi-card director-kpi-danger">
+            <span className="director-kpi-label">ვადაგასული</span>
+            <span className="director-kpi-value">{data.expired?.length?.toLocaleString() || 0}</span>
+          </div>
+        </div>
+      )}
+
       {data && (data.lowStock?.length > 0 || data.expired?.length > 0) && (
         <div className="director-alert-row">
           {data.lowStock?.length > 0 && (
             <div className="director-alert-card director-alert-warning">
               <h4>დაბალი მარაგი ({data.lowStock.length})</h4>
-              <ul>
-                {data.lowStock.slice(0, 8).map((d) => (
-                  <li key={d.id}>{d.name} — {d.stock}</li>
-                ))}
-              </ul>
+              <div className="director-alert-scroll">
+                <div className="director-chip-grid">
+                  {data.lowStock.map((d) => (
+                    <span className="director-chip director-chip-warning" key={d.id}>
+                      {d.name} <b>{d.stock}</b>
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
           {data.expired?.length > 0 && (
             <div className="director-alert-card director-alert-danger">
               <h4>ვადაგასული ({data.expired.length})</h4>
-              <ul>
-                {data.expired.slice(0, 8).map((d) => (
-                  <li key={d.id}>{d.name}</li>
-                ))}
-              </ul>
+              <div className="director-alert-scroll">
+                <div className="director-chip-grid">
+                  {data.expired.map((d) => (
+                    <span className="director-chip director-chip-danger" key={d.id}>
+                      {d.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -304,12 +329,17 @@ function StockAvailabilityTab() {
             </tr>
           </thead>
           <tbody>
-            {data?.docs.map((row, i) => (
-              <tr key={i}>
-                <td>{row.name}</td>
-                <td>{row.stocks}</td>
-              </tr>
-            ))}
+            {data?.docs.map((row, i) => {
+              const level = row.stocks <= 0 ? 'zero' : row.stocks < 20 ? 'low' : 'ok'
+              return (
+                <tr key={i}>
+                  <td>{row.name}</td>
+                  <td>
+                    <span className={`director-stock-badge director-stock-badge-${level}`}>{row.stocks}</span>
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
