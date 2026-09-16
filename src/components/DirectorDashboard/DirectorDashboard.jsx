@@ -28,6 +28,17 @@ function fmtMoney(n) {
   return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
+// Intl's toLocaleDateString for 'ka-GE' unreliably falls back to English
+// weekday/month names in this environment — manual table instead, matching
+// the approach already used in the regular Dashboard component
+const KA_WEEKDAYS = ['კვირა', 'ორშაბათი', 'სამშაბათი', 'ოთხშაბათი', 'ხუთშაბათი', 'პარასკევი', 'შაბათი']
+const KA_MONTHS = ['იანვარი', 'თებერვალი', 'მარტი', 'აპრილი', 'მაისი', 'ივნისი', 'ივლისი', 'აგვისტო', 'სექტემბერი', 'ოქტომბერი', 'ნოემბერი', 'დეკემბერი']
+
+function formatTodayKa() {
+  const d = new Date()
+  return `${KA_WEEKDAYS[d.getDay()]}, ${d.getDate()} ${KA_MONTHS[d.getMonth()]}`
+}
+
 function PremiumTooltip({ active, payload, label }) {
   if (!active || !payload || !payload.length) return null
   return (
@@ -112,7 +123,7 @@ function DualBarChart({ data, labelKey, targetKey, soldKey }) {
 export default function DirectorDashboard() {
   const [tab, setTab] = useState('product-sale')
 
-  const today = new Date().toLocaleDateString('ka-GE', { weekday: 'long', day: 'numeric', month: 'long' })
+  const today = formatTodayKa()
 
   return (
     <div className="director-dashboard-page">
