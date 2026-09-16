@@ -128,8 +128,12 @@ export default function DirectorDashboard() {
   return (
     <div className="director-dashboard-page">
       <div className="director-header">
-        <h1>Dashboard</h1>
-        <p className="director-header-subtitle">{today}</p>
+        <div className="director-header-accent" />
+        <div className="director-header-text">
+          <span className="director-header-eyebrow">დირექტორის პანელი</span>
+          <h1>Dashboard</h1>
+          <p className="director-header-subtitle">{today}</p>
+        </div>
       </div>
 
       <div className="director-tabs">
