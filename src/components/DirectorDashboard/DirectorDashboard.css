@@ -553,3 +553,31 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- TanStack Table search + sortable headers ---------- */
+
+.director-datagrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.director-datagrid-search {
+  max-width: 320px;
+}
+
+.director-th-sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+
+.director-th-sortable:hover {
+  color: var(--ink);
+}
+
+.director-sort-indicator {
+  font-size: 9px;
+  margin-left: 3px;
+  color: var(--blue);
+}

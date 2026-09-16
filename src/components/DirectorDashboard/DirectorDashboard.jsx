@@ -13,6 +13,14 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts'
+import {
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  flexRender,
+} from '@tanstack/react-table'
 import './DirectorDashboard.css'
 
 function fmtMoney(n) {
@@ -238,22 +246,36 @@ function ProductSaleTab() {
   )
 }
 
+const stockColumns = [
+  {
+    accessorKey: 'name',
+    header: 'Drug Name',
+    cell: (info) => info.getValue(),
+  },
+  {
+    accessorKey: 'stocks',
+    header: 'Stocks',
+    cell: (info) => {
+      const v = info.getValue()
+      const level = v <= 0 ? 'zero' : v < 20 ? 'low' : 'ok'
+      return <span className={`director-stock-badge director-stock-badge-${level}`}>{v}</span>
+    },
+  },
+]
+
 function StockAvailabilityTab() {
-  const [page, setPage] = useState(1)
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [sorting, setSorting] = useState([])
+  const [globalFilter, setGlobalFilter] = useState('')
 
-  async function load(targetPage = 1) {
+  async function load() {
     setLoading(true)
     setError('')
     try {
-      const params = new URLSearchParams()
-      params.set('page', targetPage)
-      params.set('limit', 10)
-      const result = await apiFetch(`/api/director-dashboard/stock-availability?${params}`)
+      const result = await apiFetch('/api/director-dashboard/stock-availability')
       setData(result)
-      setPage(targetPage)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -262,9 +284,21 @@ function StockAvailabilityTab() {
   }
 
   useEffect(() => {
-    load(1)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    load()
   }, [])
+
+  const table = useReactTable({
+    data: data?.docs || [],
+    columns: stockColumns,
+    state: { sorting, globalFilter },
+    onSortingChange: setSorting,
+    onGlobalFilterChange: setGlobalFilter,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: { pagination: { pageSize: 12 } },
+  })
 
   return (
     <div className="director-tab-panel">
@@ -320,41 +354,64 @@ function StockAvailabilityTab() {
         </div>
       )}
 
-      <div className="director-table-wrap">
-        <table className="director-table">
-          <thead>
-            <tr>
-              <th>Drug Name</th>
-              <th>Stocks</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data?.docs.map((row, i) => {
-              const level = row.stocks <= 0 ? 'zero' : row.stocks < 20 ? 'low' : 'ok'
-              return (
-                <tr key={i}>
-                  <td>{row.name}</td>
-                  <td>
-                    <span className={`director-stock-badge director-stock-badge-${level}`}>{row.stocks}</span>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
+      <div className="director-datagrid">
+        <div className="director-datagrid-search">
+          <input
+            type="text"
+            className="field-input"
+            placeholder="ძებნა პროდუქტის სახელით..."
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+          />
+        </div>
 
-      {data && data.pages > 1 && (
+        <div className="director-table-wrap">
+          <table className="director-table">
+            <thead>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <th
+                      key={header.id}
+                      onClick={header.column.getToggleSortingHandler()}
+                      className="director-th-sortable"
+                    >
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+                      <span className="director-sort-indicator">
+                        {{ asc: ' ▲', desc: ' ▼' }[header.column.getIsSorted()] ?? ''}
+                      </span>
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row) => (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                  ))}
+                </tr>
+              ))}
+              {table.getRowModel().rows.length === 0 && (
+                <tr>
+                  <td colSpan={2}>ჩანაწერები არ მოიძებნა</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
         <div className="director-pagination">
-          <button type="button" className="btn-gray btn-sm" disabled={page <= 1} onClick={() => load(page - 1)}>
+          <button type="button" className="btn-gray btn-sm" disabled={!table.getCanPreviousPage()} onClick={() => table.previousPage()}>
             <span>←</span>
           </button>
-          <span>{page} / {data.pages}</span>
-          <button type="button" className="btn-gray btn-sm" disabled={page >= data.pages} onClick={() => load(page + 1)}>
+          <span>{table.getState().pagination.pageIndex + 1} / {table.getPageCount()}</span>
+          <button type="button" className="btn-gray btn-sm" disabled={!table.getCanNextPage()} onClick={() => table.nextPage()}>
             <span>→</span>
           </button>
         </div>
-      )}
+      </div>
     </div>
   )
 }

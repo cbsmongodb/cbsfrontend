@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@tanstack/react-table": "^9.2.4",
     "leaflet": "^1.9.4",
     "next": "16.3.2",
     "next-intl": "^4.13.7",
