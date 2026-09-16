@@ -374,10 +374,16 @@ function StockAvailabilityTab() {
             </div>
           </div>
           <StockChart
-            data={[...(data.docs || [])]
-              .filter((d) => d.stocks >= 0)
-              .sort((a, b) => a.stocks - b.stocks)
-              .slice(0, 15)}
+            data={
+              chartMode === 'low'
+                ? [...(data.docs || [])]
+                    .filter((d) => d.stocks > 0)
+                    .sort((a, b) => a.stocks - b.stocks)
+                    .slice(0, 15)
+                : [...(data.docs || [])]
+                    .sort((a, b) => b.stocks - a.stocks)
+                    .slice(0, 15)
+            }
           />
         </div>
       )}
