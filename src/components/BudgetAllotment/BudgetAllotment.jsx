@@ -54,10 +54,8 @@ export default function BudgetAllotment() {
     }
   }
 
-  useEffect(() => {
-    load()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // no auto-load on mount — wait until the person picks an employee
+  // and hits Submit, so their own name never silently appears by default
 
   const filteredDocs = (data?.docs || []).filter(
     (row) => !search || row.doctorName?.toLowerCase().includes(search.toLowerCase())
@@ -134,7 +132,12 @@ export default function BudgetAllotment() {
         )}
       </div>
 
-      <h3 className="budgetallot-table-title">Employee Budgets of {data?.employeeName || '...'}:</h3>
+      {data && (
+        <h3 className="budgetallot-table-title">Employee Budgets of {data.employeeName}:</h3>
+      )}
+      {!data && (
+        <p className="budgetallot-placeholder">აირჩიეთ თანამშრომელი და დააჭირეთ Submit-ს</p>
+      )}
 
       <input
         type="text"
