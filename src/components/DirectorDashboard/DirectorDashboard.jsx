@@ -410,8 +410,8 @@ function ProductSaleTab() {
           <label>End Date</label>
           <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
         </div>
-        <button type="button" className="btn director-submit-btn" onClick={() => load()} disabled={loading}>
-          <span>{loading ? '...' : 'Submit'}</span>
+        <button type="button" className={`btn director-submit-btn${loading ? ' is-loading' : ''}`} onClick={() => load()} disabled={loading}>
+          <span>Submit</span>
         </button>
         <QuickDateButtons onPick={pickRange} />
       </div>
