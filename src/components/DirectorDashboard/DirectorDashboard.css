@@ -620,3 +620,72 @@
   color: var(--ink);
   box-shadow: var(--shadow-sm);
 }
+
+/* ---------- Header (hero card, icon badge, gradient wash) ---------- */
+
+.director-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 26px;
+  padding: 24px 30px;
+  background: linear-gradient(120deg, rgba(133, 124, 85, 0.08) 0%, #ffffff 35%, rgba(184, 155, 94, 0.08) 100%);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.director-header::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -8%;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(184, 155, 94, 0.14) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.director-header-icon {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #857c55 0%, #b89b5e 100%);
+  box-shadow: 0 6px 16px rgba(133, 124, 85, 0.35);
+  color: #fff;
+  position: relative;
+  z-index: 1;
+}
+
+.director-header-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.director-header-text {
+  position: relative;
+  z-index: 1;
+}
+
+.director-header-eyebrow {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #8a6d2f;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.director-header-subtitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
