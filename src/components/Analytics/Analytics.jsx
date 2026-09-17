@@ -64,21 +64,30 @@ function DrugBreakdownTable({ rows }) {
         </div>
       </div>
 
-      <ResponsiveContainer width="100%" height={chartHeight}>
-        <RBarChart data={rows} layout="vertical" margin={{ top: 4, right: 20, bottom: 4, left: 4 }} barCategoryGap="30%" barGap={3}>
+      <ResponsiveContainer width="100%" height={260}>
+        <RBarChart data={rows} margin={{ top: 4, right: 12, bottom: 60, left: 4 }} barCategoryGap="32%" barGap={3}>
           <defs>
-            <linearGradient id="breakdownSalesGradient" x1="0" y1="0" x2="1" y2="0">
+            <linearGradient id="breakdownSalesGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#3f74d6" />
               <stop offset="100%" stopColor="#2f9e6e" />
             </linearGradient>
           </defs>
-          <CartesianGrid horizontal={false} stroke="#e5e8ee" />
-          <XAxis type="number" tick={{ fontSize: 10, fill: '#9aa7ba' }} axisLine={false} tickLine={false} />
-          <YAxis type="category" dataKey="drugName" width={120} tick={{ fontSize: 11, fontWeight: 600, fill: '#0f2744' }} axisLine={false} tickLine={false} />
+          <CartesianGrid vertical={false} stroke="#e5e8ee" />
+          <XAxis
+            dataKey="drugName"
+            tick={{ fontSize: 10.5, fontWeight: 600, fill: '#5b6b82' }}
+            axisLine={false}
+            tickLine={false}
+            angle={-35}
+            textAnchor="end"
+            interval={0}
+            height={70}
+          />
+          <YAxis tick={{ fontSize: 10, fill: '#9aa7ba' }} axisLine={false} tickLine={false} />
           <Tooltip content={<BreakdownTooltip />} cursor={{ fill: 'rgba(63, 116, 214, 0.05)' }} />
           <Legend verticalAlign="top" align="left" height={24} iconType="circle" iconSize={7} wrapperStyle={{ fontSize: 10.5, fontWeight: 600, color: '#5b6b82' }} />
-          <Bar dataKey="prescriptionAmount" name="დანიშნულება" fill="#c3cad4" radius={[0, 5, 5, 0]} maxBarSize={12} />
-          <Bar dataKey="salesAmount" name="გაყიდვა" fill="url(#breakdownSalesGradient)" radius={[0, 5, 5, 0]} maxBarSize={12} />
+          <Bar dataKey="prescriptionAmount" name="დანიშნულება" fill="#c3cad4" radius={[5, 5, 0, 0]} maxBarSize={22} />
+          <Bar dataKey="salesAmount" name="გაყიდვა" fill="url(#breakdownSalesGradient)" radius={[5, 5, 0, 0]} maxBarSize={22} />
         </RBarChart>
       </ResponsiveContainer>
 
