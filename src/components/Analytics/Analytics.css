@@ -164,3 +164,51 @@
     min-width: 0;
   }
 }
+
+/* ---------- Expandable row (per-drug breakdown) ---------- */
+
+.analytics-expand-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 11px;
+  color: #3f74d6;
+  padding: 4px 6px;
+}
+
+.analytics-breakdown-row td {
+  background: #f7f9fc;
+  padding: 12px 20px;
+}
+
+.analytics-breakdown-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.analytics-breakdown-table th {
+  text-align: left;
+  padding: 8px 14px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #5b6b82;
+  background: #eceef2;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.analytics-breakdown-table td {
+  padding: 7px 14px;
+  border-bottom: 1px solid #eceef2;
+  color: #0f2744;
+}
+
+.analytics-breakdown-empty {
+  padding: 10px 4px;
+  font-size: 12px;
+  color: #93a1b4;
+}

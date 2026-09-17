@@ -23,6 +23,7 @@ function fmtMoney(n) {
 export default function Analytics() {
   const defaults = currentMonthRange()
 
+  const [expandedRows, setExpandedRows] = useState(new Set())
   const [doctors, setDoctors] = useState([])
   const [employees, setEmployees] = useState([])
   const [sections, setSections] = useState([])
@@ -165,6 +166,7 @@ export default function Analytics() {
         <table className="analytics-table">
           <thead>
             <tr className="analytics-group-row">
+              <th rowSpan={2}></th>
               <th rowSpan={2}>თარიღი</th>
               <th rowSpan={2}>თანამშრომელი</th>
               <th rowSpan={2}>ექიმი</th>
@@ -186,30 +188,55 @@ export default function Analytics() {
             </tr>
           </thead>
           <tbody>
-            {data?.docs.map((row) => (
-              <tr key={row._id}>
-                <td data-label="თარიღი">{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
-                <td data-label="თანამშრომელი">{row.employeeName}</td>
-                <td data-label="ექიმი" className={row.doctorIsBudgeted ? 'analytics-doctor-budgeted' : ''}>
-                  {row.doctorName}
-                </td>
-                <td data-label="ვიზიტები" className="analytics-num">{row.visits}</td>
-                <td data-label="სამიზნე თანხა" className="analytics-num analytics-group-target">{fmtMoney(row.targetAmount)}</td>
-                <td data-label="სამიზნე ყუთი" className="analytics-num analytics-group-target">{row.targetBoxes}</td>
-                <td data-label="დანიშნულების თანხა" className="analytics-num analytics-group-prescription">{fmtMoney(row.prescriptionAmount)}</td>
-                <td data-label="დანიშნულების ყუთი" className="analytics-num analytics-group-prescription">{row.prescriptionBoxes}</td>
-                <td data-label="გაყიდვის თანხა" className="analytics-num analytics-group-sales">{fmtMoney(row.salesAmount)}</td>
-                <td data-label="გაყიდვის ყუთი" className="analytics-num analytics-group-sales">{row.saleBoxes}</td>
-                <td data-label="გადასახდელი" className="analytics-num">{fmtMoney(row.payableAmount)}</td>
-                <td data-label="გადახდილი" className="analytics-num">{fmtMoney(row.paidAmount)}</td>
-                <td data-label="დელტა" className={`analytics-num ${row.deltaAmount < 0 ? 'analytics-delta-negative' : 'analytics-delta-positive'}`}>
-                  {row.deltaAmount < 0 ? `(${fmtMoney(Math.abs(row.deltaAmount))})` : fmtMoney(row.deltaAmount)}
-                </td>
-              </tr>
-            ))}
+            {data?.docs.map((row) => {
+              const isExpanded = expandedRows.has(row._id)
+              function toggleExpand() {
+                setExpandedRows((prev) => {
+                  const next = new Set(prev)
+                  if (next.has(row._id)) next.delete(row._id)
+                  else next.add(row._id)
+                  return next
+                })
+              }
+              return (
+                <>
+                  <tr key={row._id}>
+                    <td>
+                      <button type="button" className="analytics-expand-btn" onClick={toggleExpand}>
+                        {isExpanded ? '▼' : '▶'}
+                      </button>
+                    </td>
+                    <td data-label="თარიღი">{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
+                    <td data-label="თანამშრომელი">{row.employeeName}</td>
+                    <td data-label="ექიმი" className={row.doctorIsBudgeted ? 'analytics-doctor-budgeted' : ''}>
+                      {row.doctorName}
+                    </td>
+                    <td data-label="ვიზიტები" className="analytics-num">{row.visits}</td>
+                    <td data-label="სამიზნე თანხა" className="analytics-num analytics-group-target">{fmtMoney(row.targetAmount)}</td>
+                    <td data-label="სამიზნე ყუთი" className="analytics-num analytics-group-target">{row.targetBoxes}</td>
+                    <td data-label="დანიშნულების თანხა" className="analytics-num analytics-group-prescription">{fmtMoney(row.prescriptionAmount)}</td>
+                    <td data-label="დანიშნულების ყუთი" className="analytics-num analytics-group-prescription">{row.prescriptionBoxes}</td>
+                    <td data-label="გაყიდვის თანხა" className="analytics-num analytics-group-sales">{fmtMoney(row.salesAmount)}</td>
+                    <td data-label="გაყიდვის ყუთი" className="analytics-num analytics-group-sales">{row.saleBoxes}</td>
+                    <td data-label="გადასახდელი" className="analytics-num">{fmtMoney(row.payableAmount)}</td>
+                    <td data-label="გადახდილი" className="analytics-num">{fmtMoney(row.paidAmount)}</td>
+                    <td data-label="დელტა" className={`analytics-num ${row.deltaAmount < 0 ? 'analytics-delta-negative' : 'analytics-delta-positive'}`}>
+                      {row.deltaAmount < 0 ? `(${fmtMoney(Math.abs(row.deltaAmount))})` : fmtMoney(row.deltaAmount)}
+                    </td>
+                  </tr>
+                  {isExpanded && (
+                    <tr className="analytics-breakdown-row">
+                      <td colSpan={14}>
+                        <DrugBreakdownTable rows={row.drugBreakdown} />
+                      </td>
+                    </tr>
+                  )}
+                </>
+              )
+            })}
             {data && data.docs.length === 0 && (
               <tr>
-                <td colSpan={13}>ჩანაწერები არ მოიძებნა</td>
+                <td colSpan={14}>ჩანაწერები არ მოიძებნა</td>
               </tr>
             )}
           </tbody>
