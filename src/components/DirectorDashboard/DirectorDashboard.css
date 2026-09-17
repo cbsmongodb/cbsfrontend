@@ -851,3 +851,12 @@
     justify-content: space-between;
   }
 }
+
+/* ---------- Quick date button active state ---------- */
+
+.director-quick-dates button.active {
+  background: #fff;
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+}

@@ -238,6 +238,7 @@ function EmptyState({ text = 'მონაცემი ვერ მოიძე
 }
 
 function QuickDateButtons({ onPick }) {
+  const [selected, setSelected] = useState(null)
   const now = new Date()
   const ranges = [
     {
@@ -260,7 +261,15 @@ function QuickDateButtons({ onPick }) {
   return (
     <div className="director-quick-dates">
       {ranges.map((r) => (
-        <button type="button" key={r.label} onClick={() => onPick(fmt(r.from), fmt(r.to))}>
+        <button
+          type="button"
+          key={r.label}
+          className={selected === r.label ? 'active' : ''}
+          onClick={() => {
+            setSelected(r.label)
+            onPick(fmt(r.from), fmt(r.to))
+          }}
+        >
           {r.label}
         </button>
       ))}
