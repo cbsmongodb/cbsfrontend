@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Fragment } from 'react'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './Analytics.css'
@@ -199,8 +199,8 @@ export default function Analytics() {
                 })
               }
               return (
-                <>
-                  <tr key={row._id}>
+                <Fragment key={row._id}>
+                  <tr>
                     <td>
                       <button type="button" className="analytics-expand-btn" onClick={toggleExpand}>
                         {isExpanded ? '▼' : '▶'}
@@ -231,7 +231,7 @@ export default function Analytics() {
                       </td>
                     </tr>
                   )}
-                </>
+                </Fragment>
               )
             })}
             {data && data.docs.length === 0 && (
