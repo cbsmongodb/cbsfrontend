@@ -1,0 +1,158 @@
+.devterm {
+  margin-bottom: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0a0e0a;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px #1a2e1a;
+  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+}
+
+.devterm-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #161b16;
+  border-bottom: 1px solid #1e2b1e;
+}
+
+.devterm-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.devterm-dot-red { background: #ff5f56; }
+.devterm-dot-yellow { background: #ffbd2e; }
+.devterm-dot-green { background: #27c93f; }
+
+.devterm-title {
+  margin-left: 8px;
+  font-size: 12px;
+  color: #6b7a6b;
+}
+
+.devterm-badge {
+  margin-left: auto;
+  padding: 2px 9px;
+  background: #ff3b3b;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 999px;
+  animation: devterm-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes devterm-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+.devterm-body {
+  padding: 16px 18px;
+  min-height: 60px;
+}
+
+.devterm-line {
+  font-size: 13px;
+  line-height: 1.9;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.devterm-prompt {
+  color: #27c93f;
+  font-weight: 700;
+  text-shadow: 0 0 6px rgba(39, 201, 63, 0.5);
+}
+
+.devterm-path {
+  color: #4fd1c5;
+}
+
+.devterm-cmd {
+  color: #d4d4d4;
+}
+
+.devterm-dim {
+  color: #4a5a4a;
+}
+
+.devterm-ok {
+  color: #27c93f;
+  text-shadow: 0 0 8px rgba(39, 201, 63, 0.6);
+  font-weight: 700;
+}
+
+.devterm-cursor {
+  color: #27c93f;
+  text-shadow: 0 0 8px rgba(39, 201, 63, 0.8);
+}
+
+.devterm-log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 6px 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.devterm-log-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.devterm-log-list::-webkit-scrollbar-thumb {
+  background: #1e2b1e;
+  border-radius: 999px;
+}
+
+.devterm-log-row {
+  display: flex;
+  gap: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.devterm-log-row.is-new {
+  background: rgba(255, 59, 59, 0.08);
+}
+
+.devterm-log-tag {
+  flex-shrink: 0;
+  color: #ff5f56;
+  font-weight: 700;
+}
+
+.devterm-log-time {
+  flex-shrink: 0;
+  color: #4a5a4a;
+  min-width: 52px;
+}
+
+.devterm-log-msg {
+  color: #d4d4d4;
+  overflow-wrap: anywhere;
+}
+
+.devterm-mark-read {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-top: 1px solid #1e2b1e;
+  background: #161b16;
+  color: #4fd1c5;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.devterm-mark-read:hover {
+  background: #1e2b1e;
+  color: #7ee8de;
+}
