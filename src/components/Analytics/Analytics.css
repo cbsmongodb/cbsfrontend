@@ -212,3 +212,117 @@
   font-size: 12px;
   color: #93a1b4;
 }
+
+/* ---------- Drug breakdown panel — KPIs + chart + chips ---------- */
+
+.analytics-breakdown-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.analytics-breakdown-kpis {
+  display: flex;
+  gap: 10px;
+}
+
+.analytics-breakdown-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 16px;
+  background: #fff;
+  border: 1px solid #e9ebef;
+  border-radius: 10px;
+}
+
+.analytics-breakdown-kpi-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #93a1b4;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.analytics-breakdown-kpi-value {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f2744;
+}
+
+.analytics-breakdown-tooltip {
+  background: #fff;
+  border: 1px solid #e9ebef;
+  border-radius: 10px;
+  padding: 8px 12px;
+  box-shadow: 0 6px 18px rgba(15, 39, 68, 0.12);
+  font-size: 11px;
+}
+
+.analytics-breakdown-tooltip-label {
+  font-weight: 700;
+  color: #0f2744;
+  margin-bottom: 4px;
+}
+
+.analytics-breakdown-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 0;
+}
+
+.analytics-breakdown-tooltip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.analytics-breakdown-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.analytics-breakdown-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #fff;
+  border: 1px solid #e9ebef;
+  border-radius: 999px;
+  font-size: 11.5px;
+}
+
+.analytics-breakdown-chip-name {
+  font-weight: 700;
+  color: #0f2744;
+}
+
+.analytics-breakdown-chip-bonus {
+  color: #93a1b4;
+  font-size: 10.5px;
+}
+
+.analytics-coef-badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 800;
+}
+
+.analytics-coef-high {
+  background: rgba(47, 158, 110, 0.12);
+  color: #1f7a4d;
+}
+
+.analytics-coef-mid {
+  background: rgba(232, 162, 61, 0.14);
+  color: #b45309;
+}
+
+.analytics-coef-low {
+  background: rgba(211, 58, 58, 0.1);
+  color: #b91c1c;
+}

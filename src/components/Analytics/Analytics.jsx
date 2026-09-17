@@ -3,37 +3,95 @@
 import { useEffect, useState, Fragment } from 'react'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
+import {
+  BarChart as RBarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts'
 import './Analytics.css'
+
+function BreakdownTooltip({ active, payload, label }) {
+  if (!active || !payload || !payload.length) return null
+  return (
+    <div className="analytics-breakdown-tooltip">
+      <div className="analytics-breakdown-tooltip-label">{label}</div>
+      {payload.map((p) => (
+        <div key={p.dataKey} className="analytics-breakdown-tooltip-row">
+          <span className="analytics-breakdown-tooltip-dot" style={{ background: p.color }} />
+          <span>{p.name}</span>
+          <strong>{Number(p.value).toLocaleString()}</strong>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function coefficientLevel(pct) {
+  if (pct >= 80) return 'high'
+  if (pct >= 40) return 'mid'
+  return 'low'
+}
 
 function DrugBreakdownTable({ rows }) {
   if (!rows || rows.length === 0) {
     return <p className="analytics-breakdown-empty">ამ პერიოდში წამლის მონაცემი არ არის</p>
   }
+
+  const totalPrescription = rows.reduce((s, d) => s + (d.prescriptionAmount || 0), 0)
+  const totalSales = rows.reduce((s, d) => s + (d.salesAmount || 0), 0)
+  const totalPayable = rows.reduce((s, d) => s + (d.payableAmount || 0), 0)
+  const chartHeight = Math.max(rows.length * 40, 140)
+
   return (
-    <table className="analytics-breakdown-table">
-      <thead>
-        <tr>
-          <th>წამალი</th>
-          <th>დანიშნულების თანხა</th>
-          <th>გაყიდვის თანხა</th>
-          <th>კოეფიციენტი</th>
-          <th>ბონუსი</th>
-          <th>გადასახდელი</th>
-        </tr>
-      </thead>
-      <tbody>
+    <div className="analytics-breakdown-panel">
+      <div className="analytics-breakdown-kpis">
+        <div className="analytics-breakdown-kpi">
+          <span className="analytics-breakdown-kpi-label">დანიშნულება</span>
+          <span className="analytics-breakdown-kpi-value">{fmtMoney(totalPrescription)}</span>
+        </div>
+        <div className="analytics-breakdown-kpi">
+          <span className="analytics-breakdown-kpi-label">გაყიდვა</span>
+          <span className="analytics-breakdown-kpi-value">{fmtMoney(totalSales)}</span>
+        </div>
+        <div className="analytics-breakdown-kpi">
+          <span className="analytics-breakdown-kpi-label">გადასახდელი</span>
+          <span className="analytics-breakdown-kpi-value">{fmtMoney(totalPayable)}</span>
+        </div>
+      </div>
+
+      <ResponsiveContainer width="100%" height={chartHeight}>
+        <RBarChart data={rows} layout="vertical" margin={{ top: 4, right: 20, bottom: 4, left: 4 }} barCategoryGap="30%" barGap={3}>
+          <defs>
+            <linearGradient id="breakdownSalesGradient" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#3f74d6" />
+              <stop offset="100%" stopColor="#2f9e6e" />
+            </linearGradient>
+          </defs>
+          <CartesianGrid horizontal={false} stroke="#e5e8ee" />
+          <XAxis type="number" tick={{ fontSize: 10, fill: '#9aa7ba' }} axisLine={false} tickLine={false} />
+          <YAxis type="category" dataKey="drugName" width={120} tick={{ fontSize: 11, fontWeight: 600, fill: '#0f2744' }} axisLine={false} tickLine={false} />
+          <Tooltip content={<BreakdownTooltip />} cursor={{ fill: 'rgba(63, 116, 214, 0.05)' }} />
+          <Legend verticalAlign="top" align="left" height={24} iconType="circle" iconSize={7} wrapperStyle={{ fontSize: 10.5, fontWeight: 600, color: '#5b6b82' }} />
+          <Bar dataKey="prescriptionAmount" name="დანიშნულება" fill="#c3cad4" radius={[0, 5, 5, 0]} maxBarSize={12} />
+          <Bar dataKey="salesAmount" name="გაყიდვა" fill="url(#breakdownSalesGradient)" radius={[0, 5, 5, 0]} maxBarSize={12} />
+        </RBarChart>
+      </ResponsiveContainer>
+
+      <div className="analytics-breakdown-chips">
         {rows.map((d, i) => (
-          <tr key={i}>
-            <td>{d.drugName}</td>
-            <td className="analytics-num">{fmtMoney(d.prescriptionAmount)}</td>
-            <td className="analytics-num">{fmtMoney(d.salesAmount)}</td>
-            <td className="analytics-num">{d.coefficient}%</td>
-            <td className="analytics-num">{fmtMoney(d.bonus)}</td>
-            <td className="analytics-num">{fmtMoney(d.payableAmount)}</td>
-          </tr>
+          <div className="analytics-breakdown-chip" key={i}>
+            <span className="analytics-breakdown-chip-name">{d.drugName}</span>
+            <span className={`analytics-coef-badge analytics-coef-${coefficientLevel(d.coefficient)}`}>{d.coefficient}%</span>
+            {d.bonus > 0 && <span className="analytics-breakdown-chip-bonus">ბონუსი {fmtMoney(d.bonus)}</span>}
+          </div>
         ))}
-      </tbody>
-    </table>
+      </div>
+    </div>
   )
 }
 
