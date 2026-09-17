@@ -5,6 +5,38 @@ import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './Analytics.css'
 
+function DrugBreakdownTable({ rows }) {
+  if (!rows || rows.length === 0) {
+    return <p className="analytics-breakdown-empty">ამ პერიოდში წამლის მონაცემი არ არის</p>
+  }
+  return (
+    <table className="analytics-breakdown-table">
+      <thead>
+        <tr>
+          <th>წამალი</th>
+          <th>დანიშნულების თანხა</th>
+          <th>გაყიდვის თანხა</th>
+          <th>კოეფიციენტი</th>
+          <th>ბონუსი</th>
+          <th>გადასახდელი</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((d, i) => (
+          <tr key={i}>
+            <td>{d.drugName}</td>
+            <td className="analytics-num">{fmtMoney(d.prescriptionAmount)}</td>
+            <td className="analytics-num">{fmtMoney(d.salesAmount)}</td>
+            <td className="analytics-num">{d.coefficient}%</td>
+            <td className="analytics-num">{fmtMoney(d.bonus)}</td>
+            <td className="analytics-num">{fmtMoney(d.payableAmount)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
+
 function currentMonthRange() {
   const d = new Date()
   const start = new Date(d.getFullYear(), d.getMonth(), 1)
