@@ -336,3 +336,66 @@
     font-size: 12px;
   }
 }
+
+/* ---------- Plan a Visit button — themed by division ---------- */
+
+.dashboard-plan-visit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 24px;
+  margin-bottom: 20px;
+  border-radius: 16px;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(120deg, #14284a 0%, #1e3a68 60%, #1c5c46 130%);
+  box-shadow: 0 6px 18px rgba(15, 39, 68, 0.2);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-plan-visit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(15, 39, 68, 0.28);
+}
+
+.dashboard-plan-visit-btn:active {
+  transform: translateY(0);
+}
+
+.dashboard-plan-visit-icon {
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-plan-visit-btn.theme-gold {
+  background: linear-gradient(120deg, #57503a 0%, #8a7a52 60%, #b89b5e 130%);
+  box-shadow: 0 6px 18px rgba(133, 124, 85, 0.3);
+}
+
+.dashboard-plan-visit-btn.theme-division1 {
+  background: linear-gradient(120deg, #16294d 0%, #2955a3 60%, #4a90d9 130%);
+  box-shadow: 0 6px 18px rgba(41, 85, 163, 0.3);
+}
+
+.dashboard-plan-visit-btn.theme-division2 {
+  background: linear-gradient(120deg, #4a1420 0%, #6b1f2e 60%, #a8324a 130%);
+  box-shadow: 0 6px 18px rgba(168, 50, 74, 0.3);
+}
+
+.dashboard-plan-visit-btn.theme-division3 {
+  background: linear-gradient(120deg, #1b4332 0%, #2d6a4f 60%, #40916c 130%);
+  box-shadow: 0 6px 18px rgba(45, 106, 79, 0.3);
+}
+
+.dashboard-plan-visit-btn.theme-office {
+  background: linear-gradient(120deg, #33164d 0%, #6b2b9c 60%, #9d5ad9 130%);
+  box-shadow: 0 6px 18px rgba(107, 43, 156, 0.3);
+}
+
+.dashboard-plan-visit-btn.theme-warehouse {
+  background: linear-gradient(120deg, #4a2c1b 0%, #7a4a20 60%, #b8752f 130%);
+  box-shadow: 0 6px 18px rgba(122, 74, 32, 0.3);
+}
