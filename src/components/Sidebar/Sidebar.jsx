@@ -37,6 +37,7 @@ const RESOURCE_KEY = {
   'dashboard/director-dashboard': 'director_dashboard',
   'dashboard/analytics': 'analytics',
   'dashboard/budgets-list': 'budgets_report',
+  'dashboard/budgets/allotment': 'budgets_report',
   'dashboard/prescriptions': 'prescriptions',
   'dashboard/employee-accounts': 'employee_accounts',
   'dashboard/employee-targets': 'employee_targets',
@@ -202,6 +203,7 @@ const NAV = [
       { href: 'dashboard/director-dashboard', key: 'directorDashboard' },
       { href: 'dashboard/analytics', key: 'analytics' },
       { href: 'dashboard/budgets-list', key: 'budgets' },
+      { href: 'dashboard/budgets/allotment', key: 'budgetAllotment' },
     ],
   },
   {
