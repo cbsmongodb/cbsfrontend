@@ -1,0 +1,157 @@
+.budgetallot-page {
+  --ink: #0f2744;
+  --ink-soft: #5b6b82;
+  --line: #e9ebef;
+  --blue: #3f74d6;
+  --green: #2f9e6e;
+}
+
+.budgetallot-page h1 {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+
+.budgetallot-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.budgetallot-kpi-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 20px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(15, 39, 68, 0.04);
+}
+
+.budgetallot-kpi-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.budgetallot-kpi-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.budgetallot-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  flex-wrap: wrap;
+}
+
+.budgetallot-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.budgetallot-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.budgetallot-field-grow {
+  flex: 1;
+  min-width: 200px;
+}
+
+.budgetallot-chart-card {
+  padding: 22px 24px;
+  margin-bottom: 24px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.budgetallot-no-chart {
+  text-align: center;
+  padding: 40px 0;
+  color: #93a1b4;
+  font-size: 13px;
+}
+
+.budgetallot-table-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.budgetallot-search {
+  max-width: 320px;
+  margin-bottom: 14px;
+}
+
+.budgetallot-table-wrap {
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.budgetallot-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.budgetallot-table th {
+  text-align: left;
+  padding: 11px 16px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  background: #8792a3;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.budgetallot-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.budgetallot-showing {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 900px) {
+  .budgetallot-kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .budgetallot-kpi-row {
+    grid-template-columns: 1fr;
+  }
+
+  .budgetallot-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
