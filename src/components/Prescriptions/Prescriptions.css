@@ -226,3 +226,21 @@
     flex-shrink: 0;
   }
 }
+/* ---------- Page header with New button ---------- */
+
+.prescriptions-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.prescriptions-new-btn {
+  text-decoration: none;
+}
+
+.prescriptions-edit-link {
+  display: inline-flex;
+  text-decoration: none;
+  margin-right: 6px;
+}

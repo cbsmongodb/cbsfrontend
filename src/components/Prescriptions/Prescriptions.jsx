@@ -1,11 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
+import Link from 'next/link'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './Prescriptions.css'
 
 export default function Prescriptions() {
+  const { locale } = useParams()
   const [employees, setEmployees] = useState([])
   const [doctors, setDoctors] = useState([])
 
@@ -84,7 +87,12 @@ export default function Prescriptions() {
 
   return (
     <div className="prescriptions-page">
-      <h1>დანიშნულებები (Prescriptions)</h1>
+      <div className="prescriptions-page-header">
+        <h1>დანიშნულებები (Prescriptions)</h1>
+        <Link href={`/${locale}/dashboard/prescriptions/new`} className="btn prescriptions-new-btn">
+          <span>+ ახალი დანიშნულება</span>
+        </Link>
+      </div>
 
       <div className="prescriptions-filters">
         <div className="prescriptions-filters-grid">
@@ -181,6 +189,9 @@ export default function Prescriptions() {
                   </button>
                 </td>
                 <td data-label="">
+                  <Link href={`/${locale}/dashboard/prescriptions/${row._id}`} className="btn-gray btn-sm prescriptions-edit-link">
+                    <span>რედაქტირება</span>
+                  </Link>
                   <button type="button" className="btn-gray btn-sm" onClick={() => handleDelete(row._id)}>
                     <span>წაშლა</span>
                   </button>
