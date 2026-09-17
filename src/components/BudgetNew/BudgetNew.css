@@ -1,0 +1,35 @@
+.budgetnew-amounts-row {
+  margin-top: 4px;
+}
+
+.budgetnew-amount-input {
+  position: relative;
+}
+
+.budgetnew-amount-input .field-input {
+  padding-right: 36px;
+}
+
+.budgetnew-amount-readonly {
+  position: relative;
+  padding: 10px 36px 10px 12px;
+  background: #f7f9fc;
+  border: 1px solid #e9ebef;
+  border-radius: 10px;
+  font-size: 13.5px;
+  color: #0f2744;
+}
+
+.budgetnew-amount-ok {
+  border-color: #a8d9c4;
+  background: rgba(47, 158, 110, 0.05);
+}
+
+.budgetnew-check {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #2f9e6e;
+  font-weight: 700;
+}
