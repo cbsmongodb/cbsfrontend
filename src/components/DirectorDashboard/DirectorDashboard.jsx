@@ -919,6 +919,17 @@ function DoctorsReportTab() {
       {data && data.docs.length === 0 && !loading && <EmptyState text="ექიმები ვერ მოიძებნა" />}
 
       {data && data.docs.length > 0 && (
+        <div className="director-chart-card">
+          <h3>გაყიდვები ექიმების მიხედვით</h3>
+          <BarChart
+            data={[...data.docs].sort((a, b) => b.totalSalesAmount - a.totalSalesAmount).slice(0, 15)}
+            valueKey="totalSalesAmount"
+            labelKey="name"
+          />
+        </div>
+      )}
+
+      {data && data.docs.length > 0 && (
         <div className="director-table-wrap">
           <table className="director-table">
             <thead>
