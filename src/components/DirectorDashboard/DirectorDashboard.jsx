@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Fragment } from 'react'
 import { apiFetch } from '@/lib/api'
+import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import {
   BarChart as RBarChart,
   Bar,
@@ -316,11 +317,13 @@ export default function DirectorDashboard() {
         <button type="button" className={tab === 'product-sale' ? 'active' : ''} onClick={() => setTab('product-sale')}>Monthly Product Sales</button>
         <button type="button" className={tab === 'stock-availability' ? 'active' : ''} onClick={() => setTab('stock-availability')}>Stock Availability</button>
         <button type="button" className={tab === 'order' ? 'active' : ''} onClick={() => setTab('order')}>Order</button>
+        <button type="button" className={tab === 'doctors-report' ? 'active' : ''} onClick={() => setTab('doctors-report')}>Doctors Report</button>
       </div>
 
       {tab === 'product-sale' && <ProductSaleTab />}
       {tab === 'stock-availability' && <StockAvailabilityTab />}
       {tab === 'order' && <OrderTab />}
+      {tab === 'doctors-report' && <DoctorsReportTab />}
     </div>
   )
 }
@@ -775,6 +778,200 @@ function OrderTab() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function DoctorDrugBreakdown({ rows }) {
+  if (!rows || rows.length === 0) {
+    return <p className="director-empty-inline">ამ პერიოდში გაყიდვების მონაცემი არ არის</p>
+  }
+  return (
+    <div className="director-doctor-breakdown">
+      {rows.map((d, i) => (
+        <div className="director-doctor-breakdown-row" key={i}>
+          <span className="director-doctor-breakdown-name">{d.drugName}</span>
+          <span className="director-doctor-breakdown-boxes">{d.saleBoxes} ყუთი</span>
+          <span className="director-doctor-breakdown-amount">{d.salesAmount.toLocaleString()} ₾</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function DoctorsReportTab() {
+  const [doctors, setDoctors] = useState([])
+  const [divisions, setDivisions] = useState([])
+  const [groups, setGroups] = useState([])
+
+  const [doctorId, setDoctorId] = useState('')
+  const [divisionId, setDivisionId] = useState('')
+  const [groupId, setGroupId] = useState('')
+  const [fromDate, setFromDate] = useState('')
+  const [toDate, setToDate] = useState('')
+
+  const [page, setPage] = useState(1)
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [expandedRows, setExpandedRows] = useState(new Set())
+
+  useEffect(() => {
+    Promise.all([
+      apiFetch('/api/doctors'),
+      apiFetch('/api/divisions'),
+      apiFetch('/api/admin/groups'),
+    ])
+      .then(([d, div, g]) => {
+        setDoctors(d)
+        setDivisions(div)
+        setGroups(g)
+      })
+      .catch((err) => setError(err.message))
+  }, [])
+
+  async function load(targetPage = 1) {
+    setLoading(true)
+    setError('')
+    try {
+      const params = new URLSearchParams()
+      params.set('page', targetPage)
+      params.set('limit', 25)
+      if (doctorId) params.set('doctor', doctorId)
+      if (divisionId) params.set('division', divisionId)
+      if (groupId) params.set('group', groupId)
+      if (fromDate) params.set('fromDate', fromDate)
+      if (toDate) params.set('toDate', toDate)
+      const result = await apiFetch(`/api/director-dashboard/doctors-report?${params}`)
+      setData(result)
+      setPage(targetPage)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    load(1)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  function toggleExpand(id) {
+    setExpandedRows((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  return (
+    <div className="director-tab-panel">
+      <div className="director-filters">
+        <div className="director-field">
+          <label>Start Date</label>
+          <input type="date" className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+        </div>
+        <div className="director-field">
+          <label>End Date</label>
+          <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+        </div>
+        <div className="director-field director-field-grow">
+          <label>ექიმი</label>
+          <SearchableSelect options={doctors} value={doctorId} onChange={setDoctorId} getLabel={(o) => o.name} placeholder="ყველა" />
+        </div>
+        <div className="director-field director-field-grow">
+          <label>დივიზიონი</label>
+          <SearchableSelect options={divisions} value={divisionId} onChange={setDivisionId} getLabel={(o) => o.name} placeholder="ყველა" />
+        </div>
+        <div className="director-field director-field-grow">
+          <label>ჯგუფი</label>
+          <SearchableSelect options={groups} value={groupId} onChange={setGroupId} getLabel={(o) => o.name} placeholder="ყველა" />
+        </div>
+        <button type="button" className="btn director-submit-btn" onClick={() => load(1)} disabled={loading}>
+          <span>Submit</span>
+        </button>
+      </div>
+
+      {error && <p className="resource-error">{error}</p>}
+      {loading && !data && <Skeleton />}
+
+      {data && (
+        <div className="director-kpi-row">
+          <div className="director-kpi-card">
+            <span className="director-kpi-label">ახლად დამატებული</span>
+            <span className="director-kpi-value">{data.kpis.newlyAddedCount.toLocaleString()}</span>
+          </div>
+          <div className="director-kpi-card">
+            <span className="director-kpi-label">აქტიური ექიმები</span>
+            <span className="director-kpi-value">{data.kpis.activeCount.toLocaleString()}</span>
+          </div>
+          <div className="director-kpi-card">
+            <span className="director-kpi-label">დაბიუჯეტებული</span>
+            <span className="director-kpi-value">{data.kpis.budgetedCount.toLocaleString()}</span>
+          </div>
+        </div>
+      )}
+
+      {data && data.docs.length === 0 && !loading && <EmptyState text="ექიმები ვერ მოიძებნა" />}
+
+      {data && data.docs.length > 0 && (
+        <div className="director-table-wrap">
+          <table className="director-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>ექიმი</th>
+                <th>ნომერი</th>
+                <th>პროფილი</th>
+                <th>აქტიური</th>
+                <th>ბიუჯეტი</th>
+                <th>გაყიდვა (ყუთი)</th>
+                <th>გაყიდვა (თანხა)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.docs.map((d) => {
+                const isExpanded = expandedRows.has(d._id)
+                return (
+                  <Fragment key={d._id}>
+                    <tr>
+                      <td>
+                        <button type="button" className="analytics-expand-btn" onClick={() => toggleExpand(d._id)}>
+                          {isExpanded ? '▼' : '▶'}
+                        </button>
+                      </td>
+                      <td>{d.name}</td>
+                      <td>{d.uniqueNumber}</td>
+                      <td>{d.profileName}</td>
+                      <td>{d.isActive ? '✓' : '✕'}</td>
+                      <td>{d.isBudgeted ? '✓' : '✕'}</td>
+                      <td className="director-num">{d.totalSaleBoxes}</td>
+                      <td className="director-num">{d.totalSalesAmount.toLocaleString()} ₾</td>
+                    </tr>
+                    {isExpanded && (
+                      <tr className="analytics-breakdown-row">
+                        <td colSpan={8}>
+                          <DoctorDrugBreakdown rows={d.drugBreakdown} />
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {data && data.pages > 1 && (
+        <div className="director-pagination">
+          <button type="button" className="btn-gray btn-sm" disabled={page <= 1} onClick={() => load(page - 1)}><span>←</span></button>
+          <span>{page} / {data.pages}</span>
+          <button type="button" className="btn-gray btn-sm" disabled={page >= data.pages} onClick={() => load(page + 1)}><span>→</span></button>
         </div>
       )}
     </div>
