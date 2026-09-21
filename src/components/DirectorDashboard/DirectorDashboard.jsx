@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, Fragment } from 'react'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import {
@@ -315,7 +316,17 @@ function QuickDateButtons({ onPick }) {
 }
 
 export default function DirectorDashboard() {
-  const [tab, setTab] = useState('product-sale')
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const [tab, setTabState] = useState(searchParams.get('tab') || 'product-sale')
+
+  function setTab(next) {
+    setTabState(next)
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('tab', next)
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+  }
   const [weather, setWeather] = useState(null)
 
   useEffect(() => {
