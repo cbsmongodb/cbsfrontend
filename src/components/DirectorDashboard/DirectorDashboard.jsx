@@ -12,6 +12,9 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
 } from 'recharts'
 import {
   useReactTable,
@@ -234,6 +237,39 @@ function EmptyState({ text = 'მონაცემი ვერ მოიძე
         <line x1="36.5" y1="44.5" x2="41" y2="49" stroke="#c3cad4" strokeWidth="2.5" strokeLinecap="round" />
       </svg>
       <p>{text}</p>
+    </div>
+  )
+}
+
+function MonthQuickButtons({ onPick }) {
+  const [selected, setSelected] = useState(0)
+  const now = new Date()
+  const options = [
+    { label: 'ამ თვეს', monthsBack: 0 },
+    { label: '1 თვის წინ', monthsBack: 1 },
+    { label: '2 თვის წინ', monthsBack: 2 },
+    { label: '3 თვის წინ', monthsBack: 3 },
+  ]
+  const fmt = (d) => d.toISOString().slice(0, 10)
+  return (
+    <div className="director-quick-dates">
+      {options.map((o) => {
+        const from = new Date(now.getFullYear(), now.getMonth() - o.monthsBack, 1)
+        const to = new Date(now.getFullYear(), now.getMonth() - o.monthsBack + 1, 0)
+        return (
+          <button
+            type="button"
+            key={o.label}
+            className={selected === o.monthsBack ? 'active' : ''}
+            onClick={() => {
+              setSelected(o.monthsBack)
+              onPick(fmt(from), fmt(to))
+            }}
+          >
+            {o.label}
+          </button>
+        )
+      })}
     </div>
   )
 }
@@ -895,7 +931,7 @@ function DoctorsReportTab() {
         <button type="button" className="btn director-submit-btn" onClick={() => load(1)} disabled={loading}>
           <span>Submit</span>
         </button>
-        <QuickDateButtons
+        <MonthQuickButtons
           onPick={(fd, td) => {
             setFromDate(fd)
             setToDate(td)
@@ -1016,6 +1052,67 @@ function DoctorsReportTab() {
           <button type="button" className="btn-gray btn-sm" disabled={page >= data.pages} onClick={() => load(page + 1)}><span>→</span></button>
         </div>
       )}
+
+      {data?.divisionSummary?.length > 0 && (() => {
+        const divColor = (name) => {
+          const n = (name || '').toLowerCase()
+          if (n.includes('1')) return '#3f74d6'
+          if (n.includes('2')) return '#d33a3a'
+          if (n.includes('3')) return '#2f9e6e'
+          return '#8792a3'
+        }
+        const grandTotal = data.divisionSummary.reduce((s, d) => s + d.totalSalesAmount, 0)
+        return (
+          <div className="director-chart-card">
+            <h3>შემოსავალი დივიზიონების მიხედვით</h3>
+
+            <div className="director-donut-wrap">
+              <ResponsiveContainer width="100%" height={320}>
+                <PieChart>
+                  <Pie
+                    data={data.divisionSummary}
+                    dataKey="totalSalesAmount"
+                    nameKey="divisionName"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={70}
+                    outerRadius={110}
+                    paddingAngle={2}
+                    label={({ percent }) => (percent > 0 ? `${Math.round(percent * 100)}%` : '')}
+                    labelLine={false}
+                  >
+                    {data.divisionSummary.map((entry, i) => (
+                      <Cell key={i} fill={divColor(entry.divisionName)} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(v) => `${Number(v).toLocaleString()} ₾`} />
+                  <Legend verticalAlign="bottom" iconType="circle" iconSize={9} wrapperStyle={{ fontSize: 12, fontWeight: 600 }} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="director-donut-center">
+                <span className="director-donut-center-value">{grandTotal.toLocaleString()} ₾</span>
+                <span className="director-donut-center-label">სულ</span>
+              </div>
+            </div>
+
+            <div className="director-division-stats">
+              {data.divisionSummary.map((d, i) => {
+                const pct = grandTotal > 0 ? Math.round((d.totalSalesAmount / grandTotal) * 100) : 0
+                return (
+                  <div className="director-division-stat-card" key={i}>
+                    <span className="director-division-stat-dot" style={{ background: divColor(d.divisionName) }} />
+                    <div className="director-division-stat-text">
+                      <span className="director-division-stat-name">{d.divisionName}</span>
+                      <span className="director-division-stat-amount">{d.totalSalesAmount.toLocaleString()} ₾</span>
+                      <span className="director-division-stat-pct">{pct}% სულიდან</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )
+      })()}
     </div>
   )
 }
