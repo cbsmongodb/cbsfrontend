@@ -1095,3 +1095,10 @@
   padding-left: 28px !important;
   padding-right: 28px !important;
 }
+
+/* ---------- FIX: Submit button's own internal padding ---------- */
+
+.director-submit-btn {
+  padding-left: 28px !important;
+  padding-right: 28px !important;
+}
