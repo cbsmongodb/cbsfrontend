@@ -817,6 +817,7 @@ function DoctorsReportTab() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [expandedRows, setExpandedRows] = useState(new Set())
+  const [chartSearch, setChartSearch] = useState('')
 
   useEffect(() => {
     Promise.all([
@@ -920,12 +921,47 @@ function DoctorsReportTab() {
 
       {data && data.docs.length > 0 && (
         <div className="director-chart-card">
-          <h3>გაყიდვები ექიმების მიხედვით</h3>
-          <BarChart
-            data={[...data.docs].sort((a, b) => b.totalSalesAmount - a.totalSalesAmount).slice(0, 15)}
-            valueKey="totalSalesAmount"
-            labelKey="name"
+          <div className="director-chart-toolbar">
+            <h3>გაყიდვები ექიმების მიხედვით</h3>
+          </div>
+          <input
+            type="text"
+            className="field-input director-chart-search"
+            placeholder="ჩაწერეთ ექიმის სახელი..."
+            value={chartSearch}
+            onChange={(e) => setChartSearch(e.target.value)}
           />
+          <ResponsiveContainer width="100%" height={340}>
+            <RBarChart
+              data={data.docs
+                .filter((d) => !chartSearch || d.name.toLowerCase().includes(chartSearch.toLowerCase()))
+                .sort((a, b) => b.totalSalesAmount - a.totalSalesAmount)
+                .slice(0, 15)}
+              margin={{ top: 4, right: 12, bottom: 70, left: 4 }}
+              barCategoryGap="30%"
+            >
+              <defs>
+                <linearGradient id="doctorSalesGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#3f74d6" />
+                  <stop offset="100%" stopColor="#2f9e6e" />
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} stroke="#eceef2" />
+              <XAxis
+                dataKey="name"
+                tick={{ fontSize: 11, fontWeight: 600, fill: '#5b6b82' }}
+                axisLine={false}
+                tickLine={false}
+                angle={-35}
+                textAnchor="end"
+                interval={0}
+                height={80}
+              />
+              <YAxis tick={{ fontSize: 11, fill: '#9aa7ba' }} axisLine={false} tickLine={false} />
+              <Tooltip content={<PremiumTooltip />} cursor={{ fill: 'rgba(63, 116, 214, 0.05)' }} />
+              <Bar dataKey="totalSalesAmount" name="გაყიდვა" fill="url(#doctorSalesGradient)" radius={[8, 8, 0, 0]} maxBarSize={44} animationDuration={700} />
+            </RBarChart>
+          </ResponsiveContainer>
         </div>
       )}
 
