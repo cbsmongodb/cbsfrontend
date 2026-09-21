@@ -1102,3 +1102,9 @@
   padding-left: 28px !important;
   padding-right: 28px !important;
 }
+
+/* ---------- Submit button — own dedicated line ---------- */
+
+.director-submit-row {
+  margin-bottom: 20px;
+}

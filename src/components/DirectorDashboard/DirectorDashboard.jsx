@@ -928,6 +928,9 @@ function DoctorsReportTab() {
           <label>ჯგუფი</label>
           <SearchableSelect options={groups} value={groupId} onChange={setGroupId} getLabel={(o) => o.name} placeholder="ყველა" />
         </div>
+      </div>
+
+      <div className="director-submit-row">
         <button type="button" className="btn director-submit-btn" onClick={() => load(1)} disabled={loading}>
           <span>Submit</span>
         </button>
