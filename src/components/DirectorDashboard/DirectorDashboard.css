@@ -1077,3 +1077,14 @@
 .director-filters {
   box-sizing: border-box;
 }
+
+/* ---------- FIX: Submit button flush against card's right edge ---------- */
+
+.director-filters {
+  padding-right: 40px !important;
+  overflow: visible;
+}
+
+.director-submit-btn {
+  margin-right: 8px;
+}
