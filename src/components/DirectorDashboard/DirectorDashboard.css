@@ -1052,3 +1052,28 @@
     margin-top: 4px;
   }
 }
+
+/* ---------- Doctors Report — dedicated quick-date row ---------- */
+
+.director-quickdate-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 22px;
+  margin-bottom: 20px;
+  background: #f7f9fc;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  flex-wrap: wrap;
+}
+
+.director-quickdate-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.director-filters {
+  box-sizing: border-box;
+}

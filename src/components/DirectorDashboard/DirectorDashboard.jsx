@@ -931,6 +931,10 @@ function DoctorsReportTab() {
         <button type="button" className="btn director-submit-btn" onClick={() => load(1)} disabled={loading}>
           <span>Submit</span>
         </button>
+      </div>
+
+      <div className="director-quickdate-row">
+        <span className="director-quickdate-label">სწრაფი არჩევანი:</span>
         <MonthQuickButtons
           onPick={(fd, td) => {
             setFromDate(fd)
