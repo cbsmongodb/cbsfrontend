@@ -881,10 +881,6 @@ function DoctorsReportTab() {
           <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
         </div>
         <div className="director-field director-field-grow">
-          <label>ექიმი</label>
-          <SearchableSelect options={doctors} value={doctorId} onChange={setDoctorId} getLabel={(o) => o.name} placeholder="ყველა" />
-        </div>
-        <div className="director-field director-field-grow">
           <label>დივიზიონი</label>
           <SearchableSelect options={divisions} value={divisionId} onChange={setDivisionId} getLabel={(o) => o.name} placeholder="ყველა" />
         </div>
