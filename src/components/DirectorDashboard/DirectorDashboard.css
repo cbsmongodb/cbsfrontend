@@ -1106,5 +1106,7 @@
 /* ---------- Submit button — own dedicated line ---------- */
 
 .director-submit-row {
+  display: flex;
+  justify-content: flex-end;
   margin-bottom: 20px;
 }
