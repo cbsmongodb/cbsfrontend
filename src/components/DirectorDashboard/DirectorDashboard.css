@@ -1014,3 +1014,41 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- Doctors Report filters — nicer wrapping/spacing ---------- */
+
+.director-filters {
+  row-gap: 14px;
+}
+
+.director-quick-dates {
+  flex-shrink: 0;
+}
+
+@media (max-width: 1100px) {
+  .director-quick-dates {
+    width: 100%;
+    justify-content: flex-start;
+    margin-left: 0;
+    margin-top: 4px;
+  }
+}
+
+/* ---------- Doctors Report filters — nicer wrapping/spacing ---------- */
+
+.director-filters {
+  row-gap: 14px;
+}
+
+.director-quick-dates {
+  flex-shrink: 0;
+}
+
+@media (max-width: 1100px) {
+  .director-quick-dates {
+    width: 100%;
+    justify-content: flex-start;
+    margin-left: 0;
+    margin-top: 4px;
+  }
+}
