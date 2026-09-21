@@ -881,6 +881,10 @@ function DoctorsReportTab() {
           <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
         </div>
         <div className="director-field director-field-grow">
+          <label>ექიმი</label>
+          <SearchableSelect options={doctors} value={doctorId} onChange={setDoctorId} getLabel={(o) => o.name} placeholder="ჩაწერეთ ექიმის სახელი..." />
+        </div>
+        <div className="director-field director-field-grow">
           <label>დივიზიონი</label>
           <SearchableSelect options={divisions} value={divisionId} onChange={setDivisionId} getLabel={(o) => o.name} placeholder="ყველა" />
         </div>
@@ -891,6 +895,13 @@ function DoctorsReportTab() {
         <button type="button" className="btn director-submit-btn" onClick={() => load(1)} disabled={loading}>
           <span>Submit</span>
         </button>
+        <QuickDateButtons
+          onPick={(fd, td) => {
+            setFromDate(fd)
+            setToDate(td)
+            load(1)
+          }}
+        />
       </div>
 
       {error && <p className="resource-error">{error}</p>}
@@ -917,22 +928,10 @@ function DoctorsReportTab() {
 
       {data && data.docs.length > 0 && (
         <div className="director-chart-card">
-          <div className="director-chart-toolbar">
-            <h3>გაყიდვები ექიმების მიხედვით</h3>
-          </div>
-          <input
-            type="text"
-            className="field-input director-chart-search"
-            placeholder="ჩაწერეთ ექიმის სახელი..."
-            value={chartSearch}
-            onChange={(e) => setChartSearch(e.target.value)}
-          />
+          <h3>გაყიდვები ექიმების მიხედვით</h3>
           <ResponsiveContainer width="100%" height={340}>
             <RBarChart
-              data={data.docs
-                .filter((d) => !chartSearch || d.name.toLowerCase().includes(chartSearch.toLowerCase()))
-                .sort((a, b) => b.totalSalesAmount - a.totalSalesAmount)
-                .slice(0, 15)}
+              data={[...data.docs].sort((a, b) => b.totalSalesAmount - a.totalSalesAmount).slice(0, 15)}
               margin={{ top: 4, right: 12, bottom: 70, left: 4 }}
               barCategoryGap="30%"
             >
