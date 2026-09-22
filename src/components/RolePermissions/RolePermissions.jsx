@@ -13,10 +13,10 @@ const RESOURCE_GROUPS = [
   { label: 'ძირითადი', keys: ['attendances'] },
   { label: 'პროდუქტის კონფიგურაცია', keys: ['drugs', 'product_types', 'manufacturers', 'manufacturer_countries'] },
   { label: 'ბაზრის კონფიგურაცია', keys: ['doctors', 'doctor_categories', 'doctor_sub_categories', 'hospitals', 'pharmacies', 'profiles'] },
-  { label: 'დაგეგმვა და გაყიდვები', keys: ['plannings', 'sales', 'budgets'] },
+  { label: 'დაგეგმვა და გაყიდვები', keys: ['plannings', 'sales', 'budgets', 'budget_requests'] },
   { label: 'რეპორტები', keys: ['efficiency_report', 'reimbursement_report', 'staff_performance_report', 'analytics', 'budgets_report', 'director_dashboard'] },
     { label: 'მარკეტინგის შესრულება', keys: ['prescriptions', 'employee_accounts', 'employee_targets', 'employee_sales', 'doctor_sales', 'doctor_targets'] },
-  { label: 'ადმინისტრაცია', keys: ['employees', 'roles', 'designations', 'sections', 'groups', 'regions', 'leaves'] },
+  { label: 'ადმინისტრაცია', keys: ['employees', 'roles', 'designations', 'sections', 'groups', 'regions', 'leaves', 'divisions'] },
 ]
 
 const RESOURCE_KEYS = RESOURCE_GROUPS.flatMap((g) => g.keys)

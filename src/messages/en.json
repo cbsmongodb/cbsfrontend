@@ -385,6 +385,8 @@
       "groups": "Groups",
       "regions": "Regions",
       "leaves": "Leaves",
+      "divisions": "Divisions",
+      "budget_requests": "Budget Requests",
       "prescriptions": "Prescriptions",
       "employee_accounts": "Employee Accounts",
       "employee_targets": "Employee Targets",
