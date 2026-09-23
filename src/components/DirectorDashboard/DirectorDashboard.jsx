@@ -869,12 +869,14 @@ function DoctorsReportTab() {
   useEffect(() => {
     Promise.all([
       apiFetch('/api/doctors'),
-      apiFetch('/api/divisions'),
+      apiFetch('/api/admin/sections'),
       apiFetch('/api/admin/groups'),
     ])
-      .then(([d, div, g]) => {
+      .then(([d, sections, g]) => {
         setDoctors(d)
-        setDivisions(div)
+        // "division" filter here really means Section — only show the real
+        // numbered divisions ("1 DIVIZION" etc.), not "Test Division"
+        setDivisions((sections || []).filter((s) => /^\d\s*DIVIZION/i.test(s.name)))
         setGroups(g)
       })
       .catch((err) => setError(err.message))

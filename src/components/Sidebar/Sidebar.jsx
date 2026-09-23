@@ -39,10 +39,8 @@ const RESOURCE_KEY = {
   'dashboard/budgets-list': 'budgets_report',
   'dashboard/budgets/allotment': 'budgets_report',
   'dashboard/prescriptions': 'prescriptions',
-  'dashboard/employee-accounts': 'employee_accounts',
   'dashboard/employee-targets': 'employee_targets',
   'dashboard/employee-sales': 'employee_sales',
-  'dashboard/doctor-sales': 'doctor_sales',
   'dashboard/doctor-targets': 'doctor_targets',
   'dashboard/employees': 'employees',
   'dashboard/employees/import': 'employees',
@@ -51,7 +49,6 @@ const RESOURCE_KEY = {
   'dashboard/sections': 'sections',
   'dashboard/groups': 'groups',
   'dashboard/regions': 'regions',
-  'dashboard/divisions': 'regions',
   'dashboard/leaves': 'leaves',
 }
 
@@ -174,10 +171,8 @@ const NAV = [
     icon: 'marketingPerformance',
     items: [
       { href: 'dashboard/prescriptions', key: 'prescriptions' },
-      { href: 'dashboard/employee-accounts', key: 'employeeAccounts' },
       { href: 'dashboard/employee-targets', key: 'employeeTargets' },
       { href: 'dashboard/employee-sales', key: 'employeeSales' },
-      { href: 'dashboard/doctor-sales', key: 'doctorSales' },
       { href: 'dashboard/doctor-targets', key: 'doctorTargets' },
     ],
   },
@@ -218,7 +213,6 @@ const NAV = [
       { href: 'dashboard/sections', key: 'sections' },
       { href: 'dashboard/groups', key: 'groups' },
       { href: 'dashboard/regions', key: 'regions' },
-      { href: 'dashboard/divisions', key: 'divisions' },
       { href: 'dashboard/leaves', key: 'leaves' },
     ],
   },

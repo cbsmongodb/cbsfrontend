@@ -88,7 +88,6 @@
         "sections": "Sections",
         "groups": "Groups",
         "regions": "Regions",
-        "divisions": "Divisions",
         "leaves": "Leaves",
         "settings": "System Settings",
         "employeesImport": "Import Employees"
@@ -98,7 +97,6 @@
         "prescriptions": "Prescriptions",
         "employeeTargets": "Employee Targets",
         "employeeSales": "Employee Sales",
-        "doctorSales": "Doctor Sales",
         "doctorTargets": "Doctor Target",
         "employeeAccounts": "Employee Accounts"
       }
@@ -364,6 +362,7 @@
       "home": "Dashboard",
       "attendances": "Live Feed / Attendance",
       "plannings": "Visit Planning",
+      "plan_config": "Planning Settings",
       "sales": "Sales Entry",
       "budgets": "Budgets",
       "drugs": "Drugs",
@@ -385,13 +384,11 @@
       "groups": "Groups",
       "regions": "Regions",
       "leaves": "Leaves",
-      "divisions": "Divisions",
       "budget_requests": "Budget Requests",
       "prescriptions": "Prescriptions",
       "employee_accounts": "Employee Accounts",
       "employee_targets": "Employee Targets",
       "employee_sales": "Employee Sales",
-      "doctor_sales": "Doctor Sales",
       "doctor_targets": "Doctor Target",
       "staff_performance_report": "Staff Performance",
       "analytics": "Analytics",
@@ -407,7 +404,6 @@
   },
   "pages": {
     "designations": "Designations",
-    "divisions": "Divisions",
     "doctorCategories": "Doctor Categories",
     "doctorSubcategories": "Doctor Subcategories",
     "doctors": "Doctors",
@@ -453,7 +449,6 @@
     "role": "Role",
     "designation": "Position",
     "group": "Group",
-    "division": "Division",
     "workDays": "Work Days",
     "region": "Region",
     "section": "Section",

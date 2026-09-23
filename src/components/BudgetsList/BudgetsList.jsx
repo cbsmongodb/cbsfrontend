@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
+import Link from 'next/link'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './BudgetsList.css'
@@ -11,6 +13,7 @@ function fmtMoney(n) {
 }
 
 export default function BudgetsList() {
+  const { locale } = useParams()
   const [doctors, setDoctors] = useState([])
   const [employees, setEmployees] = useState([])
   const [sections, setSections] = useState([])
@@ -98,7 +101,12 @@ export default function BudgetsList() {
 
   return (
     <div className="budgets-list-page">
-      <h1>ბიუჯეტები (Budgets)</h1>
+      <div className="budgets-list-page-header">
+        <h1>ბიუჯეტები (Budgets)</h1>
+        <Link href={`/${locale}/dashboard/budgets/new`} className="btn budgets-list-new-btn">
+          <span>+ ახალი ბიუჯეტი</span>
+        </Link>
+      </div>
 
       <div className="budgets-list-filters">
         <div className="budgets-list-filters-grid">

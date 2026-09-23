@@ -208,3 +208,16 @@
     min-width: 0;
   }
 }
+
+/* ---------- Page header with New button ---------- */
+
+.budgets-list-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.budgets-list-new-btn {
+  text-decoration: none;
+}

@@ -91,7 +91,6 @@
         "sections": "სექციები",
         "groups": "ჯგუფები",
         "regions": "რეგიონები",
-        "divisions": "დივიზიონები",
         "leaves": "შვებულებები",
         "settings": "სისტემის პარამეტრები",
         "employeesImport": "თანამშრომლების იმპორტი"
@@ -101,7 +100,6 @@
         "prescriptions": "დანიშნულებები",
         "employeeTargets": "თანამშრომლების სამიზნეები",
         "employeeSales": "თანამშრომლების გაყიდვები",
-        "doctorSales": "ექიმების გაყიდვები",
         "doctorTargets": "ექიმების სამიზნეები",
         "employeeAccounts": "თანამშრომლების ანგარიშები"
       }
@@ -367,6 +365,7 @@
       "home": "დეშბორდი",
       "attendances": "Live Feed / დასწრება",
       "plannings": "ვიზიტების დაგეგმვა",
+      "plan_config": "დაგეგმვის პარამეტრები",
       "sales": "გაყიდვების შეყვანა",
       "budgets": "ბიუჯეტები",
       "drugs": "მედიკამენტები",
@@ -388,13 +387,11 @@
       "groups": "ჯგუფები",
       "regions": "რეგიონები",
       "leaves": "შვებულებები",
-      "divisions": "დივიზიონები",
       "budget_requests": "ბიუჯეტის მოთხოვნები",
       "prescriptions": "დანიშნულებები",
       "employee_accounts": "თანამშრომლების ანგარიშები",
       "employee_targets": "თანამშრომლების სამიზნეები",
       "employee_sales": "თანამშრომლების გაყიდვები",
-      "doctor_sales": "ექიმების გაყიდვები",
       "doctor_targets": "ექიმების სამიზნეები",
       "staff_performance_report": "თანამშრომელთა შესრულება",
       "analytics": "ანალიტიკა",
@@ -410,7 +407,6 @@
   },
   "pages": {
     "designations": "პოზიციები",
-    "divisions": "დივიზიონები",
     "doctorCategories": "ექიმის კატეგორიები",
     "doctorSubcategories": "ექიმის ქვეკატეგორიები",
     "doctors": "ექიმები",
@@ -456,7 +452,6 @@
     "role": "როლი",
     "designation": "პოზიცია",
     "group": "ჯგუფი",
-    "division": "დივიზიონი",
     "workDays": "სამუშაო დღეები",
     "region": "რეგიონი",
     "section": "სექცია",

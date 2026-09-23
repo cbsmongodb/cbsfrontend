@@ -42,13 +42,6 @@ export default function Page() {
           optionsEndpoint: "/api/admin/groups",
           required: false,
         },
-        {
-          name: "division",
-          label: t('fields.division'),
-          type: "select",
-          optionsEndpoint: "/api/divisions",
-          required: false,
-        },
         { name: "workDays", label: t('fields.workDays'), type: "weekdays", required: false },
         { name: "isActive", label: t('fields.isActive'), type: "checkbox" },
       ]}

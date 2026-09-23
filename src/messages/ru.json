@@ -88,7 +88,6 @@
         "sections": "Секции",
         "groups": "Группы",
         "regions": "Регионы",
-        "divisions": "Дивизионы",
         "leaves": "Отпуска",
         "settings": "Системные настройки",
         "employeesImport": "Импорт сотрудников"
@@ -98,7 +97,6 @@
         "prescriptions": "Назначения",
         "employeeTargets": "Цели сотрудников",
         "employeeSales": "Продажи сотрудников",
-        "doctorSales": "Продажи врачей",
         "doctorTargets": "Цели врачей",
         "employeeAccounts": "Счета сотрудников"
       }
@@ -364,6 +362,7 @@
       "home": "Панель управления",
       "attendances": "Live Feed / Посещаемость",
       "plannings": "Планирование визитов",
+      "plan_config": "Настройки планирования",
       "sales": "Ввод продаж",
       "budgets": "Бюджеты",
       "drugs": "Препараты",
@@ -385,13 +384,11 @@
       "groups": "Группы",
       "regions": "Регионы",
       "leaves": "Отпуска",
-      "divisions": "Дивизионы",
       "budget_requests": "Заявки на бюджет",
       "prescriptions": "Назначения",
       "employee_accounts": "Счета сотрудников",
       "employee_targets": "Цели сотрудников",
       "employee_sales": "Продажи сотрудников",
-      "doctor_sales": "Продажи врачей",
       "doctor_targets": "Цели врачей",
       "staff_performance_report": "Эффективность сотрудников",
       "analytics": "Аналитика",
@@ -407,7 +404,6 @@
   },
   "pages": {
     "designations": "Должности",
-    "divisions": "Дивизионы",
     "doctorCategories": "Категории врачей",
     "doctorSubcategories": "Подкатегории врачей",
     "doctors": "Врачи",
@@ -453,7 +449,6 @@
     "role": "Роль",
     "designation": "Должность",
     "group": "Группа",
-    "division": "Дивизион",
     "workDays": "Рабочие дни",
     "region": "Регион",
     "section": "Секция",
