@@ -5,6 +5,8 @@ import { apiFetch } from '@/lib/api'
 import LocationPickerModal from './LocationPickerModal'
 import MultiSelectSearch from './MultiSelectSearch'
 import SearchableSelect from './SearchableSelect'
+import DrugBonusEditor from './DrugBonusEditor'
+import './DrugBonusEditor.css'
 import './ResourceTable.css'
 
 export default function ResourceTable({ title, endpoint, fields, paginated = false, pageSize = 50 }) {
@@ -132,6 +134,7 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
       else if (f.type === 'multiselect' || f.type === 'multiselect-search') next[f.name] = relationIds(raw)
       else if (f.type === 'checkbox') next[f.name] = !!raw
       else if (f.type === 'date') next[f.name] = raw ? String(raw).slice(0, 10) : ''
+      else if (f.type === 'drug-bonuses') next[f.name] = Array.isArray(raw) ? raw : []
       else next[f.name] = raw ?? ''
     })
     setForm(next)
@@ -146,17 +149,39 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
     e.preventDefault()
     setError('')
     try {
+      // separate out any drug-bonuses field — saved to its own endpoint
+      const bonusField = fields.find((f) => f.type === 'drug-bonuses')
+      const body = { ...form }
+      let bonuses = []
+      if (bonusField) {
+        bonuses = body[bonusField.name] || []
+        delete body[bonusField.name]
+      }
+
+      let savedId = editingId
       if (editingId) {
         await apiFetch(`${endpoint}/${editingId}`, {
           method: 'PUT',
-          body: JSON.stringify(form),
+          body: JSON.stringify(body),
         })
       } else {
-        await apiFetch(endpoint, {
+        const created = await apiFetch(endpoint, {
           method: 'POST',
-          body: JSON.stringify(form),
+          body: JSON.stringify(body),
         })
+        savedId = created?._id
       }
+
+      // sync bonuses (upsert each) to /api/drug-bonuses
+      if (bonusField && savedId) {
+        for (const b of bonuses) {
+          await apiFetch('/api/drug-bonuses', {
+            method: 'POST',
+            body: JSON.stringify({ drug: savedId, period: b.period, value: b.value }),
+          })
+        }
+      }
+
       cancelEdit()
       load()
     } catch (err) {
@@ -230,6 +255,17 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
             <span>{hasLocation ? t('locationEdit') : t('locationPick')}</span>
           </button>
         </div>
+      )
+    }
+
+    if (f.type === 'drug-bonuses') {
+      return (
+        <DrugBonusEditor
+          key={f.name}
+          label={f.label}
+          value={form[f.name] || []}
+          onChange={(next) => handleChange(f.name, next)}
+        />
       )
     }
 

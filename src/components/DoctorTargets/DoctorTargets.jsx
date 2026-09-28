@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { apiFetch } from '@/lib/api'
+import DoctorTargetModal from './DoctorTargetModal'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './DoctorTargets.css'
 
@@ -18,6 +19,7 @@ export default function DoctorTargets() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     Promise.all([apiFetch('/api/doctors'), apiFetch('/api/employees')])
@@ -68,7 +70,9 @@ export default function DoctorTargets() {
 
   return (
     <div className="doctor-targets-page">
-      <h1>ექიმების სამიზნეები (Doctor Target)</h1>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}><h1>ექიმების სამიზნეები (Doctor Target)</h1>
+        <button className="btn" onClick={() => setShowModal(true)}><span>+ ახალი ექიმის სამიზნე</span></button>
+      </div>
 
       <div className="doctor-targets-filters">
         <div className="doctor-targets-filters-grid">
@@ -163,6 +167,15 @@ export default function DoctorTargets() {
             <span>→</span>
           </button>
         </div>
+      )}
+    
+      {showModal && (
+        <DoctorTargetModal
+          employees={employees}
+          doctors={doctors}
+          onClose={() => setShowModal(false)}
+          onSaved={() => load(1)}
+        />
       )}
     </div>
   )

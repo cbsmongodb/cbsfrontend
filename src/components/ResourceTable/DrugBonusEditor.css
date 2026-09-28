@@ -1,0 +1,157 @@
+.drug-bonus-editor {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  padding: 20px 22px;
+  border: 1px solid #e6e8ee;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fbfcfe, #f6f8fc);
+  box-shadow: 0 1px 2px rgba(15, 39, 68, 0.03);
+}
+
+.drug-bonus-editor-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f2744;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.drug-bonus-editor-label::before {
+  content: "";
+  width: 4px;
+  height: 15px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #3f74d6, #2f9e6e);
+}
+
+.drug-bonus-editor-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.drug-bonus-editor-row .field-select,
+.drug-bonus-editor-row .field-input {
+  height: 42px;
+  border-radius: 10px;
+}
+
+.drug-bonus-editor-row .field-select {
+  min-width: 160px;
+  flex: 0 0 auto;
+}
+
+.drug-bonus-editor-row .field-input {
+  width: 140px;
+  flex: 0 0 auto;
+}
+
+.drug-bonus-editor-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 42px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(120deg, #14284a, #1e3a68 60%, #1c5c46 130%);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.15s ease;
+}
+
+.drug-bonus-editor-add:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+.drug-bonus-editor-add:active {
+  transform: translateY(0);
+}
+
+.drug-bonus-editor-empty {
+  font-size: 12.5px;
+  color: #93a1b4;
+}
+
+.drug-bonus-editor-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px dashed #e6e8ee;
+}
+
+.drug-bonus-editor-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 9px 7px 15px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #e6e8ee;
+  font-size: 13px;
+  box-shadow: 0 1px 2px rgba(15, 39, 68, 0.04);
+}
+
+.drug-bonus-editor-chip-period {
+  color: #475569;
+  font-weight: 500;
+}
+
+.drug-bonus-editor-chip-value {
+  font-weight: 700;
+  color: #1e3a68;
+  background: #eff4fb;
+  padding: 2px 11px;
+  border-radius: 999px;
+}
+
+.drug-bonus-editor-chip-remove {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  color: #94a3b8;
+  padding: 0 3px;
+  transition: color 0.15s ease;
+}
+
+.drug-bonus-editor-chip-remove:hover {
+  color: #dc2626;
+}
+
+[data-theme="dark"] .drug-bonus-editor {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, #0f1115, #0c0e12);
+}
+
+[data-theme="dark"] .drug-bonus-editor-label {
+  color: #e8edf5;
+}
+
+[data-theme="dark"] .drug-bonus-editor-chip {
+  background: #14161b;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .drug-bonus-editor-chip-period {
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .drug-bonus-editor-chip-value {
+  background: rgba(63, 116, 214, 0.18);
+  color: #9dc0f5;
+}
+
+[data-theme="dark"] .drug-bonus-editor-empty {
+  color: #64748b;
+}

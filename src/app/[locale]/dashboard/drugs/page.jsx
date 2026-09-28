@@ -31,9 +31,9 @@ export default function Page() {
         },
         { name: "price", label: t('fields.price'), type: "number" },
         { name: "stocks", label: t('fields.stocks'), type: "number" },
-        { name: "bonus", label: t('fields.bonus'), type: "number" },
         { name: "monthlyTarget", label: t('fields.monthlyTarget'), type: "number" },
         { name: "isActive", label: t('fields.isActive'), type: "checkbox" },
+        { name: "monthlyBonuses", label: "ბონუსები (თვის მიხედვით)", type: "drug-bonuses", hideInTable: true },
       ]}
     />
   );

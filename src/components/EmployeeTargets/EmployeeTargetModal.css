@@ -1,0 +1,138 @@
+.et-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(3px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; padding: 20px;
+}
+.et-modal {
+  background: #fff; border-radius: 18px;
+  width: 100%; max-width: 640px; max-height: 90vh;
+  display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.3);
+}
+.et-modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px; border-bottom: 1px solid #eef1f5;
+}
+.et-modal-head h2 { font-size: 17px; font-weight: 700; color: #0f2744; margin: 0; }
+.et-modal-close {
+  border: none; background: none; cursor: pointer;
+  font-size: 24px; line-height: 1; color: #94a3b8;
+}
+.et-modal-close:hover { color: #dc2626; }
+
+.et-modal-top {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  padding: 20px 24px 8px;
+}
+.et-modal-field { display: flex; flex-direction: column; gap: 6px; }
+.et-modal-field label { font-size: 12.5px; font-weight: 600; color: #64748b; }
+
+.et-modal-druglabel {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 24px 10px; font-size: 13px; font-weight: 700; color: #0f2744;
+}
+.et-modal-count {
+  font-size: 11.5px; font-weight: 600; color: #3f74d6;
+  background: #eff4fb; padding: 3px 10px; border-radius: 999px;
+}
+
+/* nicer search */
+.et-modal-searchwrap {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  margin: 0 24px 12px;
+  padding: 0 18px;
+  min-height: 52px !important;
+  height: 52px !important;
+  box-sizing: border-box;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #f8fafc;
+  transition: border-color .2s, background .2s;
+}
+.et-modal-searchwrap:focus-within { border-color: #3f74d6; background: #fff; }
+.et-modal-searchwrap svg { width: 18px; height: 18px; color: #94a3b8; flex-shrink: 0; }
+.et-modal-search {
+  flex: 1;
+  border: none !important;
+  background: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  font-size: 14.5px;
+  color: #0f2744;
+  height: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 52px;
+}
+
+.et-modal-druglist {
+  overflow-y: auto; padding: 4px 24px 8px; flex: 1; min-height: 240px;
+  border-top: 1px solid #eef1f5;
+}
+.et-modal-drugrow {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; padding: 9px 10px; border-radius: 10px;
+  transition: background .15s;
+}
+.et-modal-drugrow:hover { background: #f8fafc; }
+.et-modal-drugrow.is-checked { background: #eff4fb; }
+
+.et-modal-check {
+  display: flex; align-items: center; gap: 11px; cursor: pointer; flex: 1;
+}
+.et-modal-check input { display: none; }
+.et-modal-checkbox {
+  width: 19px; height: 19px; flex-shrink: 0;
+  border: 2px solid #cbd5e1; border-radius: 6px;
+  position: relative; transition: all .18s;
+}
+.et-modal-check input:checked + .et-modal-checkbox {
+  background: #3f74d6; border-color: #3f74d6;
+}
+.et-modal-check input:checked + .et-modal-checkbox::after {
+  content: ""; position: absolute; left: 5px; top: 1px;
+  width: 5px; height: 10px; border: solid #fff;
+  border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+.et-modal-drugname { font-size: 13.5px; color: #0f2744; }
+
+.et-modal-boxinput {
+  width: 120px; flex: 0 0 auto; height: 38px;
+  padding: 0 12px; border: 1px solid #3f74d6; border-radius: 9px;
+  font-size: 13.5px; outline: none;
+  animation: et-slide-in .2s ease;
+}
+@keyframes et-slide-in {
+  from { opacity: 0; transform: translateX(8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.et-modal-empty { text-align: center; color: #94a3b8; padding: 34px 0; font-size: 13px; }
+
+.et-modal-actions {
+  display: flex; gap: 10px; padding: 16px 24px;
+  border-top: 1px solid #eef1f5;
+}
+
+/* dark mode */
+[data-theme="dark"] .et-modal { background: #14161b; }
+[data-theme="dark"] .et-modal-head,
+[data-theme="dark"] .et-modal-druglist,
+[data-theme="dark"] .et-modal-actions { border-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] .et-modal-head h2,
+[data-theme="dark"] .et-modal-drugname { color: #e8edf5; }
+[data-theme="dark"] .et-modal-searchwrap { background: #0f1115; border-color: rgba(255,255,255,0.1); }
+[data-theme="dark"] .et-modal-search { color: #e8edf5; }
+[data-theme="dark"] .et-modal-drugrow:hover { background: rgba(255,255,255,0.04); }
+[data-theme="dark"] .et-modal-drugrow.is-checked { background: rgba(63,116,214,0.15); }
+
+.et-modal-top.et-modal-top-3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+@media (max-width: 640px) {
+  .et-modal-top.et-modal-top-3 { grid-template-columns: 1fr; }
+}

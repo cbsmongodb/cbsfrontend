@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './EmployeeTargets.css'
+import EmployeeTargetModal from './EmployeeTargetModal'
 
 export default function EmployeeTargets() {
   const [employees, setEmployees] = useState([])
@@ -16,6 +17,7 @@ export default function EmployeeTargets() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     apiFetch('/api/employees').then(setEmployees).catch((err) => setError(err.message))
@@ -60,7 +62,9 @@ export default function EmployeeTargets() {
 
   return (
     <div className="employee-targets-page">
-      <h1>თანამშრომლების სამიზნეები (Employee Targets)</h1>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}><h1>თანამშრომლების სამიზნეები (Employee Targets)</h1>
+        <button className="btn" onClick={() => setShowModal(true)}><span>+ ახალი სამიზნე</span></button>
+      </div>
 
       <div className="employee-targets-filters">
         <div className="employee-targets-filters-grid">
@@ -143,6 +147,14 @@ export default function EmployeeTargets() {
             <span>→</span>
           </button>
         </div>
+      )}
+    
+      {showModal && (
+        <EmployeeTargetModal
+          employees={employees}
+          onClose={() => setShowModal(false)}
+          onSaved={() => load(1)}
+        />
       )}
     </div>
   )
