@@ -20,6 +20,7 @@ export default function DoctorTargets() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showModal, setShowModal] = useState(false)
+  const [editId, setEditId] = useState(null)
 
   useEffect(() => {
     Promise.all([apiFetch('/api/doctors'), apiFetch('/api/employees')])
@@ -71,7 +72,7 @@ export default function DoctorTargets() {
   return (
     <div className="doctor-targets-page">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}><h1>ექიმების სამიზნეები (Doctor Target)</h1>
-        <button className="btn" onClick={() => setShowModal(true)}><span>+ ახალი ექიმის სამიზნე</span></button>
+        <button className="btn" onClick={() => { setEditId(null); setShowModal(true) }}><span>+ ახალი ექიმის სამიზნე</span></button>
       </div>
 
       <div className="doctor-targets-filters">
@@ -140,6 +141,7 @@ export default function DoctorTargets() {
                 <td data-label="თანამშრომელი">{row.employeeName}</td>
                 <td data-label="სამიზნე თანხა">{row.targetAmount}</td>
                 <td data-label="">
+                  <button className="btn-gray btn-sm" onClick={() => { setEditId(row._id); setShowModal(true) }}><span>რედაქტირება</span></button>
                   <button type="button" className="btn-gray btn-sm" onClick={() => handleDelete(row._id)}>
                     <span>წაშლა</span>
                   </button>
@@ -173,7 +175,8 @@ export default function DoctorTargets() {
         <DoctorTargetModal
           employees={employees}
           doctors={doctors}
-          onClose={() => setShowModal(false)}
+          editId={editId}
+          onClose={() => { setShowModal(false); setEditId(null) }}
           onSaved={() => load(1)}
         />
       )}

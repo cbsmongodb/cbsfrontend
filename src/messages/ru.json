@@ -62,12 +62,15 @@
         "profiles": "Профили"
       },
       "planningSales": {
-        "label": "Планирование и продажи",
+        "label": "Ввод продаж",
         "plannings": "Планирование визитов",
         "doctorEntryItems": "Ввод продаж",
         "budgets": "Бюджеты",
         "budgetRequireds": "Заявки на бюджет",
-        "salesListing": "Список продаж"
+        "salesListing": "Список продаж",
+        "employeeSales": "Продажи из аптек",
+        "employeeTargets": "Планы сотрудников",
+        "budgetAllotment": "Распределение бюджета"
       },
       "reports": {
         "label": "Отчёты",

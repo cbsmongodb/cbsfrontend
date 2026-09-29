@@ -65,12 +65,15 @@
         "profiles": "პროფილები"
       },
       "planningSales": {
-        "label": "დაგეგმვა და გაყიდვები",
+        "label": "გაყიდვების შეყვანა",
         "plannings": "ვიზიტების დაგეგმვა",
         "doctorEntryItems": "გაყიდვების შეყვანა",
         "budgets": "ბიუჯეტები",
         "budgetRequireds": "ბიუჯეტის მოთხოვნები",
-        "salesListing": "გაყიდვების სია"
+        "salesListing": "გაყიდვების სია",
+        "employeeSales": "გაყიდვები აფთიაქებიდან",
+        "employeeTargets": "თანამშრომლების გეგმები",
+        "budgetAllotment": "ბიუჯეტის განაწილება"
       },
       "reports": {
         "label": "რეპორტები",

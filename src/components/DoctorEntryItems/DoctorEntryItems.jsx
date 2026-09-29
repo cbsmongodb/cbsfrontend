@@ -118,6 +118,16 @@ export default function DoctorEntryItems() {
     loadOptions()
   }, [])
 
+  // auto-load on employee/period change (no button)
+  useEffect(() => {
+    if (!employeeId) {
+      setDoctorEntries([])
+      return
+    }
+    handleLoad()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [employeeId, monthValue])
+
   function doctorLabel(doc) {
     return `${doc.firstName || ''} ${doc.lastName || ''}`.trim() || doc.name || 'უცნობი'
   }
@@ -269,9 +279,7 @@ export default function DoctorEntryItems() {
           />
         </div>
 
-        <button type="button" className="btn-gray" onClick={handleLoad} disabled={loading}>
-          <span>{loading ? 'იტვირთება...' : 'ჩატვირთვა'}</span>
-        </button>
+
       </div>
 
       {error && <p className="resource-error">{error}</p>}

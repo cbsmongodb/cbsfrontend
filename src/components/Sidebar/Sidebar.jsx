@@ -167,23 +167,15 @@ const NAV = [
   },
   {
     type: 'group',
-    id: 'marketingPerformance',
-    icon: 'marketingPerformance',
-    items: [
-      { href: 'dashboard/prescriptions', key: 'prescriptions' },
-      { href: 'dashboard/employee-targets', key: 'employeeTargets' },
-      { href: 'dashboard/employee-sales', key: 'employeeSales' },
-      { href: 'dashboard/doctor-targets', key: 'doctorTargets' },
-    ],
-  },
-  {
-    type: 'group',
     id: 'planningSales',
     icon: 'planningSales',
     items: [
       { href: 'dashboard/plannings', key: 'plannings' },
       { href: 'dashboard/doctor-entry-items', key: 'doctorEntryItems' },
       { href: 'dashboard/sales-listing', key: 'salesListing' },
+      { href: 'dashboard/budgets-list', key: 'budgets' },
+      { href: 'dashboard/employee-sales', key: 'employeeSales' },
+      { href: 'dashboard/employee-targets', key: 'employeeTargets' },
     ],
   },
   {
@@ -197,7 +189,6 @@ const NAV = [
       { href: 'dashboard/reports/staff-performance', key: 'staffPerformance' },
       { href: 'dashboard/director-dashboard', key: 'directorDashboard' },
       { href: 'dashboard/analytics', key: 'analytics' },
-      { href: 'dashboard/budgets-list', key: 'budgets' },
       { href: 'dashboard/budgets/allotment', key: 'budgetAllotment' },
     ],
   },

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { apiFetch } from '@/lib/api'
+import EmployeeSaleModal from './EmployeeSaleModal'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './EmployeeSales.css'
 
@@ -16,6 +17,8 @@ export default function EmployeeSales() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [showModal, setShowModal] = useState(false)
+  const [editId, setEditId] = useState(null)
 
   useEffect(() => {
     apiFetch('/api/employees').then(setEmployees).catch((err) => setError(err.message))
@@ -60,7 +63,9 @@ export default function EmployeeSales() {
 
   return (
     <div className="employee-sales-page">
-      <h1>თანამშრომლების გაყიდვები (Employee Sales)</h1>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}><h1>თანამშრომლების გაყიდვები (Employee Sales)</h1>
+        <button className="btn" onClick={() => { setEditId(null); setShowModal(true) }}><span>+ ახალი გაყიდვა</span></button>
+      </div>
 
       <div className="employee-sales-filters">
         <div className="employee-sales-filters-grid">
@@ -116,6 +121,7 @@ export default function EmployeeSales() {
                 <td data-label="თანამშრომელი">{row.employeeName}</td>
                 <td data-label="გაყიდვების თანხა">{row.saleAmount}</td>
                 <td data-label="">
+                  <button className="btn-gray btn-sm" onClick={() => { setEditId(row._id); setShowModal(true) }}><span>რედაქტირება</span></button>
                   <button type="button" className="btn-gray btn-sm" onClick={() => handleDelete(row._id)}>
                     <span>წაშლა</span>
                   </button>
@@ -143,6 +149,15 @@ export default function EmployeeSales() {
             <span>→</span>
           </button>
         </div>
+      )}
+    
+      {showModal && (
+        <EmployeeSaleModal
+          employees={employees}
+          editId={editId}
+          onClose={() => { setShowModal(false); setEditId(null) }}
+          onSaved={() => load(1)}
+        />
       )}
     </div>
   )

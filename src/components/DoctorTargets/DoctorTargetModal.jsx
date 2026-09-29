@@ -10,7 +10,7 @@ const MONTHS = [
 ]
 const CURRENT_YEAR = new Date().getUTCFullYear()
 
-export default function DoctorTargetModal({ employees, doctors, onClose, onSaved }) {
+export default function DoctorTargetModal({ employees, doctors, editId, onClose, onSaved }) {
   const [month, setMonth] = useState(new Date().getUTCMonth())
   const [employeeId, setEmployeeId] = useState("")
   const [doctorId, setDoctorId] = useState("")
@@ -20,12 +20,35 @@ export default function DoctorTargetModal({ employees, doctors, onClose, onSaved
   const [search, setSearch] = useState("")
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
+  const [loadingEdit, setLoadingEdit] = useState(!!editId)
 
+  // load drug list
   useEffect(() => {
     apiFetch("/api/doctor-targets/visible-drugs")
       .then(setDrugs)
       .catch((err) => setError(err.message))
   }, [])
+
+  // if editing, load the existing target and pre-fill
+  useEffect(() => {
+    if (!editId) return
+    apiFetch(`/api/doctor-targets/${editId}`)
+      .then((t) => {
+        if (t.date) setMonth(new Date(t.date).getUTCMonth())
+        setEmployeeId(t.employee || "")
+        setDoctorId(t.doctor || "")
+        const chk = {}
+        const bx = {}
+        ;(t.items || []).forEach((it) => {
+          chk[it.drug] = true
+          bx[it.drug] = it.totalNoOfBoxes
+        })
+        setChecked(chk)
+        setBoxes(bx)
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoadingEdit(false))
+  }, [editId])
 
   const filtered = drugs.filter((d) =>
     !search.trim() ? true : d.name.toLowerCase().includes(search.trim().toLowerCase())
@@ -58,10 +81,12 @@ export default function DoctorTargetModal({ employees, doctors, onClose, onSaved
     setSaving(true)
     try {
       const date = new Date(Date.UTC(CURRENT_YEAR, month, 1)).toISOString()
-      await apiFetch("/api/doctor-targets", {
-        method: "POST",
-        body: JSON.stringify({ employee: employeeId, doctor: doctorId, date, items }),
-      })
+      const body = JSON.stringify({ employee: employeeId, doctor: doctorId, date, items })
+      if (editId) {
+        await apiFetch(`/api/doctor-targets/${editId}`, { method: "PUT", body })
+      } else {
+        await apiFetch("/api/doctor-targets", { method: "POST", body })
+      }
       onSaved()
       onClose()
     } catch (err) {
@@ -74,7 +99,7 @@ export default function DoctorTargetModal({ employees, doctors, onClose, onSaved
     <div className="et-modal-overlay" onClick={onClose}>
       <div className="et-modal" onClick={(e) => e.stopPropagation()}>
         <div className="et-modal-head">
-          <h2>ახალი ექიმის სამიზნე</h2>
+          <h2>{editId ? "ექიმის სამიზნის რედაქტირება" : "ახალი ექიმის სამიზნე"}</h2>
           <button className="et-modal-close" onClick={onClose}>×</button>
         </div>
 
@@ -125,36 +150,41 @@ export default function DoctorTargetModal({ employees, doctors, onClose, onSaved
         </div>
 
         <div className="et-modal-druglist">
-          {filtered.map((d) => {
-            const isChecked = !!checked[d._id]
-            return (
-              <div className={`et-modal-drugrow${isChecked ? " is-checked" : ""}`} key={d._id}>
-                <label className="et-modal-check">
-                  <input type="checkbox" checked={isChecked} onChange={() => toggle(d._id)} />
-                  <span className="et-modal-checkbox" />
-                  <span className="et-modal-drugname">{d.name}</span>
-                </label>
-                {isChecked && (
-                  <input
-                    className="et-modal-boxinput"
-                    type="number"
-                    min="0"
-                    placeholder="ყუთები"
-                    autoFocus
-                    value={boxes[d._id] ?? ""}
-                    onChange={(e) => setBox(d._id, e.target.value)}
-                  />
-                )}
-              </div>
-            )
-          })}
-          {filtered.length === 0 && <p className="et-modal-empty">წამალი არ მოიძებნა</p>}
+          {loadingEdit ? (
+            <p className="et-modal-empty">იტვირთება...</p>
+          ) : (
+            <>
+              {filtered.map((d) => {
+                const isChecked = !!checked[d._id]
+                return (
+                  <div className={`et-modal-drugrow${isChecked ? " is-checked" : ""}`} key={d._id}>
+                    <label className="et-modal-check">
+                      <input type="checkbox" checked={isChecked} onChange={() => toggle(d._id)} />
+                      <span className="et-modal-checkbox" />
+                      <span className="et-modal-drugname">{d.name}</span>
+                    </label>
+                    {isChecked && (
+                      <input
+                        className="et-modal-boxinput"
+                        type="number"
+                        min="0"
+                        placeholder="ყუთები"
+                        value={boxes[d._id] ?? ""}
+                        onChange={(e) => setBox(d._id, e.target.value)}
+                      />
+                    )}
+                  </div>
+                )
+              })}
+              {filtered.length === 0 && <p className="et-modal-empty">წამალი არ მოიძებნა</p>}
+            </>
+          )}
         </div>
 
         {error && <p className="resource-error" style={{ margin: "10px 24px 0" }}>{error}</p>}
 
         <div className="et-modal-actions">
-          <button className="btn" onClick={handleSave} disabled={saving}>
+          <button className="btn" onClick={handleSave} disabled={saving || loadingEdit}>
             <span>{saving ? "..." : "შენახვა"}</span>
           </button>
           <button className="btn-gray" onClick={onClose}>

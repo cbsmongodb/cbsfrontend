@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import { apiFetch } from "@/lib/api"
 import SearchableSelect from "@/components/ResourceTable/SearchableSelect"
-import "./EmployeeTargetModal.css"
+import "@/components/EmployeeTargets/EmployeeTargetModal.css"
 
 const MONTHS = [
   "იანვარი", "თებერვალი", "მარტი", "აპრილი", "მაისი", "ივნისი",
@@ -10,7 +10,7 @@ const MONTHS = [
 ]
 const CURRENT_YEAR = new Date().getUTCFullYear()
 
-export default function EmployeeTargetModal({ employees, editId, onClose, onSaved }) {
+export default function EmployeeSaleModal({ employees, editId, onClose, onSaved }) {
   const [month, setMonth] = useState(new Date().getUTCMonth())
   const [employeeId, setEmployeeId] = useState("")
   const [drugs, setDrugs] = useState([])
@@ -22,14 +22,14 @@ export default function EmployeeTargetModal({ employees, editId, onClose, onSave
   const [loadingEdit, setLoadingEdit] = useState(!!editId)
 
   useEffect(() => {
-    apiFetch("/api/employee-targets/visible-drugs")
+    apiFetch("/api/employee-sales/visible-drugs")
       .then(setDrugs)
       .catch((err) => setError(err.message))
   }, [])
 
   useEffect(() => {
     if (!editId) return
-    apiFetch(`/api/employee-targets/${editId}`)
+    apiFetch(`/api/employee-sales/${editId}`)
       .then((t) => {
         if (t.date) setMonth(new Date(t.date).getUTCMonth())
         setEmployeeId(t.employee || "")
@@ -76,9 +76,9 @@ export default function EmployeeTargetModal({ employees, editId, onClose, onSave
       const date = new Date(Date.UTC(CURRENT_YEAR, month, 1)).toISOString()
       const body = JSON.stringify({ employee: employeeId, date, items })
       if (editId) {
-        await apiFetch(`/api/employee-targets/${editId}`, { method: "PUT", body })
+        await apiFetch(`/api/employee-sales/${editId}`, { method: "PUT", body })
       } else {
-        await apiFetch("/api/employee-targets", { method: "POST", body })
+        await apiFetch("/api/employee-sales", { method: "POST", body })
       }
       onSaved()
       onClose()
@@ -92,7 +92,7 @@ export default function EmployeeTargetModal({ employees, editId, onClose, onSave
     <div className="et-modal-overlay" onClick={onClose}>
       <div className="et-modal" onClick={(e) => e.stopPropagation()}>
         <div className="et-modal-head">
-          <h2>{editId ? "სამიზნის რედაქტირება" : "ახალი სამიზნე"}</h2>
+          <h2>{editId ? "გაყიდვის რედაქტირება" : "ახალი გაყიდვა"}</h2>
           <button className="et-modal-close" onClick={onClose}>×</button>
         </div>
 
@@ -116,7 +116,7 @@ export default function EmployeeTargetModal({ employees, editId, onClose, onSave
         </div>
 
         <div className="et-modal-druglabel">
-          <span>სამიზნე წამლები (მონიშნეთ და შეიყვანეთ ყუთები)</span>
+          <span>გაყიდული წამლები (მონიშნეთ და შეიყვანეთ ყუთები)</span>
           {chosenCount > 0 && <span className="et-modal-count">არჩეულია: {chosenCount}</span>}
         </div>
 

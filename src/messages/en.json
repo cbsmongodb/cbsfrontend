@@ -62,12 +62,15 @@
         "profiles": "Profiles"
       },
       "planningSales": {
-        "label": "Planning & Sales",
+        "label": "Sales Entry",
         "plannings": "Visit Planning",
         "doctorEntryItems": "Sales Entry",
         "budgets": "Budgets",
         "budgetRequireds": "Budget Requests",
-        "salesListing": "Sales Listing"
+        "salesListing": "Sales Listing",
+        "employeeSales": "Pharmacy Sales",
+        "employeeTargets": "Employee Plans",
+        "budgetAllotment": "Budget Allotment"
       },
       "reports": {
         "label": "Reports",
