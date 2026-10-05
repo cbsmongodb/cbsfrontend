@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
+import DrugPickerModal from './DrugPickerModal'
 import './DoctorEntryItems.css'
 
 const BANKS = ['BOG', 'TBC', 'Liberty', 'Cash', 'Pharmacy']
@@ -41,7 +42,7 @@ function emptyDoctorEntry() {
     analysisOfPreviousMonth: null,
     budgetCalculation: null,
     analysisOfCurrentMonth: null,
-    drugs: [emptyDrugRow()],
+    drugs: [],
   }
 }
 
@@ -91,12 +92,13 @@ export default function DoctorEntryItems() {
 
   const [employeeId, setEmployeeId] = useState('')
   const [monthValue, setMonthValue] = useState(currentPeriodValue())
-  const [doctorEntries, setDoctorEntries] = useState([])
+  const [doctorEntries, setDoctorEntries] = useState([emptyDoctorEntry()])
 
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [pickerDoctorIndex, setPickerDoctorIndex] = useState(null)
 
   useEffect(() => {
     async function loadOptions() {
@@ -121,12 +123,17 @@ export default function DoctorEntryItems() {
   // auto-load on employee/period change (no button)
   useEffect(() => {
     if (!employeeId) {
-      setDoctorEntries([])
+      setDoctorEntries([emptyDoctorEntry()])
       return
     }
     handleLoad()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [employeeId, monthValue])
+
+  function drugNameById(id) {
+    const d = drugs.find((x) => x._id === id)
+    return d ? d.name : ''
+  }
 
   function doctorLabel(doc) {
     return `${doc.firstName || ''} ${doc.lastName || ''}`.trim() || doc.name || 'უცნობი'
@@ -169,6 +176,23 @@ export default function DoctorEntryItems() {
     setDoctorEntries((prev) => {
       const next = [...prev]
       next[index] = { ...next[index], [field]: value }
+      return next
+    })
+  }
+
+  function addDrugs(doctorIndex, drugIds) {
+    setDoctorEntries((prev) => {
+      const next = [...prev]
+      const entry = { ...next[doctorIndex] }
+      const existing = new Set((entry.drugs || []).map((r) => r.drugId).filter(Boolean))
+      const rows = [...(entry.drugs || [])]
+      // drop an initial empty row if present
+      const cleaned = rows.filter((r) => r.drugId)
+      drugIds.forEach((id) => {
+        if (!existing.has(id)) cleaned.push({ ...emptyDrugRow(), drugId: id })
+      })
+      entry.drugs = cleaned.length > 0 ? cleaned : [emptyDrugRow()]
+      next[doctorIndex] = entry
       return next
     })
   }
@@ -307,18 +331,13 @@ export default function DoctorEntryItems() {
             <div className="doctor-entry-row">
               <div className="doctor-entries-field">
                 <label>ექიმი</label>
-                <select
-                  className="field-select"
+                <SearchableSelect
+                  options={doctors}
                   value={entry.doctorId}
-                  onChange={(e) => updateDoctorField(doctorIndex, 'doctorId', e.target.value)}
-                >
-                  <option value="">აირჩიეთ ექიმი...</option>
-                  {doctors.map((d) => (
-                    <option key={d._id} value={d._id}>
-                      {doctorLabel(d)}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => updateDoctorField(doctorIndex, 'doctorId', val)}
+                  getLabel={(d) => doctorLabel(d)}
+                  placeholder="აირჩიეთ ექიმი..."
+                />
               </div>
 
               <div className="doctor-entries-field">
@@ -350,18 +369,13 @@ export default function DoctorEntryItems() {
 
               <div className="doctor-entries-field">
                 <label>კლინიკა</label>
-                <select
-                  className="field-select"
+                <SearchableSelect
+                  options={hospitals}
                   value={entry.hospitalId}
-                  onChange={(e) => updateDoctorField(doctorIndex, 'hospitalId', e.target.value)}
-                >
-                  <option value="">აირჩიეთ კლინიკა...</option>
-                  {hospitals.map((h) => (
-                    <option key={h._id} value={h._id}>
-                      {h.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => updateDoctorField(doctorIndex, 'hospitalId', val)}
+                  getLabel={(h) => h.name}
+                  placeholder="აირჩიეთ კლინიკა..."
+                />
               </div>
 
               <div className="doctor-entries-field">
@@ -406,23 +420,18 @@ export default function DoctorEntryItems() {
               <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 8 }}>წამლები</div>
               {entry.drugs.map((row, drugIndex) => (
                 <div key={drugIndex} className="doctor-entry-drug-row">
-                  <select
-                    className="field-select"
+                  <SearchableSelect
+                    options={drugs}
                     value={row.drugId}
-                    onChange={(e) => updateDrugField(doctorIndex, drugIndex, 'drugId', e.target.value)}
-                  >
-                    <option value="">აირჩიეთ წამალი...</option>
-                    {drugs.map((dr) => (
-                      <option key={dr._id} value={dr._id}>
-                        {dr.name}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(val) => updateDrugField(doctorIndex, drugIndex, 'drugId', val)}
+                    getLabel={(dr) => dr.name}
+                    placeholder="აირჩიეთ ან ჩაწერეთ წამალი..."
+                  />
 
                   {row.drugId && (
                     <>
                       <div className="doctor-entry-drug-number">
-                        <label>Quota</label>
+                        <label>გეგმა</label>
                         <input
                           type="number"
                           className="field-input"
@@ -473,7 +482,7 @@ export default function DoctorEntryItems() {
                 </div>
               ))}
 
-              <button type="button" className="btn-gray btn-sm" onClick={() => addDrug(doctorIndex)} style={{ marginTop: 8 }}>
+              <button type="button" className="btn-gray btn-sm" onClick={() => setPickerDoctorIndex(doctorIndex)} style={{ marginTop: 8 }}>
                 <span>+ წამლის დამატება</span>
               </button>
             </div>
@@ -484,6 +493,15 @@ export default function DoctorEntryItems() {
       <button type="button" className="btn-gray" onClick={addDoctor} style={{ marginTop: 4 }}>
         <span>+ ექიმის დამატება</span>
       </button>
+    
+      {pickerDoctorIndex !== null && (
+        <DrugPickerModal
+          drugs={drugs}
+          alreadyAddedIds={(doctorEntries[pickerDoctorIndex]?.drugs || []).map((r) => r.drugId).filter(Boolean)}
+          onClose={() => setPickerDoctorIndex(null)}
+          onConfirm={(ids) => addDrugs(pickerDoctorIndex, ids)}
+        />
+      )}
     </div>
   )
 }

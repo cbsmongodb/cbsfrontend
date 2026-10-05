@@ -41,14 +41,10 @@ export default function StaffPerformanceReport() {
 
   useEffect(() => {
     async function loadOptions() {
+      apiFetch('/api/admin/sections').then(setSections).catch(() => setSections([]))
+      apiFetch('/api/admin/groups').then(setGroups).catch(() => setGroups([]))
       try {
-        const [s, g, e] = await Promise.all([
-          apiFetch('/api/admin/sections'),
-          apiFetch('/api/admin/groups'),
-          apiFetch('/api/employees'),
-        ])
-        setSections(s)
-        setGroups(g)
+        const e = await apiFetch('/api/employees')
         setEmployees(e)
       } catch (err) {
         setError(err.message)
@@ -134,30 +130,31 @@ export default function StaffPerformanceReport() {
             </>
           )}
 
-          <div className="staff-performance-field">
-            <label>დივიზიონი</label>
-            <SearchableSelect
-              options={sections}
-              value={sectionId}
-              onChange={(v) => {
-                setSectionId(v)
-                setGroupId('')
-              }}
-              getLabel={(o) => o.name}
-              placeholder="ყველა"
-            />
-          </div>
+          {sections.length > 0 && (
+            <div className="staff-performance-field">
+              <label>დივიზიონი</label>
+              <SearchableSelect
+                options={sections}
+                value={sectionId}
+                onChange={(v) => { setSectionId(v); setGroupId('') }}
+                getLabel={(o) => o.name}
+                placeholder="ყველა"
+              />
+            </div>
+          )}
 
-          <div className="staff-performance-field">
-            <label>ჯგუფი</label>
-            <SearchableSelect
-              options={groups}
-              value={groupId}
-              onChange={setGroupId}
-              getLabel={(o) => o.name}
-              placeholder="ყველა"
-            />
-          </div>
+          {groups.length > 0 && (
+            <div className="staff-performance-field">
+              <label>ჯგუფი</label>
+              <SearchableSelect
+                options={groups}
+                value={groupId}
+                onChange={setGroupId}
+                getLabel={(o) => o.name}
+                placeholder="ყველა"
+              />
+            </div>
+          )}
 
           <div className="staff-performance-field">
             <label>თანამშრომელი</label>

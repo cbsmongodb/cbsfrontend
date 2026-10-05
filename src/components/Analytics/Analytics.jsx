@@ -145,16 +145,15 @@ export default function Analytics() {
     Promise.all([
       apiFetch('/api/doctors'),
       apiFetch('/api/employees'),
-      apiFetch('/api/admin/sections'),
-      apiFetch('/api/admin/groups'),
     ])
-      .then(([d, e, s, g]) => {
+      .then(([d, e]) => {
         setDoctors(d)
         setEmployees(e)
-        setSections(s)
-        setGroups(g)
       })
       .catch((err) => setError(err.message))
+
+    apiFetch('/api/admin/sections').then(setSections).catch(() => setSections([]))
+    apiFetch('/api/admin/groups').then(setGroups).catch(() => setGroups([]))
   }, [])
 
   async function load(targetPage = 1) {
@@ -201,29 +200,30 @@ export default function Analytics() {
             <label>ბოლო თარიღი</label>
             <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
           </div>
-          <div className="analytics-field">
-            <label>დივიზიონი</label>
-            <SearchableSelect
-              options={sections}
-              value={sectionId}
-              onChange={(v) => {
-                setSectionId(v)
-                setGroupId('')
-              }}
-              getLabel={(o) => o.name}
-              placeholder="ყველა"
-            />
-          </div>
-          <div className="analytics-field">
-            <label>ჯგუფი</label>
-            <SearchableSelect
-              options={groups}
-              value={groupId}
-              onChange={setGroupId}
-              getLabel={(o) => o.name}
-              placeholder="ყველა"
-            />
-          </div>
+          {sections.length > 0 && (
+            <div className="analytics-field">
+              <label>დივიზიონი</label>
+              <SearchableSelect
+                options={sections}
+                value={sectionId}
+                onChange={(v) => { setSectionId(v); setGroupId('') }}
+                getLabel={(o) => o.name}
+                placeholder="ყველა"
+              />
+            </div>
+          )}
+          {groups.length > 0 && (
+            <div className="analytics-field">
+              <label>ჯგუფი</label>
+              <SearchableSelect
+                options={groups}
+                value={groupId}
+                onChange={setGroupId}
+                getLabel={(o) => o.name}
+                placeholder="ყველა"
+              />
+            </div>
+          )}
           <div className="analytics-field">
             <label>თანამშრომელი</label>
             <SearchableSelect

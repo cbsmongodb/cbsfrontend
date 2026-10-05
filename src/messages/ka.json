@@ -35,7 +35,18 @@
     "groups": {
       "fields": {}
     },
-    "changePassword": "პაროლის შეცვლა"
+    "changePassword": "პაროლის შეცვლა",
+    "teamStats": {
+      "title": "გუნდის სტატისტიკა",
+      "titleAll": "საერთო სტატისტიკა",
+      "thisMonth": "ამ თვეში",
+      "activeToday": "აქტიური დღეს",
+      "visits": "ვიზიტები",
+      "doctorsVisited": "ნანახი ექიმები",
+      "achievement": "გეგმის შესრულება",
+      "sales": "გაყიდვები",
+      "target": "გეგმა"
+    }
   },
   "sidebar": {
     "dashboard": "დეშბორდი",

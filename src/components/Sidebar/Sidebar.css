@@ -537,15 +537,15 @@
 }
 
 .sidebar.theme-division1 {
-  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #0a1128 0%, #1b2a4a 15%, #1e3a68 30%, #2955a3 50%, #1e3a68 65%, #16294d 85%, #0a1128 100%);
+  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #0f2a20 0%, #1b4332 15%, #2d6a4f 30%, #40916c 50%, #2d6a4f 65%, #1b4332 85%, #0f2a20 100%);
 }
 
 .sidebar.theme-division2 {
-  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #2a0a10 0%, #4a1420 15%, #6b1f2e 30%, #a8324a 50%, #6b1f2e 65%, #4a1420 85%, #2a0a10 100%);
+  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #2a1608 0%, #4a2c1b 15%, #7a4a20 30%, #b8752f 50%, #7a4a20 65%, #4a2c1b 85%, #2a1608 100%);
 }
 
 .sidebar.theme-division3 {
-  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #0f2a20 0%, #1b4332 15%, #2d6a4f 30%, #40916c 50%, #2d6a4f 65%, #1b4332 85%, #0f2a20 100%);
+  background: linear-gradient(135deg, #ffffff26, #ffffff0d), linear-gradient(45deg, #1a0a2a 0%, #2f1b4a 15%, #4a1e6b 30%, #6b2b9c 50%, #4a1e6b 65%, #33164d 85%, #1a0a2a 100%);
 }
 
 .sidebar.theme-office {
@@ -564,18 +564,18 @@
 }
 
 .sidebar.theme-division1 {
-  --active-grad: linear-gradient(120deg, #16294d 0%, #2955a3 60%, #4a90d9 130%);
-  --theme-accent: #7fb3ff;
+  --active-grad: linear-gradient(120deg, #1b4332 0%, #2d6a4f 60%, #40916c 130%);
+  --theme-accent: #74c69d;
 }
 
 .sidebar.theme-division2 {
-  --active-grad: linear-gradient(120deg, #4a1420 0%, #6b1f2e 60%, #a8324a 130%);
-  --theme-accent: #f0a3b5;
+  --active-grad: linear-gradient(120deg, #4a2c1b 0%, #7a4a20 60%, #b8752f 130%);
+  --theme-accent: #f0b87a;
 }
 
 .sidebar.theme-division3 {
-  --active-grad: linear-gradient(120deg, #1b4332 0%, #2d6a4f 60%, #40916c 130%);
-  --theme-accent: #74c69d;
+  --active-grad: linear-gradient(120deg, #33164d 0%, #6b2b9c 60%, #9d5ad9 130%);
+  --theme-accent: #c9a8ff;
 }
 
 .sidebar.theme-office {
@@ -607,37 +607,6 @@
 }
 
 .sidebar.theme-division1 {
-  --ink: #f0f6ff;
-  --ink-soft: #f5f5f7;
-  --ink-faint: #b8ccf0;
-  --line: rgba(255, 255, 255, 0.15);
-  --tint: rgba(255, 255, 255, 0.08);
-}
-
-.sidebar.theme-division1 .brand-cbs {
-  background: linear-gradient(90deg, #eaf2ff 0%, #7fb3ff 55%, #2955a3 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.sidebar.theme-division2 {
-  --ink: #fff0ee;
-  --ink-soft: #f5f5f7;
-  --ink-faint: #d9a8ad;
-  --line: rgba(255, 255, 255, 0.15);
-  --tint: rgba(255, 255, 255, 0.08);
-}
-
-.sidebar.theme-division2 .brand-cbs {
-  background: linear-gradient(90deg, #ffffff 0%, #f0a3b5 50%, #d9647a 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
-}
-
-.sidebar.theme-division3 {
   --ink: #eefff6;
   --ink-soft: #f5f5f7;
   --ink-faint: #a8ecc4;
@@ -645,8 +614,39 @@
   --tint: rgba(255, 255, 255, 0.08);
 }
 
-.sidebar.theme-division3 .brand-cbs {
+.sidebar.theme-division1 .brand-cbs {
   background: linear-gradient(90deg, #ffffff 0%, #b8e0c6 50%, #74c69d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.sidebar.theme-division2 {
+  --ink: #fff5ea;
+  --ink-soft: #f5f5f7;
+  --ink-faint: #f0cfa8;
+  --line: rgba(255, 255, 255, 0.15);
+  --tint: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar.theme-division2 .brand-cbs {
+  background: linear-gradient(90deg, #ffffff 0%, #f0b87a 50%, #d98a2f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
+}
+
+.sidebar.theme-division3 {
+  --ink: #f6f0ff;
+  --ink-soft: #f5f5f7;
+  --ink-faint: #d4b8f5;
+  --line: rgba(255, 255, 255, 0.15);
+  --tint: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar.theme-division3 .brand-cbs {
+  background: linear-gradient(90deg, #ffffff 0%, #d9c2ff 50%, #c9a8ff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

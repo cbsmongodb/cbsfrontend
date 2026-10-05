@@ -11,17 +11,18 @@ export default function Page() {
       pageSize={100}
       fields={[
         { name: "name", label: t('fields.name') },
-        { name: "address", label: t('fields.address') },
+        { name: "address", label: t('fields.address'), required: false },
         {
           name: "region",
           label: t('fields.region'),
-          type: "select",
+          type: "searchable-select",
           optionsEndpoint: "/api/admin/regions",
         },
-        { name: "phoneNumber", label: t('fields.phoneNumber') },
-        { name: "email", label: t('fields.email') },
+        { name: "phoneNumber", label: t('fields.phoneNumber'), required: false },
+        { name: "email", label: t('fields.email'), required: false },
         { name: "location", label: t('fields.location'), type: "location", latField: "lat", lngField: "lng" },
         { name: "isActive", label: t('fields.isActive'), type: "checkbox" },
+        { name: "doctors", label: "ექიმები", type: "hospital-doctors", hideInTable: true },
       ]}
     />
   );

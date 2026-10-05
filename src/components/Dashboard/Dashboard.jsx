@@ -136,7 +136,15 @@ export default function Dashboard() {
   const [unreadCount, setUnreadCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [weather, setWeather] = useState(null)
-  const [theme, setTheme] = useState(null)
+  const [theme, setTheme] = useState(() => {
+    try {
+      const cached = typeof window !== 'undefined' && localStorage.getItem('sidebarTheme')
+      return cached ? JSON.parse(cached) : null
+    } catch {
+      return null
+    }
+  })
+  const [teamStats, setTeamStats] = useState(null)
 
   useEffect(() => {
     fetch('https://api.open-meteo.com/v1/forecast?latitude=41.7151&longitude=44.8271&current_weather=true')
@@ -148,7 +156,10 @@ export default function Dashboard() {
   useEffect(() => {
     if (!employee?._id) return
     apiFetch('/api/employees/me/theme')
-      .then(setTheme)
+      .then((data) => {
+        setTheme(data)
+        try { localStorage.setItem('sidebarTheme', JSON.stringify(data)) } catch {}
+      })
       .catch((err) => console.error('loadTheme failed:', err))
   }, [employee])
 
@@ -171,6 +182,10 @@ export default function Dashboard() {
         ])
 
         setBalance(balanceData)
+
+        apiFetch('/api/dashboard/manager-stats')
+          .then(setTeamStats)
+          .catch(() => setTeamStats(null))
 
         const openVisit = dayData.visits?.find((v) => v.checkinTime && !v.checkoutTime)
         if (openVisit) {
@@ -206,7 +221,7 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-page">
-      <div className="dashboard-hero">
+      <div className={`dashboard-hero${theme ? ` theme-${theme.scheme}` : ''}`}>
         <div className="dashboard-hero-left">
           <div className="dashboard-avatar">{initials(employee?.firstName, employee?.lastName)}</div>
           <div className="dashboard-hero-text">
@@ -337,6 +352,46 @@ export default function Dashboard() {
               </div>
             </Link>
           )}
+        </div>
+      )}
+
+      {!loading && teamStats && teamStats.teamSize > 0 && (
+        <div className="dashboard-team-stats">
+          <div className="dashboard-team-stats-head">
+            <span className="dashboard-team-stats-title">
+              {teamStats.scope === 'all' ? t('teamStats.titleAll') : t('teamStats.title')}
+            </span>
+            <span className="dashboard-team-stats-sub">{t('teamStats.thisMonth')}</span>
+          </div>
+          <div className="dashboard-team-stats-grid">
+            <div className="team-stat-card">
+              <span className="team-stat-value">{teamStats.activeToday}<em>/{teamStats.teamSize}</em></span>
+              <span className="team-stat-label">{t('teamStats.activeToday')}</span>
+            </div>
+            <div className="team-stat-card">
+              <span className="team-stat-value">{teamStats.visitsThisMonth}</span>
+              <span className="team-stat-label">{t('teamStats.visits')}</span>
+            </div>
+            <div className="team-stat-card">
+              <span className="team-stat-value">{teamStats.doctorsVisited}</span>
+              <span className="team-stat-label">{t('teamStats.doctorsVisited')}</span>
+            </div>
+            <div className="team-stat-card is-accent">
+              <span className="team-stat-value">{teamStats.achievementPct}<em>%</em></span>
+              <span className="team-stat-label">{t('teamStats.achievement')}</span>
+              <div className="team-stat-bar">
+                <div className="team-stat-bar-fill" style={{ width: `${Math.min(teamStats.achievementPct, 100)}%` }} />
+              </div>
+            </div>
+            <div className="team-stat-card">
+              <span className="team-stat-value">₾{teamStats.salesAmount.toLocaleString()}</span>
+              <span className="team-stat-label">{t('teamStats.sales')}</span>
+            </div>
+            <div className="team-stat-card">
+              <span className="team-stat-value">₾{teamStats.targetAmount.toLocaleString()}</span>
+              <span className="team-stat-label">{t('teamStats.target')}</span>
+            </div>
+          </div>
         </div>
       )}
 

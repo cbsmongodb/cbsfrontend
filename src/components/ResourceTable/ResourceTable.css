@@ -51,9 +51,10 @@
 .resource-table-scroll {
   width: 100%;
   flex: 1;
-  min-height: 0;
-  overflow-x: scroll;
-  overflow-y: scroll;
+  min-height: 60vh;
+  max-height: 72vh;
+  overflow-x: auto;
+  overflow-y: auto;
   border: 1px solid #eee;
   border-radius: 10px;
   -webkit-overflow-scrolling: touch;

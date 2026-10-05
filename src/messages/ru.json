@@ -32,7 +32,18 @@
       "unread": "{count} новых",
       "none": "Нет новых уведомлений"
     },
-    "changePassword": "Изменить пароль"
+    "changePassword": "Изменить пароль",
+    "teamStats": {
+      "title": "Статистика команды",
+      "titleAll": "Общая статистика",
+      "thisMonth": "В этом месяце",
+      "activeToday": "Активны сегодня",
+      "visits": "Визиты",
+      "doctorsVisited": "Посещено врачей",
+      "achievement": "Выполнение плана",
+      "sales": "Продажи",
+      "target": "План"
+    }
   },
   "sidebar": {
     "dashboard": "Панель управления",

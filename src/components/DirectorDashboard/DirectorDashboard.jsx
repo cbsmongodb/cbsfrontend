@@ -1076,10 +1076,10 @@ function DoctorsReportTab() {
       {data?.divisionSummary?.length > 0 && (() => {
         const divColor = (name) => {
           const n = (name || '').toLowerCase()
-          if (n.includes('1')) return '#3f74d6'
-          if (n.includes('2')) return '#d33a3a'
-          if (n.includes('3')) return '#2f9e6e'
-          return '#8792a3'
+          if (n.includes('1')) return '#6fae8e'   // დივიზიონი 1 — რბილი მწვანე (sage)
+          if (n.includes('2')) return '#e0a976'   // დივიზიონი 2 — რბილი ნარინჯისფერი (soft apricot)
+          if (n.includes('3')) return '#a99bd0'   // დივიზიონი 3 — რბილი იასამნისფერი (dusty lavender)
+          return '#aab4c0'
         }
         const grandTotal = data.divisionSummary.reduce((s, d) => s + d.totalSalesAmount, 0)
         return (

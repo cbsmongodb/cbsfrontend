@@ -376,18 +376,18 @@
 }
 
 .dashboard-plan-visit-btn.theme-division1 {
-  background: linear-gradient(120deg, #16294d 0%, #2955a3 60%, #4a90d9 130%);
-  box-shadow: 0 6px 18px rgba(41, 85, 163, 0.3);
+  background: linear-gradient(120deg, #1b4332 0%, #2d6a4f 60%, #40916c 130%);
+  box-shadow: 0 6px 18px rgba(45, 106, 79, 0.3);
 }
 
 .dashboard-plan-visit-btn.theme-division2 {
-  background: linear-gradient(120deg, #4a1420 0%, #6b1f2e 60%, #a8324a 130%);
-  box-shadow: 0 6px 18px rgba(168, 50, 74, 0.3);
+  background: linear-gradient(120deg, #4a2c1b 0%, #7a4a20 60%, #b8752f 130%);
+  box-shadow: 0 6px 18px rgba(184, 117, 47, 0.3);
 }
 
 .dashboard-plan-visit-btn.theme-division3 {
-  background: linear-gradient(120deg, #1b4332 0%, #2d6a4f 60%, #40916c 130%);
-  box-shadow: 0 6px 18px rgba(45, 106, 79, 0.3);
+  background: linear-gradient(120deg, #33164d 0%, #6b2b9c 60%, #9d5ad9 130%);
+  box-shadow: 0 6px 18px rgba(107, 43, 156, 0.3);
 }
 
 .dashboard-plan-visit-btn.theme-office {
@@ -399,3 +399,43 @@
   background: linear-gradient(120deg, #4a2c1b 0%, #7a4a20 60%, #b8752f 130%);
   box-shadow: 0 6px 18px rgba(122, 74, 32, 0.3);
 }
+
+
+/* ===== Manager team stats ===== */
+.dashboard-team-stats {
+  margin-top: 22px; padding: 20px 22px; border-radius: 18px;
+  background: var(--card-bg, #fff); border: 1px solid var(--card-border, #eceff4);
+  box-shadow: 0 1px 2px rgba(15, 39, 68, 0.03);
+}
+.dashboard-team-stats-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px; }
+.dashboard-team-stats-title { font-size: 15px; font-weight: 700; color: var(--text-strong, #0f2744); }
+.dashboard-team-stats-sub { font-size: 12px; color: var(--text-muted, #93a1b4); }
+.dashboard-team-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.team-stat-card {
+  position: relative; padding: 16px 16px 15px; border-radius: 14px;
+  background: var(--stat-bg, #f8fafc); border: 1px solid var(--card-border, #eceff4);
+  display: flex; flex-direction: column; gap: 5px; overflow: hidden;
+}
+.team-stat-value { font-size: 24px; font-weight: 700; color: var(--text-strong, #0f2744); line-height: 1.1; }
+.team-stat-value em { font-size: 15px; font-style: normal; font-weight: 600; color: var(--text-muted, #93a1b4); margin-left: 2px; }
+.team-stat-label { font-size: 12px; color: var(--text-muted, #64748b); }
+.team-stat-card.is-accent {
+  background: linear-gradient(135deg, rgba(47,158,110,0.1), rgba(47,158,110,0.03));
+  border-color: rgba(47,158,110,0.2);
+}
+.team-stat-card.is-accent .team-stat-value { color: #1f7a4d; }
+.team-stat-bar { margin-top: 8px; height: 5px; border-radius: 999px; background: rgba(47,158,110,0.15); overflow: hidden; }
+.team-stat-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #2f9e6e, #35b37e); transition: width 0.5s ease; }
+[data-theme="dark"] .dashboard-team-stats { background: #14161b; border-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] .dashboard-team-stats-title,
+[data-theme="dark"] .team-stat-value { color: #e8edf5; }
+[data-theme="dark"] .team-stat-card { background: #0f1115; border-color: rgba(255,255,255,0.08); }
+
+
+/* ===== division-themed hero (avatar + role) ===== */
+.dashboard-hero.theme-division1 .dashboard-avatar { background: linear-gradient(135deg, #1b4332, #40916c); }
+.dashboard-hero.theme-division1 .dashboard-role-badge { color: #2d6a4f; }
+.dashboard-hero.theme-division2 .dashboard-avatar { background: linear-gradient(135deg, #4a2c1b, #b8752f); }
+.dashboard-hero.theme-division2 .dashboard-role-badge { color: #a8632b; }
+.dashboard-hero.theme-division3 .dashboard-avatar { background: linear-gradient(135deg, #33164d, #9d5ad9); }
+.dashboard-hero.theme-division3 .dashboard-role-badge { color: #7b3fb5; }

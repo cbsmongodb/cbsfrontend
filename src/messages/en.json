@@ -32,7 +32,18 @@
       "unread": "{count} new",
       "none": "No new notifications"
     },
-    "changePassword": "Change password"
+    "changePassword": "Change password",
+    "teamStats": {
+      "title": "Team Statistics",
+      "titleAll": "Overall Statistics",
+      "thisMonth": "This month",
+      "activeToday": "Active today",
+      "visits": "Visits",
+      "doctorsVisited": "Doctors visited",
+      "achievement": "Target achievement",
+      "sales": "Sales",
+      "target": "Target"
+    }
   },
   "sidebar": {
     "dashboard": "Dashboard",

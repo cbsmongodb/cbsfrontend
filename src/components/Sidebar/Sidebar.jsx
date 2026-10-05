@@ -57,6 +57,8 @@ function hasAccess(privileges, isAdmin, href) {
   const key = RESOURCE_KEY[href]
   if (!key) return true
   if (!privileges) return false
+  // import pages need the import flag, not just read
+  if (href.endsWith('/import')) return !!privileges[key]?.import
   return !!privileges[key]?.read
 }
 
@@ -187,7 +189,6 @@ const NAV = [
       { href: 'dashboard/reports/reimbursement', key: 'reimbursement' },
       { href: 'dashboard/reports/attendances', key: 'attendances' },
       { href: 'dashboard/reports/staff-performance', key: 'staffPerformance' },
-      { href: 'dashboard/director-dashboard', key: 'directorDashboard' },
       { href: 'dashboard/analytics', key: 'analytics' },
       { href: 'dashboard/budgets/allotment', key: 'budgetAllotment' },
     ],

@@ -6,6 +6,7 @@ import LocationPickerModal from './LocationPickerModal'
 import MultiSelectSearch from './MultiSelectSearch'
 import SearchableSelect from './SearchableSelect'
 import DrugBonusEditor from './DrugBonusEditor'
+import HospitalDoctorsEditor from './HospitalDoctorsEditor'
 import './DrugBonusEditor.css'
 import './ResourceTable.css'
 
@@ -135,6 +136,7 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
       else if (f.type === 'checkbox') next[f.name] = !!raw
       else if (f.type === 'date') next[f.name] = raw ? String(raw).slice(0, 10) : ''
       else if (f.type === 'drug-bonuses') next[f.name] = Array.isArray(raw) ? raw : []
+      else if (f.type === 'hospital-doctors') { /* managed by its own component */ }
       else next[f.name] = raw ?? ''
     })
     setForm(next)
@@ -143,6 +145,26 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
   function cancelEdit() {
     setEditingId(null)
     setForm({})
+  }
+
+  async function saveAndKeepEditing() {
+    setError('')
+    try {
+      const body = { ...form }
+      fields.filter((f) => f.type === 'drug-bonuses' || f.type === 'hospital-doctors')
+        .forEach((f) => { delete body[f.name] })
+      if (editingId) {
+        await apiFetch(`${endpoint}/${editingId}`, { method: 'PUT', body: JSON.stringify(body) })
+        return editingId
+      }
+      const created = await apiFetch(endpoint, { method: 'POST', body: JSON.stringify(body) })
+      const newId = created?._id
+      if (newId) { setEditingId(newId); load() }
+      return newId || null
+    } catch (err) {
+      setError(err.message)
+      return null
+    }
   }
 
   async function handleSubmit(e) {
@@ -157,6 +179,8 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
         bonuses = body[bonusField.name] || []
         delete body[bonusField.name]
       }
+
+      fields.filter((f) => f.type === 'hospital-doctors').forEach((f) => { delete body[f.name] })
 
       let savedId = editingId
       if (editingId) {
@@ -265,6 +289,17 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
           label={f.label}
           value={form[f.name] || []}
           onChange={(next) => handleChange(f.name, next)}
+        />
+      )
+    }
+
+    if (f.type === 'hospital-doctors') {
+      return (
+        <HospitalDoctorsEditor
+          key={f.name}
+          label={f.label}
+          hospitalId={editingId}
+          onSaveHospital={saveAndKeepEditing}
         />
       )
     }
