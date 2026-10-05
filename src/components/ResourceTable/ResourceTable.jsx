@@ -10,6 +10,44 @@ import HospitalDoctorsEditor from './HospitalDoctorsEditor'
 import './DrugBonusEditor.css'
 import './ResourceTable.css'
 
+// endpoint -> Roles resource key, so the table can hide Add / Edit / Delete
+// for roles that only have view access (backend enforces the same rules).
+// Endpoints not listed here keep every button (unchanged behaviour).
+const ENDPOINT_RESOURCE = {
+  '/api/doctors': 'doctors',
+  '/api/doctor-categories': 'doctor_categories',
+  '/api/doctor-subcategories': 'doctor_sub_categories',
+  '/api/hospitals': 'hospitals',
+  '/api/pharmacies': 'pharmacies',
+  '/api/profiles': 'profiles',
+  '/api/drugs': 'drugs',
+  '/api/product-types': 'product_types',
+  '/api/manufacturers': 'manufacturers',
+  '/api/producing-countries': 'manufacturer_countries',
+  '/api/employees': 'employees',
+  '/api/admin/designations': 'designations',
+  '/api/admin/sections': 'sections',
+  '/api/admin/groups': 'groups',
+  '/api/admin/regions': 'regions',
+}
+
+const ALL_ALLOWED = { add: true, update: true, delete: true }
+const NONE_ALLOWED = { add: false, update: false, delete: false }
+
+function readPermissions(endpoint) {
+  const key = ENDPOINT_RESOURCE[(endpoint || '').split('?')[0]]
+  if (!key) return ALL_ALLOWED
+  try {
+    const employee = JSON.parse(localStorage.getItem('employee') || 'null')
+    if (employee?.role?.name?.toLowerCase() === 'admin') return ALL_ALLOWED
+    const p = employee?.role?.privileges?.[key]
+    if (!p) return NONE_ALLOWED
+    return { add: p.add === 1, update: p.update === 1, delete: p.delete === 1 }
+  } catch {
+    return NONE_ALLOWED
+  }
+}
+
 export default function ResourceTable({ title, endpoint, fields, paginated = false, pageSize = 50 }) {
   const t = useTranslations('resourceTable')
   const WEEKDAYS = [
@@ -37,6 +75,10 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [total, setTotal] = useState(0)
+  // start with nothing allowed (avoids a flash of buttons), then read the
+  // logged-in role's privileges from localStorage on the client
+  const [perms, setPerms] = useState(NONE_ALLOWED)
+  useEffect(() => { setPerms(readPermissions(endpoint)) }, [endpoint])
 
   async function load() {
     setLoading(true)
@@ -508,6 +550,7 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
     <div className="resource-table">
       <h1>{title}</h1>
 
+      {(perms.add || (editingId && perms.update)) && (
       <form className="resource-form" onSubmit={handleSubmit}>
         {fields.map((f) => renderInput(f))}
         <div className="resource-form-actions">
@@ -521,6 +564,7 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
           )}
         </div>
       </form>
+      )}
 
       {error && <p className="resource-error">{error}</p>}
 
@@ -570,12 +614,16 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
                   <td key={f.name}>{renderCell(f, item)}</td>
                 ))}
                 <td className="resource-actions">
-                  <button className="btn-gray btn-sm" onClick={() => startEdit(item)}>
-                    <span>{t('edit')}</span>
-                  </button>
-                  <button className="btn-gray btn-sm" onClick={() => handleDelete(item._id)}>
-                    <span>{t('delete')}</span>
-                  </button>
+                  {perms.update && (
+                    <button className="btn-gray btn-sm" onClick={() => startEdit(item)}>
+                      <span>{t('edit')}</span>
+                    </button>
+                  )}
+                  {perms.delete && (
+                    <button className="btn-gray btn-sm" onClick={() => handleDelete(item._id)}>
+                      <span>{t('delete')}</span>
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
