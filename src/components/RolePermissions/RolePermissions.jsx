@@ -11,7 +11,7 @@ import './RolePermissions.css'
 // checkbox controls which menu section
 const RESOURCE_GROUPS = [
   { label: 'ძირითადი', keys: ['attendances'] },
-  { label: 'პროდუქტის კონფიგურაცია', keys: ['drugs', 'product_types', 'manufacturers', 'manufacturer_countries'] },
+  { label: 'პროდუქტის კონფიგურაცია', keys: ['drugs', 'product_types', 'manufacturers', 'manufacturer_countries', 'stock_upload'] },
   { label: 'ბაზრის კონფიგურაცია', keys: ['doctors', 'doctor_categories', 'doctor_sub_categories', 'hospitals', 'pharmacies', 'profiles'] },
   { label: 'დაგეგმვა და გაყიდვები', keys: ['plannings', 'plan_config', 'sales', 'budgets', 'budget_requests'] },
   { label: 'რეპორტები', keys: ['efficiency_report', 'reimbursement_report', 'staff_performance_report', 'analytics', 'budgets_report', 'director_dashboard'] },

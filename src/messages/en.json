@@ -60,7 +60,8 @@
         "drugsImport": "Import Drugs",
         "productTypes": "Product Types",
         "manufacturers": "Manufacturers",
-        "producingCountries": "Producing Countries"
+        "producingCountries": "Producing Countries",
+        "stocks": "Stocks"
       },
       "configureMarket": {
         "label": "Market Configuration",
@@ -383,6 +384,7 @@
       "product_types": "Product Types",
       "manufacturers": "Manufacturers",
       "manufacturer_countries": "Producing Countries",
+      "stock_upload": "Stocks upload",
       "doctors": "Doctors",
       "doctor_categories": "Doctor Categories",
       "doctor_sub_categories": "Doctor Subcategories",
@@ -550,5 +552,38 @@
       "completed": "Completed"
     },
     "unknownDoctor": "Unknown"
+  },
+  "stockUpload": {
+    "title": "Stocks",
+    "upload": "Upload",
+    "intro": "Upload the monthly stock Excel file (.xlsx). The latest month's stocks are shown on the Director dashboard.",
+    "period": "Month",
+    "file": "Excel file",
+    "onlyXlsx": "Only .xlsx files are supported. In Excel use File → Save As → .xlsx",
+    "working": "Reading the file…",
+    "alreadyUploaded": "This month is already uploaded. Saving will replace it.",
+    "nameCol": "Drug name column",
+    "qtyCol": "Stock column",
+    "sheet": "Sheet: {name}",
+    "summary": "{matched} matched, {unmatched} not found, {skipped} rows skipped",
+    "fileName": "Name in file",
+    "qty": "Stock",
+    "drug": "Drug in system",
+    "currentStock": "Current stock",
+    "skip": "— skip —",
+    "guessed": "please check",
+    "notFound": "not found",
+    "confirm": "Save stocks for {period}",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "confirmOverwrite": "Stocks for {period} were already uploaded. Replace them with this file?",
+    "saved": "Saved {count} drugs for {period}.",
+    "updatedCurrent": "Current stocks updated.",
+    "history": "Uploaded months",
+    "noHistory": "Nothing uploaded yet",
+    "drugsCount": "{count} drugs",
+    "total": "total {total}",
+    "show": "Show",
+    "hide": "Hide"
   }
 }

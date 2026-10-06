@@ -60,7 +60,8 @@
         "drugsImport": "Импорт препаратов",
         "productTypes": "Типы продукции",
         "manufacturers": "Производители",
-        "producingCountries": "Страны-производители"
+        "producingCountries": "Страны-производители",
+        "stocks": "Остатки"
       },
       "configureMarket": {
         "label": "Настройка рынка",
@@ -383,6 +384,7 @@
       "product_types": "Типы продукции",
       "manufacturers": "Производители",
       "manufacturer_countries": "Страны-производители",
+      "stock_upload": "Загрузка остатков",
       "doctors": "Врачи",
       "doctor_categories": "Категории врачей",
       "doctor_sub_categories": "Подкатегории врачей",
@@ -550,5 +552,38 @@
       "completed": "Завершено"
     },
     "unknownDoctor": "Неизвестно"
+  },
+  "stockUpload": {
+    "title": "Остатки",
+    "upload": "Загрузить",
+    "intro": "Загрузите файл остатков за месяц (.xlsx). Остатки последнего месяца отображаются на панели директора.",
+    "period": "Месяц",
+    "file": "Файл Excel",
+    "onlyXlsx": "Поддерживаются только файлы .xlsx. В Excel: File → Save As → .xlsx",
+    "working": "Чтение файла…",
+    "alreadyUploaded": "Этот месяц уже загружен. Сохранение заменит его.",
+    "nameCol": "Столбец названия",
+    "qtyCol": "Столбец остатка",
+    "sheet": "Лист: {name}",
+    "summary": "{matched} найдено, {unmatched} не найдено, {skipped} строк пропущено",
+    "fileName": "Название в файле",
+    "qty": "Остаток",
+    "drug": "Препарат в системе",
+    "currentStock": "Текущий остаток",
+    "skip": "— пропустить —",
+    "guessed": "проверьте",
+    "notFound": "не найдено",
+    "confirm": "Сохранить остатки за {period}",
+    "saving": "Сохранение…",
+    "cancel": "Отмена",
+    "confirmOverwrite": "Остатки за {period} уже загружены. Заменить их этим файлом?",
+    "saved": "Сохранено {count} препаратов за {period}.",
+    "updatedCurrent": "Текущие остатки обновлены.",
+    "history": "Загруженные месяцы",
+    "noHistory": "Пока ничего не загружено",
+    "drugsCount": "{count} препаратов",
+    "total": "всего {total}",
+    "show": "Показать",
+    "hide": "Скрыть"
   }
 }

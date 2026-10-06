@@ -17,6 +17,7 @@ const RESOURCE_KEY = {
   'dashboard/attendance-status': 'attendances',
   'dashboard/drugs': 'drugs',
   'dashboard/drugs/import': 'drugs',
+  'dashboard/stocks': 'stock_upload',
   'dashboard/product-types': 'product_types',
   'dashboard/manufacturers': 'manufacturers',
   'dashboard/producing-countries': 'manufacturer_countries',
@@ -151,6 +152,7 @@ const NAV = [
       { href: 'dashboard/product-types', key: 'productTypes' },
       { href: 'dashboard/manufacturers', key: 'manufacturers' },
       { href: 'dashboard/producing-countries', key: 'producingCountries' },
+      { href: 'dashboard/stocks', key: 'stocks' },
     ],
   },
   {

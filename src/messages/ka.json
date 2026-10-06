@@ -63,7 +63,8 @@
         "drugsImport": "მედიკამენტების იმპორტი",
         "productTypes": "პროდუქტის ტიპები",
         "manufacturers": "მწარმოებლები",
-        "producingCountries": "მწარმოებელი ქვეყნები"
+        "producingCountries": "მწარმოებელი ქვეყნები",
+        "stocks": "მარაგები"
       },
       "configureMarket": {
         "label": "ბაზრის კონფიგურაცია",
@@ -386,6 +387,7 @@
       "product_types": "პროდუქტის ტიპები",
       "manufacturers": "მწარმოებლები",
       "manufacturer_countries": "მწარმოებელი ქვეყნები",
+      "stock_upload": "მარაგების შეტვირთვა",
       "doctors": "ექიმები",
       "doctor_categories": "ექიმის კატეგორიები",
       "doctor_sub_categories": "ექიმის ქვეკატეგორიები",
@@ -553,5 +555,38 @@
       "completed": "დასრულებულია"
     },
     "unknownDoctor": "უცნობი"
+  },
+  "stockUpload": {
+    "title": "მარაგები",
+    "upload": "ატვირთვა",
+    "intro": "ატვირთეთ თვის მარაგების Excel ფაილი (.xlsx). ბოლო თვის მარაგები ჩანს დირექტორის დეშბორდზე.",
+    "period": "თვე",
+    "file": "Excel ფაილი",
+    "onlyXlsx": "მხოლოდ .xlsx ფაილი მიიღება. Excel-ში: File → Save As → .xlsx",
+    "working": "ფაილი იკითხება…",
+    "alreadyUploaded": "ეს თვე უკვე ატვირთულია. შენახვა ძველს ჩაანაცვლებს.",
+    "nameCol": "წამლის სახელის სვეტი",
+    "qtyCol": "მარაგის სვეტი",
+    "sheet": "ფურცელი: {name}",
+    "summary": "{matched} მოიძებნა, {unmatched} ვერ მოიძებნა, {skipped} სტრიქონი გამოტოვდა",
+    "fileName": "სახელი ფაილში",
+    "qty": "მარაგი",
+    "drug": "წამალი სისტემაში",
+    "currentStock": "ახლანდელი მარაგი",
+    "skip": "— გამოტოვება —",
+    "guessed": "გადაამოწმეთ",
+    "notFound": "ვერ მოიძებნა",
+    "confirm": "მარაგების შენახვა: {period}",
+    "saving": "ინახება…",
+    "cancel": "გაუქმება",
+    "confirmOverwrite": "{period}-ის მარაგები უკვე ატვირთულია. ჩავანაცვლო ამ ფაილით?",
+    "saved": "{period}: შენახულია {count} წამალი.",
+    "updatedCurrent": "მიმდინარე მარაგები განახლდა.",
+    "history": "ატვირთული თვეები",
+    "noHistory": "ჯერ არაფერი ატვირთულა",
+    "drugsCount": "{count} წამალი",
+    "total": "ჯამი {total}",
+    "show": "ნახვა",
+    "hide": "დამალვა"
   }
 }
