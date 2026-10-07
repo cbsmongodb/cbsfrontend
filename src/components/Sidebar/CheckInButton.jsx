@@ -22,6 +22,9 @@ export default function CheckInButton() {
       }
     }
     loadStatus()
+    // every check-in button on the page (sidebar + dashboard) stays in sync
+    window.addEventListener('cbs:attendance-changed', loadStatus)
+    return () => window.removeEventListener('cbs:attendance-changed', loadStatus)
   }, [])
 
   function getPosition() {
@@ -49,8 +52,14 @@ export default function CheckInButton() {
         body: JSON.stringify({ type: status }),
       })
       setStatus(status === 'checkin' ? 'checkout' : 'checkin')
+      window.dispatchEvent(new Event('cbs:attendance-changed'))
     } catch (err) {
-      setError(err.message || t('genericError'))
+      const msg = err.message
+      if (msg === 'already_checked_in') setError(t('alreadyIn'))
+      else if (msg === 'not_checked_in') setError(t('notIn'))
+      else setError(msg || t('genericError'))
+      // re-read the real state from the server
+      window.dispatchEvent(new Event('cbs:attendance-changed'))
     } finally {
       setLoading(false)
     }

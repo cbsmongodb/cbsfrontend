@@ -25,7 +25,8 @@
     "leaveBalance": {
       "label": "შვებულების ბალანსი",
       "paid": "ანაზღაურებადი",
-      "sick": "ავადმყოფობის"
+      "sick": "ავადმყოფობის",
+      "usedRemaining": "გამოყენებული {used} · დარჩენილი {remaining}/{total}"
     },
     "notifications": {
       "label": "შეტყობინებები",
@@ -46,7 +47,8 @@
       "achievement": "გეგმის შესრულება",
       "sales": "გაყიდვები",
       "target": "გეგმა"
-    }
+    },
+    "planVisit": "ვიზიტის დაგეგმვა"
   },
   "sidebar": {
     "dashboard": "დეშბორდი",
@@ -125,7 +127,9 @@
     "checkin": "ჩექინი",
     "checkout": "ჩექაუთი",
     "gpsUnsupported": "ეს ბრაუზერი GPS-ს არ უჭერს მხარს",
-    "genericError": "შეცდომა მოხდა"
+    "genericError": "შეცდომა მოხდა",
+    "alreadyIn": "დღეს უკვე დაჩექინებული ხართ",
+    "notIn": "ჯერ არ დაჩექინებულხართ"
   },
   "notificationsPage": {
     "title": "შეტყობინებები",
@@ -412,7 +416,8 @@
       "staff_performance_report": "თანამშრომელთა შესრულება",
       "analytics": "ანალიტიკა",
       "budgets_report": "ბიუჯეტები (რეპორტი)",
-      "director_dashboard": "დირექტორის დაფა"
+      "director_dashboard": "დირექტორის დაფა",
+      "attendance_report": "დასწრების რეპორტი"
     },
     "actions": {
       "read": "ნახვა",
@@ -587,6 +592,231 @@
     "drugsCount": "{count} წამალი",
     "total": "ჯამი {total}",
     "show": "ნახვა",
-    "hide": "დამალვა"
+    "hide": "დამალვა",
+    "dashLatest": "{period} · {count} წამალი",
+    "dashMissing": "ამ თვის მარაგი ჯერ არ ატვირთულა"
+  },
+  "director": {
+    "eyebrow": "დირექტორის პანელი",
+    "title": "დეშბორდი",
+    "tabs": {
+      "productSale": "პროდუქტების თვიური გაყიდვები",
+      "stock": "მარაგები",
+      "order": "შეკვეთები",
+      "doctors": "ექიმების რეპორტი"
+    },
+    "startDate": "საწყისი თარიღი",
+    "endDate": "საბოლოო თარიღი",
+    "submit": "ჩვენება",
+    "quick": {
+      "thisMonth": "ამ თვეს",
+      "lastMonth": "წინა თვე",
+      "last3Months": "ბოლო 3 თვე",
+      "monthsAgo": "{n} თვის წინ"
+    },
+    "quickPick": "სწრაფი არჩევანი:",
+    "kpi": {
+      "totalSales": "სულ გაყიდვა",
+      "boxesSold": "გაყიდული ყუთები",
+      "topProduct": "ტოპ პროდუქტი",
+      "totalProducts": "სულ პროდუქტი",
+      "lowStock": "დაბალი მარაგი",
+      "expired": "ვადაგასული",
+      "newlyAdded": "ახლად დამატებული",
+      "activeDoctors": "აქტიური ექიმები",
+      "budgeted": "დაბიუჯეტებული"
+    },
+    "chart": {
+      "targetVsSold": "თვიური გეგმა და გაყიდული ყუთები",
+      "productSale": "პროდუქტების თვიური გაყიდვები",
+      "lowStock": "დაბალი მარაგის მქონე პროდუქტები",
+      "allProducts": "ყველა პროდუქტი",
+      "ordersByDay": "შეკვეთები ამ თვეში, დღეების მიხედვით",
+      "salesByDoctor": "გაყიდვები ექიმების მიხედვით",
+      "revenueByDivision": "შემოსავალი დივიზიონების მიხედვით"
+    },
+    "col": {
+      "drugName": "წამლის სახელი",
+      "openingStocks": "საწყისი მარაგი",
+      "closingStocks": "საბოლოო მარაგი",
+      "totalSaleAmount": "გაყიდვის თანხა",
+      "drug": "წამალი",
+      "pack": "შეფუთვა",
+      "priceFob": "ფასი FOB (USD)",
+      "quantity": "რაოდენობა",
+      "amountUsd": "თანხა (USD)",
+      "date": "თარიღი",
+      "number": "ნომერი",
+      "profile": "პროფილი",
+      "active": "აქტიური",
+      "budget": "ბიუჯეტი",
+      "salesBoxes": "გაყიდვა (ყუთი)",
+      "salesAmount": "გაყიდვა (თანხა)"
+    },
+    "monthlyTarget": "თვიური გეგმა",
+    "boxesSold": "გაყიდული ყუთები",
+    "saleBoxes": "გაყიდული ყუთები",
+    "stocks": "მარაგი",
+    "orders": "შეკვეთები",
+    "sales": "გაყიდვა",
+    "boxes": "{n} ყუთი",
+    "searchProduct": "ძებნა პროდუქტის სახელით...",
+    "search": "ძებნა",
+    "byDrugName": "წამლის სახელით...",
+    "doctor": "ექიმი",
+    "typeDoctor": "ჩაწერეთ ექიმის სახელი...",
+    "division": "დივიზიონი",
+    "group": "ჯგუფი",
+    "all": "ყველა",
+    "total": "სულ",
+    "pctOfTotal": "{pct}% სულიდან",
+    "updated": "განახლდა: {when}",
+    "ago": {
+      "justNow": "ახლახანს",
+      "seconds": "{n} წამის წინ",
+      "minutes": "{n} წუთის წინ",
+      "hours": "{n} საათის წინ"
+    },
+    "noData": "მონაცემი ვერ მოიძებნა",
+    "empty": {
+      "sales": "გაყიდვების მონაცემი ვერ მოიძებნა ამ პერიოდისთვის",
+      "products": "პროდუქტის მონაცემი ვერ მოიძებნა",
+      "records": "ჩანაწერები არ მოიძებნა",
+      "orders": "შეკვეთა ვერ მოიძებნა",
+      "periodSales": "ამ პერიოდში გაყიდვების მონაცემი არ არის",
+      "doctors": "ექიმები ვერ მოიძებნა"
+    },
+    "details": "დეტალები",
+    "share": "წილი"
+  },
+  "reports": {
+    "common": {
+      "startDate": "საწყისი თარიღი",
+      "endDate": "ბოლო თარიღი",
+      "employee": "თანამშრომელი",
+      "hospital": "ჰოსპიტალი",
+      "doctor": "ექიმი",
+      "division": "დივიზიონი",
+      "group": "ჯგუფი",
+      "all": "ყველა",
+      "search": "ძებნა",
+      "show": "ჩვენება",
+      "month": "თვე",
+      "date": "თარიღი",
+      "visits": "ვიზიტები",
+      "amount": "თანხა",
+      "boxes": "ყუთი",
+      "myAccount": "ჩემი ანგარიში",
+      "noRecords": "ჩანაწერები არ მოიძებნა",
+      "noRecordsFilter": "ამ ფილტრით ჩანაწერები არ მოიძებნა",
+      "totalCount": "{n} სულ"
+    },
+    "efficiency": {
+      "title": "თანამშრომელთა ეფექტურობა",
+      "searchPlaceholder": "ძიება (თანამშრომელი, ჰოსპიტალი, ექიმი)...",
+      "visitGroups": "ვიზიტის ჯგუფი",
+      "doctorsSeen": "ნანახი ექიმი, სულ",
+      "doctorsCount": "{n} ექიმი"
+    },
+    "reimbursement": {
+      "title": "ტრანსპორტის ანაზღაურების რეპორტი",
+      "exporting": "იტვირთება...",
+      "export": "Excel-ში ექსპორტი",
+      "searchPlaceholder": "ძიება (თანამშრომელი, რეგიონი)...",
+      "total": "ჯამური ანაზღაურება",
+      "records": "ჩანაწერი",
+      "period": "პერიოდი",
+      "performer": "შემსრულებელი",
+      "region": "რეგიონი",
+      "amount": "ანაზღაურების თანხა"
+    },
+    "attendance": {
+      "title": "დასწრების რეპორტი",
+      "searchPlaceholder": "ძიება (თანამშრომელი, მისამართი)...",
+      "time": "დასწრების დრო",
+      "type": "ტიპი",
+      "address": "მისამართი",
+      "status": "სტატუსი",
+      "ontime": "დროულად",
+      "late_checkin": "გვიანი ჩექინი",
+      "early_checkout": "ადრეული ჩექაუთი",
+      "checkin": "ჩექინი",
+      "checkout": "ჩექაუთი"
+    },
+    "staff": {
+      "title": "თანამშრომელთა შესრულება",
+      "byMonth": "თვის მიხედვით",
+      "byRange": "პერიოდის მიხედვით",
+      "rangeHint": "პერიოდის რეჟიმში ფინანსური სვეტები (დანიშნულების, სამიზნისა და გაყიდვების თანხა) არ ჩანს — ეს მონაცემები მხოლოდ მთელი თვისთვისაა ხელმისაწვდომი.",
+      "visitsCount": "ვიზიტების რაოდენობა",
+      "doctorsVisited": "მონახულებული ექიმები",
+      "paidAmount": "გადახდილი თანხა",
+      "prescriptionAmount": "დანიშნულების თანხა",
+      "targetAmount": "სამიზნე თანხა",
+      "salesAmount": "გაყიდვების თანხა"
+    },
+    "analytics": {
+      "title": "ანალიტიკა",
+      "noDrugData": "ამ პერიოდში წამლის მონაცემი არ არის",
+      "prescription": "დანიშნულება",
+      "sales": "გაყიდვა",
+      "payable": "გადასახდელი",
+      "paid": "გადახდილი",
+      "target": "სამიზნე",
+      "delta": "დელტა",
+      "bonus": "ბონუსი {amount}",
+      "searchPlaceholder": "ძებნა ექიმის ან თანამშრომლის სახელით...",
+      "targetAmount": "სამიზნე თანხა",
+      "targetBoxes": "სამიზნე ყუთი",
+      "prescriptionAmount": "დანიშნულების თანხა",
+      "prescriptionBoxes": "დანიშნულების ყუთი",
+      "salesAmount": "გაყიდვის თანხა",
+      "salesBoxes": "გაყიდვის ყუთი"
+    },
+    "budget": {
+      "title": "ბიუჯეტის განაწილება",
+      "totalPaid": "სულ გადახდილი",
+      "totalTarget": "სულ სამიზნე",
+      "totalSales": "სულ გაყიდვები",
+      "prescriptionAmount": "დანიშნულების თანხა",
+      "paidAmount": "გადახდილი თანხა",
+      "noChart": "გრაფიკისთვის მონაცემი არ არის",
+      "pickEmployee": "აირჩიეთ თანამშრომელი და დააჭირეთ „ჩვენებას“",
+      "searchDoctor": "ძებნა ექიმის სახელით...",
+      "budgetId": "ბიუჯეტის ID",
+      "doctorId": "ექიმის ID",
+      "advanceAmount": "ავანსის თანხა",
+      "salesAmount": "გაყიდვების თანხა",
+      "deltaAmount": "დელტა",
+      "targetAmount": "სამიზნე თანხა",
+      "isActive": "აქტიური",
+      "noData": "ცხრილში მონაცემი არ არის"
+    }
+  },
+  "attendanceStatus": {
+    "title": "დასწრების სტატუსი",
+    "search": "თანამშრომლის ძებნა...",
+    "empty": "ცარიელია",
+    "status": {
+      "all": "ყველა",
+      "attended": "გამოცხადდა",
+      "absent": "არ გამოცხადდა",
+      "notCheckedIn": "ჯერ არ დაჩექინებულა",
+      "offToday": "დღეს არ მუშაობს",
+      "paid": "ანაზღაურებად შვებულებაშია",
+      "sick": "ბიულეტენზეა",
+      "unpaid": "არაანაზღაურებად შვებულებაშია"
+    }
+  },
+  "changePassword": {
+    "title": "პაროლის შეცვლა",
+    "back": "უკან დეშბორდზე",
+    "current": "მიმდინარე პაროლი",
+    "new": "ახალი პაროლი",
+    "repeat": "გაიმეორეთ ახალი პაროლი",
+    "save": "შენახვა",
+    "tooShort": "ახალი პაროლი მინიმუმ 8 სიმბოლო უნდა იყოს",
+    "mismatch": "ახალი პაროლები არ ემთხვევა ერთმანეთს",
+    "success": "პაროლი წარმატებით შეიცვალა"
   }
 }

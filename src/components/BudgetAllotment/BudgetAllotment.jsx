@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import {
@@ -14,12 +15,17 @@ import {
 } from 'recharts'
 import './BudgetAllotment.css'
 
+const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
+const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
+
 function fmtMoney(n) {
   const num = Number(n) || 0
   return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 export default function BudgetAllotment() {
+  const t = useTranslations('reports')
+  const locale = useLocale()
   const [employees, setEmployees] = useState([])
   const [employeeId, setEmployeeId] = useState('')
   const [startDate, setStartDate] = useState('')
@@ -63,50 +69,50 @@ export default function BudgetAllotment() {
 
   return (
     <div className="budgetallot-page">
-      <h1>Budget Allotment</h1>
+      <h1>{t('budget.title')}</h1>
 
       {error && <p className="resource-error">{error}</p>}
 
       <div className="budgetallot-kpi-row">
         <div className="budgetallot-kpi-card">
           <span className="budgetallot-kpi-value">{data ? fmtMoney(data.totalPaidAmount) : '0'}</span>
-          <span className="budgetallot-kpi-label">Total Paid Amount</span>
+          <span className="budgetallot-kpi-label">{t('budget.totalPaid')}</span>
         </div>
         <div className="budgetallot-kpi-card">
           <span className="budgetallot-kpi-value">{data ? fmtMoney(data.totalTargetAmount) : '0'}</span>
-          <span className="budgetallot-kpi-label">Total Target Amount</span>
+          <span className="budgetallot-kpi-label">{t('budget.totalTarget')}</span>
         </div>
         <div className="budgetallot-kpi-card">
           <span className="budgetallot-kpi-value">{data ? fmtMoney(data.totalSalesAmount) : '0'}</span>
-          <span className="budgetallot-kpi-label">Total Sales Amount</span>
+          <span className="budgetallot-kpi-label">{t('budget.totalSales')}</span>
         </div>
         <div className="budgetallot-kpi-card">
           <span className="budgetallot-kpi-value">{data ? fmtMoney(data.totalPrescriptionAmount) : '0'}</span>
-          <span className="budgetallot-kpi-label">Prescription Amount</span>
+          <span className="budgetallot-kpi-label">{t('budget.prescriptionAmount')}</span>
         </div>
       </div>
 
       <div className="budgetallot-filters">
         <div className="budgetallot-field">
-          <label>Start Date</label>
+          <label>{t('common.startDate')}</label>
           <input type="date" className="field-input" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
         </div>
         <div className="budgetallot-field">
-          <label>End Date</label>
+          <label>{t('common.endDate')}</label>
           <input type="date" className="field-input" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
         </div>
         <div className="budgetallot-field budgetallot-field-grow">
-          <label>Employee</label>
+          <label>{t('common.employee')}</label>
           <SearchableSelect
             options={employees}
             value={employeeId}
             onChange={setEmployeeId}
             getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-            placeholder="ჩემი ანგარიში"
+            placeholder={t('common.myAccount')}
           />
         </div>
         <button type="button" className="btn budgetallot-submit-btn" onClick={load} disabled={loading}>
-          <span>{loading ? '...' : 'Submit'}</span>
+          <span>{loading ? '...' : t('common.show')}</span>
         </button>
       </div>
 
@@ -124,11 +130,11 @@ export default function BudgetAllotment() {
               <XAxis type="number" tick={{ fontSize: 11, fill: '#9aa7ba' }} axisLine={false} tickLine={false} />
               <YAxis type="category" dataKey="name" width={140} tick={{ fontSize: 12, fontWeight: 600, fill: '#0f2744' }} axisLine={false} tickLine={false} />
               <Tooltip />
-              <Bar dataKey="value" name="Paid Amount" fill="url(#allotBarGradient)" radius={[0, 8, 8, 0]} maxBarSize={22} />
+              <Bar dataKey="value" name={t('budget.paidAmount')} fill="url(#allotBarGradient)" radius={[0, 8, 8, 0]} maxBarSize={22} />
             </RBarChart>
           </ResponsiveContainer>
         ) : (
-          <p className="budgetallot-no-chart">No data available for chart.</p>
+          <p className="budgetallot-no-chart">{t('budget.noChart')}</p>
         )}
       </div>
 
@@ -136,13 +142,13 @@ export default function BudgetAllotment() {
         <h3 className="budgetallot-table-title">Employee Budgets of {data.employeeName}:</h3>
       )}
       {!data && (
-        <p className="budgetallot-placeholder">აირჩიეთ თანამშრომელი და დააჭირეთ Submit-ს</p>
+        <p className="budgetallot-placeholder">{t('budget.pickEmployee')}</p>
       )}
 
       <input
         type="text"
         className="field-input budgetallot-search"
-        placeholder="ძებნა ექიმის სახელით..."
+        placeholder={t('budget.searchDoctor')}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
@@ -151,24 +157,24 @@ export default function BudgetAllotment() {
         <table className="budgetallot-table">
           <thead>
             <tr>
-              <th>Budget ID</th>
-              <th>Date</th>
-              <th>Doctor</th>
-              <th>Doctor ID</th>
-              <th>Paid Amount</th>
-              <th>Advance Amount</th>
-              <th>Sales Amount</th>
-              <th>Delta Amount</th>
-              <th>Target Amount</th>
-              <th>Prescription Amount</th>
-              <th>Is Active</th>
+              <th>{t('budget.budgetId')}</th>
+              <th>{t('common.date')}</th>
+              <th>{t('common.doctor')}</th>
+              <th>{t('budget.doctorId')}</th>
+              <th>{t('budget.paidAmount')}</th>
+              <th>{t('budget.advanceAmount')}</th>
+              <th>{t('budget.salesAmount')}</th>
+              <th>{t('budget.deltaAmount')}</th>
+              <th>{t('budget.targetAmount')}</th>
+              <th>{t('budget.prescriptionAmount')}</th>
+              <th>{t('budget.isActive')}</th>
             </tr>
           </thead>
           <tbody>
             {filteredDocs.map((row) => (
               <tr key={row._id}>
                 <td>{row._id.slice(-6)}</td>
-                <td>{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
+                <td>{row.date ? new Date(row.date).toLocaleDateString(localeTag(locale)) : '—'}</td>
                 <td>{row.doctorName}</td>
                 <td>{row.doctorUniqueNumber}</td>
                 <td>{fmtMoney(row.paidAmount)}</td>
@@ -182,7 +188,7 @@ export default function BudgetAllotment() {
             ))}
             {filteredDocs.length === 0 && (
               <tr>
-                <td colSpan={11}>No data available in table</td>
+                <td colSpan={11}>{t('budget.noData')}</td>
               </tr>
             )}
           </tbody>

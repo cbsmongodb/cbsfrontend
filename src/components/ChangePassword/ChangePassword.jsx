@@ -3,10 +3,12 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import './ChangePassword.css'
 
 export default function ChangePassword() {
+  const t = useTranslations('changePassword')
   const { locale } = useParams()
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -21,11 +23,11 @@ export default function ChangePassword() {
     setSuccess('')
 
     if (newPassword.length < 8) {
-      setError('ახალი პაროლი მინიმუმ 8 სიმბოლო უნდა იყოს')
+      setError(t('tooShort'))
       return
     }
     if (newPassword !== confirmPassword) {
-      setError('ახალი პაროლები არ ემთხვევა ერთმანეთს')
+      setError(t('mismatch'))
       return
     }
 
@@ -35,7 +37,7 @@ export default function ChangePassword() {
         method: 'PATCH',
         body: JSON.stringify({ currentPassword, newPassword }),
       })
-      setSuccess('პაროლი წარმატებით შეიცვალა')
+      setSuccess(t('success'))
       setCurrentPassword('')
       setNewPassword('')
       setConfirmPassword('')
@@ -49,13 +51,13 @@ export default function ChangePassword() {
   return (
     <div className="change-password-page">
       <Link href={`/${locale}/dashboard`} className="change-password-back">
-        ← უკან დეშბორდზე
+        ← {t('back')}
       </Link>
-      <h1>პაროლის შეცვლა</h1>
+      <h1>{t('title')}</h1>
 
       <form className="change-password-form" onSubmit={handleSubmit}>
         <div className="change-password-field">
-          <label>მიმდინარე პაროლი</label>
+          <label>{t('current')}</label>
           <input
             type="password"
             className="field-input"
@@ -66,7 +68,7 @@ export default function ChangePassword() {
         </div>
 
         <div className="change-password-field">
-          <label>ახალი პაროლი</label>
+          <label>{t('new')}</label>
           <input
             type="password"
             className="field-input"
@@ -78,7 +80,7 @@ export default function ChangePassword() {
         </div>
 
         <div className="change-password-field">
-          <label>გაიმეორეთ ახალი პაროლი</label>
+          <label>{t('repeat')}</label>
           <input
             type="password"
             className="field-input"
@@ -93,7 +95,7 @@ export default function ChangePassword() {
         {success && <p className="change-password-success">{success}</p>}
 
         <button type="submit" className="btn" disabled={saving}>
-          <span>{saving ? '...' : 'შენახვა'}</span>
+          <span>{saving ? '...' : t('save')}</span>
         </button>
       </form>
     </div>

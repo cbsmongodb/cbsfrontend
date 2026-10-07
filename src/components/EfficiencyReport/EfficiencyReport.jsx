@@ -1,12 +1,17 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './EfficiencyReport.css'
 
+const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
+const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
+
+const pad2 = (n) => String(n).padStart(2, '0')
 function toInputDate(d) {
-  return d.toISOString().slice(0, 10)
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`
 }
 
 function defaultFrom() {
@@ -20,6 +25,8 @@ function defaultTo() {
 }
 
 export default function EfficiencyReport() {
+  const t = useTranslations('reports')
+  const locale = useLocale()
   const [employees, setEmployees] = useState([])
   const [hospitals, setHospitals] = useState([])
 
@@ -91,47 +98,47 @@ export default function EfficiencyReport() {
 
   return (
     <div className="efficiency-report">
-      <h1>თანამშრომელთა ეფექტურობა</h1>
+      <h1>{t('efficiency.title')}</h1>
 
       <div className="efficiency-filters-card">
         <div className="efficiency-filters-grid">
           <div className="efficiency-field">
-            <label>საწყისი თარიღი</label>
+            <label>{t('common.startDate')}</label>
             <input type="date" className="field-input" value={from} onChange={(e) => setFrom(e.target.value)} />
           </div>
           <div className="efficiency-field">
-            <label>ბოლო ვადა</label>
+            <label>{t('common.endDate')}</label>
             <input type="date" className="field-input" value={to} onChange={(e) => setTo(e.target.value)} />
           </div>
           <div className="efficiency-field">
-            <label>თანამშრომელი</label>
+            <label>{t('common.employee')}</label>
             <SearchableSelect
               options={employees}
               value={employeeId}
               onChange={setEmployeeId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="ყველა"
+              placeholder={t('common.all')}
             />
           </div>
           <div className="efficiency-field">
-            <label>ჰოსპიტალი</label>
+            <label>{t('common.hospital')}</label>
             <SearchableSelect
               options={hospitals}
               value={hospitalId}
               onChange={setHospitalId}
               getLabel={(o) => o.name}
-              placeholder="ყველა"
+              placeholder={t('common.all')}
             />
           </div>
           <button type="button" className="btn efficiency-search-btn" onClick={loadReport} disabled={loading}>
-            <span>{loading ? '...' : 'ძებნა'}</span>
+            <span>{loading ? '...' : t('common.search')}</span>
           </button>
         </div>
 
         <input
           type="text"
           className="field-input"
-          placeholder="ძიება (თანამშრომელი, ჰოსპიტალი, ექიმი)..."
+          placeholder={t('efficiency.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{ marginTop: 12, width: '100%', maxWidth: 360 }}
@@ -144,19 +151,19 @@ export default function EfficiencyReport() {
         <div className="efficiency-summary">
           <div className="efficiency-summary-item">
             <span>{totals.rows}</span>
-            <label>ვიზიტის ჯგუფი</label>
+            <label>{t('efficiency.visitGroups')}</label>
           </div>
           <div className="efficiency-summary-item">
             <span>{totals.totalVisits}</span>
-            <label>ნანახი ექიმი, სულ</label>
+            <label>{t('efficiency.doctorsSeen')}</label>
           </div>
           <div className="efficiency-summary-item">
             <span>{totals.uniqueEmployees}</span>
-            <label>თანამშრომელი</label>
+            <label>{t('common.employee')}</label>
           </div>
           <div className="efficiency-summary-item">
             <span>{totals.uniqueHospitals}</span>
-            <label>ჰოსპიტალი</label>
+            <label>{t('common.hospital')}</label>
           </div>
         </div>
       )}
@@ -166,14 +173,14 @@ export default function EfficiencyReport() {
           <div key={i} className="efficiency-card">
             <div className="efficiency-card-header">
               <div className="efficiency-card-date">
-                {new Date(g.date).toLocaleDateString('ka-GE', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                {new Date(g.date).toLocaleDateString(localeTag(locale), { day: '2-digit', month: '2-digit', year: 'numeric' })}
               </div>
               <div className="efficiency-card-title">
                 <span className="efficiency-employee">{g.employeeName}</span>
                 <span className="efficiency-arrow">→</span>
                 <span className="efficiency-place">{g.placeName}</span>
               </div>
-              <span className="efficiency-visit-badge">{g.visitCount} ექიმი</span>
+              <span className="efficiency-visit-badge">{t('efficiency.doctorsCount', { n: g.visitCount })}</span>
             </div>
             <div className="efficiency-doctor-chips">
               {g.doctors.map((d, j) => (
@@ -186,7 +193,7 @@ export default function EfficiencyReport() {
           </div>
         ))}
         {loaded && visibleGroups.length === 0 && (
-          <p style={{ color: '#94a3b8', fontSize: 13 }}>ამ ფილტრით ჩანაწერები არ მოიძებნა</p>
+          <p style={{ color: '#94a3b8', fontSize: 13 }}>{t('common.noRecordsFilter')}</p>
         )}
       </div>
     </div>

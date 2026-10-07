@@ -220,9 +220,9 @@ export default function StockUpload() {
                   <thead>
                     <tr>
                       <th>{t('fileName')}</th>
-                      <th>{t('qty')}</th>
+                      <th className="num">{t('qty')}</th>
                       <th>{t('drug')}</th>
-                      <th>{t('currentStock')}</th>
+                      <th className="num">{t('currentStock')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -232,7 +232,7 @@ export default function StockUpload() {
                       return (
                         <tr key={l.idx} className={!l.drug ? 'stock-missing' : l.guessed ? 'stock-guessed' : ''}>
                           <td>{l.fileName}</td>
-                          <td>{fmt(l.qty)}</td>
+                          <td className="num">{fmt(l.qty)}</td>
                           <td>
                             {editable ? (
                               <>
@@ -248,7 +248,7 @@ export default function StockUpload() {
                               d?.name
                             )}
                           </td>
-                          <td>{d ? fmt(d.stocks) : '—'}</td>
+                          <td className={`num${d && d.stocks < 0 ? ' stock-negative' : ''}`}>{d ? fmt(d.stocks) : '—'}</td>
                         </tr>
                       )
                     })}
@@ -307,7 +307,7 @@ export default function StockUpload() {
               <thead>
                 <tr>
                   <th>{t('drug')}</th>
-                  <th>{t('qty')}</th>
+                  <th className="num">{t('qty')}</th>
                   <th>{t('fileName')}</th>
                 </tr>
               </thead>
@@ -315,7 +315,7 @@ export default function StockUpload() {
                 {periodRows.map((r, i) => (
                   <tr key={i}>
                     <td>{r.drug}</td>
-                    <td>{fmt(r.stocks)}</td>
+                    <td className="num">{fmt(r.stocks)}</td>
                     <td className="stock-muted">{r.sourceName}</td>
                   </tr>
                 ))}

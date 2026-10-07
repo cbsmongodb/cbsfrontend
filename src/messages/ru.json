@@ -25,14 +25,15 @@
     "leaveBalance": {
       "label": "Баланс отпусков",
       "paid": "Оплачиваемый",
-      "sick": "Больничный"
+      "sick": "Больничный",
+      "usedRemaining": "использовано {used} · осталось {remaining}/{total}"
     },
     "notifications": {
       "label": "Уведомления",
       "unread": "{count} новых",
       "none": "Нет новых уведомлений"
     },
-    "changePassword": "Изменить пароль",
+    "changePassword": "Сменить пароль",
     "teamStats": {
       "title": "Статистика команды",
       "titleAll": "Общая статистика",
@@ -43,7 +44,8 @@
       "achievement": "Выполнение плана",
       "sales": "Продажи",
       "target": "План"
-    }
+    },
+    "planVisit": "Запланировать визит"
   },
   "sidebar": {
     "dashboard": "Панель управления",
@@ -122,7 +124,9 @@
     "checkin": "Отметить приход",
     "checkout": "Отметить уход",
     "gpsUnsupported": "Этот браузер не поддерживает GPS",
-    "genericError": "Произошла ошибка"
+    "genericError": "Произошла ошибка",
+    "alreadyIn": "Вы уже отметились сегодня",
+    "notIn": "Вы ещё не отметились"
   },
   "notificationsPage": {
     "title": "Уведомления",
@@ -409,7 +413,8 @@
       "staff_performance_report": "Эффективность сотрудников",
       "analytics": "Аналитика",
       "budgets_report": "Бюджеты (Отчёт)",
-      "director_dashboard": "Панель директора"
+      "director_dashboard": "Панель директора",
+      "attendance_report": "Отчёт о посещаемости"
     },
     "actions": {
       "read": "Просмотр",
@@ -584,6 +589,231 @@
     "drugsCount": "{count} препаратов",
     "total": "всего {total}",
     "show": "Показать",
-    "hide": "Скрыть"
+    "hide": "Скрыть",
+    "dashLatest": "{period} · {count} препаратов",
+    "dashMissing": "Остатки за этот месяц ещё не загружены"
+  },
+  "director": {
+    "eyebrow": "Панель директора",
+    "title": "Дашборд",
+    "tabs": {
+      "productSale": "Продажи по месяцам",
+      "stock": "Остатки",
+      "order": "Заказы",
+      "doctors": "Отчёт по врачам"
+    },
+    "startDate": "Дата начала",
+    "endDate": "Дата окончания",
+    "submit": "Показать",
+    "quick": {
+      "thisMonth": "Этот месяц",
+      "lastMonth": "Прошлый месяц",
+      "last3Months": "Последние 3 месяца",
+      "monthsAgo": "{n} мес. назад"
+    },
+    "quickPick": "Быстрый выбор:",
+    "kpi": {
+      "totalSales": "Всего продаж",
+      "boxesSold": "Продано упаковок",
+      "topProduct": "Топ-продукт",
+      "totalProducts": "Всего продуктов",
+      "lowStock": "Низкий остаток",
+      "expired": "Просрочено",
+      "newlyAdded": "Новые",
+      "activeDoctors": "Активные врачи",
+      "budgeted": "С бюджетом"
+    },
+    "chart": {
+      "targetVsSold": "План на месяц и продано упаковок",
+      "productSale": "Продажи продуктов за месяц",
+      "lowStock": "Препараты с низким остатком",
+      "allProducts": "Все продукты",
+      "ordersByDay": "Заказы в этом месяце по дням",
+      "salesByDoctor": "Продажи по врачам",
+      "revenueByDivision": "Выручка по дивизионам"
+    },
+    "col": {
+      "drugName": "Препарат",
+      "openingStocks": "Начальный остаток",
+      "closingStocks": "Конечный остаток",
+      "totalSaleAmount": "Сумма продаж",
+      "drug": "Препарат",
+      "pack": "Упаковка",
+      "priceFob": "Цена FOB (USD)",
+      "quantity": "Количество",
+      "amountUsd": "Сумма (USD)",
+      "date": "Дата",
+      "number": "Номер",
+      "profile": "Профиль",
+      "active": "Активен",
+      "budget": "Бюджет",
+      "salesBoxes": "Продажи (упак.)",
+      "salesAmount": "Продажи (сумма)"
+    },
+    "monthlyTarget": "План на месяц",
+    "boxesSold": "Продано упаковок",
+    "saleBoxes": "Продано упаковок",
+    "stocks": "Остаток",
+    "orders": "Заказы",
+    "sales": "Продажи",
+    "boxes": "{n} упак.",
+    "searchProduct": "Поиск по названию...",
+    "search": "Поиск",
+    "byDrugName": "По названию препарата...",
+    "doctor": "Врач",
+    "typeDoctor": "Введите имя врача...",
+    "division": "Дивизион",
+    "group": "Группа",
+    "all": "Все",
+    "total": "Всего",
+    "pctOfTotal": "{pct}% от общего",
+    "updated": "Обновлено: {when}",
+    "ago": {
+      "justNow": "только что",
+      "seconds": "{n} сек. назад",
+      "minutes": "{n} мин. назад",
+      "hours": "{n} ч. назад"
+    },
+    "noData": "Данные не найдены",
+    "empty": {
+      "sales": "Нет данных о продажах за этот период",
+      "products": "Данные о продуктах не найдены",
+      "records": "Записи не найдены",
+      "orders": "Заказы не найдены",
+      "periodSales": "Нет продаж за этот период",
+      "doctors": "Врачи не найдены"
+    },
+    "details": "Подробнее",
+    "share": "Доля"
+  },
+  "reports": {
+    "common": {
+      "startDate": "Дата начала",
+      "endDate": "Дата окончания",
+      "employee": "Сотрудник",
+      "hospital": "Больница",
+      "doctor": "Врач",
+      "division": "Дивизион",
+      "group": "Группа",
+      "all": "Все",
+      "search": "Поиск",
+      "show": "Показать",
+      "month": "Месяц",
+      "date": "Дата",
+      "visits": "Визиты",
+      "amount": "Сумма",
+      "boxes": "Упак.",
+      "myAccount": "Мой аккаунт",
+      "noRecords": "Записи не найдены",
+      "noRecordsFilter": "По этому фильтру записей нет",
+      "totalCount": "всего {n}"
+    },
+    "efficiency": {
+      "title": "Эффективность сотрудников",
+      "searchPlaceholder": "Поиск (сотрудник, больница, врач)...",
+      "visitGroups": "Групп визитов",
+      "doctorsSeen": "Посещено врачей, всего",
+      "doctorsCount": "{n} врачей"
+    },
+    "reimbursement": {
+      "title": "Отчёт о возмещении транспортных расходов",
+      "exporting": "Загрузка...",
+      "export": "Экспорт в Excel",
+      "searchPlaceholder": "Поиск (сотрудник, регион)...",
+      "total": "Итого возмещение",
+      "records": "Записей",
+      "period": "Период",
+      "performer": "Исполнитель",
+      "region": "Регион",
+      "amount": "Сумма возмещения"
+    },
+    "attendance": {
+      "title": "Отчёт о посещаемости",
+      "searchPlaceholder": "Поиск (сотрудник, адрес)...",
+      "time": "Время отметки",
+      "type": "Тип",
+      "address": "Адрес",
+      "status": "Статус",
+      "ontime": "Вовремя",
+      "late_checkin": "Поздний чек-ин",
+      "early_checkout": "Ранний чек-аут",
+      "checkin": "Чек-ин",
+      "checkout": "Чек-аут"
+    },
+    "staff": {
+      "title": "Результативность сотрудников",
+      "byMonth": "По месяцам",
+      "byRange": "За период",
+      "rangeHint": "В режиме периода финансовые столбцы (суммы назначений, целей и продаж) скрыты — эти данные доступны только за целый месяц.",
+      "visitsCount": "Количество визитов",
+      "doctorsVisited": "Посещено врачей",
+      "paidAmount": "Выплачено",
+      "prescriptionAmount": "Сумма назначений",
+      "targetAmount": "Целевая сумма",
+      "salesAmount": "Сумма продаж"
+    },
+    "analytics": {
+      "title": "Аналитика",
+      "noDrugData": "Нет данных по препаратам за этот период",
+      "prescription": "Назначения",
+      "sales": "Продажи",
+      "payable": "К оплате",
+      "paid": "Выплачено",
+      "target": "Цель",
+      "delta": "Дельта",
+      "bonus": "Бонус {amount}",
+      "searchPlaceholder": "Поиск по имени врача или сотрудника...",
+      "targetAmount": "Целевая сумма",
+      "targetBoxes": "Целевые упак.",
+      "prescriptionAmount": "Сумма назначений",
+      "prescriptionBoxes": "Назначено упак.",
+      "salesAmount": "Сумма продаж",
+      "salesBoxes": "Продано упак."
+    },
+    "budget": {
+      "title": "Распределение бюджета",
+      "totalPaid": "Всего выплачено",
+      "totalTarget": "Всего по цели",
+      "totalSales": "Всего продаж",
+      "prescriptionAmount": "Сумма назначений",
+      "paidAmount": "Выплачено",
+      "noChart": "Нет данных для графика",
+      "pickEmployee": "Выберите сотрудника и нажмите «Показать»",
+      "searchDoctor": "Поиск по имени врача...",
+      "budgetId": "ID бюджета",
+      "doctorId": "ID врача",
+      "advanceAmount": "Сумма аванса",
+      "salesAmount": "Сумма продаж",
+      "deltaAmount": "Дельта",
+      "targetAmount": "Целевая сумма",
+      "isActive": "Активен",
+      "noData": "Нет данных в таблице"
+    }
+  },
+  "attendanceStatus": {
+    "title": "Статус посещаемости",
+    "search": "Поиск сотрудника...",
+    "empty": "Пусто",
+    "status": {
+      "all": "Все",
+      "attended": "Присутствует",
+      "absent": "Отсутствует",
+      "notCheckedIn": "Ещё не отметился",
+      "offToday": "Выходной",
+      "paid": "В оплачиваемом отпуске",
+      "sick": "На больничном",
+      "unpaid": "В неоплачиваемом отпуске"
+    }
+  },
+  "changePassword": {
+    "title": "Смена пароля",
+    "back": "Назад на дашборд",
+    "current": "Текущий пароль",
+    "new": "Новый пароль",
+    "repeat": "Повторите новый пароль",
+    "save": "Сохранить",
+    "tooShort": "Новый пароль должен быть не короче 8 символов",
+    "mismatch": "Новые пароли не совпадают",
+    "success": "Пароль успешно изменён"
   }
 }

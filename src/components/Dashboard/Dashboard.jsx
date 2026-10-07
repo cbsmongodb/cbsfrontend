@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import TodayVisits from '@/components/Plannings/TodayVisits'
+import CheckInButton from '@/components/Sidebar/CheckInButton'
+import StockStat from './StockStat'
 import './Dashboard.css'
 
 function currentYear() {
@@ -164,6 +166,11 @@ export default function Dashboard() {
   }, [employee])
 
   const todayLabel = formatToday(locale)
+  // office staff (e.g. Accountant's assistant) don't plan visits: they get the
+  // check-in / check-out button instead, and no "My visits today" block
+  const isAdminRole = employee?.role?.name?.toLowerCase() === 'admin'
+  const canPlan = isAdminRole || employee?.role?.privileges?.plannings?.add === 1
+  const canSeeVisits = isAdminRole || employee?.role?.privileges?.plannings?.read === 1
 
   useEffect(() => {
     const stored = localStorage.getItem('employee')
@@ -252,11 +259,12 @@ export default function Dashboard() {
               <rect x="3" y="11" width="18" height="11" rx="2" />
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
-            პაროლის შეცვლა
+            {t('changePassword')}
           </Link>
         </div>
       </div>
 
+      {employee && (canPlan ? (
       <Link
         href={`/${locale}/dashboard/plannings`}
         className={`dashboard-plan-visit-btn${theme ? ` theme-${theme.scheme}` : ''}`}
@@ -271,8 +279,13 @@ export default function Dashboard() {
             <line x1="10" y1="16" x2="14" y2="16" />
           </svg>
         </span>
-        <span>ვიზიტის დაგეგმვა</span>
+        <span>{t('planVisit')}</span>
       </Link>
+      ) : (
+        <div className="dashboard-checkin">
+          <CheckInButton />
+        </div>
+      ))}
 
       {!loading && (checkinStatus || balance) && (
         <div className="dashboard-stat-strip">
@@ -322,16 +335,18 @@ export default function Dashboard() {
                 <div className="dashboard-stat-leave-rows">
                   <span className="dashboard-stat-leave-row">
                     <span>{t('leaveBalance.paid')}</span>
-                    <strong>{balance.paid.remaining} / {balance.paid.total}</strong>
+                    <strong>{t('leaveBalance.usedRemaining', { used: balance.paid.used, remaining: balance.paid.remaining, total: balance.paid.total })}</strong>
                   </span>
                   <span className="dashboard-stat-leave-row">
                     <span>{t('leaveBalance.sick')}</span>
-                    <strong>{balance.sick.remaining} / {balance.sick.total}</strong>
+                    <strong>{t('leaveBalance.usedRemaining', { used: balance.sick.used, remaining: balance.sick.remaining, total: balance.sick.total })}</strong>
                   </span>
                 </div>
               </div>
             </div>
           )}
+
+          <StockStat locale={locale} />
 
           {/* temporarily hidden — flip to `true` to bring back */}
           {false && (
@@ -355,7 +370,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {!loading && teamStats && teamStats.teamSize > 0 && (
+      {!loading && canSeeVisits && teamStats && teamStats.teamSize > 0 && (
         <div className="dashboard-team-stats">
           <div className="dashboard-team-stats-head">
             <span className="dashboard-team-stats-title">
@@ -395,7 +410,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {!loading && employee?.employeeType === 'field' && (
+      {!loading && employee?.employeeType === 'field' && canSeeVisits && (
         <div className="dashboard-today-visits-section">
           <TodayVisits />
         </div>

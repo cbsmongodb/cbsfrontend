@@ -1,24 +1,26 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import './AttendanceStatus.css'
 
 const ABSENT_BUFFER_MINUTES = 60
 
 const STATUS_META = {
-  attended: { label: 'გამოცხადდა', color: '#16a34a' },
-  absent: { label: 'არ გამოცხადდა', color: '#dc2626' },
-  notCheckedIn: { label: 'ჯერ არ დაჩექინებულა', color: '#f59e0b' },
-  offToday: { label: 'დღეს არ მუშაობს', color: '#94a3b8' },
-  paid: { label: 'ანაზღაურებად შვებულებაშია', color: '#2955a3' },
-  sick: { label: 'ბიულეტენზეა', color: '#7c3aed' },
-  unpaid: { label: 'არაანაზღაურებად შვებულებაშია', color: '#b45309' },
+  attended: { color: '#16a34a' },
+  absent: { color: '#dc2626' },
+  notCheckedIn: { color: '#f59e0b' },
+  offToday: { color: '#94a3b8' },
+  paid: { color: '#2955a3' },
+  sick: { color: '#7c3aed' },
+  unpaid: { color: '#b45309' },
 }
 
 const FILTER_KEYS = ['all', 'attended', 'absent', 'notCheckedIn', 'offToday', 'paid', 'sick', 'unpaid']
 
 export default function AttendanceStatus() {
+  const t = useTranslations('attendanceStatus')
   const [employees, setEmployees] = useState([])
   const [attendedIds, setAttendedIds] = useState(new Set())
   const [leaveByEmployee, setLeaveByEmployee] = useState(new Map())
@@ -32,8 +34,9 @@ export default function AttendanceStatus() {
       const [emps, feed, leaves, config] = await Promise.all([
         apiFetch('/api/employees'),
         apiFetch('/api/attendance/live-feed'),
-        apiFetch(`/api/leaves?to=${new Date().toISOString()}`),
-        apiFetch('/api/config/plan'),
+        // optional extras: if one of them fails, the page still shows check-ins
+        apiFetch(`/api/leaves?to=${new Date().toISOString()}`).catch(() => []),
+        apiFetch('/api/config/plan').catch(() => null),
       ])
 
       setEmployees(emps.filter((e) => e.isActive))
@@ -124,7 +127,7 @@ export default function AttendanceStatus() {
 
   return (
     <div className="attendance-status">
-      <h1>დასწრების სტატუსი</h1>
+      <h1>{t('title')}</h1>
 
       {error && <p className="live-feed-error">{error}</p>}
 
@@ -138,7 +141,7 @@ export default function AttendanceStatus() {
               onClick={() => setFilter(key)}
               style={filter === key ? { background: key === 'all' ? '#1e3a68' : STATUS_META[key].color, borderColor: key === 'all' ? '#1e3a68' : STATUS_META[key].color } : {}}
             >
-              {key === 'all' ? 'ყველა' : STATUS_META[key].label}
+              {t(`status.${key}`)}
               <span className="attendance-status-count">{counts[key] || 0}</span>
             </button>
           ))}
@@ -147,7 +150,7 @@ export default function AttendanceStatus() {
         <input
           type="text"
           className="field-input"
-          placeholder="თანამშრომლის ძებნა..."
+          placeholder={t('search')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{ marginBottom: 16, width: '100%', maxWidth: 320 }}
@@ -160,11 +163,11 @@ export default function AttendanceStatus() {
             <span className="attendance-status-dot" style={{ background: STATUS_META[s.status].color }} />
             <span className="attendance-status-name">{s.employeeName}</span>
             <span className="attendance-status-label" style={{ color: STATUS_META[s.status].color }}>
-              {STATUS_META[s.status].label}
+              {t(`status.${s.status}`)}
             </span>
           </div>
         ))}
-        {visibleList.length === 0 && <p style={{ color: '#94a3b8', fontSize: 13 }}>ცარიელია</p>}
+        {visibleList.length === 0 && <p style={{ color: '#94a3b8', fontSize: 13 }}>{t('empty')}</p>}
       </div>
     </div>
   )

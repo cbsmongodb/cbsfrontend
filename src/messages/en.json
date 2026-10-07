@@ -25,7 +25,8 @@
     "leaveBalance": {
       "label": "Leave Balance",
       "paid": "Paid",
-      "sick": "Sick"
+      "sick": "Sick",
+      "usedRemaining": "used {used} · left {remaining}/{total}"
     },
     "notifications": {
       "label": "Notifications",
@@ -43,7 +44,8 @@
       "achievement": "Target achievement",
       "sales": "Sales",
       "target": "Target"
-    }
+    },
+    "planVisit": "Plan a visit"
   },
   "sidebar": {
     "dashboard": "Dashboard",
@@ -122,7 +124,9 @@
     "checkin": "Check In",
     "checkout": "Check Out",
     "gpsUnsupported": "This browser does not support GPS",
-    "genericError": "Something went wrong"
+    "genericError": "Something went wrong",
+    "alreadyIn": "You are already checked in today",
+    "notIn": "You have not checked in yet"
   },
   "notificationsPage": {
     "title": "Notifications",
@@ -409,7 +413,8 @@
       "staff_performance_report": "Staff Performance",
       "analytics": "Analytics",
       "budgets_report": "Budgets (Report)",
-      "director_dashboard": "Director Dashboard"
+      "director_dashboard": "Director Dashboard",
+      "attendance_report": "Attendance Report"
     },
     "actions": {
       "read": "View",
@@ -584,6 +589,231 @@
     "drugsCount": "{count} drugs",
     "total": "total {total}",
     "show": "Show",
-    "hide": "Hide"
+    "hide": "Hide",
+    "dashLatest": "{period} · {count} drugs",
+    "dashMissing": "This month is not uploaded yet"
+  },
+  "director": {
+    "eyebrow": "Director panel",
+    "title": "Dashboard",
+    "tabs": {
+      "productSale": "Monthly Product Sales",
+      "stock": "Stock Availability",
+      "order": "Orders",
+      "doctors": "Doctors Report"
+    },
+    "startDate": "Start date",
+    "endDate": "End date",
+    "submit": "Show",
+    "quick": {
+      "thisMonth": "This month",
+      "lastMonth": "Last month",
+      "last3Months": "Last 3 months",
+      "monthsAgo": "{n} months ago"
+    },
+    "quickPick": "Quick pick:",
+    "kpi": {
+      "totalSales": "Total sales",
+      "boxesSold": "Boxes sold",
+      "topProduct": "Top product",
+      "totalProducts": "Total products",
+      "lowStock": "Low stock",
+      "expired": "Expired",
+      "newlyAdded": "Newly added",
+      "activeDoctors": "Active doctors",
+      "budgeted": "Budgeted"
+    },
+    "chart": {
+      "targetVsSold": "Monthly target vs boxes sold",
+      "productSale": "Monthly product sales",
+      "lowStock": "Low stock drugs",
+      "allProducts": "All products",
+      "ordersByDay": "Orders this month, by day",
+      "salesByDoctor": "Sales by doctor",
+      "revenueByDivision": "Revenue by division"
+    },
+    "col": {
+      "drugName": "Drug name",
+      "openingStocks": "Opening stock",
+      "closingStocks": "Closing stock",
+      "totalSaleAmount": "Total sale amount",
+      "drug": "Drug",
+      "pack": "Pack",
+      "priceFob": "Price FOB (USD)",
+      "quantity": "Quantity",
+      "amountUsd": "Amount (USD)",
+      "date": "Date",
+      "number": "Number",
+      "profile": "Profile",
+      "active": "Active",
+      "budget": "Budget",
+      "salesBoxes": "Sales (boxes)",
+      "salesAmount": "Sales (amount)"
+    },
+    "monthlyTarget": "Monthly target",
+    "boxesSold": "Boxes sold",
+    "saleBoxes": "Boxes sold",
+    "stocks": "Stock",
+    "orders": "Orders",
+    "sales": "Sales",
+    "boxes": "{n} boxes",
+    "searchProduct": "Search by product name...",
+    "search": "Search",
+    "byDrugName": "By drug name...",
+    "doctor": "Doctor",
+    "typeDoctor": "Type a doctor's name...",
+    "division": "Division",
+    "group": "Group",
+    "all": "All",
+    "total": "Total",
+    "pctOfTotal": "{pct}% of total",
+    "updated": "Updated: {when}",
+    "ago": {
+      "justNow": "just now",
+      "seconds": "{n} seconds ago",
+      "minutes": "{n} minutes ago",
+      "hours": "{n} hours ago"
+    },
+    "noData": "No data found",
+    "empty": {
+      "sales": "No sales data for this period",
+      "products": "No product data found",
+      "records": "No records found",
+      "orders": "No orders found",
+      "periodSales": "No sales data in this period",
+      "doctors": "No doctors found"
+    },
+    "details": "Details",
+    "share": "Share"
+  },
+  "reports": {
+    "common": {
+      "startDate": "Start date",
+      "endDate": "End date",
+      "employee": "Employee",
+      "hospital": "Hospital",
+      "doctor": "Doctor",
+      "division": "Division",
+      "group": "Group",
+      "all": "All",
+      "search": "Search",
+      "show": "Show",
+      "month": "Month",
+      "date": "Date",
+      "visits": "Visits",
+      "amount": "Amount",
+      "boxes": "Boxes",
+      "myAccount": "My account",
+      "noRecords": "No records found",
+      "noRecordsFilter": "No records match this filter",
+      "totalCount": "{n} total"
+    },
+    "efficiency": {
+      "title": "Employee Efficiency",
+      "searchPlaceholder": "Search (employee, hospital, doctor)...",
+      "visitGroups": "Visit groups",
+      "doctorsSeen": "Doctors seen, total",
+      "doctorsCount": "{n} doctors"
+    },
+    "reimbursement": {
+      "title": "Transport Reimbursement Report",
+      "exporting": "Loading...",
+      "export": "Export to Excel",
+      "searchPlaceholder": "Search (employee, region)...",
+      "total": "Total reimbursement",
+      "records": "Records",
+      "period": "Period",
+      "performer": "Performer",
+      "region": "Region",
+      "amount": "Reimbursement amount"
+    },
+    "attendance": {
+      "title": "Attendance Report",
+      "searchPlaceholder": "Search (employee, address)...",
+      "time": "Time",
+      "type": "Type",
+      "address": "Address",
+      "status": "Status",
+      "ontime": "On time",
+      "late_checkin": "Late check-in",
+      "early_checkout": "Early check-out",
+      "checkin": "Check-in",
+      "checkout": "Check-out"
+    },
+    "staff": {
+      "title": "Staff Performance",
+      "byMonth": "By month",
+      "byRange": "By period",
+      "rangeHint": "In period mode the financial columns (prescription, target and sales amounts) are hidden — this data is only available for a whole month.",
+      "visitsCount": "Visits",
+      "doctorsVisited": "Doctors visited",
+      "paidAmount": "Paid amount",
+      "prescriptionAmount": "Prescription amount",
+      "targetAmount": "Target amount",
+      "salesAmount": "Sales amount"
+    },
+    "analytics": {
+      "title": "Analytics",
+      "noDrugData": "No drug data in this period",
+      "prescription": "Prescription",
+      "sales": "Sales",
+      "payable": "Payable",
+      "paid": "Paid",
+      "target": "Target",
+      "delta": "Delta",
+      "bonus": "Bonus {amount}",
+      "searchPlaceholder": "Search by doctor or employee name...",
+      "targetAmount": "Target amount",
+      "targetBoxes": "Target boxes",
+      "prescriptionAmount": "Prescription amount",
+      "prescriptionBoxes": "Prescription boxes",
+      "salesAmount": "Sales amount",
+      "salesBoxes": "Sales boxes"
+    },
+    "budget": {
+      "title": "Budget Allotment",
+      "totalPaid": "Total paid amount",
+      "totalTarget": "Total target amount",
+      "totalSales": "Total sales amount",
+      "prescriptionAmount": "Prescription amount",
+      "paidAmount": "Paid amount",
+      "noChart": "No data available for the chart",
+      "pickEmployee": "Select an employee and press Show",
+      "searchDoctor": "Search by doctor name...",
+      "budgetId": "Budget ID",
+      "doctorId": "Doctor ID",
+      "advanceAmount": "Advance amount",
+      "salesAmount": "Sales amount",
+      "deltaAmount": "Delta amount",
+      "targetAmount": "Target amount",
+      "isActive": "Active",
+      "noData": "No data available in table"
+    }
+  },
+  "attendanceStatus": {
+    "title": "Attendance Status",
+    "search": "Search employee...",
+    "empty": "Nothing here",
+    "status": {
+      "all": "All",
+      "attended": "Present",
+      "absent": "Absent",
+      "notCheckedIn": "Not checked in yet",
+      "offToday": "Day off",
+      "paid": "On paid leave",
+      "sick": "On sick leave",
+      "unpaid": "On unpaid leave"
+    }
+  },
+  "changePassword": {
+    "title": "Change password",
+    "back": "Back to dashboard",
+    "current": "Current password",
+    "new": "New password",
+    "repeat": "Repeat new password",
+    "save": "Save",
+    "tooShort": "The new password must be at least 8 characters",
+    "mismatch": "The new passwords do not match",
+    "success": "Password changed successfully"
   }
 }

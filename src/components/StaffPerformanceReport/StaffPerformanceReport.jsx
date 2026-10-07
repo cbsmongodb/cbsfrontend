@@ -1,9 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './StaffPerformanceReport.css'
+
+const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
+const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
 
 function currentMonthValue() {
   const d = new Date()
@@ -21,6 +25,8 @@ function defaultTo() {
 }
 
 export default function StaffPerformanceReport() {
+  const t = useTranslations('reports')
+  const locale = useLocale()
   const [mode, setMode] = useState('month')
   const [month, setMonth] = useState(currentMonthValue())
   const [from, setFrom] = useState(defaultFrom())
@@ -91,7 +97,7 @@ export default function StaffPerformanceReport() {
 
   return (
     <div className="staff-performance">
-      <h1>თანამშრომელთა შესრულება</h1>
+      <h1>{t('staff.title')}</h1>
 
       <div className="staff-performance-filters">
         <div className="staff-performance-mode-toggle">
@@ -99,32 +105,28 @@ export default function StaffPerformanceReport() {
             type="button"
             className={mode === 'month' ? 'active' : ''}
             onClick={() => setMode('month')}
-          >
-            თვის მიხედვით
-          </button>
+          >{t('staff.byMonth')}</button>
           <button
             type="button"
             className={mode === 'range' ? 'active' : ''}
             onClick={() => setMode('range')}
-          >
-            პერიოდის მიხედვით
-          </button>
+          >{t('staff.byRange')}</button>
         </div>
 
         <div className="staff-performance-filters-grid">
           {mode === 'month' ? (
             <div className="staff-performance-field">
-              <label>თვე</label>
+              <label>{t('common.month')}</label>
               <input type="month" className="field-input" value={month} onChange={(e) => setMonth(e.target.value)} />
             </div>
           ) : (
             <>
               <div className="staff-performance-field">
-                <label>საწყისი თარიღი</label>
+                <label>{t('common.startDate')}</label>
                 <input type="date" className="field-input" value={from} onChange={(e) => setFrom(e.target.value)} />
               </div>
               <div className="staff-performance-field">
-                <label>ბოლო თარიღი</label>
+                <label>{t('common.endDate')}</label>
                 <input type="date" className="field-input" value={to} onChange={(e) => setTo(e.target.value)} />
               </div>
             </>
@@ -132,50 +134,48 @@ export default function StaffPerformanceReport() {
 
           {sections.length > 0 && (
             <div className="staff-performance-field">
-              <label>დივიზიონი</label>
+              <label>{t('common.division')}</label>
               <SearchableSelect
                 options={sections}
                 value={sectionId}
                 onChange={(v) => { setSectionId(v); setGroupId('') }}
                 getLabel={(o) => o.name}
-                placeholder="ყველა"
+                placeholder={t('common.all')}
               />
             </div>
           )}
 
           {groups.length > 0 && (
             <div className="staff-performance-field">
-              <label>ჯგუფი</label>
+              <label>{t('common.group')}</label>
               <SearchableSelect
                 options={groups}
                 value={groupId}
                 onChange={setGroupId}
                 getLabel={(o) => o.name}
-                placeholder="ყველა"
+                placeholder={t('common.all')}
               />
             </div>
           )}
 
           <div className="staff-performance-field">
-            <label>თანამშრომელი</label>
+            <label>{t('common.employee')}</label>
             <SearchableSelect
               options={employees}
               value={employeeId}
               onChange={setEmployeeId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="ყველა"
+              placeholder={t('common.all')}
             />
           </div>
 
           <button type="button" className="btn staff-performance-search-btn" onClick={() => loadReport(1)} disabled={loading}>
-            <span>{loading ? '...' : 'ძებნა'}</span>
+            <span>{loading ? '...' : t('common.search')}</span>
           </button>
         </div>
 
         {mode === 'range' && (
-          <p className="staff-performance-hint">
-            პერიოდის რეჟიმში ფინანსური სვეტები (დანიშნულების, სამიზნისა და გაყიდვების თანხა) არ ჩანს — ეს მონაცემები მხოლოდ მთელი თვისთვისაა ხელმისაწვდომი.
-          </p>
+          <p className="staff-performance-hint">{t('staff.rangeHint')}</p>
         )}
       </div>
 
@@ -185,15 +185,15 @@ export default function StaffPerformanceReport() {
         <table className="staff-performance-table">
           <thead>
             <tr>
-              <th>თანამშრომელი</th>
-              <th>ვიზიტების რაოდენობა</th>
-              <th>მონახულებული ექიმები</th>
-              <th>გადახდილი თანხა</th>
+              <th>{t('common.employee')}</th>
+              <th>{t('staff.visitsCount')}</th>
+              <th>{t('staff.doctorsVisited')}</th>
+              <th>{t('staff.paidAmount')}</th>
               {isMonthMode && (
                 <>
-                  <th>დანიშნულების თანხა</th>
-                  <th>სამიზნე თანხა</th>
-                  <th>გაყიდვების თანხა</th>
+                  <th>{t('staff.prescriptionAmount')}</th>
+                  <th>{t('staff.targetAmount')}</th>
+                  <th>{t('staff.salesAmount')}</th>
                 </>
               )}
             </tr>
@@ -201,22 +201,22 @@ export default function StaffPerformanceReport() {
           <tbody>
             {data?.docs.map((row) => (
               <tr key={row.employeeId}>
-                <td data-label="თანამშრომელი">{row.employeeName}</td>
-                <td data-label="ვიზიტების რაოდენობა">{row.visits}</td>
-                <td data-label="მონახულებული ექიმები">{row.doctorsVisited}</td>
-                <td data-label="გადახდილი თანხა">{row.totalPaidAmount}</td>
+                <td data-label={t('common.employee')}>{row.employeeName}</td>
+                <td data-label={t('staff.visitsCount')}>{row.visits}</td>
+                <td data-label={t('staff.doctorsVisited')}>{row.doctorsVisited}</td>
+                <td data-label={t('staff.paidAmount')}>{row.totalPaidAmount}</td>
                 {isMonthMode && (
                   <>
-                    <td data-label="დანიშნულების თანხა">{row.totalPrescriptionAmount}</td>
-                    <td data-label="სამიზნე თანხა">{row.targetAmount}</td>
-                    <td data-label="გაყიდვების თანხა">{row.salesAmount}</td>
+                    <td data-label={t('staff.prescriptionAmount')}>{row.totalPrescriptionAmount}</td>
+                    <td data-label={t('staff.targetAmount')}>{row.targetAmount}</td>
+                    <td data-label={t('staff.salesAmount')}>{row.salesAmount}</td>
                   </>
                 )}
               </tr>
             ))}
             {data && data.docs.length === 0 && (
               <tr>
-                <td colSpan={isMonthMode ? 7 : 4}>ამ ფილტრით ჩანაწერები არ მოიძებნა</td>
+                <td colSpan={isMonthMode ? 7 : 4}>{t('common.noRecordsFilter')}</td>
               </tr>
             )}
           </tbody>

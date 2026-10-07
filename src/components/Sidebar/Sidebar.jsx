@@ -33,7 +33,7 @@ const RESOURCE_KEY = {
   'dashboard/sales-listing': 'sales',
   'dashboard/reports/efficiency': 'efficiency_report',
   'dashboard/reports/reimbursement': 'reimbursement_report',
-  'dashboard/reports/attendances': 'attendances',
+  'dashboard/reports/attendances': 'attendance_report',
   'dashboard/reports/staff-performance': 'staff_performance_report',
   'dashboard/director-dashboard': 'director_dashboard',
   'dashboard/analytics': 'analytics',

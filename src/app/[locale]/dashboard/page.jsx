@@ -31,7 +31,9 @@ export default function DashboardPage() {
     )
   }
 
-  if (position === 'Director') {
+  // Director dashboard: by position OR by the Director role
+  const isDirector = position === 'Director' || employee.role?.name?.trim().toLowerCase() === 'director'
+  if (isDirector) {
     return <DirectorDashboard />
   }
 

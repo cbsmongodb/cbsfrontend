@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, Fragment } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import {
@@ -14,6 +15,9 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import './Analytics.css'
+
+const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
+const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
 
 function BreakdownTooltip({ active, payload, label }) {
   if (!active || !payload || !payload.length) return null
@@ -38,8 +42,9 @@ function coefficientLevel(pct) {
 }
 
 function DrugBreakdownTable({ rows }) {
+  const t = useTranslations('reports')
   if (!rows || rows.length === 0) {
-    return <p className="analytics-breakdown-empty">ამ პერიოდში წამლის მონაცემი არ არის</p>
+    return <p className="analytics-breakdown-empty">{t('analytics.noDrugData')}</p>
   }
 
   const totalPrescription = rows.reduce((s, d) => s + (d.prescriptionAmount || 0), 0)
@@ -51,15 +56,15 @@ function DrugBreakdownTable({ rows }) {
     <div className="analytics-breakdown-panel">
       <div className="analytics-breakdown-kpis">
         <div className="analytics-breakdown-kpi">
-          <span className="analytics-breakdown-kpi-label">დანიშნულება</span>
+          <span className="analytics-breakdown-kpi-label">{t('analytics.prescription')}</span>
           <span className="analytics-breakdown-kpi-value">{fmtMoney(totalPrescription)}</span>
         </div>
         <div className="analytics-breakdown-kpi">
-          <span className="analytics-breakdown-kpi-label">გაყიდვა</span>
+          <span className="analytics-breakdown-kpi-label">{t('analytics.sales')}</span>
           <span className="analytics-breakdown-kpi-value">{fmtMoney(totalSales)}</span>
         </div>
         <div className="analytics-breakdown-kpi">
-          <span className="analytics-breakdown-kpi-label">გადასახდელი</span>
+          <span className="analytics-breakdown-kpi-label">{t('analytics.payable')}</span>
           <span className="analytics-breakdown-kpi-value">{fmtMoney(totalPayable)}</span>
         </div>
       </div>
@@ -86,8 +91,8 @@ function DrugBreakdownTable({ rows }) {
           <YAxis tick={{ fontSize: 10, fill: '#9aa7ba' }} axisLine={false} tickLine={false} />
           <Tooltip content={<BreakdownTooltip />} cursor={{ fill: 'rgba(63, 116, 214, 0.05)' }} />
           <Legend verticalAlign="top" align="left" height={24} iconType="circle" iconSize={7} wrapperStyle={{ fontSize: 10.5, fontWeight: 600, color: '#5b6b82' }} />
-          <Bar dataKey="prescriptionAmount" name="დანიშნულება" fill="#c3cad4" radius={[5, 5, 0, 0]} maxBarSize={22} />
-          <Bar dataKey="salesAmount" name="გაყიდვა" fill="url(#breakdownSalesGradient)" radius={[5, 5, 0, 0]} maxBarSize={22} />
+          <Bar dataKey="prescriptionAmount" name={t('analytics.prescription')} fill="#c3cad4" radius={[5, 5, 0, 0]} maxBarSize={22} />
+          <Bar dataKey="salesAmount" name={t('analytics.sales')} fill="url(#breakdownSalesGradient)" radius={[5, 5, 0, 0]} maxBarSize={22} />
         </RBarChart>
       </ResponsiveContainer>
 
@@ -96,7 +101,7 @@ function DrugBreakdownTable({ rows }) {
           <div className="analytics-breakdown-chip" key={i}>
             <span className="analytics-breakdown-chip-name">{d.drugName}</span>
             <span className={`analytics-coef-badge analytics-coef-${coefficientLevel(d.coefficient)}`}>{d.coefficient}%</span>
-            {d.bonus > 0 && <span className="analytics-breakdown-chip-bonus">ბონუსი {fmtMoney(d.bonus)}</span>}
+            {d.bonus > 0 && <span className="analytics-breakdown-chip-bonus">{t('analytics.bonus', { amount: fmtMoney(d.bonus) })}</span>}
           </div>
         ))}
       </div>
@@ -120,6 +125,8 @@ function fmtMoney(n) {
 }
 
 export default function Analytics() {
+  const t = useTranslations('reports')
+  const locale = useLocale()
   const defaults = currentMonthRange()
 
   const [expandedRows, setExpandedRows] = useState(new Set())
@@ -188,70 +195,70 @@ export default function Analytics() {
 
   return (
     <div className="analytics-page">
-      <h1>ანალიტიკა (Analytics)</h1>
+      <h1>{t('analytics.title')}</h1>
 
       <div className="analytics-filters">
         <div className="analytics-filters-grid">
           <div className="analytics-field">
-            <label>საწყისი თარიღი</label>
+            <label>{t('common.startDate')}</label>
             <input type="date" className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
           </div>
           <div className="analytics-field">
-            <label>ბოლო თარიღი</label>
+            <label>{t('common.endDate')}</label>
             <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
           </div>
           {sections.length > 0 && (
             <div className="analytics-field">
-              <label>დივიზიონი</label>
+              <label>{t('common.division')}</label>
               <SearchableSelect
                 options={sections}
                 value={sectionId}
                 onChange={(v) => { setSectionId(v); setGroupId('') }}
                 getLabel={(o) => o.name}
-                placeholder="ყველა"
+                placeholder={t('common.all')}
               />
             </div>
           )}
           {groups.length > 0 && (
             <div className="analytics-field">
-              <label>ჯგუფი</label>
+              <label>{t('common.group')}</label>
               <SearchableSelect
                 options={groups}
                 value={groupId}
                 onChange={setGroupId}
                 getLabel={(o) => o.name}
-                placeholder="ყველა"
+                placeholder={t('common.all')}
               />
             </div>
           )}
           <div className="analytics-field">
-            <label>თანამშრომელი</label>
+            <label>{t('common.employee')}</label>
             <SearchableSelect
               options={employees}
               value={employeeId}
               onChange={setEmployeeId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="ყველა"
+              placeholder={t('common.all')}
             />
           </div>
           <div className="analytics-field">
-            <label>ექიმი</label>
+            <label>{t('common.doctor')}</label>
             <SearchableSelect
               options={doctors}
               value={doctorId}
               onChange={setDoctorId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="ყველა"
+              placeholder={t('common.all')}
             />
           </div>
           <button type="button" className="btn analytics-search-btn" onClick={() => load(1)} disabled={loading}>
-            <span>{loading ? '...' : 'ძებნა'}</span>
+            <span>{loading ? '...' : t('common.search')}</span>
           </button>
         </div>
         <input
           type="text"
           className="field-input"
-          placeholder="ძებნა ექიმის ან თანამშრომლის სახელით..."
+          placeholder={t('analytics.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && load(1)}
@@ -266,24 +273,24 @@ export default function Analytics() {
           <thead>
             <tr className="analytics-group-row">
               <th rowSpan={2}></th>
-              <th rowSpan={2}>თარიღი</th>
-              <th rowSpan={2}>თანამშრომელი</th>
-              <th rowSpan={2}>ექიმი</th>
-              <th rowSpan={2}>ვიზიტები</th>
-              <th colSpan={2} className="analytics-group-target">სამიზნე</th>
-              <th colSpan={2} className="analytics-group-prescription">დანიშნულება</th>
-              <th colSpan={2} className="analytics-group-sales">გაყიდვა</th>
-              <th rowSpan={2}>გადასახდელი</th>
-              <th rowSpan={2}>გადახდილი</th>
-              <th rowSpan={2}>დელტა</th>
+              <th rowSpan={2}>{t('common.date')}</th>
+              <th rowSpan={2}>{t('common.employee')}</th>
+              <th rowSpan={2}>{t('common.doctor')}</th>
+              <th rowSpan={2}>{t('common.visits')}</th>
+              <th colSpan={2} className="analytics-group-target">{t('analytics.target')}</th>
+              <th colSpan={2} className="analytics-group-prescription">{t('analytics.prescription')}</th>
+              <th colSpan={2} className="analytics-group-sales">{t('analytics.sales')}</th>
+              <th rowSpan={2}>{t('analytics.payable')}</th>
+              <th rowSpan={2}>{t('analytics.paid')}</th>
+              <th rowSpan={2}>{t('analytics.delta')}</th>
             </tr>
             <tr>
-              <th className="analytics-group-target">თანხა</th>
-              <th className="analytics-group-target">ყუთი</th>
-              <th className="analytics-group-prescription">თანხა</th>
-              <th className="analytics-group-prescription">ყუთი</th>
-              <th className="analytics-group-sales">თანხა</th>
-              <th className="analytics-group-sales">ყუთი</th>
+              <th className="analytics-group-target">{t('common.amount')}</th>
+              <th className="analytics-group-target">{t('common.boxes')}</th>
+              <th className="analytics-group-prescription">{t('common.amount')}</th>
+              <th className="analytics-group-prescription">{t('common.boxes')}</th>
+              <th className="analytics-group-sales">{t('common.amount')}</th>
+              <th className="analytics-group-sales">{t('common.boxes')}</th>
             </tr>
           </thead>
           <tbody>
@@ -305,21 +312,21 @@ export default function Analytics() {
                         {isExpanded ? '▼' : '▶'}
                       </button>
                     </td>
-                    <td data-label="თარიღი">{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
-                    <td data-label="თანამშრომელი">{row.employeeName}</td>
-                    <td data-label="ექიმი" className={row.doctorIsBudgeted ? 'analytics-doctor-budgeted' : ''}>
+                    <td data-label={t('common.date')}>{row.date ? new Date(row.date).toLocaleDateString(localeTag(locale)) : '—'}</td>
+                    <td data-label={t('common.employee')}>{row.employeeName}</td>
+                    <td data-label={t('common.doctor')} className={row.doctorIsBudgeted ? 'analytics-doctor-budgeted' : ''}>
                       {row.doctorName}
                     </td>
-                    <td data-label="ვიზიტები" className="analytics-num">{row.visits}</td>
-                    <td data-label="სამიზნე თანხა" className="analytics-num analytics-group-target">{fmtMoney(row.targetAmount)}</td>
-                    <td data-label="სამიზნე ყუთი" className="analytics-num analytics-group-target">{row.targetBoxes}</td>
-                    <td data-label="დანიშნულების თანხა" className="analytics-num analytics-group-prescription">{fmtMoney(row.prescriptionAmount)}</td>
-                    <td data-label="დანიშნულების ყუთი" className="analytics-num analytics-group-prescription">{row.prescriptionBoxes}</td>
-                    <td data-label="გაყიდვის თანხა" className="analytics-num analytics-group-sales">{fmtMoney(row.salesAmount)}</td>
-                    <td data-label="გაყიდვის ყუთი" className="analytics-num analytics-group-sales">{row.saleBoxes}</td>
-                    <td data-label="გადასახდელი" className="analytics-num">{fmtMoney(row.payableAmount)}</td>
-                    <td data-label="გადახდილი" className="analytics-num">{fmtMoney(row.paidAmount)}</td>
-                    <td data-label="დელტა" className={`analytics-num ${row.deltaAmount < 0 ? 'analytics-delta-negative' : 'analytics-delta-positive'}`}>
+                    <td data-label={t('common.visits')} className="analytics-num">{row.visits}</td>
+                    <td data-label={t('analytics.targetAmount')} className="analytics-num analytics-group-target">{fmtMoney(row.targetAmount)}</td>
+                    <td data-label={t('analytics.targetBoxes')} className="analytics-num analytics-group-target">{row.targetBoxes}</td>
+                    <td data-label={t('analytics.prescriptionAmount')} className="analytics-num analytics-group-prescription">{fmtMoney(row.prescriptionAmount)}</td>
+                    <td data-label={t('analytics.prescriptionBoxes')} className="analytics-num analytics-group-prescription">{row.prescriptionBoxes}</td>
+                    <td data-label={t('analytics.salesAmount')} className="analytics-num analytics-group-sales">{fmtMoney(row.salesAmount)}</td>
+                    <td data-label={t('analytics.salesBoxes')} className="analytics-num analytics-group-sales">{row.saleBoxes}</td>
+                    <td data-label={t('analytics.payable')} className="analytics-num">{fmtMoney(row.payableAmount)}</td>
+                    <td data-label={t('analytics.paid')} className="analytics-num">{fmtMoney(row.paidAmount)}</td>
+                    <td data-label={t('analytics.delta')} className={`analytics-num ${row.deltaAmount < 0 ? 'analytics-delta-negative' : 'analytics-delta-positive'}`}>
                       {row.deltaAmount < 0 ? `(${fmtMoney(Math.abs(row.deltaAmount))})` : fmtMoney(row.deltaAmount)}
                     </td>
                   </tr>
@@ -335,7 +342,7 @@ export default function Analytics() {
             })}
             {data && data.docs.length === 0 && (
               <tr>
-                <td colSpan={14}>ჩანაწერები არ მოიძებნა</td>
+                <td colSpan={14}>{t('common.noRecords')}</td>
               </tr>
             )}
           </tbody>
@@ -348,7 +355,7 @@ export default function Analytics() {
             <span>←</span>
           </button>
           <span className="analytics-pagination-info">
-            {page} / {data.pages} ({data.total} სულ)
+            {page} / {data.pages} ({t('common.totalCount', { n: data.total })})
           </span>
           <button type="button" className="btn-gray btn-sm" disabled={page >= data.pages} onClick={() => load(page + 1)}>
             <span>→</span>

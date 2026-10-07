@@ -159,3 +159,73 @@
     max-width: none;
   }
 }
+
+/* table look */
+/* this page does not load the shared ResourceTable styles, so the table
+   needs its own spacing, header and number alignment */
+.stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.stock-table th,
+.stock-table td {
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid #eef0f3;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.stock-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #fff;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  box-shadow: 0 1px 0 #e2e8f0;
+}
+
+.stock-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.stock-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.stock-table tbody tr:not(.stock-missing):not(.stock-guessed):hover td {
+  background: #f8fafc;
+}
+
+.stock-table td .field-input {
+  height: 2.2em;
+  font-size: 13px;
+}
+
+.stock-hint {
+  display: inline-block;
+  margin: 0 0 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.stock-missing .stock-hint {
+  color: #dc2626;
+}
+
+.stock-guessed .stock-hint {
+  color: #b45309;
+}
+
+.stock-negative {
+  color: #dc2626;
+}

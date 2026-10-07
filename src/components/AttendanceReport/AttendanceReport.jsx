@@ -1,12 +1,17 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './AttendanceReport.css'
 
+const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
+const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
+
+const pad2 = (n) => String(n).padStart(2, '0')
 function toInputDate(d) {
-  return d.toISOString().slice(0, 10)
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`
 }
 
 function defaultFrom() {
@@ -20,9 +25,9 @@ function defaultTo() {
 }
 
 const STATUS_LABELS = {
-  ontime: 'დროულად',
-  late_checkin: 'გვიანი ჩექინი',
-  early_checkout: 'ადრეული ჩექაუთი',
+  ontime: 'ontime',
+  late_checkin: 'late_checkin',
+  early_checkout: 'early_checkout',
 }
 
 const STATUS_COLORS = {
@@ -32,11 +37,13 @@ const STATUS_COLORS = {
 }
 
 const TYPE_LABELS = {
-  checkin: 'ჩექინი',
-  checkout: 'ჩექაუთი',
+  checkin: 'checkin',
+  checkout: 'checkout',
 }
 
 export default function AttendanceReport() {
+  const t = useTranslations('reports')
+  const locale = useLocale()
   const [employees, setEmployees] = useState([])
 
   const [from, setFrom] = useState(defaultFrom())
@@ -104,37 +111,37 @@ export default function AttendanceReport() {
 
   return (
     <div className="attendance-report">
-      <h1>დასწრების რეპორტი</h1>
+      <h1>{t('attendance.title')}</h1>
 
       <div className="attendance-report-filters-card">
         <div className="attendance-report-filters-grid">
           <div className="attendance-report-field">
-            <label>საწყისი თარიღი</label>
+            <label>{t('common.startDate')}</label>
             <input type="date" className="field-input" value={from} onChange={(e) => setFrom(e.target.value)} />
           </div>
           <div className="attendance-report-field">
-            <label>ბოლო ვადა</label>
+            <label>{t('common.endDate')}</label>
             <input type="date" className="field-input" value={to} onChange={(e) => setTo(e.target.value)} />
           </div>
           <div className="attendance-report-field">
-            <label>თანამშრომელი</label>
+            <label>{t('common.employee')}</label>
             <SearchableSelect
               options={employees}
               value={employeeId}
               onChange={setEmployeeId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="ყველა"
+              placeholder={t('common.all')}
             />
           </div>
           <button type="button" className="btn attendance-report-search-btn" onClick={loadReport} disabled={loading}>
-            <span>{loading ? '...' : 'ძებნა'}</span>
+            <span>{loading ? '...' : t('common.search')}</span>
           </button>
         </div>
 
         <input
           type="text"
           className="field-input"
-          placeholder="ძიება (თანამშრომელი, მისამართი)..."
+          placeholder={t('attendance.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{ marginTop: 12, width: '100%', maxWidth: 320 }}
@@ -150,7 +157,7 @@ export default function AttendanceReport() {
             className={`attendance-report-pill ${statusFilter === '' ? 'active' : ''}`}
             onClick={() => setStatusFilter('')}
           >
-            ყველა <span>{rows.length}</span>
+            {t('common.all')} <span>{rows.length}</span>
           </button>
           {Object.keys(STATUS_LABELS).map((key) => (
             <button
@@ -160,7 +167,7 @@ export default function AttendanceReport() {
               onClick={() => setStatusFilter(key)}
               style={statusFilter === key ? { background: STATUS_COLORS[key], borderColor: STATUS_COLORS[key] } : {}}
             >
-              {STATUS_LABELS[key]} <span>{statusCounts[key] || 0}</span>
+              {t(`attendance.${STATUS_LABELS[key]}`)} <span>{statusCounts[key] || 0}</span>
             </button>
           ))}
         </div>
@@ -170,30 +177,30 @@ export default function AttendanceReport() {
         <table className="attendance-report-table">
           <thead>
             <tr>
-              <th>თანამშრომელი</th>
-              <th>დასწრების დრო</th>
-              <th>ტიპი</th>
-              <th>მისამართი</th>
-              <th>სტატუსი</th>
+              <th>{t('common.employee')}</th>
+              <th>{t('attendance.time')}</th>
+              <th>{t('attendance.type')}</th>
+              <th>{t('attendance.address')}</th>
+              <th>{t('attendance.status')}</th>
             </tr>
           </thead>
           <tbody>
             {visibleRows.map((r) => (
               <tr key={r._id}>
                 <td>{r.employeeName}</td>
-                <td>{new Date(r.attendanceTime).toLocaleString('ka-GE', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
-                <td>{TYPE_LABELS[r.attendanceType] || r.attendanceType}</td>
+                <td>{new Date(r.attendanceTime).toLocaleString(localeTag(locale), { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
+                <td>{TYPE_LABELS[r.attendanceType] ? t(`attendance.${TYPE_LABELS[r.attendanceType]}`) : r.attendanceType}</td>
                 <td>{r.address || '—'}</td>
                 <td>
                   <span className="attendance-report-status-badge" style={{ color: STATUS_COLORS[r.attendanceStatus] }}>
-                    {STATUS_LABELS[r.attendanceStatus] || r.attendanceStatus}
+                    {STATUS_LABELS[r.attendanceStatus] ? t(`attendance.${STATUS_LABELS[r.attendanceStatus]}`) : r.attendanceStatus}
                   </span>
                 </td>
               </tr>
             ))}
             {loaded && visibleRows.length === 0 && (
               <tr>
-                <td colSpan={5}>ჩანაწერები არ მოიძებნა</td>
+                <td colSpan={5}>{t('common.noRecords')}</td>
               </tr>
             )}
           </tbody>

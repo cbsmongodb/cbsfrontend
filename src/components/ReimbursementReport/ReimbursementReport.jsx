@@ -1,12 +1,17 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch, apiDownload } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './ReimbursementReport.css'
 
+const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
+const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
+
+const pad2 = (n) => String(n).padStart(2, '0')
 function toInputDate(d) {
-  return d.toISOString().slice(0, 10)
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`
 }
 
 function defaultFrom() {
@@ -20,6 +25,8 @@ function defaultTo() {
 }
 
 export default function ReimbursementReport() {
+  const t = useTranslations('reports')
+  const locale = useLocale()
   const [employees, setEmployees] = useState([])
 
   const [from, setFrom] = useState(defaultFrom())
@@ -98,7 +105,7 @@ export default function ReimbursementReport() {
   return (
     <div className="reimbursement-report">
       <div className="reimbursement-header">
-        <h1>ტრანსპორტის ანაზღაურების რეპორტი</h1>
+        <h1>{t('reimbursement.title')}</h1>
         <button
           type="button"
           className="btn reimbursement-export-btn"
@@ -108,39 +115,39 @@ export default function ReimbursementReport() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 15V3M12 15l-4-4M12 15l4-4M2 17l.6 3a2 2 0 0 0 2 1.6h14.8a2 2 0 0 0 2-1.6l.6-3" />
           </svg>
-          <span>{exporting ? 'იტვირთება...' : 'Excel-ში ექსპორტი'}</span>
+          <span>{exporting ? t('reimbursement.exporting') : t('reimbursement.export')}</span>
         </button>
       </div>
 
       <div className="reimbursement-filters-card">
         <div className="reimbursement-filters-grid">
           <div className="reimbursement-field">
-            <label>საწყისი თარიღი</label>
+            <label>{t('common.startDate')}</label>
             <input type="date" className="field-input" value={from} onChange={(e) => setFrom(e.target.value)} />
           </div>
           <div className="reimbursement-field">
-            <label>ბოლო ვადა</label>
+            <label>{t('common.endDate')}</label>
             <input type="date" className="field-input" value={to} onChange={(e) => setTo(e.target.value)} />
           </div>
           <div className="reimbursement-field">
-            <label>თანამშრომელი</label>
+            <label>{t('common.employee')}</label>
             <SearchableSelect
               options={employees}
               value={employeeId}
               onChange={setEmployeeId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="ყველა"
+              placeholder={t('common.all')}
             />
           </div>
           <button type="button" className="btn reimbursement-search-btn" onClick={loadReport} disabled={loading}>
-            <span>{loading ? '...' : 'ძებნა'}</span>
+            <span>{loading ? '...' : t('common.search')}</span>
           </button>
         </div>
 
         <input
           type="text"
           className="field-input"
-          placeholder="ძიება (თანამშრომელი, რეგიონი)..."
+          placeholder={t('reimbursement.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{ marginTop: 12, width: '100%', maxWidth: 320 }}
@@ -152,16 +159,16 @@ export default function ReimbursementReport() {
       {loaded && (
         <div className="reimbursement-summary">
           <div className="reimbursement-summary-item highlight">
-            <span>{totals.totalAmount.toLocaleString('ka-GE')} ₾</span>
-            <label>ჯამური ანაზღაურება</label>
+            <span>{totals.totalAmount.toLocaleString(localeTag(locale))} ₾</span>
+            <label>{t('reimbursement.total')}</label>
           </div>
           <div className="reimbursement-summary-item">
             <span>{totals.rows}</span>
-            <label>ჩანაწერი</label>
+            <label>{t('reimbursement.records')}</label>
           </div>
           <div className="reimbursement-summary-item">
             <span>{totals.uniqueEmployees}</span>
-            <label>თანამშრომელი</label>
+            <label>{t('common.employee')}</label>
           </div>
         </div>
       )}
@@ -170,16 +177,16 @@ export default function ReimbursementReport() {
         <table className="reimbursement-table">
           <thead>
             <tr>
-              <th>პერიოდი</th>
-              <th>შემსრულებელი</th>
-              <th>რეგიონი</th>
-              <th>ანაზღაურების თანხა</th>
+              <th>{t('reimbursement.period')}</th>
+              <th>{t('reimbursement.performer')}</th>
+              <th>{t('reimbursement.region')}</th>
+              <th>{t('reimbursement.amount')}</th>
             </tr>
           </thead>
           <tbody>
             {visibleRows.map((r, i) => (
               <tr key={i}>
-                <td>{new Date(r.date).toLocaleDateString('ka-GE')}</td>
+                <td>{new Date(r.date).toLocaleDateString(localeTag(locale))}</td>
                 <td>{r.employeeName}</td>
                 <td>{r.regionName}</td>
                 <td className="reimbursement-amount">{r.amount} ₾</td>
@@ -187,7 +194,7 @@ export default function ReimbursementReport() {
             ))}
             {loaded && visibleRows.length === 0 && (
               <tr>
-                <td colSpan={4}>ჩანაწერები არ მოიძებნა</td>
+                <td colSpan={4}>{t('common.noRecords')}</td>
               </tr>
             )}
           </tbody>

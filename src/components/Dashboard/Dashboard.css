@@ -439,3 +439,39 @@
 .dashboard-hero.theme-division2 .dashboard-role-badge { color: #a8632b; }
 .dashboard-hero.theme-division3 .dashboard-avatar { background: linear-gradient(135deg, #33164d, #9d5ad9); }
 .dashboard-hero.theme-division3 .dashboard-role-badge { color: #7b3fb5; }
+
+/* check-in / check-out on the dashboard for staff who don't plan visits */
+.dashboard-checkin {
+  max-width: 320px;
+  margin-bottom: 24px;
+}
+
+.dashboard-checkin .checkin-box {
+  padding: 0;
+  margin: 0;
+  border-bottom: none;
+}
+
+.dashboard-checkin .checkin-box .btn-green,
+.dashboard-checkin .checkin-box .btn-red {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 15px;
+  border-radius: 14px;
+  color: #fff !important;
+  box-shadow: 0 6px 18px rgba(15, 39, 68, 0.18);
+}
+
+.dashboard-checkin .checkin-box .btn-green {
+  background: linear-gradient(120deg, #1c5c46 0%, #2f9e6e 100%) !important;
+}
+
+.dashboard-checkin .checkin-box .btn-red {
+  background: linear-gradient(120deg, #7f1d1d 0%, #dc2626 100%) !important;
+}
+
+.dashboard-checkin .checkin-error {
+  margin-top: 8px;
+  color: #dc2626;
+  font-size: 13px;
+}
