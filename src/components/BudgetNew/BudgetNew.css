@@ -33,3 +33,41 @@
   color: #2f9e6e;
   font-weight: 700;
 }
+
+/* Paid Amount: the one field people type in — full width, same size as the
+   computed fields next to it, the check mark inside the box */
+.budgetnew-amount-input .budgetnew-paid-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px 36px 10px 12px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #0f2744;
+  background: #fff;
+  border: 1px solid #a8d9c4;
+  border-radius: 10px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.budgetnew-amount-input .budgetnew-paid-input:focus {
+  outline: none;
+  border-color: var(--blue, #3f74d6);
+  box-shadow: 0 0 0 3px rgba(63, 116, 214, 0.12);
+}
+
+.budgetnew-amount-input .budgetnew-paid-input::placeholder {
+  color: #b4bfcd;
+}
+
+/* no ▲▼ arrows on the number field */
+.budgetnew-paid-input::-webkit-outer-spin-button,
+.budgetnew-paid-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.budgetnew-paid-input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

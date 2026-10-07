@@ -137,7 +137,9 @@ export default function BudgetNew() {
             <div className="budgetnew-amount-input">
               <input
                 type="number"
-                className="field-input"
+                inputMode="decimal"
+                placeholder="0"
+                className="field-input budgetnew-paid-input"
                 value={paidAmount}
                 onChange={(e) => setPaidAmount(e.target.value)}
               />
