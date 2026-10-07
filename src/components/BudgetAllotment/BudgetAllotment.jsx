@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
+import Link from 'next/link'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import {
@@ -24,6 +25,14 @@ function fmtMoney(n) {
 }
 
 export default function BudgetAllotment() {
+  // only roles that may add budgets see the button (backend checks it too)
+  const [canAdd, setCanAdd] = useState(false)
+  useEffect(() => {
+    try {
+      const emp = JSON.parse(localStorage.getItem('employee') || 'null')
+      setCanAdd(emp?.role?.name?.toLowerCase() === 'admin' || emp?.role?.privileges?.budgets?.add === 1)
+    } catch {}
+  }, [])
   const t = useTranslations('reports')
   const locale = useLocale()
   const [employees, setEmployees] = useState([])
@@ -69,7 +78,14 @@ export default function BudgetAllotment() {
 
   return (
     <div className="budgetallot-page">
-      <h1>{t('budget.title')}</h1>
+      <div className="budgetallot-header">
+        <h1>{t('budget.title')}</h1>
+        {canAdd && (
+          <Link href={`/${locale}/dashboard/budgets/new`} className="btn budgetallot-new-btn">
+            <span>{t('budget.create')}</span>
+          </Link>
+        )}
+      </div>
 
       {error && <p className="resource-error">{error}</p>}
 

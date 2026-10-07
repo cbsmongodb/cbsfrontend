@@ -787,7 +787,8 @@
       "deltaAmount": "Дельта",
       "targetAmount": "Целевая сумма",
       "isActive": "Активен",
-      "noData": "Нет данных в таблице"
+      "noData": "Нет данных в таблице",
+      "create": "+ Создать бюджет"
     }
   },
   "attendanceStatus": {

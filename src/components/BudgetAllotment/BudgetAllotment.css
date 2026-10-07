@@ -162,3 +162,22 @@
   color: #93a1b4;
   font-size: 13px;
 }
+
+/* title + "Create budget" button */
+.budgetallot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.budgetallot-header h1 {
+  margin: 0;
+}
+
+.budgetallot-new-btn {
+  text-decoration: none;
+  white-space: nowrap;
+}

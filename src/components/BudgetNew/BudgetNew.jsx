@@ -52,6 +52,11 @@ export default function BudgetNew() {
       .finally(() => setComputing(false))
   }, [employeeId, doctorId, date])
 
+  function goBack() {
+    if (window.history.length > 1) router.back()
+    else router.push(`/${locale}/dashboard/budgets-list`)
+  }
+
   async function handleCreate() {
     if (!employeeId || !doctorId) {
       setError(tu('k104'))
@@ -75,7 +80,7 @@ export default function BudgetNew() {
           payableAmt: computed.payableAmt,
         }),
       })
-      router.push(`/${locale}/dashboard/budgets`)
+      goBack()
     } catch (err) {
       setError(err.message)
       setSaving(false)
@@ -91,7 +96,7 @@ export default function BudgetNew() {
             <button type="button" className="btn" onClick={handleCreate} disabled={saving}>
               <span>{saving ? '...' : 'Save'}</span>
             </button>
-            <button type="button" className="btn-gray" onClick={() => router.push(`/${locale}/dashboard/budgets`)}>
+            <button type="button" className="btn-gray" onClick={goBack}>
               <span>{tu('k106')}</span>
             </button>
           </div>

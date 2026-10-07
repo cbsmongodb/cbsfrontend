@@ -790,7 +790,8 @@
       "deltaAmount": "დელტა",
       "targetAmount": "სამიზნე თანხა",
       "isActive": "აქტიური",
-      "noData": "ცხრილში მონაცემი არ არის"
+      "noData": "ცხრილში მონაცემი არ არის",
+      "create": "+ ბიუჯეტის დამატება"
     }
   },
   "attendanceStatus": {

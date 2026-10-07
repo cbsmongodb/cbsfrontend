@@ -787,7 +787,8 @@
       "deltaAmount": "Delta amount",
       "targetAmount": "Target amount",
       "isActive": "Active",
-      "noData": "No data available in table"
+      "noData": "No data available in table",
+      "create": "+ Create budget"
     }
   },
   "attendanceStatus": {
