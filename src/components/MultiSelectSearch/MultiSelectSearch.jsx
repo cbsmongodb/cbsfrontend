@@ -2,14 +2,16 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import "./MultiSelectSearch.css";
+import { useTranslations } from 'next-intl'
 
 export default function MultiSelectSearch({
   value = [],
   onChange,
   optionsEndpoint,
   optionsLabel = "name",
-  placeholder = "ძებნა...",
+  placeholder = tu('k001'),
 }) {
+  const tu = useTranslations('ui')
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
@@ -89,7 +91,7 @@ export default function MultiSelectSearch({
         onClick={() => setOpen((o) => !o)}
       >
         <span className="mss-trigger-text">
-          {value.length > 0 ? `არჩეულია: ${value.length}` : placeholder}
+          {value.length > 0 ? tu('k002', { p0: value.length }) : placeholder}
         </span>
         <span className={`mss-chevron ${open ? "mss-chevron-open" : ""}`}>▾</span>
       </button>
@@ -106,9 +108,9 @@ export default function MultiSelectSearch({
           />
 
           {loading ? (
-            <div className="mss-empty">იტვირთება...</div>
+            <div className="mss-empty">{tu('k003')}</div>
           ) : filteredOptions.length === 0 ? (
-            <div className="mss-empty">არაფერი მოიძებნა</div>
+            <div className="mss-empty">{tu('k004')}</div>
           ) : (
             <>
               <label className="mss-option mss-select-all">
@@ -117,7 +119,7 @@ export default function MultiSelectSearch({
                   checked={allFilteredSelected}
                   onChange={toggleAllFiltered}
                 />
-                <span>ყველას მონიშვნა{query.trim() ? " (გაფილტრული)" : ""}</span>
+                <span>{tu('k005')}{query.trim() ? tu('k006') : ""}</span>
               </label>
 
               <div className="mss-list">
@@ -151,7 +153,7 @@ export default function MultiSelectSearch({
                   type="button"
                   className="mss-chip-remove"
                   onClick={() => removeChip(id)}
-                  aria-label={`${o[optionsLabel]} ამოშლა`}
+                  aria-label={tu('k007', { p0: o[optionsLabel] })}
                 >
                   ×
                 </button>

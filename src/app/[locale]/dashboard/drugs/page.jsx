@@ -2,6 +2,7 @@
 import { useTranslations } from "next-intl";
 import ResourceTable from "@/components/ResourceTable/ResourceTable";
 export default function Page() {
+  const tu = useTranslations('ui')
   const t = useTranslations();
   return (
     <ResourceTable
@@ -33,7 +34,7 @@ export default function Page() {
         { name: "stocks", label: t('fields.stocks'), type: "number" },
         { name: "monthlyTarget", label: t('fields.monthlyTarget'), type: "number" },
         { name: "isActive", label: t('fields.isActive'), type: "checkbox" },
-        { name: "monthlyBonuses", label: "ბონუსები (თვის მიხედვით)", type: "drug-bonuses", hideInTable: true },
+        { name: "monthlyBonuses", label: tu('k021'), type: "drug-bonuses", hideInTable: true },
       ]}
     />
   );

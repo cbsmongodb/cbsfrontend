@@ -5,8 +5,10 @@ import { useParams, useRouter } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import '../PrescriptionEdit/PrescriptionEdit.css'
+import { useTranslations } from 'next-intl'
 
 export default function PrescriptionNew() {
+  const tu = useTranslations('ui')
   const { locale } = useParams()
   const router = useRouter()
 
@@ -30,7 +32,7 @@ export default function PrescriptionNew() {
 
   async function handleCreate() {
     if (!employeeId || !doctorId) {
-      setError('Employee-ც და Doctor-ც სავალდებულოა')
+      setError(tu('k104'))
       return
     }
     setSaving(true)
@@ -51,13 +53,13 @@ export default function PrescriptionNew() {
     <div className="prescedit-page">
       <div className="prescedit-card">
         <div className="prescedit-card-header">
-          <h1>New Prescription</h1>
+          <h1>{tu('k105')}</h1>
           <div className="prescedit-header-actions">
             <button type="button" className="btn" onClick={handleCreate} disabled={saving}>
               <span>{saving ? '...' : 'Create'}</span>
             </button>
             <button type="button" className="btn-gray" onClick={() => router.push(`/${locale}/dashboard/prescriptions`)}>
-              <span>Cancel</span>
+              <span>{tu('k106')}</span>
             </button>
           </div>
         </div>
@@ -66,27 +68,27 @@ export default function PrescriptionNew() {
 
         <div className="prescedit-fields">
           <div className="prescedit-field">
-            <label>Period</label>
+            <label>{tu('k107')}</label>
             <input type="date" className="field-input" value={date} onChange={(e) => setDate(e.target.value)} />
           </div>
           <div className="prescedit-field">
-            <label>Employee</label>
+            <label>{tu('k108')}</label>
             <SearchableSelect
               options={employees}
               value={employeeId}
               onChange={setEmployeeId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="აირჩიეთ..."
+              placeholder={tu('k109')}
             />
           </div>
           <div className="prescedit-field">
-            <label>Doctor</label>
+            <label>{tu('k110')}</label>
             <SearchableSelect
               options={doctors}
               value={doctorId}
               onChange={setDoctorId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="აირჩიეთ..."
+              placeholder={tu('k109')}
             />
           </div>
         </div>
@@ -96,7 +98,7 @@ export default function PrescriptionNew() {
           <span className={`prescedit-toggle-track ${isActive ? 'on' : ''}`}>
             <span className="prescedit-toggle-thumb" />
           </span>
-          Status
+          {tu('k111')}
         </label>
       </div>
     </div>

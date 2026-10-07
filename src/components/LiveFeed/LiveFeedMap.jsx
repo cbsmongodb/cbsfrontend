@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, Tooltip, useMap } fro
 import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { useTranslations } from 'next-intl'
 
 const TBILISI = [41.7151, 44.8271]
 const CHECKIN_COLOR = '#16a34a'
@@ -104,6 +105,7 @@ function FitBounds({ events, focusKey }) {
 }
 
 export default function LiveFeedMap({ events = [], focusKey }) {
+  const tu = useTranslations('ui')
   const center = events[0] ? [events[0].lat, events[0].lng] : TBILISI
 
   const [mapHeight, setMapHeight] = useState(350)
@@ -176,7 +178,7 @@ export default function LiveFeedMap({ events = [], focusKey }) {
                 direction="center"
                 className={event.isFar ? "distance-tooltip is-far" : "distance-tooltip"}
               >
-                {distance}მ
+                {distance}{tu('k032')}
               </Tooltip>
             </Polyline>
           )
@@ -201,13 +203,13 @@ export default function LiveFeedMap({ events = [], focusKey }) {
               <Popup>
                 <strong>{event.employeeName}</strong>
                 <br />
-                {event.type === 'checkin' ? 'ჩექინი' : 'ჩექაუთი'} — {event.hospitalName}
+                {event.type === 'checkin' ? tu('k033') : tu('k034')} — {event.hospitalName}
                 <br />
                 {new Date(event.time).toLocaleTimeString('ka-GE', { hour: '2-digit', minute: '2-digit' })}
                 {event.distanceFromHospital != null && (
                   <>
                     <br />
-                    მანძილი ჰოსპიტალამდე: {event.distanceFromHospital}მ
+                    {tu('k035')}{" "}{event.distanceFromHospital}{tu('k032')}
                   </>
                 )}
               </Popup>

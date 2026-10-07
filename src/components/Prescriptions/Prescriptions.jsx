@@ -6,8 +6,10 @@ import Link from 'next/link'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './Prescriptions.css'
+import { useTranslations } from 'next-intl'
 
 export default function Prescriptions() {
+  const tu = useTranslations('ui')
   const { locale } = useParams()
   const [employees, setEmployees] = useState([])
   const [doctors, setDoctors] = useState([])
@@ -76,7 +78,7 @@ export default function Prescriptions() {
   }
 
   async function handleDelete(id) {
-    if (!confirm('წაშალოთ ეს დანიშნულება?')) return
+    if (!confirm(tu('k087'))) return
     try {
       await apiFetch(`/api/prescriptions/${id}`, { method: 'DELETE' })
       loadPrescriptions(page)
@@ -88,44 +90,44 @@ export default function Prescriptions() {
   return (
     <div className="prescriptions-page">
       <div className="prescriptions-page-header">
-        <h1>დანიშნულებები (Prescriptions)</h1>
+        <h1>{tu('k088')}</h1>
         <Link href={`/${locale}/dashboard/prescriptions/new`} className="btn prescriptions-new-btn">
-          <span>+ ახალი დანიშნულება</span>
+          <span>{tu('k089')}</span>
         </Link>
       </div>
 
       <div className="prescriptions-filters">
         <div className="prescriptions-filters-grid">
           <div className="prescriptions-field">
-            <label>საწყისი თარიღი</label>
+            <label>{tu('k090')}</label>
             <input type="date" className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
           </div>
           <div className="prescriptions-field">
-            <label>ბოლო თარიღი</label>
+            <label>{tu('k091')}</label>
             <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
           </div>
           <div className="prescriptions-field">
-            <label>თანამშრომელი</label>
+            <label>{tu('k044')}</label>
             <SearchableSelect
               options={employees}
               value={employeeId}
               onChange={setEmployeeId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="ყველა"
+              placeholder={tu('k092')}
             />
           </div>
           <div className="prescriptions-field">
-            <label>ექიმი</label>
+            <label>{tu('k049')}</label>
             <SearchableSelect
               options={doctors}
               value={doctorId}
               onChange={setDoctorId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="ყველა"
+              placeholder={tu('k092')}
             />
           </div>
           <button type="button" className="btn prescriptions-search-btn" onClick={() => loadPrescriptions(1)} disabled={loading}>
-            <span>{loading ? '...' : 'ძებნა'}</span>
+            <span>{loading ? '...' : tu('k093')}</span>
           </button>
         </div>
 
@@ -133,7 +135,7 @@ export default function Prescriptions() {
           <input
             type="text"
             className="field-input"
-            placeholder="ძებნა თანამშრომლის, ექიმის ან წამლის სახელით..."
+            placeholder={tu('k094')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && loadPrescriptions(1)}
@@ -146,7 +148,7 @@ export default function Prescriptions() {
                 setShowInactive(e.target.checked)
               }}
             />
-            არააქტიურების ჩვენება
+            {tu('k095')}
           </label>
         </div>
       </div>
@@ -158,12 +160,12 @@ export default function Prescriptions() {
           <thead>
             <tr>
               <th>#</th>
-              <th>თარიღი</th>
-              <th>ექიმი</th>
-              <th>თანამშრომელი</th>
-              <th>წამალი</th>
-              <th>სულ ყუთი</th>
-              <th>აქტიური</th>
+              <th>{tu('k096')}</th>
+              <th>{tu('k049')}</th>
+              <th>{tu('k044')}</th>
+              <th>{tu('k076')}</th>
+              <th>{tu('k097')}</th>
+              <th>{tu('k098')}</th>
               <th></th>
             </tr>
           </thead>
@@ -171,36 +173,36 @@ export default function Prescriptions() {
             {data?.docs.map((row) => (
               <tr key={row._id}>
                 <td data-label="#">{row._id.slice(-6)}</td>
-                <td data-label="თარიღი">{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
-                <td data-label="ექიმი" className={row.doctorIsBudgeted ? 'prescriptions-doctor-budgeted' : ''}>
+                <td data-label={tu('k096')}>{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
+                <td data-label={tu('k049')} className={row.doctorIsBudgeted ? 'prescriptions-doctor-budgeted' : ''}>
                   {row.doctorName}
                 </td>
-                <td data-label="თანამშრომელი">{row.employeeName}</td>
-                <td data-label="წამალი" className="prescriptions-drug-cell">{row.drugDetails || '—'}</td>
-                <td data-label="სულ ყუთი">{row.totalBoxes}</td>
-                <td data-label="აქტიური">
+                <td data-label={tu('k044')}>{row.employeeName}</td>
+                <td data-label={tu('k076')} className="prescriptions-drug-cell">{row.drugDetails || '—'}</td>
+                <td data-label={tu('k097')}>{row.totalBoxes}</td>
+                <td data-label={tu('k098')}>
                   <button
                     type="button"
                     className={`prescriptions-active-toggle ${row.isActive ? 'is-on' : ''}`}
                     onClick={() => handleToggleActive(row._id)}
-                    title={row.isActive ? 'გამორთვა' : 'ჩართვა'}
+                    title={row.isActive ? tu('k099') : tu('k100')}
                   >
                     <span />
                   </button>
                 </td>
                 <td data-label="">
                   <Link href={`/${locale}/dashboard/prescriptions/${row._id}`} className="btn-gray btn-sm prescriptions-edit-link">
-                    <span>რედაქტირება</span>
+                    <span>{tu('k101')}</span>
                   </Link>
                   <button type="button" className="btn-gray btn-sm" onClick={() => handleDelete(row._id)}>
-                    <span>წაშლა</span>
+                    <span>{tu('k069')}</span>
                   </button>
                 </td>
               </tr>
             ))}
             {data && data.docs.length === 0 && (
               <tr>
-                <td colSpan={8}>ჩანაწერები არ მოიძებნა</td>
+                <td colSpan={8}>{tu('k102')}</td>
               </tr>
             )}
           </tbody>
@@ -213,7 +215,7 @@ export default function Prescriptions() {
             <span>←</span>
           </button>
           <span className="prescriptions-pagination-info">
-            {page} / {data.pages} ({data.total} სულ)
+            {page} / {data.pages} ({data.total} {tu('k103')}
           </span>
           <button type="button" className="btn-gray btn-sm" disabled={page >= data.pages} onClick={() => loadPrescriptions(page + 1)}>
             <span>→</span>

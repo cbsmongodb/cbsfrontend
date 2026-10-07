@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { apiFetch } from '@/lib/api'
+import { useTranslations } from 'next-intl'
 
 function parseCSV(text) {
   const rows = []
@@ -76,6 +77,7 @@ function parseEmployeeRows(text) {
 }
 
 export default function EmployeeImport() {
+  const tu = useTranslations('ui')
   const [text, setText] = useState('')
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
@@ -103,23 +105,19 @@ export default function EmployeeImport() {
 
   return (
     <div className="resource-table">
-      <h1>თანამშრომლების მასობრივი დამატება (CSV)</h1>
+      <h1>{tu('k198')}</h1>
 
       <p style={{ fontSize: 13, color: '#64748b', marginBottom: 12 }}>
-        ჩასვით CSV ფაილის სრული შემცველობა (თავზე სათაურის ხაზით): <strong>Name, Designation,
-        Email, Phone Number, Status</strong>. თუ ელფოსტა უკვე არსებობს — თანამშრომელი
-        <strong> განახლდება</strong> (როლი, პოზიცია, ტელეფონი, აქტიურობა), პაროლი კი უცვლელი
-        დარჩება. ახალი თანამშრომლის შემთხვევაში, საწყისი პაროლი იქნება <strong>123456</strong>.{' '}
-        <strong>Designation</strong> ერთდროულად ადგენს **როლს** და **პოზიციას** — ორივე უნდა
-        ემთხვეოდეს არსებულ სახელს (მაგ. "Representative"), თუ როლი ვერ მოიძებნა, მწკრივი
-        გამოტოვდება. <strong>ჯგუფი და დივიზიონი</strong> ამ CSV-ში არ შედის — ეს ცალკე,
-        თითოეული თანამშრომლის რედაქტირებით უნდა შეავსოთ.
+        {tu('k199')}{" "}<strong>Name, Designation,
+        Email, Phone Number, Status</strong>{tu('k200')}
+        <strong> {tu('k201')}</strong> {tu('k202')}{" "}<strong>123456</strong>.{' '}
+        <strong>Designation</strong> {tu('k203')}{" "}<strong>{tu('k204')}</strong> {tu('k205')}
       </p>
 
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="ჩასვით CSV ტექსტი აქ (თავზე header-ითურთ)..."
+        placeholder={tu('k206')}
         rows={12}
         className="field-input"
         style={{ width: '100%', minWidth: '100%', height: 'auto', padding: 12, fontFamily: 'monospace', fontSize: 12 }}
@@ -127,7 +125,7 @@ export default function EmployeeImport() {
 
       {preview.length > 0 && (
         <p style={{ fontSize: 13, color: '#64748b', margin: '8px 0' }}>
-          ამოცნობილია {preview.length} თანამშრომელი. მაგალითი: {preview[0].name} ({preview[0].designation || 'დანიშნულების გარეშე'})
+          {tu('k207')}{" "}{preview.length} {tu('k208')}{" "}{preview[0].name} ({preview[0].designation || tu('k209')})
         </p>
       )}
 
@@ -138,7 +136,7 @@ export default function EmployeeImport() {
         disabled={loading || preview.length === 0}
         style={{ marginTop: 8 }}
       >
-        <span>{loading ? 'იტვირთება...' : `დამატება/განახლება (${preview.length})`}</span>
+        <span>{loading ? tu('k003') : tu('k210', { p0: preview.length })}</span>
       </button>
 
       {error && <p className="resource-error" style={{ marginTop: 12 }}>{error}</p>}
@@ -146,12 +144,12 @@ export default function EmployeeImport() {
       {result && (
         <div style={{ marginTop: 12, fontSize: 14 }}>
           <p>
-            ✅ ახალი: {result.created} | განახლდა: {result.updated}
-            {result.failed > 0 && <> | ვერ დაემატა: {result.failed}</>}
+            {tu('k211')}{" "}{result.created} {tu('k212')}{" "}{result.updated}
+            {result.failed > 0 && <> {tu('k213')}{" "}{result.failed}</>}
           </p>
           {result.failedRows?.length > 0 && (
             <div style={{ marginTop: 8 }}>
-              <strong style={{ fontSize: 13 }}>ვერ დაემატა:</strong>
+              <strong style={{ fontSize: 13 }}>{tu('k214')}</strong>
               <ul style={{ fontSize: 12.5, color: '#b45309', marginTop: 4 }}>
                 {result.failedRows.map((f, i) => (
                   <li key={i}>{f.name} — {f.reason}</li>

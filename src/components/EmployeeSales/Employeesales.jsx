@@ -5,8 +5,10 @@ import { apiFetch } from '@/lib/api'
 import EmployeeSaleModal from './EmployeeSaleModal'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './EmployeeSales.css'
+import { useTranslations } from 'next-intl'
 
 export default function EmployeeSales() {
+  const tu = useTranslations('ui')
   const [employees, setEmployees] = useState([])
   const [search, setSearch] = useState('')
   const [employeeId, setEmployeeId] = useState('')
@@ -52,7 +54,7 @@ export default function EmployeeSales() {
   }, [])
 
   async function handleDelete(id) {
-    if (!confirm('წაშალოთ ეს გაყიდვა?')) return
+    if (!confirm(tu('k147'))) return
     try {
       await apiFetch(`/api/employee-sales/${id}`, { method: 'DELETE' })
       load(page)
@@ -63,38 +65,38 @@ export default function EmployeeSales() {
 
   return (
     <div className="employee-sales-page">
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}><h1>თანამშრომლების გაყიდვები (Employee Sales)</h1>
-        <button className="btn" onClick={() => { setEditId(null); setShowModal(true) }}><span>+ ახალი გაყიდვა</span></button>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}><h1>{tu('k148')}</h1>
+        <button className="btn" onClick={() => { setEditId(null); setShowModal(true) }}><span>{tu('k149')}</span></button>
       </div>
 
       <div className="employee-sales-filters">
         <div className="employee-sales-filters-grid">
           <div className="employee-sales-field">
-            <label>საწყისი თარიღი</label>
+            <label>{tu('k090')}</label>
             <input type="date" className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
           </div>
           <div className="employee-sales-field">
-            <label>ბოლო თარიღი</label>
+            <label>{tu('k091')}</label>
             <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
           </div>
           <div className="employee-sales-field">
-            <label>თანამშრომელი</label>
+            <label>{tu('k044')}</label>
             <SearchableSelect
               options={employees}
               value={employeeId}
               onChange={setEmployeeId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="ყველა"
+              placeholder={tu('k092')}
             />
           </div>
           <button type="button" className="btn employee-sales-search-btn" onClick={() => load(1)} disabled={loading}>
-            <span>{loading ? '...' : 'ძებნა'}</span>
+            <span>{loading ? '...' : tu('k093')}</span>
           </button>
         </div>
         <input
           type="text"
           className="field-input"
-          placeholder="ძებნა თანამშრომლის სახელით..."
+          placeholder={tu('k139')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && load(1)}
@@ -108,29 +110,29 @@ export default function EmployeeSales() {
         <table className="employee-sales-table">
           <thead>
             <tr>
-              <th>თარიღი</th>
-              <th>თანამშრომელი</th>
-              <th>გაყიდვების თანხა</th>
+              <th>{tu('k096')}</th>
+              <th>{tu('k044')}</th>
+              <th>{tu('k150')}</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {data?.docs.map((row) => (
               <tr key={row._id}>
-                <td data-label="თარიღი">{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
-                <td data-label="თანამშრომელი">{row.employeeName}</td>
-                <td data-label="გაყიდვების თანხა">{row.saleAmount}</td>
+                <td data-label={tu('k096')}>{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
+                <td data-label={tu('k044')}>{row.employeeName}</td>
+                <td data-label={tu('k150')}>{row.saleAmount}</td>
                 <td data-label="">
-                  <button className="btn-gray btn-sm" onClick={() => { setEditId(row._id); setShowModal(true) }}><span>რედაქტირება</span></button>
+                  <button className="btn-gray btn-sm" onClick={() => { setEditId(row._id); setShowModal(true) }}><span>{tu('k101')}</span></button>
                   <button type="button" className="btn-gray btn-sm" onClick={() => handleDelete(row._id)}>
-                    <span>წაშლა</span>
+                    <span>{tu('k069')}</span>
                   </button>
                 </td>
               </tr>
             ))}
             {data && data.docs.length === 0 && (
               <tr>
-                <td colSpan={4}>ჩანაწერები არ მოიძებნა</td>
+                <td colSpan={4}>{tu('k102')}</td>
               </tr>
             )}
           </tbody>
@@ -143,7 +145,7 @@ export default function EmployeeSales() {
             <span>←</span>
           </button>
           <span className="employee-sales-pagination-info">
-            {page} / {data.pages} ({data.total} სულ)
+            {page} / {data.pages} ({data.total} {tu('k103')}
           </span>
           <button type="button" className="btn-gray btn-sm" disabled={page >= data.pages} onClick={() => load(page + 1)}>
             <span>→</span>

@@ -102,6 +102,7 @@ function buildVisits(events) {
 }
 
 export default function LiveFeed() {
+  const tu = useTranslations('ui')
   const t = useTranslations('liveFeed')
   const { locale } = useParams()
   const dateLocale = DATE_LOCALES[locale] || 'en-US'
@@ -322,7 +323,7 @@ export default function LiveFeed() {
                     )}
                   </td>
                   <td data-label={t('headers.duration')}>{formatDuration(visit.durationMinutes)}</td>
-                  <td data-label={t('headers.distance')}>{distance != null ? `${distance}მ` : '—'}</td>
+                  <td data-label={t('headers.distance')}>{distance != null ? tu('k037', { p0: distance }) : '—'}</td>
                 </tr>
               )
             })}

@@ -18,10 +18,11 @@ function distanceInMeters(lat1, lng1, lat2, lng2) {
 }
 
 function doctorLabel(doc) {
-  return `${doc.firstName || ''} ${doc.lastName || ''}`.trim() || doc.name || 'უცნობი'
+  return `${doc.firstName || ''} ${doc.lastName || ''}`.trim() || doc.name || '—'
 }
 
 export default function TodayVisits() {
+  const tu = useTranslations('ui')
   const t = useTranslations('todayVisits')
   const [me, setMe] = useState(null)
   const [plans, setPlans] = useState([])
@@ -206,7 +207,7 @@ export default function TodayVisits() {
       <div className="today-visits-header">
         <h2>{t('title')}</h2>
         <button type="button" className="btn-gray btn-sm" onClick={refreshLocation}>
-          <span>{locationUpdated ? '✓ ლოკაცია განახლებულია' : t('refreshLocation')}</span>
+          <span>{locationUpdated ? tu('k036') : t('refreshLocation')}</span>
         </button>
       </div>
 

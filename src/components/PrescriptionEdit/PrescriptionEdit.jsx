@@ -5,8 +5,10 @@ import { useParams, useRouter } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './PrescriptionEdit.css'
+import { useTranslations } from 'next-intl'
 
 export default function PrescriptionEdit() {
+  const tu = useTranslations('ui')
   const { id, locale } = useParams()
   const router = useRouter()
 
@@ -109,7 +111,7 @@ export default function PrescriptionEdit() {
   }
 
   async function handleRemoveLine(lineId) {
-    if (!confirm('წავშალოთ ეს ხაზი?')) return
+    if (!confirm(tu('k112'))) return
     setError('')
     try {
       await apiFetch(`/api/prescriptions/${id}/drugs/${lineId}`, { method: 'DELETE' })
@@ -138,20 +140,20 @@ export default function PrescriptionEdit() {
     }
   }
 
-  if (loading) return <div className="prescedit-page">იტვირთება...</div>
-  if (!data) return <div className="prescedit-page">{error || 'ვერ მოიძებნა'}</div>
+  if (loading) return <div className="prescedit-page">{tu('k003')}</div>
+  if (!data) return <div className="prescedit-page">{error || tu('k113')}</div>
 
   return (
     <div className="prescedit-page">
       <div className="prescedit-card">
         <div className="prescedit-card-header">
-          <h1>Update Prescription</h1>
+          <h1>{tu('k114')}</h1>
           <div className="prescedit-header-actions">
             <button type="button" className="btn" onClick={handleSaveHeader} disabled={saving}>
               <span>{saving ? '...' : 'Save'}</span>
             </button>
             <button type="button" className="btn-gray" onClick={() => router.push(`/${locale}/dashboard/prescriptions`)}>
-              <span>Cancel</span>
+              <span>{tu('k106')}</span>
             </button>
           </div>
         </div>
@@ -160,15 +162,15 @@ export default function PrescriptionEdit() {
 
         <div className="prescedit-fields">
           <div className="prescedit-field">
-            <label>Period</label>
+            <label>{tu('k107')}</label>
             <input type="date" className="field-input" value={date} onChange={(e) => setDate(e.target.value)} />
           </div>
           <div className="prescedit-field">
-            <label>Employee</label>
+            <label>{tu('k108')}</label>
             <div className="prescedit-readonly">{data.employee?.name || '—'}</div>
           </div>
           <div className="prescedit-field">
-            <label>Doctor</label>
+            <label>{tu('k110')}</label>
             <div className="prescedit-readonly">
               {data.doctor?.name} {data.doctor?.uniqueNumber ? `(${data.doctor.uniqueNumber})` : ''}
             </div>
@@ -180,7 +182,7 @@ export default function PrescriptionEdit() {
           <span className={`prescedit-toggle-track ${isActive ? 'on' : ''}`}>
             <span className="prescedit-toggle-thumb" />
           </span>
-          Status
+          {tu('k111')}
         </label>
       </div>
 
@@ -192,21 +194,21 @@ export default function PrescriptionEdit() {
               value={addDrugId}
               onChange={setAddDrugId}
               getLabel={(o) => o.name}
-              placeholder="აირჩიეთ წამალი..."
+              placeholder={tu('k115')}
             />
           </div>
           <input
             type="number"
             className="field-input prescedit-add-boxes"
-            placeholder="ყუთები"
+            placeholder={tu('k116')}
             value={addBoxes}
             onChange={(e) => setAddBoxes(e.target.value)}
           />
           <button type="button" className="btn prescedit-add-btn" onClick={handleAddSingle}>
-            <span>+ Add Medicine</span>
+            <span>{tu('k117')}</span>
           </button>
           <button type="button" className="btn prescedit-multi-btn" onClick={() => setMultiMode((v) => !v)}>
-            <span>+ Add Multiple Medicines</span>
+            <span>{tu('k118')}</span>
           </button>
         </div>
 
@@ -220,13 +222,13 @@ export default function PrescriptionEdit() {
                     value={row.drugId}
                     onChange={(v) => updateMultiRow(i, 'drugId', v)}
                     getLabel={(o) => o.name}
-                    placeholder="წამალი..."
+                    placeholder={tu('k119')}
                   />
                 </div>
                 <input
                   type="number"
                   className="field-input prescedit-add-boxes"
-                  placeholder="ყუთები"
+                  placeholder={tu('k116')}
                   value={row.totalNoOfBoxes}
                   onChange={(e) => updateMultiRow(i, 'totalNoOfBoxes', e.target.value)}
                 />
@@ -237,10 +239,10 @@ export default function PrescriptionEdit() {
             ))}
             <div className="prescedit-multi-actions">
               <button type="button" className="btn-gray btn-sm" onClick={addMultiRow}>
-                <span>+ ხაზის დამატება</span>
+                <span>{tu('k120')}</span>
               </button>
               <button type="button" className="btn" onClick={handleSaveMulti}>
-                <span>Save All</span>
+                <span>{tu('k121')}</span>
               </button>
             </div>
           </div>
@@ -251,10 +253,10 @@ export default function PrescriptionEdit() {
         <table className="prescedit-table">
           <thead>
             <tr>
-              <th>Drug</th>
-              <th>Total no of boxes</th>
-              <th>Sale Boxes</th>
-              <th>Actions</th>
+              <th>{tu('k122')}</th>
+              <th>{tu('k123')}</th>
+              <th>{tu('k124')}</th>
+              <th>{tu('k125')}</th>
             </tr>
           </thead>
           <tbody>
@@ -284,10 +286,10 @@ export default function PrescriptionEdit() {
                   )}
                 </td>
                 <td>
-                  <button type="button" className="prescedit-icon-btn" onClick={() => startEditSaleBoxes(line)} title="რედაქტირება">
+                  <button type="button" className="prescedit-icon-btn" onClick={() => startEditSaleBoxes(line)} title={tu('k101')}>
                     ✎
                   </button>
-                  <button type="button" className="prescedit-icon-btn prescedit-icon-danger" onClick={() => handleRemoveLine(line._id)} title="წაშლა">
+                  <button type="button" className="prescedit-icon-btn prescedit-icon-danger" onClick={() => handleRemoveLine(line._id)} title={tu('k069')}>
                     🗑
                   </button>
                 </td>
@@ -295,7 +297,7 @@ export default function PrescriptionEdit() {
             ))}
             {data.drugLines.length === 0 && (
               <tr>
-                <td colSpan={4}>ჯერ არ არის დამატებული წამალი</td>
+                <td colSpan={4}>{tu('k126')}</td>
               </tr>
             )}
           </tbody>

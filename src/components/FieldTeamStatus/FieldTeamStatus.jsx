@@ -4,13 +4,14 @@ import { useEffect, useMemo, useState } from 'react'
 import { io } from 'socket.io-client'
 import { apiFetch } from '@/lib/api'
 import './FieldTeamStatus.css'
+import { useTranslations } from 'next-intl'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 const STEPS = [
-  { key: 'planned', label: 'დაგეგმილია' },
-  { key: 'i_went', label: 'ადგილზეა' },
-  { key: 'i_left', label: 'შესრულებულია' },
+  { key: 'planned', label: 'k127' },
+  { key: 'i_went', label: 'k128' },
+  { key: 'i_left', label: 'k129' },
 ]
 
 function stepIndexForStatus(status) {
@@ -21,7 +22,7 @@ function stepIndexForStatus(status) {
 }
 
 function performerName(plan) {
-  return plan.performer?.name || `${plan.performer?.firstName || ''} ${plan.performer?.lastName || ''}`.trim() || 'უცნობი'
+  return plan.performer?.name || `${plan.performer?.firstName || ''} ${plan.performer?.lastName || ''}`.trim() || '—'
 }
 
 function placeName(plan) {
@@ -29,6 +30,7 @@ function placeName(plan) {
 }
 
 export default function FieldTeamStatus() {
+  const tu = useTranslations('ui')
   const [plans, setPlans] = useState([])
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
@@ -101,30 +103,30 @@ export default function FieldTeamStatus() {
 
   return (
     <div className="field-team-status">
-      <h1>დღევანდელი ვიზიტების სტატუსი</h1>
+      <h1>{tu('k130')}</h1>
 
       {error && <p className="live-feed-error">{error}</p>}
 
       <div className="team-status-summary">
         <div className="team-status-summary-item">
           <span>{counts.total}</span>
-          <label>დღევანდელი ვიზიტი</label>
+          <label>{tu('k131')}</label>
         </div>
         <div className="team-status-summary-item onsite">
           <span>{counts.onSite}</span>
-          <label>ადგილზეა</label>
+          <label>{tu('k128')}</label>
         </div>
         <div className="team-status-summary-item planned">
           <span>{counts.planned}</span>
-          <label>დაგეგმილია</label>
+          <label>{tu('k127')}</label>
         </div>
         <div className="team-status-summary-item done">
           <span>{counts.done}</span>
-          <label>შესრულებულია</label>
+          <label>{tu('k129')}</label>
         </div>
         <div className="team-status-summary-item canceled">
           <span>{counts.canceled}</span>
-          <label>გაუქმებულია</label>
+          <label>{tu('k132')}</label>
         </div>
       </div>
 
@@ -132,29 +134,29 @@ export default function FieldTeamStatus() {
         <input
           type="text"
           className="field-input"
-          placeholder="თანამშრომლის ძებნა..."
+          placeholder={tu('k133')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
 
         <div className="team-status-pills">
           <button type="button" className={`team-status-pill ${statusFilter === '' ? 'active' : ''}`} onClick={() => setStatusFilter('')}>
-            ყველა
+            {tu('k092')}
           </button>
           <button type="button" className={`team-status-pill ${statusFilter === 'notDone' ? 'active' : ''}`} onClick={() => setStatusFilter('notDone')}>
-            დაუსრულებელი
+            {tu('k134')}
           </button>
           <button type="button" className={`team-status-pill ${statusFilter === 'planned' ? 'active' : ''}`} onClick={() => setStatusFilter('planned')}>
-            დაგეგმილია
+            {tu('k127')}
           </button>
           <button type="button" className={`team-status-pill ${statusFilter === 'i_went' ? 'active' : ''}`} onClick={() => setStatusFilter('i_went')}>
-            ადგილზეა
+            {tu('k128')}
           </button>
           <button type="button" className={`team-status-pill ${statusFilter === 'completed' ? 'active' : ''}`} onClick={() => setStatusFilter('completed')}>
-            შესრულებულია
+            {tu('k129')}
           </button>
           <button type="button" className={`team-status-pill ${statusFilter === 'canceled' ? 'active' : ''}`} onClick={() => setStatusFilter('canceled')}>
-            გაუქმებულია
+            {tu('k132')}
           </button>
         </div>
       </div>
@@ -170,14 +172,14 @@ export default function FieldTeamStatus() {
                 <span className="tracker-place">{placeName(plan)}</span>
               </div>
               {isCanceled ? (
-                <div className="tracker-canceled-label">გაუქმებულია</div>
+                <div className="tracker-canceled-label">{tu('k132')}</div>
               ) : (
                 <div className="tracker">
                   {STEPS.map((step, i) => (
                     <div key={step.key} className="tracker-step-wrap">
                       <div className={`tracker-step ${i <= currentIndex ? 'done' : ''} ${i === currentIndex ? 'current' : ''}`}>
                         <div className="tracker-circle">{i < currentIndex ? '✓' : i + 1}</div>
-                        <div className="tracker-label">{step.label}</div>
+                        <div className="tracker-label">{tu(step.label)}</div>
                       </div>
                       {i < STEPS.length - 1 && (
                         <div className={`tracker-line ${i < currentIndex ? 'filled' : ''}`} />
@@ -190,7 +192,7 @@ export default function FieldTeamStatus() {
           )
         })}
         {visiblePlans.length === 0 && (
-          <p style={{ color: '#94a3b8', fontSize: 13 }}>ჩანაწერი ვერ მოიძებნა</p>
+          <p style={{ color: '#94a3b8', fontSize: 13 }}>{tu('k135')}</p>
         )}
       </div>
     </div>

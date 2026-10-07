@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import './MultiSelectSearch.css'
 
 export default function MultiSelectSearch({ options, selected, optionsLabel, placeholder, onChange }) {
+  const tu = useTranslations('ui')
   const t = useTranslations('resourceTable')
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
@@ -57,7 +58,7 @@ export default function MultiSelectSearch({ options, selected, optionsLabel, pla
     <div className="mss-root">
       <button type="button" className="mss-trigger" onClick={() => setOpen(true)}>
         <span className="mss-trigger-text">
-          {selectedItems.length > 0 ? `არჩეულია: ${selectedItems.length}` : placeholder}
+          {selectedItems.length > 0 ? tu('k002', { p0: selectedItems.length }) : placeholder}
         </span>
         <span className="mss-trigger-icon">+</span>
       </button>
@@ -76,7 +77,7 @@ export default function MultiSelectSearch({ options, selected, optionsLabel, pla
               autoFocus
               type="text"
               className="mss-search-input"
-              placeholder="ძებნა..."
+              placeholder={tu('k001')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -84,11 +85,11 @@ export default function MultiSelectSearch({ options, selected, optionsLabel, pla
             <div className="mss-modal-toolbar">
               <label className="mss-row mss-row-all">
                 <input type="checkbox" checked={allFilteredSelected} onChange={toggleAllFiltered} />
-                <span>ყველას მონიშვნა{query.trim() ? ' (გაფილტრული)' : ''}</span>
+                <span>{tu('k005')}{query.trim() ? tu('k006') : ''}</span>
               </label>
               {selectedItems.length > 0 && (
                 <button type="button" className="mss-clear-all" onClick={clearAll}>
-                  ყველას გასუფთავება
+                  {tu('k008')}
                 </button>
               )}
             </div>
@@ -111,9 +112,9 @@ export default function MultiSelectSearch({ options, selected, optionsLabel, pla
             </div>
 
             <div className="mss-modal-footer">
-              <span className="mss-modal-count">არჩეულია: {selectedItems.length}</span>
+              <span className="mss-modal-count">{tu('k009')}{" "}{selectedItems.length}</span>
               <button type="button" className="mss-modal-done" onClick={() => setOpen(false)}>
-                დასრულება
+                {tu('k010')}
               </button>
             </div>
           </div>

@@ -10,13 +10,13 @@ import './RolePermissions.css'
 // grouped to mirror the Sidebar's own structure, so it's clear which
 // checkbox controls which menu section
 const RESOURCE_GROUPS = [
-  { label: 'ძირითადი', keys: ['attendances'] },
-  { label: 'პროდუქტის კონფიგურაცია', keys: ['drugs', 'product_types', 'manufacturers', 'manufacturer_countries', 'stock_upload'] },
-  { label: 'ბაზრის კონფიგურაცია', keys: ['doctors', 'doctor_categories', 'doctor_sub_categories', 'hospitals', 'pharmacies', 'profiles'] },
-  { label: 'დაგეგმვა და გაყიდვები', keys: ['plannings', 'plan_config', 'sales', 'budgets', 'budget_requests'] },
-  { label: 'რეპორტები', keys: ['efficiency_report', 'reimbursement_report', 'attendance_report', 'staff_performance_report', 'analytics', 'budgets_report', 'director_dashboard'] },
-    { label: 'მარკეტინგის შესრულება', keys: ['prescriptions', 'employee_accounts', 'employee_targets', 'employee_sales', 'doctor_targets'] },
-  { label: 'ადმინისტრაცია', keys: ['employees', 'roles', 'designations', 'sections', 'groups', 'regions', 'leaves'] },
+  { label: 'k183', keys: ['attendances'] },
+  { label: 'k184', keys: ['drugs', 'product_types', 'manufacturers', 'manufacturer_countries', 'stock_upload'] },
+  { label: 'k185', keys: ['doctors', 'doctor_categories', 'doctor_sub_categories', 'hospitals', 'pharmacies', 'profiles'] },
+  { label: 'k186', keys: ['plannings', 'plan_config', 'sales', 'budgets', 'budget_requests'] },
+  { label: 'k187', keys: ['efficiency_report', 'reimbursement_report', 'attendance_report', 'staff_performance_report', 'analytics', 'budgets_report', 'director_dashboard'] },
+    { label: 'k188', keys: ['prescriptions', 'employee_accounts', 'employee_targets', 'employee_sales', 'doctor_targets'] },
+  { label: 'k189', keys: ['employees', 'roles', 'designations', 'sections', 'groups', 'regions', 'leaves'] },
 ]
 
 const RESOURCE_KEYS = RESOURCE_GROUPS.flatMap((g) => g.keys)
@@ -36,6 +36,7 @@ function countActiveResources(privileges) {
 }
 
 export default function RolePermissions() {
+  const tu = useTranslations('ui')
   const t = useTranslations('roles')
   const { locale } = useParams()
   const [roles, setRoles] = useState([])
@@ -245,7 +246,7 @@ export default function RolePermissions() {
                   <div className="role-accordion-sub">
                     {isAdmin ? t('fullAccess') : t('hasAccessTo', { count: countActiveResources(r.privileges) })}
                     {!isAdmin && count !== null && (
-                      <span className="role-employee-count-badge">{count} თანამშრომელი</span>
+                      <span className="role-employee-count-badge">{count} {tu('k044')}</span>
                     )}
                   </div>
                 </div>
@@ -271,12 +272,12 @@ export default function RolePermissions() {
                 <div className="role-accordion-body">
                   <div className="role-employees-section">
                     <div className="role-employees-title">
-                      თანამშრომლები ამ როლზე {count !== null && `(${count})`}
+                      {tu('k190')}{" "}{count !== null && `(${count})`}
                     </div>
                     {roleEmployeesLoading ? (
-                      <p className="role-employees-loading">იტვირთება...</p>
+                      <p className="role-employees-loading">{tu('k003')}</p>
                     ) : roleEmployees.length === 0 ? (
-                      <p className="role-employees-empty">არავინ არის მინიჭებული</p>
+                      <p className="role-employees-empty">{tu('k191')}</p>
                     ) : (
                       <div className="role-employees-list">
                         {roleEmployees.map((emp) => (
@@ -291,7 +292,7 @@ export default function RolePermissions() {
                               onChange={(e) => handleReassign(emp._id, e.target.value)}
                             >
                               <option value="">
-                                {reassigningId === emp._id ? '...' : 'გადაყვანა სხვა როლზე'}
+                                {reassigningId === emp._id ? '...' : tu('k192')}
                               </option>
                               {roles
                                 .filter((other) => other._id !== r._id)
@@ -309,26 +310,26 @@ export default function RolePermissions() {
 
                   <div className="role-quick-actions">
                     <button type="button" className="btn-gray btn-sm" onClick={() => setAllRead(true)}>
-                      <span>✓ ყველას ნახვა</span>
+                      <span>{tu('k193')}</span>
                     </button>
                     <button type="button" className="btn-gray btn-sm" onClick={() => setAllRead(false)}>
-                      <span>ყველას მოხსნა</span>
+                      <span>{tu('k194')}</span>
                     </button>
                   </div>
 
                   {RESOURCE_GROUPS.map((group) => (
                     <div key={group.label} className="role-group">
                       <div className="role-group-header">
-                        <span>{group.label}</span>
+                        <span>{tu(group.label)}</span>
                         <div className="role-group-actions">
                           <button type="button" onClick={() => setGroupRead(group.keys, true)}>
-                            ✓ ნახვა
+                            {tu('k195')}
                           </button>
                           <button type="button" onClick={() => setGroupAll(group.keys, true)}>
-                            ✓ ყველა უფლება
+                            {tu('k196')}
                           </button>
                           <button type="button" onClick={() => setGroupAll(group.keys, false)}>
-                            მოხსნა
+                            {tu('k197')}
                           </button>
                         </div>
                       </div>

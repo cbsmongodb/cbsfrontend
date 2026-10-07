@@ -1281,3 +1281,55 @@
     display: none;
   }
 }
+
+/* ---------- chart hover card ---------- */
+.director-recharts-tooltip {
+  min-width: 190px;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid var(--line, #e9ebef);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(15, 39, 68, 0.16);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.director-recharts-tooltip-label {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f1f3f6;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink, #0f2744);
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.director-recharts-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+
+.director-recharts-tooltip-dot {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.director-recharts-tooltip-name {
+  flex: 1;
+  color: var(--ink-soft, #5b6b82);
+}
+
+.director-recharts-tooltip-value {
+  margin-left: 16px;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink, #0f2744);
+  font-variant-numeric: tabular-nums;
+}

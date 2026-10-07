@@ -2,8 +2,10 @@
 import { useEffect, useRef, useState } from "react"
 import { apiFetch } from "@/lib/api"
 import "./HospitalDoctorsEditor.css"
+import { useTranslations } from 'next-intl'
 
 export default function HospitalDoctorsEditor({ hospitalId, label, onSaveHospital }) {
+  const tu = useTranslations('ui')
   const [doctors, setDoctors] = useState([])
   const [loading, setLoading] = useState(false)
   const [search, setSearch] = useState("")
@@ -66,10 +68,10 @@ export default function HospitalDoctorsEditor({ hospitalId, label, onSaveHospita
   if (!hospitalId) {
     return (
       <div className="hosp-doctors">
-        <span className="hosp-doctors-label">{label || "ექიმები"}</span>
-        <p className="hosp-doctors-hint">ექიმების დასამატებლად ჯერ შეინახეთ ჰოსპიტალი.</p>
+        <span className="hosp-doctors-label">{label || tu('k014')}</span>
+        <p className="hosp-doctors-hint">{tu('k015')}</p>
         <button type="button" className="btn hosp-doctors-save-btn" onClick={handleSaveHospital} disabled={saving}>
-          <span>{saving ? "ინახება..." : "შეინახე ჰოსპიტალი და დაამატე ექიმები"}</span>
+          <span>{saving ? tu('k016') : tu('k017')}</span>
         </button>
       </div>
     )
@@ -77,9 +79,9 @@ export default function HospitalDoctorsEditor({ hospitalId, label, onSaveHospita
 
   return (
     <div className="hosp-doctors">
-      <span className="hosp-doctors-label">{label || "ექიმები"}</span>
+      <span className="hosp-doctors-label">{label || tu('k014')}</span>
       <div className="hosp-doctors-search" ref={boxRef}>
-        <input className="field-input" placeholder="ძებნა და დამატება — სახელი ან ID..."
+        <input className="field-input" placeholder={tu('k018')}
           value={search} onFocus={() => setOpen(true)}
           onChange={(e) => { setSearch(e.target.value); setOpen(true) }} />
         {open && results.length > 0 && (
@@ -95,15 +97,15 @@ export default function HospitalDoctorsEditor({ hospitalId, label, onSaveHospita
       </div>
       <div className="hosp-doctors-chips">
         {loading ? (
-          <span className="hosp-doctors-hint">იტვირთება...</span>
+          <span className="hosp-doctors-hint">{tu('k003')}</span>
         ) : doctors.length === 0 ? (
-          <span className="hosp-doctors-hint">ჯერ ექიმი არ არის დამატებული</span>
+          <span className="hosp-doctors-hint">{tu('k019')}</span>
         ) : (
           doctors.map((d) => (
             <span className="hosp-doctors-chip" key={d._id}>
               <span className="hosp-doctors-chip-name">{d.name}</span>
               <span className="hosp-doctors-chip-id">{d.uniqueNumber}</span>
-              <button type="button" className="hosp-doctors-chip-remove" onClick={() => removeDoctor(d._id)} title="მოშორება">×</button>
+              <button type="button" className="hosp-doctors-chip-remove" onClick={() => removeDoctor(d._id)} title={tu('k020')}>×</button>
             </span>
           ))
         )}

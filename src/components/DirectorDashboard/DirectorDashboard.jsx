@@ -153,7 +153,7 @@ function PremiumTooltip({ active, payload, label }) {
       <div className="director-recharts-tooltip-label">{label}</div>
       {payload.map((p) => (
         <div key={p.dataKey} className="director-recharts-tooltip-row">
-          <span className="director-recharts-tooltip-dot" style={{ background: p.color }} />
+          <span className="director-recharts-tooltip-dot" style={{ background: String(p.color || "").startsWith("url(") ? "#3f74d6" : p.color }} />
           <span className="director-recharts-tooltip-name">{p.name}</span>
           <span className="director-recharts-tooltip-value">{Number(p.value).toLocaleString()}</span>
         </div>
@@ -1163,7 +1163,11 @@ function DoctorsReportTab() {
                       <Cell key={i} fill={divColor(entry.divisionName)} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(v) => `${Number(v).toLocaleString()} ₾`} />
+                  <Tooltip
+                    formatter={(v) => `${Number(v).toLocaleString()} ₾`}
+                    contentStyle={{ borderRadius: 12, border: '1px solid #e9ebef', boxShadow: '0 10px 30px rgba(15, 39, 68, 0.14)', padding: '10px 14px', fontSize: 13 }}
+                    itemStyle={{ color: '#0f2744', fontWeight: 600 }}
+                  />
                   <Legend verticalAlign="bottom" iconType="circle" iconSize={9} wrapperStyle={{ fontSize: 12, fontWeight: 600 }} />
                 </PieChart>
               </ResponsiveContainer>

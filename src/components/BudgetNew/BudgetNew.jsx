@@ -6,8 +6,10 @@ import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import '../PrescriptionEdit/PrescriptionEdit.css'
 import './BudgetNew.css'
+import { useTranslations } from 'next-intl'
 
 export default function BudgetNew() {
+  const tu = useTranslations('ui')
   const { locale } = useParams()
   const router = useRouter()
 
@@ -52,7 +54,7 @@ export default function BudgetNew() {
 
   async function handleCreate() {
     if (!employeeId || !doctorId) {
-      setError('Employee-ც და Doctor-ც სავალდებულოა')
+      setError(tu('k104'))
       return
     }
     setSaving(true)
@@ -84,13 +86,13 @@ export default function BudgetNew() {
     <div className="prescedit-page">
       <div className="prescedit-card">
         <div className="prescedit-card-header">
-          <h1>Create Budget</h1>
+          <h1>{tu('k175')}</h1>
           <div className="prescedit-header-actions">
             <button type="button" className="btn" onClick={handleCreate} disabled={saving}>
               <span>{saving ? '...' : 'Save'}</span>
             </button>
             <button type="button" className="btn-gray" onClick={() => router.push(`/${locale}/dashboard/budgets`)}>
-              <span>Cancel</span>
+              <span>{tu('k106')}</span>
             </button>
           </div>
         </div>
@@ -99,34 +101,34 @@ export default function BudgetNew() {
 
         <div className="prescedit-fields">
           <div className="prescedit-field">
-            <label>Date</label>
+            <label>{tu('k176')}</label>
             <input type="date" className="field-input" value={date} onChange={(e) => setDate(e.target.value)} />
           </div>
           <div className="prescedit-field">
-            <label>Employee</label>
+            <label>{tu('k108')}</label>
             <SearchableSelect
               options={employees}
               value={employeeId}
               onChange={setEmployeeId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="აირჩიეთ..."
+              placeholder={tu('k109')}
             />
           </div>
           <div className="prescedit-field">
-            <label>Doctor</label>
+            <label>{tu('k110')}</label>
             <SearchableSelect
               options={doctors}
               value={doctorId}
               onChange={setDoctorId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="აირჩიეთ..."
+              placeholder={tu('k109')}
             />
           </div>
         </div>
 
         <div className="prescedit-fields budgetnew-amounts-row">
           <div className="prescedit-field">
-            <label>Paid Amount</label>
+            <label>{tu('k177')}</label>
             <div className="budgetnew-amount-input">
               <input
                 type="number"
@@ -138,13 +140,13 @@ export default function BudgetNew() {
             </div>
           </div>
           <div className="prescedit-field">
-            <label>Delta Amount</label>
+            <label>{tu('k178')}</label>
             <div className="budgetnew-amount-readonly">
               {computing ? '...' : computed.advanceAmount}
             </div>
           </div>
           <div className="prescedit-field">
-            <label>Sales Amount</label>
+            <label>{tu('k179')}</label>
             <div className="budgetnew-amount-readonly budgetnew-amount-ok">
               {computing ? '...' : computed.salesAmount}
               <span className="budgetnew-check">✓</span>
@@ -154,21 +156,21 @@ export default function BudgetNew() {
 
         <div className="prescedit-fields budgetnew-amounts-row">
           <div className="prescedit-field">
-            <label>Target Amount</label>
+            <label>{tu('k180')}</label>
             <div className="budgetnew-amount-readonly budgetnew-amount-ok">
               {computing ? '...' : computed.targetAmount}
               <span className="budgetnew-check">✓</span>
             </div>
           </div>
           <div className="prescedit-field">
-            <label>Prescription Amount</label>
+            <label>{tu('k181')}</label>
             <div className="budgetnew-amount-readonly budgetnew-amount-ok">
               {computing ? '...' : computed.prescriptionAmt}
               <span className="budgetnew-check">✓</span>
             </div>
           </div>
           <div className="prescedit-field">
-            <label>Payable Amount</label>
+            <label>{tu('k182')}</label>
             <div className="budgetnew-amount-readonly budgetnew-amount-ok">
               {computing ? '...' : computed.payableAmt}
               <span className="budgetnew-check">✓</span>
@@ -181,7 +183,7 @@ export default function BudgetNew() {
           <span className={`prescedit-toggle-track ${isActive ? 'on' : ''}`}>
             <span className="prescedit-toggle-thumb" />
           </span>
-          Status
+          {tu('k111')}
         </label>
       </div>
     </div>

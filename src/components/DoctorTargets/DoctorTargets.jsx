@@ -5,8 +5,10 @@ import { apiFetch } from '@/lib/api'
 import DoctorTargetModal from './DoctorTargetModal'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './DoctorTargets.css'
+import { useTranslations } from 'next-intl'
 
 export default function DoctorTargets() {
+  const tu = useTranslations('ui')
   const [doctors, setDoctors] = useState([])
   const [employees, setEmployees] = useState([])
   const [search, setSearch] = useState('')
@@ -60,7 +62,7 @@ export default function DoctorTargets() {
   }, [])
 
   async function handleDelete(id) {
-    if (!confirm('წაშალოთ ეს სამიზნე?')) return
+    if (!confirm(tu('k136'))) return
     try {
       await apiFetch(`/api/doctor-targets/${id}`, { method: 'DELETE' })
       load(page)
@@ -71,48 +73,48 @@ export default function DoctorTargets() {
 
   return (
     <div className="doctor-targets-page">
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}><h1>ექიმების სამიზნეები (Doctor Target)</h1>
-        <button className="btn" onClick={() => { setEditId(null); setShowModal(true) }}><span>+ ახალი ექიმის სამიზნე</span></button>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}><h1>{tu('k154')}</h1>
+        <button className="btn" onClick={() => { setEditId(null); setShowModal(true) }}><span>{tu('k155')}</span></button>
       </div>
 
       <div className="doctor-targets-filters">
         <div className="doctor-targets-filters-grid">
           <div className="doctor-targets-field">
-            <label>საწყისი თარიღი</label>
+            <label>{tu('k090')}</label>
             <input type="date" className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
           </div>
           <div className="doctor-targets-field">
-            <label>ბოლო თარიღი</label>
+            <label>{tu('k091')}</label>
             <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
           </div>
           <div className="doctor-targets-field">
-            <label>თანამშრომელი</label>
+            <label>{tu('k044')}</label>
             <SearchableSelect
               options={employees}
               value={employeeId}
               onChange={setEmployeeId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="ყველა"
+              placeholder={tu('k092')}
             />
           </div>
           <div className="doctor-targets-field">
-            <label>ექიმი</label>
+            <label>{tu('k049')}</label>
             <SearchableSelect
               options={doctors}
               value={doctorId}
               onChange={setDoctorId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="ყველა"
+              placeholder={tu('k092')}
             />
           </div>
           <button type="button" className="btn doctor-targets-search-btn" onClick={() => load(1)} disabled={loading}>
-            <span>{loading ? '...' : 'ძებნა'}</span>
+            <span>{loading ? '...' : tu('k093')}</span>
           </button>
         </div>
         <input
           type="text"
           className="field-input"
-          placeholder="ძებნა ექიმის ან თანამშრომლის სახელით..."
+          placeholder={tu('k156')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && load(1)}
@@ -126,31 +128,31 @@ export default function DoctorTargets() {
         <table className="doctor-targets-table">
           <thead>
             <tr>
-              <th>თარიღი</th>
-              <th>ექიმი</th>
-              <th>თანამშრომელი</th>
-              <th>სამიზნე თანხა</th>
+              <th>{tu('k096')}</th>
+              <th>{tu('k049')}</th>
+              <th>{tu('k044')}</th>
+              <th>{tu('k140')}</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {data?.docs.map((row) => (
               <tr key={row._id}>
-                <td data-label="თარიღი">{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
-                <td data-label="ექიმი">{row.doctorName}</td>
-                <td data-label="თანამშრომელი">{row.employeeName}</td>
-                <td data-label="სამიზნე თანხა">{row.targetAmount}</td>
+                <td data-label={tu('k096')}>{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
+                <td data-label={tu('k049')}>{row.doctorName}</td>
+                <td data-label={tu('k044')}>{row.employeeName}</td>
+                <td data-label={tu('k140')}>{row.targetAmount}</td>
                 <td data-label="">
-                  <button className="btn-gray btn-sm" onClick={() => { setEditId(row._id); setShowModal(true) }}><span>რედაქტირება</span></button>
+                  <button className="btn-gray btn-sm" onClick={() => { setEditId(row._id); setShowModal(true) }}><span>{tu('k101')}</span></button>
                   <button type="button" className="btn-gray btn-sm" onClick={() => handleDelete(row._id)}>
-                    <span>წაშლა</span>
+                    <span>{tu('k069')}</span>
                   </button>
                 </td>
               </tr>
             ))}
             {data && data.docs.length === 0 && (
               <tr>
-                <td colSpan={5}>ჩანაწერები არ მოიძებნა</td>
+                <td colSpan={5}>{tu('k102')}</td>
               </tr>
             )}
           </tbody>
@@ -163,7 +165,7 @@ export default function DoctorTargets() {
             <span>←</span>
           </button>
           <span className="doctor-targets-pagination-info">
-            {page} / {data.pages} ({data.total} სულ)
+            {page} / {data.pages} ({data.total} {tu('k103')}
           </span>
           <button type="button" className="btn-gray btn-sm" disabled={page >= data.pages} onClick={() => load(page + 1)}>
             <span>→</span>

@@ -2,6 +2,7 @@
 import { useTranslations } from "next-intl";
 import ResourceTable from "@/components/ResourceTable/ResourceTable";
 export default function Page() {
+  const tu = useTranslations('ui')
   const t = useTranslations();
   return (
     <ResourceTable
@@ -33,7 +34,7 @@ export default function Page() {
         { name: "isActive", label: t('fields.isActive'), type: "checkbox" },
         {
           name: "members",
-          label: t('fields.members') || "წევრები",
+          label: t('fields.members') || tu('k215'),
           type: "multiselect-search",
           optionsEndpoint: "/api/employees",
           optionsLabel: "name",
@@ -41,7 +42,7 @@ export default function Page() {
         },
         {
           name: "drugs",
-          label: t('fields.drugs') || "პრეპარატები",
+          label: t('fields.drugs') || tu('k216'),
           type: "multiselect-search",
           optionsEndpoint: "/api/drugs",
           optionsLabel: "name",

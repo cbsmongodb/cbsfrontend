@@ -3,6 +3,8 @@ import { useEffect, useState } from "react"
 import { apiFetch } from "@/lib/api"
 import SearchableSelect from "@/components/ResourceTable/SearchableSelect"
 import "@/components/EmployeeTargets/EmployeeTargetModal.css"
+import { useTranslations } from 'next-intl'
+import { useMonthNames } from '@/lib/months'
 
 const MONTHS = [
   "იანვარი", "თებერვალი", "მარტი", "აპრილი", "მაისი", "ივნისი",
@@ -11,6 +13,9 @@ const MONTHS = [
 const CURRENT_YEAR = new Date().getUTCFullYear()
 
 export default function DoctorTargetModal({ employees, doctors, editId, onClose, onSaved }) {
+  const tu = useTranslations('ui')
+  // month names in the chosen language (the Georgian list above is only a fallback)
+  const MONTHS = useMonthNames()
   const [month, setMonth] = useState(new Date().getUTCMonth())
   const [employeeId, setEmployeeId] = useState("")
   const [doctorId, setDoctorId] = useState("")
@@ -71,12 +76,12 @@ export default function DoctorTargetModal({ employees, doctors, editId, onClose,
 
   async function handleSave() {
     setError("")
-    if (!employeeId) { setError("აირჩიეთ თანამშრომელი"); return }
-    if (!doctorId) { setError("აირჩიეთ ექიმი"); return }
+    if (!employeeId) { setError(tu('k141')); return }
+    if (!doctorId) { setError(tu('k157')); return }
     const items = Object.keys(checked)
       .filter((id) => checked[id] && Number(boxes[id]) > 0)
       .map((drug) => ({ drug, totalNoOfBoxes: Number(boxes[drug]) }))
-    if (items.length === 0) { setError("მონიშნეთ წამალი და შეიყვანეთ ყუთები"); return }
+    if (items.length === 0) { setError(tu('k142')); return }
 
     setSaving(true)
     try {
@@ -99,42 +104,42 @@ export default function DoctorTargetModal({ employees, doctors, editId, onClose,
     <div className="et-modal-overlay" onClick={onClose}>
       <div className="et-modal" onClick={(e) => e.stopPropagation()}>
         <div className="et-modal-head">
-          <h2>{editId ? "ექიმის სამიზნის რედაქტირება" : "ახალი ექიმის სამიზნე"}</h2>
+          <h2>{editId ? tu('k158') : tu('k159')}</h2>
           <button className="et-modal-close" onClick={onClose}>×</button>
         </div>
 
         <div className="et-modal-top et-modal-top-3">
           <div className="et-modal-field">
-            <label>პერიოდი (თვე)</label>
+            <label>{tu('k145')}</label>
             <select className="field-select" value={month} onChange={(e) => setMonth(Number(e.target.value))}>
               {MONTHS.map((m, i) => <option key={i} value={i}>{m} {CURRENT_YEAR}</option>)}
             </select>
           </div>
           <div className="et-modal-field">
-            <label>თანამშრომელი</label>
+            <label>{tu('k044')}</label>
             <SearchableSelect
               options={employees}
               value={employeeId}
               onChange={setEmployeeId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="აირჩიეთ..."
+              placeholder={tu('k109')}
             />
           </div>
           <div className="et-modal-field">
-            <label>ექიმი</label>
+            <label>{tu('k049')}</label>
             <SearchableSelect
               options={doctors}
               value={doctorId}
               onChange={setDoctorId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder="აირჩიეთ..."
+              placeholder={tu('k109')}
             />
           </div>
         </div>
 
         <div className="et-modal-druglabel">
-          <span>სამიზნე წამლები (მონიშნეთ და შეიყვანეთ ყუთები)</span>
-          {chosenCount > 0 && <span className="et-modal-count">არჩეულია: {chosenCount}</span>}
+          <span>{tu('k146')}</span>
+          {chosenCount > 0 && <span className="et-modal-count">{tu('k009')}{" "}{chosenCount}</span>}
         </div>
 
         <div className="et-modal-searchwrap">
@@ -143,7 +148,7 @@ export default function DoctorTargetModal({ employees, doctors, editId, onClose,
           </svg>
           <input
             className="et-modal-search"
-            placeholder="ძებნა წამლის სახელით..."
+            placeholder={tu('k027')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -151,7 +156,7 @@ export default function DoctorTargetModal({ employees, doctors, editId, onClose,
 
         <div className="et-modal-druglist">
           {loadingEdit ? (
-            <p className="et-modal-empty">იტვირთება...</p>
+            <p className="et-modal-empty">{tu('k003')}</p>
           ) : (
             <>
               {filtered.map((d) => {
@@ -168,7 +173,7 @@ export default function DoctorTargetModal({ employees, doctors, editId, onClose,
                         className="et-modal-boxinput"
                         type="number"
                         min="0"
-                        placeholder="ყუთები"
+                        placeholder={tu('k116')}
                         value={boxes[d._id] ?? ""}
                         onChange={(e) => setBox(d._id, e.target.value)}
                       />
@@ -176,7 +181,7 @@ export default function DoctorTargetModal({ employees, doctors, editId, onClose,
                   </div>
                 )
               })}
-              {filtered.length === 0 && <p className="et-modal-empty">წამალი არ მოიძებნა</p>}
+              {filtered.length === 0 && <p className="et-modal-empty">{tu('k029')}</p>}
             </>
           )}
         </div>
@@ -185,10 +190,10 @@ export default function DoctorTargetModal({ employees, doctors, editId, onClose,
 
         <div className="et-modal-actions">
           <button className="btn" onClick={handleSave} disabled={saving || loadingEdit}>
-            <span>{saving ? "..." : "შენახვა"}</span>
+            <span>{saving ? "..." : tu('k043')}</span>
           </button>
           <button className="btn-gray" onClick={onClose}>
-            <span>დახურვა</span>
+            <span>{tu('k031')}</span>
           </button>
         </div>
       </div>

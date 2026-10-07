@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import './ResourceTable.css'
+import { useTranslations } from 'next-intl'
 
 export default function SearchableSelect({ options, value, onChange, getLabel, placeholder, onCreate }) {
+  const tu = useTranslations('ui')
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
   const [creating, setCreating] = useState(false)
@@ -53,7 +55,7 @@ export default function SearchableSelect({ options, value, onChange, getLabel, p
       const created = await onCreate(query.trim())
       pick(created)
     } catch (err) {
-      setCreateError(err.message || 'ვერ შეიქმნა')
+      setCreateError(err.message || tu('k011'))
     } finally {
       setCreating(false)
     }
@@ -104,7 +106,7 @@ export default function SearchableSelect({ options, value, onChange, getLabel, p
               onClick={handleCreate}
               disabled={creating}
             >
-              {creating ? '...' : `+ შექმენი "${query.trim()}"`}
+              {creating ? '...' : tu('k012', { p0: query.trim() })}
             </button>
           )}
         </div>
@@ -112,7 +114,7 @@ export default function SearchableSelect({ options, value, onChange, getLabel, p
 
       {open && query && filtered.length === 0 && !showCreateOption && (
         <div className="searchable-select-dropdown">
-          <div className="searchable-select-empty">ვერაფერი მოიძებნა</div>
+          <div className="searchable-select-empty">{tu('k013')}</div>
         </div>
       )}
 

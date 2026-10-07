@@ -1,5 +1,7 @@
 "use client"
 import { useState } from "react"
+import { useTranslations } from 'next-intl'
+import { useMonthNames } from '@/lib/months'
 
 const MONTHS = [
   "იანვარი", "თებერვალი", "მარტი", "აპრილი", "მაისი", "ივნისი",
@@ -12,13 +14,16 @@ function toPeriod(month) {
   return new Date(Date.UTC(CURRENT_YEAR, month, 1)).toISOString()
 }
 
-function labelFromPeriod(iso) {
+function labelFromPeriod(iso, months = MONTHS) {
   const d = new Date(iso)
-  return MONTHS[d.getUTCMonth()]
+  return months[d.getUTCMonth()]
 }
 
 // value: array of { period (iso), value (number) }
 export default function DrugBonusEditor({ value = [], onChange, label }) {
+  const tu = useTranslations('ui')
+  // month names in the chosen language (the Georgian list above is only a fallback)
+  const MONTHS = useMonthNames()
   const [month, setMonth] = useState(new Date().getUTCMonth())
   const [bonus, setBonus] = useState("")
 
@@ -40,7 +45,7 @@ export default function DrugBonusEditor({ value = [], onChange, label }) {
 
   return (
     <div className="drug-bonus-editor">
-      <span className="drug-bonus-editor-label">{label || "ბონუსები (თვის მიხედვით)"}</span>
+      <span className="drug-bonus-editor-label">{label || tu('k021')}</span>
 
       <div className="drug-bonus-editor-row">
         <select className="field-select" value={month} onChange={(e) => setMonth(Number(e.target.value))}>
@@ -52,13 +57,13 @@ export default function DrugBonusEditor({ value = [], onChange, label }) {
           className="field-input"
           type="number"
           step="any"
-          placeholder="ბონუსი"
+          placeholder={tu('k022')}
           value={bonus}
           onChange={(e) => setBonus(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addBonus() } }}
         />
         <button type="button" className="drug-bonus-editor-add" onClick={addBonus}>
-          + დამატება
+          {tu('k023')}
         </button>
       </div>
 
@@ -66,7 +71,7 @@ export default function DrugBonusEditor({ value = [], onChange, label }) {
         <div className="drug-bonus-editor-list">
           {value.map((b) => (
             <div key={b.period} className="drug-bonus-editor-chip">
-              <span className="drug-bonus-editor-chip-period">{labelFromPeriod(b.period)}</span>
+              <span className="drug-bonus-editor-chip-period">{labelFromPeriod(b.period, MONTHS)}</span>
               <span className="drug-bonus-editor-chip-value">{b.value}</span>
               <button type="button" className="drug-bonus-editor-chip-remove" onClick={() => removeBonus(b.period)}>
                 ×
@@ -75,7 +80,7 @@ export default function DrugBonusEditor({ value = [], onChange, label }) {
           ))}
         </div>
       ) : (
-        <span className="drug-bonus-editor-empty">ჯერ ბონუსი არ დამატებულა</span>
+        <span className="drug-bonus-editor-empty">{tu('k024')}</span>
       )}
     </div>
   )

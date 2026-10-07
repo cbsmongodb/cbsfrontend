@@ -5,6 +5,7 @@ import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import DrugPickerModal from './DrugPickerModal'
 import './DoctorEntryItems.css'
+import { useTranslations } from 'next-intl'
 
 const BANKS = ['BOG', 'TBC', 'Liberty', 'Cash', 'Pharmacy']
 
@@ -85,6 +86,7 @@ function fmt(n) {
 }
 
 export default function DoctorEntryItems() {
+  const tu = useTranslations('ui')
   const [employees, setEmployees] = useState([])
   const [doctors, setDoctors] = useState([])
   const [hospitals, setHospitals] = useState([])
@@ -136,7 +138,7 @@ export default function DoctorEntryItems() {
   }
 
   function doctorLabel(doc) {
-    return `${doc.firstName || ''} ${doc.lastName || ''}`.trim() || doc.name || 'უცნობი'
+    return `${doc.firstName || ''} ${doc.lastName || ''}`.trim() || doc.name || '—'
   }
 
   function selectedDoctor(doctorId) {
@@ -145,7 +147,7 @@ export default function DoctorEntryItems() {
 
   async function handleLoad() {
     if (!employeeId) {
-      setError('ჯერ აირჩიეთ თანამშრომელი')
+      setError(tu('k038'))
       return
     }
     setLoading(true)
@@ -156,7 +158,7 @@ export default function DoctorEntryItems() {
       const data = await apiFetch(`/api/doctor-entry-items?employee=${employeeId}&period=${encodeURIComponent(period)}`)
       const loaded = groupItemsIntoDoctorEntries(data.items || [])
       setDoctorEntries(loaded.length > 0 ? loaded : [emptyDoctorEntry()])
-      if (loaded.length === 0) setSuccess('ამ თვეზე ჩანაწერები ჯერ არ არსებობს — შეგიძლიათ ახლიდან შეავსოთ')
+      if (loaded.length === 0) setSuccess(tu('k039'))
     } catch (err) {
       setError(err.message)
     } finally {
@@ -231,7 +233,7 @@ export default function DoctorEntryItems() {
 
   async function handleSave() {
     if (!employeeId) {
-      setError('ჯერ აირჩიეთ თანამშრომელი')
+      setError(tu('k038'))
       return
     }
     const cleanEntries = doctorEntries
@@ -243,7 +245,7 @@ export default function DoctorEntryItems() {
       .filter((e) => e.drugs.length > 0)
 
     if (cleanEntries.length === 0) {
-      setError('ჯერ აირჩიეთ მინიმუმ ერთი ექიმი და ერთი წამალი')
+      setError(tu('k040'))
       return
     }
 
@@ -259,7 +261,7 @@ export default function DoctorEntryItems() {
       // the backend returns the recalculated items (coefficient, totalBudget,
       // plannedBudget, difference, etc.) — use them to refresh the computed
       // fields immediately, without needing a separate "load"
-      setSuccess('შენახულია')
+      setSuccess(tu('k041'))
       setTimeout(() => setSuccess(''), 3000)
       // clear the form for the next employee — keep the period, since a
       // whole batch of employees is usually entered for the same month
@@ -275,26 +277,26 @@ export default function DoctorEntryItems() {
   return (
     <div className="doctor-entries-page">
       <div className="doctor-entries-header">
-        <h1>გაყიდვების შეყვანა</h1>
+        <h1>{tu('k042')}</h1>
         <button type="button" className="btn" onClick={handleSave} disabled={saving}>
-          <span>{saving ? '...' : 'შენახვა'}</span>
+          <span>{saving ? '...' : tu('k043')}</span>
         </button>
       </div>
 
       <div className="doctor-entries-top">
         <div className="doctor-entries-field">
-          <label>თანამშრომელი</label>
+          <label>{tu('k044')}</label>
           <SearchableSelect
             options={employees}
             value={employeeId}
             onChange={setEmployeeId}
             getLabel={(emp) => emp.name || `${emp.firstName} ${emp.lastName}`}
-            placeholder="ჩაწერეთ სახელი..."
+            placeholder={tu('k045')}
           />
         </div>
 
         <div className="doctor-entries-field">
-          <label>პერიოდი</label>
+          <label>{tu('k046')}</label>
           <input
             type="month"
             className="field-date"
@@ -322,26 +324,26 @@ export default function DoctorEntryItems() {
         return (
           <div key={doctorIndex} className="doctor-entry-card">
             <div className="doctor-entry-card-header">
-              <strong>ექიმის ჩანაწერი</strong>
+              <strong>{tu('k047')}</strong>
               <button type="button" className="btn-gray btn-sm" onClick={() => removeDoctor(doctorIndex)}>
-                <span>ექიმის მოშორება</span>
+                <span>{tu('k048')}</span>
               </button>
             </div>
 
             <div className="doctor-entry-row">
               <div className="doctor-entries-field">
-                <label>ექიმი</label>
+                <label>{tu('k049')}</label>
                 <SearchableSelect
                   options={doctors}
                   value={entry.doctorId}
                   onChange={(val) => updateDoctorField(doctorIndex, 'doctorId', val)}
                   getLabel={(d) => doctorLabel(d)}
-                  placeholder="აირჩიეთ ექიმი..."
+                  placeholder={tu('k050')}
                 />
               </div>
 
               <div className="doctor-entries-field">
-                <label>Issued Budget</label>
+                <label>{tu('k051')}</label>
                 <input
                   type="number"
                   className="field-input"
@@ -358,7 +360,7 @@ export default function DoctorEntryItems() {
 
             <div className="doctor-entry-row">
               <div className="doctor-entries-field">
-                <label>ვიზიტები</label>
+                <label>{tu('k052')}</label>
                 <input
                   type="text"
                   className="field-input"
@@ -368,24 +370,24 @@ export default function DoctorEntryItems() {
               </div>
 
               <div className="doctor-entries-field">
-                <label>კლინიკა</label>
+                <label>{tu('k053')}</label>
                 <SearchableSelect
                   options={hospitals}
                   value={entry.hospitalId}
                   onChange={(val) => updateDoctorField(doctorIndex, 'hospitalId', val)}
                   getLabel={(h) => h.name}
-                  placeholder="აირჩიეთ კლინიკა..."
+                  placeholder={tu('k054')}
                 />
               </div>
 
               <div className="doctor-entries-field">
-                <label>ბანკი</label>
+                <label>{tu('k055')}</label>
                 <select
                   className="field-select"
                   value={entry.bank}
                   onChange={(e) => updateDoctorField(doctorIndex, 'bank', e.target.value)}
                 >
-                  <option value="">აირჩიეთ ბანკი...</option>
+                  <option value="">{tu('k056')}</option>
                   {BANKS.map((b) => (
                     <option key={b} value={b}>
                       {b}
@@ -398,26 +400,26 @@ export default function DoctorEntryItems() {
             {hasComputedSummary && (
               <div className="doctor-entry-summary">
                 <div className="doctor-entry-summary-item">
-                  <span>Planned Budget</span>
+                  <span>{tu('k057')}</span>
                   <strong>{fmt(entry.plannedBudget)}</strong>
                 </div>
                 <div className="doctor-entry-summary-item">
-                  <span>Difference</span>
+                  <span>{tu('k058')}</span>
                   <strong className={entry.difference < 0 ? 'negative' : ''}>{fmt(entry.difference)}</strong>
                 </div>
                 <div className="doctor-entry-summary-item">
-                  <span>წინა თვის ანალიზი</span>
+                  <span>{tu('k059')}</span>
                   <strong>{fmt(entry.analysisOfPreviousMonth)}</strong>
                 </div>
                 <div className="doctor-entry-summary-item">
-                  <span>Budget Calculation</span>
+                  <span>{tu('k060')}</span>
                   <strong className={entry.budgetCalculation < 0 ? 'negative' : ''}>{fmt(entry.budgetCalculation)}</strong>
                 </div>
               </div>
             )}
 
             <div className="doctor-entry-drugs">
-              <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 8 }}>წამლები</div>
+              <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 8 }}>{tu('k061')}</div>
               {entry.drugs.map((row, drugIndex) => (
                 <div key={drugIndex} className="doctor-entry-drug-row">
                   <SearchableSelect
@@ -425,13 +427,13 @@ export default function DoctorEntryItems() {
                     value={row.drugId}
                     onChange={(val) => updateDrugField(doctorIndex, drugIndex, 'drugId', val)}
                     getLabel={(dr) => dr.name}
-                    placeholder="აირჩიეთ ან ჩაწერეთ წამალი..."
+                    placeholder={tu('k062')}
                   />
 
                   {row.drugId && (
                     <>
                       <div className="doctor-entry-drug-number">
-                        <label>გეგმა</label>
+                        <label>{tu('k063')}</label>
                         <input
                           type="number"
                           className="field-input"
@@ -440,7 +442,7 @@ export default function DoctorEntryItems() {
                         />
                       </div>
                       <div className="doctor-entry-drug-number">
-                        <label>Prescription</label>
+                        <label>{tu('k064')}</label>
                         <input
                           type="number"
                           className="field-input"
@@ -449,7 +451,7 @@ export default function DoctorEntryItems() {
                         />
                       </div>
                       <div className="doctor-entry-drug-number">
-                        <label>Sale</label>
+                        <label>{tu('k065')}</label>
                         <input
                           type="number"
                           className="field-input"
@@ -458,7 +460,7 @@ export default function DoctorEntryItems() {
                         />
                       </div>
                       <div className="doctor-entry-drug-number">
-                        <label>Budget</label>
+                        <label>{tu('k066')}</label>
                         <input
                           type="number"
                           className="field-input"
@@ -469,21 +471,21 @@ export default function DoctorEntryItems() {
 
                       {row.totalBudget != null && (
                         <div className="doctor-entry-drug-computed">
-                          <span>Coeff: {fmt(row.coefficient != null ? row.coefficient * 100 : null)}%</span>
-                          <span>Total: {fmt(row.totalBudget)}</span>
+                          <span>{tu('k067')}{" "}{fmt(row.coefficient != null ? row.coefficient * 100 : null)}%</span>
+                          <span>{tu('k068')}{" "}{fmt(row.totalBudget)}</span>
                         </div>
                       )}
                     </>
                   )}
 
                   <button type="button" className="btn-gray btn-sm" onClick={() => removeDrug(doctorIndex, drugIndex)}>
-                    <span>წაშლა</span>
+                    <span>{tu('k069')}</span>
                   </button>
                 </div>
               ))}
 
               <button type="button" className="btn-gray btn-sm" onClick={() => setPickerDoctorIndex(doctorIndex)} style={{ marginTop: 8 }}>
-                <span>+ წამლის დამატება</span>
+                <span>{tu('k070')}</span>
               </button>
             </div>
           </div>
@@ -491,7 +493,7 @@ export default function DoctorEntryItems() {
       })}
 
       <button type="button" className="btn-gray" onClick={addDoctor} style={{ marginTop: 4 }}>
-        <span>+ ექიმის დამატება</span>
+        <span>{tu('k071')}</span>
       </button>
     
       {pickerDoctorIndex !== null && (
