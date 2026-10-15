@@ -4,7 +4,8 @@
     "email": "Эл. почта",
     "password": "Пароль",
     "submit": "Войти",
-    "error": "Неверный email или пароль"
+    "error": "Неверный email или пароль",
+    "serverError": "Не удалось связаться с сервером. Попробуйте ещё раз."
   },
   "dashboard": {
     "title": "Панель управления",
@@ -95,7 +96,8 @@
         "analytics": "Аналитика",
         "budgets": "Бюджеты",
         "budgetAllotment": "Распределение бюджета",
-        "directorDashboard": "Панель директора"
+        "directorDashboard": "Панель директора",
+        "prescriptionsReport": "Отчёт по рецептам"
       },
       "administration": {
         "label": "Администрирование",
@@ -414,7 +416,8 @@
       "analytics": "Аналитика",
       "budgets_report": "Бюджеты (Отчёт)",
       "director_dashboard": "Панель директора",
-      "attendance_report": "Отчёт о посещаемости"
+      "attendance_report": "Отчёт о посещаемости",
+      "prescriptions_report": "Отчёт по рецептам"
     },
     "actions": {
       "read": "Просмотр",
@@ -789,6 +792,18 @@
       "isActive": "Активен",
       "noData": "Нет данных в таблице",
       "create": "+ Создать бюджет"
+    },
+    "prescriptions": {
+      "title": "Отчёт по рецептам",
+      "subtitle": "Рецепты из Data Entry: кто, у какого врача, какой препарат, сколько выписано и продано",
+      "fromMonth": "С месяца",
+      "toMonth": "По месяц",
+      "searchPlaceholder": "Поиск: врач, препарат, больница...",
+      "prescribed": "Выписано (уп.)",
+      "sold": "Продано (уп.)",
+      "fulfillment": "Выполнение",
+      "doctors": "Врачи",
+      "drug": "Препарат"
     }
   },
   "attendanceStatus": {
@@ -815,7 +830,8 @@
     "save": "Сохранить",
     "tooShort": "Новый пароль должен быть не короче 8 символов",
     "mismatch": "Новые пароли не совпадают",
-    "success": "Пароль успешно изменён"
+    "success": "Пароль успешно изменён",
+    "wrongCurrent": "Текущий пароль неверный"
   },
   "ui": {
     "k001": "Поиск...",

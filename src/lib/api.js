@@ -1,5 +1,7 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+const NO_REDIRECT_ON_401 = ["/api/auth/login", "/api/auth/change-password"];
+
 function handleUnauthorized() {
   if (typeof window === "undefined") return;
   localStorage.removeItem("token");
@@ -23,7 +25,11 @@ export async function apiFetch(path, options = {}) {
     },
   });
 
-  if (res.status === 401) {
+  // On these endpoints 401 means "wrong password", not "session expired":
+  // let the form show the error instead of reloading the login page.
+  const passwordCheck = NO_REDIRECT_ON_401.some((p) => path.startsWith(p));
+
+  if (res.status === 401 && !passwordCheck) {
     handleUnauthorized();
     // redirect is in flight — throw so the calling code's loading state
     // doesn't hang, but nothing will render this since the page is navigating away
@@ -33,7 +39,9 @@ export async function apiFetch(path, options = {}) {
   const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-    throw new Error(data.error || "Request failed");
+    const err = new Error(data.error || "Request failed");
+    err.status = res.status;
+    throw err;
   }
 
   return data;

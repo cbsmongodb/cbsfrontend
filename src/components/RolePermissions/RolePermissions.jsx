@@ -14,7 +14,7 @@ const RESOURCE_GROUPS = [
   { label: 'k184', keys: ['drugs', 'product_types', 'manufacturers', 'manufacturer_countries', 'stock_upload'] },
   { label: 'k185', keys: ['doctors', 'doctor_categories', 'doctor_sub_categories', 'hospitals', 'pharmacies', 'profiles'] },
   { label: 'k186', keys: ['plannings', 'plan_config', 'sales', 'budgets', 'budget_requests'] },
-  { label: 'k187', keys: ['efficiency_report', 'reimbursement_report', 'attendance_report', 'staff_performance_report', 'analytics', 'budgets_report', 'director_dashboard'] },
+  { label: 'k187', keys: ['efficiency_report', 'reimbursement_report', 'attendance_report', 'prescriptions_report', 'staff_performance_report', 'analytics', 'budgets_report', 'director_dashboard'] },
     { label: 'k188', keys: ['prescriptions', 'employee_accounts', 'employee_targets', 'employee_sales', 'doctor_targets'] },
   { label: 'k189', keys: ['employees', 'roles', 'designations', 'sections', 'groups', 'regions', 'leaves'] },
 ]

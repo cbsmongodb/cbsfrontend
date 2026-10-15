@@ -4,7 +4,8 @@
     "email": "Email",
     "password": "Password",
     "submit": "Log In",
-    "error": "Invalid email or password"
+    "error": "Invalid email or password",
+    "serverError": "Could not reach the server. Please try again."
   },
   "dashboard": {
     "title": "Dashboard",
@@ -95,7 +96,8 @@
         "analytics": "Analytics",
         "budgets": "Budgets",
         "budgetAllotment": "Budget Allotment",
-        "directorDashboard": "Director Dashboard"
+        "directorDashboard": "Director Dashboard",
+        "prescriptionsReport": "Prescriptions Report"
       },
       "administration": {
         "label": "Administration",
@@ -414,7 +416,8 @@
       "analytics": "Analytics",
       "budgets_report": "Budgets (Report)",
       "director_dashboard": "Director Dashboard",
-      "attendance_report": "Attendance Report"
+      "attendance_report": "Attendance Report",
+      "prescriptions_report": "Prescriptions Report"
     },
     "actions": {
       "read": "View",
@@ -789,6 +792,18 @@
       "isActive": "Active",
       "noData": "No data available in table",
       "create": "+ Create budget"
+    },
+    "prescriptions": {
+      "title": "Prescriptions Report",
+      "subtitle": "Prescriptions entered in Data Entry: who, which doctor, which drug, how many boxes were prescribed and sold",
+      "fromMonth": "From month",
+      "toMonth": "To month",
+      "searchPlaceholder": "Search: doctor, drug, hospital...",
+      "prescribed": "Prescribed (boxes)",
+      "sold": "Sold (boxes)",
+      "fulfillment": "Fulfillment",
+      "doctors": "Doctors",
+      "drug": "Drug"
     }
   },
   "attendanceStatus": {
@@ -815,7 +830,8 @@
     "save": "Save",
     "tooShort": "The new password must be at least 8 characters",
     "mismatch": "The new passwords do not match",
-    "success": "Password changed successfully"
+    "success": "Password changed successfully",
+    "wrongCurrent": "Current password is incorrect"
   },
   "ui": {
     "k001": "Search...",

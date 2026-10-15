@@ -482,3 +482,14 @@ tbody tr:hover {
   min-width: 100px;
   text-align: center;
 }
+
+/* long text wraps */
+/* long names (hospitals, doctors with many hospitals...) go onto a 2nd/3rd
+   line instead of stretching the whole table; the buttons column stays on one line */
+.resource-table td:not(.resource-actions) {
+  white-space: normal;
+  max-width: 320px;
+  min-width: 90px;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+}

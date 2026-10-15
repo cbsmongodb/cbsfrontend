@@ -42,7 +42,7 @@ export default function ChangePassword() {
       setNewPassword('')
       setConfirmPassword('')
     } catch (err) {
-      setError(err.message)
+      setError(err.status === 401 ? t('wrongCurrent') : err.message)
     } finally {
       setSaving(false)
     }

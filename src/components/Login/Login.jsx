@@ -39,7 +39,7 @@ export default function Login() {
 
       router.push(`/${locale}/dashboard`)
     } catch (err) {
-      setError(t('error'))
+      setError(err.status === 401 || err.status === 400 ? t('error') : t('serverError'))
     } finally {
       setLoading(false)
     }

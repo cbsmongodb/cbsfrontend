@@ -27,6 +27,20 @@ export default function Page() {
           type: "select",
           optionsEndpoint: "/api/doctor-categories",
         },
+        {
+          name: "hospitalIds",
+          label: t('sidebar.groups.configureMarket.hospitals'),
+          type: "multiselect-search",
+          optionsEndpoint: "/api/hospitals",
+          optionsLabel: "name",
+        },
+        {
+          name: "pharmacies",
+          label: t('sidebar.groups.configureMarket.pharmacies'),
+          type: "multiselect-search",
+          optionsEndpoint: "/api/pharmacies",
+          optionsLabel: "pharmacyName",
+        },
         { name: "isBudgeted", label: t('fields.isBudgeted'), type: "checkbox" },
         { name: "isActive", label: t('fields.isActive'), type: "checkbox" },
       ]}
