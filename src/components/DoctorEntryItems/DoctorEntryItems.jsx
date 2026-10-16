@@ -279,7 +279,7 @@ export default function DoctorEntryItems() {
       <div className="doctor-entries-header">
         <h1>{tu('k042')}</h1>
         <button type="button" className="btn" onClick={handleSave} disabled={saving}>
-          <span>{saving ? '...' : tu('k043')}</span>
+          <span>{saving ? <span className="btn-spinner" aria-hidden="true" /> : tu('k043')}</span>
         </button>
       </div>
 

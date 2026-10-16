@@ -108,7 +108,7 @@ export default function Login() {
           )}
 
           <button type="submit" className="login-submit" disabled={loading}>
-            <span>{loading ? '...' : t('submit')}</span>
+            <span>{loading ? <span className="btn-spinner" aria-hidden="true" /> : t('submit')}</span>
           </button>
         </form>
       </div>

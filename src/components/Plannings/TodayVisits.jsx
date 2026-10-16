@@ -244,7 +244,7 @@ export default function TodayVisits() {
                     disabled={busyId === plan._id}
                     onClick={() => handleCheckin(plan)}
                   >
-                    <span>{busyId === plan._id ? '...' : t('checkin')}</span>
+                    <span>{busyId === plan._id ? <span className="btn-spinner" aria-hidden="true" /> : t('checkin')}</span>
                   </button>
                 )}
                 {canCheckout && (
@@ -254,7 +254,7 @@ export default function TodayVisits() {
                     disabled={busyId === plan._id}
                     onClick={() => openCheckoutModal(plan)}
                   >
-                    <span>{busyId === plan._id ? '...' : t('checkout')}</span>
+                    <span>{busyId === plan._id ? <span className="btn-spinner" aria-hidden="true" /> : t('checkout')}</span>
                   </button>
                 )}
                 {canCancel && (

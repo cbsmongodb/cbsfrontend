@@ -94,7 +94,7 @@ export default function BudgetNew() {
           <h1>{tu('k175')}</h1>
           <div className="prescedit-header-actions">
             <button type="button" className="btn" onClick={handleCreate} disabled={saving}>
-              <span>{saving ? '...' : 'Save'}</span>
+              <span>{saving ? <span className="btn-spinner" aria-hidden="true" /> : 'Save'}</span>
             </button>
             <button type="button" className="btn-gray" onClick={goBack}>
               <span>{tu('k106')}</span>
@@ -149,13 +149,13 @@ export default function BudgetNew() {
           <div className="prescedit-field">
             <label>{tu('k178')}</label>
             <div className="budgetnew-amount-readonly">
-              {computing ? '...' : computed.advanceAmount}
+              {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.advanceAmount}
             </div>
           </div>
           <div className="prescedit-field">
             <label>{tu('k179')}</label>
             <div className="budgetnew-amount-readonly budgetnew-amount-ok">
-              {computing ? '...' : computed.salesAmount}
+              {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.salesAmount}
               <span className="budgetnew-check">✓</span>
             </div>
           </div>
@@ -165,21 +165,21 @@ export default function BudgetNew() {
           <div className="prescedit-field">
             <label>{tu('k180')}</label>
             <div className="budgetnew-amount-readonly budgetnew-amount-ok">
-              {computing ? '...' : computed.targetAmount}
+              {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.targetAmount}
               <span className="budgetnew-check">✓</span>
             </div>
           </div>
           <div className="prescedit-field">
             <label>{tu('k181')}</label>
             <div className="budgetnew-amount-readonly budgetnew-amount-ok">
-              {computing ? '...' : computed.prescriptionAmt}
+              {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.prescriptionAmt}
               <span className="budgetnew-check">✓</span>
             </div>
           </div>
           <div className="prescedit-field">
             <label>{tu('k182')}</label>
             <div className="budgetnew-amount-readonly budgetnew-amount-ok">
-              {computing ? '...' : computed.payableAmt}
+              {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.payableAmt}
               <span className="budgetnew-check">✓</span>
             </div>
           </div>

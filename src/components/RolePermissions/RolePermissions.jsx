@@ -292,7 +292,7 @@ export default function RolePermissions() {
                               onChange={(e) => handleReassign(emp._id, e.target.value)}
                             >
                               <option value="">
-                                {reassigningId === emp._id ? '...' : tu('k192')}
+                                {reassigningId === emp._id ? <span className="btn-spinner" aria-hidden="true" /> : tu('k192')}
                               </option>
                               {roles
                                 .filter((other) => other._id !== r._id)
@@ -373,7 +373,7 @@ export default function RolePermissions() {
                       onClick={() => handleSave(r._id)}
                       disabled={savingId === r._id}
                     >
-                      <span>{savingId === r._id ? '...' : t('savePermissions')}</span>
+                      <span>{savingId === r._id ? <span className="btn-spinner" aria-hidden="true" /> : t('savePermissions')}</span>
                     </button>
                     {successRoleId === r._id && (
                       <span style={{ color: '#16a34a', fontSize: 13 }}>{t('saved')}</span>

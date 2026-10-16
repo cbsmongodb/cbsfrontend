@@ -164,7 +164,7 @@ export default function BudgetsList() {
             />
           </div>
           <button type="button" className="btn budgets-list-search-btn" onClick={() => load(1)} disabled={loading}>
-            <span>{loading ? '...' : tu('k093')}</span>
+            <span>{loading ? <span className="btn-spinner" aria-hidden="true" /> : tu('k093')}</span>
           </button>
         </div>
         <div className="budgets-list-quicksearch-row">

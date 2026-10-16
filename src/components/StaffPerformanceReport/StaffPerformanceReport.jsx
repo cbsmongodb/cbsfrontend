@@ -170,7 +170,7 @@ export default function StaffPerformanceReport() {
           </div>
 
           <button type="button" className="btn staff-performance-search-btn" onClick={() => loadReport(1)} disabled={loading}>
-            <span>{loading ? '...' : t('common.search')}</span>
+            <span>{loading ? <span className="btn-spinner" aria-hidden="true" /> : t('common.search')}</span>
           </button>
         </div>
 

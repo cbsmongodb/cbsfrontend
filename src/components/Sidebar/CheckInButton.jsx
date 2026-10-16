@@ -74,7 +74,7 @@ export default function CheckInButton() {
         disabled={loading || !ready}
         style={{ width: '100%' }}
       >
-        <span>{loading ? '...' : status === 'checkin' ? t('checkin') : t('checkout')}</span>
+        <span>{loading ? <span className="btn-spinner" aria-hidden="true" /> : status === 'checkin' ? t('checkin') : t('checkout')}</span>
       </button>
       {error && <p className="checkin-error">{error}</p>}
     </div>

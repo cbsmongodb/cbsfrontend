@@ -134,7 +134,7 @@ export default function AttendanceReport() {
             />
           </div>
           <button type="button" className="btn attendance-report-search-btn" onClick={loadReport} disabled={loading}>
-            <span>{loading ? '...' : t('common.search')}</span>
+            <span>{loading ? <span className="btn-spinner" aria-hidden="true" /> : t('common.search')}</span>
           </button>
         </div>
 

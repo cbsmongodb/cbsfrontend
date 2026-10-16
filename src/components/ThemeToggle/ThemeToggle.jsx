@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import './ThemeToggle.css'
 
@@ -25,9 +25,14 @@ export default function ThemeToggle() {
   const t = useTranslations('theme')
   const [dark, setDark] = useState(false)
 
-  useEffect(() => {
-    setDark(document.documentElement.getAttribute('data-theme') === 'dark')
-  }, [])
+  useLayoutEffect(() => {
+    let saved = null
+    try { saved = localStorage.getItem('cbs-theme') } catch {}
+    const isDark = saved ? saved === 'dark' : document.documentElement.getAttribute('data-theme') === 'dark'
+    if (isDark) document.documentElement.setAttribute('data-theme', 'dark')
+    else document.documentElement.removeAttribute('data-theme')
+    setDark(isDark)
+  })
 
   function toggle() {
     const next = !dark
@@ -37,6 +42,7 @@ export default function ThemeToggle() {
     try {
       localStorage.setItem('cbs-theme', next ? 'dark' : 'light')
     } catch {}
+    document.cookie = `cbs-theme=${next ? 'dark' : 'light'}; path=/; max-age=31536000; samesite=lax`
   }
 
   const label = dark ? t('light') : t('dark')

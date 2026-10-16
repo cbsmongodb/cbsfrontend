@@ -56,7 +56,7 @@ export default function PrescriptionNew() {
           <h1>{tu('k105')}</h1>
           <div className="prescedit-header-actions">
             <button type="button" className="btn" onClick={handleCreate} disabled={saving}>
-              <span>{saving ? '...' : 'Create'}</span>
+              <span>{saving ? <span className="btn-spinner" aria-hidden="true" /> : 'Create'}</span>
             </button>
             <button type="button" className="btn-gray" onClick={() => router.push(`/${locale}/dashboard/prescriptions`)}>
               <span>{tu('k106')}</span>

@@ -83,7 +83,7 @@ export default function HospitalPinModal({ hospital, onClose, onSaved }) {
 
         <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
           <button type="button" className="btn" disabled={!position || saving} onClick={handleSave}>
-            <span>{saving ? '...' : t('save')}</span>
+            <span>{saving ? <span className="btn-spinner" aria-hidden="true" /> : t('save')}</span>
           </button>
           <button type="button" className="btn-gray" onClick={onClose}>
             <span>{t('cancel')}</span>

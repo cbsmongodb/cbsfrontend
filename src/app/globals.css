@@ -455,3 +455,29 @@ html[data-theme="dark"]:has(.dashboard-shell) .dashboard-team-stats {
   background: #ffffff !important;
   border-color: #eceff4 !important;
 }
+
+/* ===== loading spinner inside buttons ===== */
+.btn-spinner {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  vertical-align: -3px;
+  animation: btn-spin 0.7s linear infinite;
+}
+@keyframes btn-spin { to { transform: rotate(360deg); } }
+button:disabled .btn-spinner { opacity: 0.9; }
+
+/* ===== search icon in every search field ===== */
+.dashboard-content input:is([placeholder*="Search" i], [placeholder*="ძებნ"], [placeholder*="ძიებ"], [placeholder*="Поиск" i]):not(.resource-search-input):not(.live-search-input):not([type="checkbox"]):not([type="radio"]) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.6-3.6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 14px 50%;
+  background-size: 18px 18px;
+  padding-left: 42px !important;
+}
+.dashboard-content input:is([placeholder*="Search" i], [placeholder*="ძებნ"], [placeholder*="ძიებ"], [placeholder*="Поиск" i]):not(.resource-search-input):not(.live-search-input):not([type="checkbox"]):not([type="radio"]):focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233f74d6' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.6-3.6'/%3E%3C/svg%3E");
+}

@@ -252,7 +252,7 @@ export default function Analytics() {
             />
           </div>
           <button type="button" className="btn analytics-search-btn" onClick={() => load(1)} disabled={loading}>
-            <span>{loading ? '...' : t('common.search')}</span>
+            <span>{loading ? <span className="btn-spinner" aria-hidden="true" /> : t('common.search')}</span>
           </button>
         </div>
         <input

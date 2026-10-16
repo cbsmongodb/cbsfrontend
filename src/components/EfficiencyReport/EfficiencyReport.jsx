@@ -131,7 +131,7 @@ export default function EfficiencyReport() {
             />
           </div>
           <button type="button" className="btn efficiency-search-btn" onClick={loadReport} disabled={loading}>
-            <span>{loading ? '...' : t('common.search')}</span>
+            <span>{loading ? <span className="btn-spinner" aria-hidden="true" /> : t('common.search')}</span>
           </button>
         </div>
 

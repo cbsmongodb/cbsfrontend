@@ -131,7 +131,7 @@ export default function CreateRole() {
 
         <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
           <button type="submit" className="btn" disabled={creating}>
-            <span>{creating ? '...' : t('createButton')}</span>
+            <span>{creating ? <span className="btn-spinner" aria-hidden="true" /> : t('createButton')}</span>
           </button>
           <button type="button" className="btn-gray" onClick={() => router.push(`/${locale}/dashboard/roles`)}>
             <span>{t('cancel')}</span>

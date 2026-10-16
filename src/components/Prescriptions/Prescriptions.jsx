@@ -127,7 +127,7 @@ export default function Prescriptions() {
             />
           </div>
           <button type="button" className="btn prescriptions-search-btn" onClick={() => loadPrescriptions(1)} disabled={loading}>
-            <span>{loading ? '...' : tu('k093')}</span>
+            <span>{loading ? <span className="btn-spinner" aria-hidden="true" /> : tu('k093')}</span>
           </button>
         </div>
 

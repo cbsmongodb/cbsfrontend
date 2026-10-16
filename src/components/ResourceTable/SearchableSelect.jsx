@@ -106,7 +106,7 @@ export default function SearchableSelect({ options, value, onChange, getLabel, p
               onClick={handleCreate}
               disabled={creating}
             >
-              {creating ? '...' : tu('k012', { p0: query.trim() })}
+              {creating ? <span className="btn-spinner" aria-hidden="true" /> : tu('k012', { p0: query.trim() })}
             </button>
           )}
         </div>

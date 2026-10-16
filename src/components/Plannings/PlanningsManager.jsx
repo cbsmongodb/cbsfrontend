@@ -379,7 +379,7 @@ export default function PlanningsManager() {
 
           <div className="planning-field planning-field-actions">
             <button type="submit" className="btn" disabled={saving}>
-              <span>{saving ? '...' : editingId ? t('buttons.update') : t('buttons.add')}</span>
+              <span>{saving ? <span className="btn-spinner" aria-hidden="true" /> : editingId ? t('buttons.update') : t('buttons.add')}</span>
             </button>
             {editingId && (
               <button type="button" className="btn-gray" onClick={cancelEdit}>
@@ -437,7 +437,7 @@ export default function PlanningsManager() {
           </div>
 
           <button type="button" className="btn planning-search-btn" onClick={loadPlans} disabled={loadingList}>
-            <span>{loadingList ? '...' : t('buttons.search')}</span>
+            <span>{loadingList ? <span className="btn-spinner" aria-hidden="true" /> : t('buttons.search')}</span>
           </button>
         </div>
 

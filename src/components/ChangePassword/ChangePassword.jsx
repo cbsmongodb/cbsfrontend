@@ -95,7 +95,7 @@ export default function ChangePassword() {
         {success && <p className="change-password-success">{success}</p>}
 
         <button type="submit" className="btn" disabled={saving}>
-          <span>{saving ? '...' : t('save')}</span>
+          <span>{saving ? <span className="btn-spinner" aria-hidden="true" /> : t('save')}</span>
         </button>
       </form>
     </div>

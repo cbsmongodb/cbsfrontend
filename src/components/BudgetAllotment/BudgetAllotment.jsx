@@ -128,7 +128,7 @@ export default function BudgetAllotment() {
           />
         </div>
         <button type="button" className="btn budgetallot-submit-btn" onClick={load} disabled={loading}>
-          <span>{loading ? '...' : t('common.show')}</span>
+          <span>{loading ? <span className="btn-spinner" aria-hidden="true" /> : t('common.show')}</span>
         </button>
       </div>
 

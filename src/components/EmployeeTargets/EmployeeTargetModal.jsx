@@ -168,7 +168,7 @@ export default function EmployeeTargetModal({ employees, editId, onClose, onSave
 
         <div className="et-modal-actions">
           <button className="btn" onClick={handleSave} disabled={saving || loadingEdit}>
-            <span>{saving ? "..." : tu('k043')}</span>
+            <span>{saving ? <span className="btn-spinner" aria-hidden="true" /> : tu('k043')}</span>
           </button>
           <button className="btn-gray" onClick={onClose}>
             <span>{tu('k031')}</span>
