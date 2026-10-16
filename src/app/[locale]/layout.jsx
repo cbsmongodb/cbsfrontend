@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import '../globals.css'
@@ -9,11 +10,9 @@ export default async function LocaleLayout({ children, params }) {
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: "try{if(localStorage.getItem('cbs-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}",
-          }}
-        />
+        <Script id="cbs-theme-init" strategy="beforeInteractive">
+          {"try{if(localStorage.getItem('cbs-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}"}
+        </Script>
       </head>
       <body>
         <NextIntlClientProvider messages={messages}>
