@@ -408,3 +408,50 @@ body .rx-report-table-scroll { max-height: calc(100dvh - 300px); min-height: 280
   body .dashboard-content { padding: 12px 10px calc(20px + env(safe-area-inset-bottom)); }
   body .dashboard-hero { padding: 14px 16px 14px 20px; }
 }
+
+/* ===== DARK MODE (content area only; sidebar keeps its colors) ===== */
+/* v2: brand buttons keep their colors, dark map, readable charts */
+html[data-theme="dark"]:has(.dashboard-shell) {
+  filter: invert(1) hue-rotate(180deg) contrast(0.86);
+  background: #ffffff;
+  color-scheme: light;
+}
+/* keep the real colors (never nested twice) */
+html[data-theme="dark"]:has(.dashboard-shell) .sidebar,
+html[data-theme="dark"]:has(.dashboard-shell) :is(img:not(.leaflet-tile), video, iframe, picture):not(.sidebar *),
+html[data-theme="dark"]:has(.dashboard-shell) :is(.dashboard-plan-visit-btn, .dashboard-avatar, .checkin-box, .btn, .drug-bonus-editor-add, .rx-report-search-btn, .btn-green, .btn-red):not(.sidebar *):not(.checkin-box *),
+html[data-theme="dark"]:has(.dashboard-shell) .dashboard-hero::before,
+html[data-theme="dark"]:has(.dashboard-shell) .sidebar-overlay {
+  filter: contrast(1.1628) hue-rotate(-180deg) invert(1);
+}
+/* map tiles: let the inversion turn them into a soft dark map */
+html[data-theme="dark"]:has(.dashboard-shell) .leaflet-tile {
+  filter: saturate(0.6) brightness(1.05);
+}
+html[data-theme="dark"]:has(.dashboard-shell) .leaflet-container {
+  background: #e9edf2;
+}
+/* drug bonus box: plain light surface (turns into a dark card) */
+html[data-theme="dark"]:has(.dashboard-shell) .drug-bonus-editor {
+  background: #f4f6fa !important;
+  border-color: #e3e7ee !important;
+}
+
+/* ===== DARK MODE v3 fixes ===== */
+html[data-theme="dark"]:has(.dashboard-shell) .leaflet-tile {
+  filter: contrast(1.1628) hue-rotate(-180deg) invert(1) !important;
+}
+html[data-theme="dark"]:has(.dashboard-shell) .leaflet-container {
+  background: #f2f2f2;
+}
+html[data-theme="dark"]:has(.dashboard-shell) .devterm {
+  filter: contrast(1.1628) hue-rotate(-180deg) invert(1);
+}
+html[data-theme="dark"]:has(.dashboard-shell) .dashboard-team-stats {
+  --card-bg: #ffffff;
+  --card-border: #eceff4;
+  --text-strong: #0f2744;
+  --text-muted: #93a1b4;
+  background: #ffffff !important;
+  border-color: #eceff4 !important;
+}

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Sidebar from '@/components/Sidebar/Sidebar'
+import ThemeToggle from '@/components/ThemeToggle/ThemeToggle'
 import './DashboardShell.css'
 
 export default function DashboardShell({ children }) {
@@ -25,6 +26,7 @@ export default function DashboardShell({ children }) {
     <div className="dashboard-shell">
       <Sidebar />
       <main className="dashboard-content">{children}</main>
+      <ThemeToggle />
     </div>
   )
 }

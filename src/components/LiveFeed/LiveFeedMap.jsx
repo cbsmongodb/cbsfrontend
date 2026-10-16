@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, Tooltip, useMap } fro
 import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { useDarkTheme, MAP_TILES } from '@/lib/useDarkTheme'
 import { useTranslations } from 'next-intl'
 
 const TBILISI = [41.7151, 44.8271]
@@ -105,6 +106,7 @@ function FitBounds({ events, focusKey }) {
 }
 
 export default function LiveFeedMap({ events = [], focusKey }) {
+  const darkMap = useDarkTheme()
   const tu = useTranslations('ui')
   const center = events[0] ? [events[0].lat, events[0].lng] : TBILISI
 
@@ -143,7 +145,7 @@ export default function LiveFeedMap({ events = [], focusKey }) {
         style={{ height: `${mapHeight}px`, width: '100%' }}
         attributionControl={false}
       >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <TileLayer key={darkMap ? 'dark' : 'light'} url={darkMap ? MAP_TILES.dark : MAP_TILES.light} attribution={MAP_TILES.attribution} subdomains="abcd" maxZoom={20} />
         <FitBounds events={events} focusKey={focusKey} />
 
         {routePoints.length > 1 && (

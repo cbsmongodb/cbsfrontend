@@ -129,29 +129,7 @@
   color: #dc2626;
 }
 
-[data-theme="dark"] .drug-bonus-editor {
-  border-color: rgba(255, 255, 255, 0.1);
-  background: linear-gradient(180deg, #0f1115, #0c0e12);
-}
 
-[data-theme="dark"] .drug-bonus-editor-label {
-  color: #e8edf5;
-}
 
-[data-theme="dark"] .drug-bonus-editor-chip {
-  background: #14161b;
-  border-color: rgba(255, 255, 255, 0.1);
-}
 
-[data-theme="dark"] .drug-bonus-editor-chip-period {
-  color: #cbd5e1;
-}
 
-[data-theme="dark"] .drug-bonus-editor-chip-value {
-  background: rgba(63, 116, 214, 0.18);
-  color: #9dc0f5;
-}
-
-[data-theme="dark"] .drug-bonus-editor-empty {
-  color: #64748b;
-}

@@ -118,17 +118,10 @@
   border-top: 1px solid #eef1f5;
 }
 
-/* dark mode */
-[data-theme="dark"] .et-modal { background: #14161b; }
-[data-theme="dark"] .et-modal-head,
-[data-theme="dark"] .et-modal-druglist,
-[data-theme="dark"] .et-modal-actions { border-color: rgba(255,255,255,0.08); }
-[data-theme="dark"] .et-modal-head h2,
-[data-theme="dark"] .et-modal-drugname { color: #e8edf5; }
-[data-theme="dark"] .et-modal-searchwrap { background: #0f1115; border-color: rgba(255,255,255,0.1); }
-[data-theme="dark"] .et-modal-search { color: #e8edf5; }
-[data-theme="dark"] .et-modal-drugrow:hover { background: rgba(255,255,255,0.04); }
-[data-theme="dark"] .et-modal-drugrow.is-checked { background: rgba(63,116,214,0.15); }
+
+
+
+
 
 .et-modal-top.et-modal-top-3 {
   grid-template-columns: 1fr 1fr 1fr;

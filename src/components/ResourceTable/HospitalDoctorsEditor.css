@@ -29,13 +29,11 @@
   border: none; background: none; cursor: pointer; font-size: 17px; line-height: 1; color: #94a3b8; padding: 0 2px;
 }
 .hosp-doctors-chip-remove:hover { color: #dc2626; }
-[data-theme="dark"] .hosp-doctors { border-color: rgba(255,255,255,.1); background: #0f1115; }
-[data-theme="dark"] .hosp-doctors-label { color: #e8edf5; }
-[data-theme="dark"] .hosp-doctors-dropdown { background: #14161b; border-color: rgba(255,255,255,.1); }
-[data-theme="dark"] .hosp-doctors-option { color: #e8edf5; }
-[data-theme="dark"] .hosp-doctors-option:hover { background: rgba(63,116,214,.15); }
-[data-theme="dark"] .hosp-doctors-chip { background: #14161b; border-color: rgba(255,255,255,.1); }
-[data-theme="dark"] .hosp-doctors-chip-name { color: #e8edf5; }
+
+
+
+
+
 
 .hosp-doctors-save-btn {
   align-self: flex-start;

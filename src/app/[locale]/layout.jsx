@@ -7,7 +7,14 @@ export default async function LocaleLayout({ children, params }) {
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "try{if(localStorage.getItem('cbs-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}",
+          }}
+        />
+      </head>
       <body>
         <NextIntlClientProvider messages={messages}>
           {children}

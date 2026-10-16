@@ -426,10 +426,6 @@
 .team-stat-card.is-accent .team-stat-value { color: #1f7a4d; }
 .team-stat-bar { margin-top: 8px; height: 5px; border-radius: 999px; background: rgba(47,158,110,0.15); overflow: hidden; }
 .team-stat-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #2f9e6e, #35b37e); transition: width 0.5s ease; }
-[data-theme="dark"] .dashboard-team-stats { background: #14161b; border-color: rgba(255,255,255,0.08); }
-[data-theme="dark"] .dashboard-team-stats-title,
-[data-theme="dark"] .team-stat-value { color: #e8edf5; }
-[data-theme="dark"] .team-stat-card { background: #0f1115; border-color: rgba(255,255,255,0.08); }
 
 
 /* ===== division-themed hero (avatar + role) ===== */

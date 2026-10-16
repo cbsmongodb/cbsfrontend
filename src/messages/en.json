@@ -1050,5 +1050,9 @@
     "k214": "Failed:",
     "k215": "Members",
     "k216": "Drugs"
+  },
+  "theme": {
+    "dark": "Dark mode",
+    "light": "Light mode"
   }
 }

@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl'
 import L from 'leaflet'
 import { apiFetch } from '@/lib/api'
 import 'leaflet/dist/leaflet.css'
+import { useDarkTheme, MAP_TILES } from '@/lib/useDarkTheme'
 
 const TBILISI = [41.7151, 44.8271]
 
@@ -47,6 +48,7 @@ function FlyTo({ position }) {
 }
 
 export default function HospitalPinMap({ position, onPick, initialQuery }) {
+  const darkMap = useDarkTheme()
   const t = useTranslations('mapPicker')
   const [query, setQuery] = useState(initialQuery || '')
   const [results, setResults] = useState([])
@@ -135,7 +137,7 @@ export default function HospitalPinMap({ position, onPick, initialQuery }) {
         zoom={position ? 16 : 7}
         style={{ height: 500, width: '100%', borderRadius: 8 }}
       >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <TileLayer key={darkMap ? 'dark' : 'light'} url={darkMap ? MAP_TILES.dark : MAP_TILES.light} attribution={MAP_TILES.attribution} subdomains="abcd" maxZoom={20} />
         <ClickHandler onPick={onPick} />
         {flyTarget && <FlyTo position={flyTarget} />}
         {position && <Marker position={position} icon={pinIcon()} />}
