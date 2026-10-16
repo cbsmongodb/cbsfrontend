@@ -6,6 +6,15 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import TodayVisits from '@/components/Plannings/TodayVisits'
+
+const OFFICE_ONLY_ROLES = new Set([
+  'director',
+  'finance manager',
+  'office manager',
+  "accountant's assistant",
+  'accountant\u2019s assistant',
+  'system administrator',
+])
 import CheckInButton from '@/components/Sidebar/CheckInButton'
 import StockStat from './StockStat'
 import './Dashboard.css'
@@ -171,6 +180,9 @@ export default function Dashboard() {
   const isAdminRole = employee?.role?.name?.toLowerCase() === 'admin'
   const canPlan = isAdminRole || employee?.role?.privileges?.plannings?.add === 1
   const canSeeVisits = isAdminRole || employee?.role?.privileges?.plannings?.read === 1
+  // office management roles see everyone's data but never make visits themselves,
+  // so "today's visits / refresh location" is not for them
+  const isOfficeOnly = OFFICE_ONLY_ROLES.has((employee?.role?.name || '').toLowerCase().trim())
 
   useEffect(() => {
     const stored = localStorage.getItem('employee')
@@ -410,7 +422,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {!loading && employee?.employeeType === 'field' && canSeeVisits && (
+      {!loading && employee?.employeeType === 'field' && canPlan && !isOfficeOnly && (
         <div className="dashboard-today-visits-section">
           <TodayVisits />
         </div>
