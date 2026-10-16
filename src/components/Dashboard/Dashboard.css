@@ -494,3 +494,18 @@
 .dashboard-checkin .checkin-box .btn-green:hover {
   filter: brightness(1.08);
 }
+
+/* ===== division 2: ocean blue -> sea green ===== */
+.dashboard-plan-visit-btn.theme-division2 {
+  background: linear-gradient(120deg, #0b3a6e 0%, #0e7fb0 55%, #19b394 120%);
+  box-shadow: 0 6px 18px rgba(14, 127, 176, 0.32);
+}
+.dashboard-hero.theme-division2 .dashboard-avatar {
+  background: linear-gradient(135deg, #0b3a6e, #0e7fb0 55%, #19b394);
+}
+.dashboard-hero.theme-division2 .dashboard-role-badge {
+  color: #0e7fb0;
+}
+.dashboard-hero.theme-division2::before {
+  background: linear-gradient(180deg, #0b3a6e 0%, #0e7fb0 50%, #19b394 100%);
+}

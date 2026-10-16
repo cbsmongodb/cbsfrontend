@@ -710,3 +710,24 @@
   --role-label-color: #7a4a20;
 }
 
+
+/* ===== division 2: ocean blue -> sea green ===== */
+.sidebar.theme-division2 {
+  background: linear-gradient(135deg, #ffffff26, #ffffff0d),
+    linear-gradient(45deg, #051a33 0%, #0b3a6e 18%, #0e5f9e 36%, #0e7fb0 52%, #1294a0 68%, #14a38b 84%, #0d6b5c 100%);
+  --active-grad: linear-gradient(120deg, #0b3a6e 0%, #0e7fb0 55%, #19b394 120%);
+  --theme-accent: #6fe3c8;
+  --ink: #effcfb;
+  --ink-soft: #f5f5f7;
+  --ink-faint: #a9e8de;
+  --line: rgba(255, 255, 255, 0.16);
+  --tint: rgba(255, 255, 255, 0.09);
+  --role-label-color: #0e7fb0;
+}
+.sidebar.theme-division2 .brand-cbs {
+  background: linear-gradient(90deg, #ffffff 0%, #9fe0ff 50%, #6fe3c8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45));
+}
