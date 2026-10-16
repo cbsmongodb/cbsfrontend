@@ -509,3 +509,18 @@
 .dashboard-hero.theme-division2::before {
   background: linear-gradient(180deg, #0b3a6e 0%, #0e7fb0 50%, #19b394 100%);
 }
+
+/* ===== division 3 v3: lilac -> peach sunset ===== */
+.dashboard-plan-visit-btn.theme-division3 {
+  background: linear-gradient(120deg, #5a2a72 0%, #8e4f9a 50%, #d98a7e 115%);
+  box-shadow: 0 6px 18px rgba(142, 79, 154, 0.3);
+}
+.dashboard-hero.theme-division3 .dashboard-avatar {
+  background: linear-gradient(135deg, #5a2a72, #8e4f9a 50%, #e0a37a);
+}
+.dashboard-hero.theme-division3 .dashboard-role-badge {
+  color: #8e4f9a;
+}
+.dashboard-hero.theme-division3::before {
+  background: linear-gradient(180deg, #5a2a72 0%, #a85f95 50%, #e0a37a 100%);
+}

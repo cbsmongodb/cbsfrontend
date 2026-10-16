@@ -731,3 +731,24 @@
   color: transparent;
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45));
 }
+
+/* ===== division 3 v3: lilac -> peach sunset ===== */
+.sidebar.theme-division3 {
+  background: linear-gradient(135deg, #ffffff1f, #ffffff08),
+    linear-gradient(165deg, #2a1238 0%, #45205c 18%, #5a2a72 32%, #8e4f9a 56%, #b36a90 72%, #c27a8a 84%, #e0a37a 100%);
+  --active-grad: linear-gradient(120deg, #5a2a72 0%, #8e4f9a 50%, #d98a7e 115%);
+  --theme-accent: #ffc9a3;
+  --ink: #fff6f4;
+  --ink-soft: #f5f5f7;
+  --ink-faint: #f3d3e6;
+  --line: rgba(255, 255, 255, 0.16);
+  --tint: rgba(255, 255, 255, 0.10);
+  --role-label-color: #8e4f9a;
+}
+.sidebar.theme-division3 .brand-cbs {
+  background: linear-gradient(90deg, #ffffff 0%, #f6c6d8 50%, #ffc49a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45));
+}
