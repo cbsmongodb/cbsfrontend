@@ -227,3 +227,42 @@
     height: 420px;
   }
 }
+/* ===== login v2: night ocean ===== */
+.login-container {
+  background: linear-gradient(160deg, #041221 0%, #06192a 55%, #072433 100%);
+}
+.glow-blue {
+  background: radial-gradient(circle, rgba(14, 127, 176, 0.55) 0%, transparent 70%);
+}
+.glow-green {
+  background: radial-gradient(circle, rgba(20, 163, 139, 0.5) 0%, transparent 70%);
+}
+.login-card::before {
+  background: linear-gradient(90deg, #0e7fb0 0%, #14a38b 100%);
+}
+.login-brand-text {
+  background: linear-gradient(90deg, #0b3a6e 0%, #0e7fb0 55%, #14a38b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.login-field input:focus {
+  border-color: #0e7fb0;
+  box-shadow: 0 0 0 3px rgba(14, 127, 176, 0.15);
+}
+.login-submit {
+  background: linear-gradient(135deg, #0b3a6e 0%, #0e7fb0 55%, #14a38b 100%);
+  box-shadow: 0 8px 22px rgba(14, 127, 176, 0.3);
+}
+.login-submit:hover {
+  filter: brightness(1.08);
+}
+.login-lang-switcher button:hover {
+  background: #e6f3fa;
+  color: #0b3a6e;
+}
+.login-lang-switcher button.active {
+  background: #0b3a6e;
+  border-color: #0b3a6e;
+  color: #fff;
+}
