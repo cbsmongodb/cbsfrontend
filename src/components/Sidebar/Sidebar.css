@@ -777,3 +777,28 @@
 .sidebar.theme-division1 .sidebar-logout {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
 }
+
+/* ===== office v2: lilac -> rose quartz ===== */
+.sidebar.theme-office {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #241640 0%, #3e2a6e 20%, #5f45a0 42%, #8a63c4 64%, #b77fc0 84%, #d9a0c4 100%);
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #241640 0%, #3e2a6e 20%, #5f45a0 42%, #8a63c4 64%, #b77fc0 84%, #d9a0c4 100%);
+  --active-grad: linear-gradient(120deg, #3e2a6e 0%, #6e4fb0 50%, #c27fba 115%);
+  --theme-accent: #f2c6e0;
+  --ink: #fbf6ff;
+  --ink-soft: #f5f5f7;
+  --ink-faint: #e6d4f5;
+  --line: rgba(255, 255, 255, 0.16);
+  --tint: rgba(255, 255, 255, 0.10);
+  --role-label-color: #7a52b8;
+}
+.sidebar.theme-office .brand-cbs {
+  background: linear-gradient(90deg, #ffffff 0%, #e9d2ff 50%, #f5c3dc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45));
+}
+.sidebar.theme-office .nav-label,
+.sidebar.theme-office .sidebar-logout {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}

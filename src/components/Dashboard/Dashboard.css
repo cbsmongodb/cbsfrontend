@@ -545,3 +545,29 @@
   background: linear-gradient(180deg, #1b4332, #40916c 55%, #8fd3ae);
   background: linear-gradient(in oklch 180deg, #1b4332, #40916c 55%, #8fd3ae);
 }
+
+/* ===== office v2: lilac -> rose quartz ===== */
+.dashboard-hero.theme-office::before,
+.dashboard-hero:not([class*="theme-"])::before {
+  background: linear-gradient(180deg, #3e2a6e, #8a63c4 55%, #d9a0c4);
+  background: linear-gradient(in oklch 180deg, #3e2a6e, #8a63c4 55%, #d9a0c4);
+}
+.dashboard-hero.theme-office .dashboard-avatar,
+.dashboard-hero:not([class*="theme-"]) .dashboard-avatar {
+  background: linear-gradient(135deg, #3e2a6e, #8a63c4 55%, #d9a0c4);
+  background: linear-gradient(in oklch 135deg, #3e2a6e, #8a63c4 55%, #d9a0c4);
+}
+.dashboard-hero.theme-office .dashboard-role-badge,
+.dashboard-hero:not([class*="theme-"]) .dashboard-role-badge {
+  color: #7a52b8;
+}
+.dashboard-plan-visit-btn.theme-office {
+  background: linear-gradient(120deg, #3e2a6e 0%, #6e4fb0 50%, #c27fba 115%);
+  background: linear-gradient(in oklch 120deg, #3e2a6e 0%, #6e4fb0 50%, #c27fba 115%);
+  box-shadow: 0 6px 18px rgba(110, 79, 176, 0.3);
+}
+.dashboard-checkin .checkin-box .btn-green {
+  background: linear-gradient(120deg, #3e2a6e 0%, #6e4fb0 50%, #c27fba 115%) !important;
+  background: linear-gradient(in oklch 120deg, #3e2a6e 0%, #6e4fb0 50%, #c27fba 115%) !important;
+  box-shadow: 0 6px 18px rgba(110, 79, 176, 0.28);
+}
