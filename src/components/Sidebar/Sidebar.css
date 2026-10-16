@@ -802,3 +802,28 @@
 .sidebar.theme-office .sidebar-logout {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
+
+/* ===== mobile: close button in the brand row, not its own line ===== */
+@media (max-width: 768px) {
+  .sidebar .sidebar-top {
+    position: absolute;
+    top: calc(16px + env(safe-area-inset-top));
+    right: 12px;
+    margin: 0;
+    z-index: 2;
+  }
+  .sidebar .sidebar-close {
+    width: 30px;
+    height: 30px;
+  }
+  .sidebar .brand-row {
+    padding-right: 40px;      /* room for the X */
+    gap: 8px;
+  }
+  .sidebar .brand-cbs {
+    font-size: 15px;
+  }
+  .sidebar .lang-switcher button {
+    padding: 4px 7px;
+  }
+}
