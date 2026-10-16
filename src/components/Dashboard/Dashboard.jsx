@@ -8,6 +8,7 @@ import { apiFetch } from '@/lib/api'
 import TodayVisits from '@/components/Plannings/TodayVisits'
 
 const OFFICE_ONLY_ROLES = new Set([
+  'office',
   'director',
   'finance manager',
   'office manager',
