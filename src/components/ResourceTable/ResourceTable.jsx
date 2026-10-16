@@ -534,6 +534,31 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
     return value ?? ''
   }
 
+  // what is SHOWN in a cell (renderCell stays plain text: it is also used for search)
+  function displayCell(f, item) {
+    if (f.type === 'multiselect' || f.type === 'multiselect-search') {
+      const value = item[f.name]
+      if (!Array.isArray(value) || value.length === 0) return '—'
+      const names = value
+        .map((v) => (v && typeof v === 'object' ? v[f.optionsLabel || 'name'] : v))
+        .filter(Boolean)
+      const shown = names.slice(0, 2)
+      return (
+        <div className="cell-list" title={names.join('\n')}>
+          {shown.map((n, i) => (
+            <div key={i} className="cell-list-item">{n}</div>
+          ))}
+          {names.length > 2 && <span className="cell-more">+{names.length - 2}</span>}
+        </div>
+      )
+    }
+    const text = renderCell(f, item)
+    if (typeof text === 'string' && text.length > 40) {
+      return <div className="cell-clamp" title={text}>{text}</div>
+    }
+    return text
+  }
+
   function itemMatchesSearch(item) {
     if (paginated) return true // backend already filtered
     if (!search.trim()) return true
@@ -611,7 +636,7 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
             {visibleItems.map((item) => (
               <tr key={item._id}>
                 {fields.filter((f) => !f.hideInTable).map((f) => (
-                  <td key={f.name}>{renderCell(f, item)}</td>
+                  <td key={f.name} className={f.type === 'multiselect' || f.type === 'multiselect-search' ? 'cell-wide' : undefined}>{displayCell(f, item)}</td>
                 ))}
                 <td className="resource-actions">
                   {perms.update && (

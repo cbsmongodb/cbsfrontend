@@ -488,8 +488,65 @@ tbody tr:hover {
    line instead of stretching the whole table; the buttons column stays on one line */
 .resource-table td:not(.resource-actions) {
   white-space: normal;
-  max-width: 320px;
-  min-width: 90px;
-  overflow-wrap: anywhere;
+  max-width: 300px;
+  min-width: 110px;
+  overflow-wrap: break-word; /* break between words, not in the middle of them */
+  word-break: normal;
   line-height: 1.4;
+  vertical-align: middle;
+}
+
+/* hospitals / pharmacies / profiles lists: max 2 names + "+N", full list on hover */
+.resource-table td.cell-wide {
+  min-width: 220px;
+}
+.cell-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-width: 280px;
+}
+.cell-list-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cell-more {
+  align-self: flex-start;
+  margin-top: 1px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #eef3fd;
+  color: #3f74d6;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: help;
+}
+
+/* long plain text: at most 2 lines, full text on hover */
+.cell-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* the actions cell must stay a real table cell (display:flex on a <td> breaks
+   row height and borders); buttons sit side by side inside it, vertically centred */
+.resource-table td,
+.resource-table th {
+  vertical-align: middle;
+}
+.resource-table td.resource-actions {
+  display: table-cell;
+  white-space: nowrap;
+  text-align: right;
+  width: 1%;
+}
+.resource-table td.resource-actions > * {
+  display: inline-flex;
+  vertical-align: middle;
+}
+.resource-table td.resource-actions > * + * {
+  margin-left: 6px;
 }
