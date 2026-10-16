@@ -524,3 +524,24 @@
 .dashboard-hero.theme-division3::before {
   background: linear-gradient(180deg, #5a2a72 0%, #a85f95 50%, #e0a37a 100%);
 }
+
+/* ===== division 1 v5: original green -> mint glow ===== */
+.dashboard-plan-visit-btn.theme-division1 {
+  background: linear-gradient(120deg, #1b4332 0%, #2d6a4f 45%, #52b788 110%);
+  background: linear-gradient(in oklch 120deg, #1b4332 0%, #2d6a4f 45%, #52b788 110%);
+  box-shadow: 0 6px 18px rgba(45, 106, 79, 0.3);
+  text-shadow: none;
+}
+.dashboard-hero.theme-division1 .dashboard-avatar {
+  background: linear-gradient(135deg, #1b4332, #40916c 55%, #8fd3ae);
+  background: linear-gradient(in oklch 135deg, #1b4332, #40916c 55%, #8fd3ae);
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+.dashboard-hero.theme-division1 .dashboard-role-badge {
+  color: #2d6a4f;
+}
+.dashboard-hero.theme-division1::before {
+  background: linear-gradient(180deg, #1b4332, #40916c 55%, #8fd3ae);
+  background: linear-gradient(in oklch 180deg, #1b4332, #40916c 55%, #8fd3ae);
+}

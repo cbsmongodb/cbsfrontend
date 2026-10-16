@@ -752,3 +752,28 @@
   color: transparent;
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45));
 }
+
+/* ===== division 1 v5: original green -> mint glow ===== */
+.sidebar.theme-division1 {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #0f2a20 0%, #1b4332 18%, #2d6a4f 38%, #40916c 56%, #52b788 76%, #8fd3ae 100%);
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #0f2a20 0%, #1b4332 18%, #2d6a4f 38%, #40916c 56%, #52b788 76%, #8fd3ae 100%);
+  --active-grad: linear-gradient(120deg, #1b4332 0%, #2d6a4f 45%, #52b788 110%);
+  --theme-accent: #b7f0d0;
+  --ink: #f0fff6;
+  --ink-soft: #f5f5f7;
+  --ink-faint: #c9f0da;
+  --line: rgba(255, 255, 255, 0.16);
+  --tint: rgba(255, 255, 255, 0.10);
+  --role-label-color: #2d6a4f;
+}
+.sidebar.theme-division1 .brand-cbs {
+  background: linear-gradient(90deg, #ffffff 0%, #c8f2dc 50%, #8fd3ae 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45));
+}
+.sidebar.theme-division1 .nav-label,
+.sidebar.theme-division1 .sidebar-logout {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+}
