@@ -564,3 +564,25 @@ html[data-theme="dark"]:has(.dashboard-shell),
 html[data-theme="dark"]:has(.dashboard-shell) body {
   background: #17181b;
 }
+
+/* ===== dark mode on iPhone: dark under BOTH bars ===== */
+/* the page canvas is painted through the dark-mode filter -> give it the LIGHT page colour,
+   the filter turns it into the dark page colour (bottom of the screen, overscroll) */
+html[data-theme="dark"]:has(.dashboard-shell),
+html[data-theme="dark"]:has(.dashboard-shell) body {
+  background: var(--color-bg);
+}
+/* Safari colours its top bar from what sits at the top edge -> a real dark strip there,
+   exactly as tall as the status bar, kept out of the filter */
+html[data-theme="dark"]:has(.dashboard-shell) body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top, 0px);
+  background: #17181b;
+  filter: contrast(1.1628) hue-rotate(-180deg) invert(1);
+  z-index: 2000;
+  pointer-events: none;
+}
