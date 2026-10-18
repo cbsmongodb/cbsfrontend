@@ -494,3 +494,13 @@ button:disabled .btn-spinner { opacity: 0.9; }
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+/* ===== login: full height under the iPhone bars ===== */
+html:has(.login-container),
+html:has(.login-container) body {
+  background: #041221; /* same as the night-ocean login background */
+}
+.login-container {
+  min-height: 100vh;
+  min-height: 100lvh; /* large viewport: reaches under Safari's toolbars */
+}
