@@ -567,3 +567,21 @@
   background: linear-gradient(in oklch 120deg, #3e2a6e 0%, #6e4fb0 50%, #c27fba 115%) !important;
   box-shadow: 0 6px 18px rgba(110, 79, 176, 0.28);
 }
+
+/* ===== leadership (gold) v2: night -> sky blue ===== */
+.dashboard-plan-visit-btn.theme-gold {
+  background: linear-gradient(120deg, #0c3557 0%, #13608f 50%, #2a93c4 110%);
+  background: linear-gradient(in oklch 120deg, #0c3557 0%, #13608f 50%, #2a93c4 110%);
+  box-shadow: 0 6px 18px rgba(19, 96, 143, 0.3);
+}
+.dashboard-hero.theme-gold .dashboard-avatar {
+  background: linear-gradient(135deg, #0c3557, #13608f 50%, #8fd3f0);
+  background: linear-gradient(in oklch 135deg, #0c3557, #13608f 50%, #8fd3f0);
+}
+.dashboard-hero.theme-gold .dashboard-role-badge {
+  color: #13608f;
+}
+.dashboard-hero.theme-gold::before {
+  background: linear-gradient(180deg, #0c3557, #13608f 50%, #8fd3f0);
+  background: linear-gradient(in oklch 180deg, #0c3557, #13608f 50%, #8fd3f0);
+}

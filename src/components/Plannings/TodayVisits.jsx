@@ -79,6 +79,22 @@ export default function TodayVisits() {
     )
   }
 
+  // ask the phone for a NEW location right now (falls back to the last known one)
+  function freshPosition() {
+    return new Promise((resolve) => {
+      if (!navigator.geolocation) return resolve(position)
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const p = { lat: pos.coords.latitude, lng: pos.coords.longitude }
+          setPosition(p)
+          resolve(p)
+        },
+        () => resolve(position),
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      )
+    })
+  }
+
   useEffect(() => {
     loadMe()
       .then((employee) => loadPlans(employee._id))
@@ -92,16 +108,18 @@ export default function TodayVisits() {
   }
 
   async function handleCheckin(plan) {
-    if (!position) {
-      setLocError(t('locationUnavailable'))
-      return
-    }
     setBusyId(plan._id)
     setError('')
+    const pos = await freshPosition()
+    if (!pos) {
+      setLocError(t('locationUnavailable'))
+      setBusyId(null)
+      return
+    }
     try {
       await apiFetch(`/api/plannings/${plan._id}/checkin`, {
         method: 'POST',
-        body: JSON.stringify({ lat: position.lat, lng: position.lng, address: '' }),
+        body: JSON.stringify({ lat: pos.lat, lng: pos.lng, address: '' }),
       })
       await reload()
     } catch (err) {
@@ -151,9 +169,11 @@ export default function TodayVisits() {
           body: JSON.stringify({ doctorId }),
         })
       }
+      const pos = await freshPosition()
+      if (!pos) throw new Error(t('locationUnavailable'))
       await apiFetch(`/api/plannings/${plan._id}/checkout`, {
         method: 'POST',
-        body: JSON.stringify({ lat: position.lat, lng: position.lng, address: '' }),
+        body: JSON.stringify({ lat: pos.lat, lng: pos.lng, address: '' }),
       })
       setCheckoutPlan(null)
       await reload()

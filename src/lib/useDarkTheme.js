@@ -33,12 +33,12 @@ export const MAP_TILES = MAPBOX
     }
   : {
       provider: 'esri',
-      light: `${ESRI}/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}`,
-      lightLabels: `${ESRI}/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}`,
+      light: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+      lightLabels: null,
       dark: `${ESRI}/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}`,
       darkLabels: `${ESRI}/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}`,
       tileSize: 256,
       zoomOffset: 0,
-      maxZoom: 16,
+      maxZoom: 18,
       attribution: 'Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors',
     }

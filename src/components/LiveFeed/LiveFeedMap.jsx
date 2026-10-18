@@ -137,6 +137,14 @@ export default function LiveFeedMap({ events = [], focusKey }) {
     hospitalMarkers.push({ lat: e.hospitalLat, lng: e.hospitalLng, name: e.hospitalName, isFar: !!e.isFar })
   }
 
+  // a check-out at the same spot as a check-in would hide behind it -> show it a few metres to the side
+  const displayPos = (event, i) => {
+    if (event.type !== 'checkout') return [event.lat, event.lng]
+    const twin = events.some((e, j) => j !== i && e.type === 'checkin' &&
+      distanceInMeters(e.lat, e.lng, event.lat, event.lng) < 15)
+    return twin ? [event.lat, event.lng + 0.00012] : [event.lat, event.lng]
+  }
+
   return (
     <div className="map-gradient-border">
       <MapContainer
@@ -202,7 +210,7 @@ export default function LiveFeedMap({ events = [], focusKey }) {
           return (
             <Marker
               key={i}
-              position={[event.lat, event.lng]}
+              position={displayPos(event, i)}
               icon={pinIcon(color, event.visitNumber, event.isFar)}
             >
               <Popup>
