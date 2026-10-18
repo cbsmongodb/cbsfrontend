@@ -546,3 +546,21 @@ html[data-theme="dark"]:has(.dashboard-shell),
 html[data-theme="dark"]:has(.dashboard-shell) body {
   background: #17181b;
 }
+
+/* ===== short pages: page colour all the way down ===== */
+html:has(.dashboard-shell) {
+  background: var(--color-bg);
+}
+.dashboard-shell {
+  background: var(--color-bg);
+  min-height: 100vh;
+  min-height: 100lvh;
+}
+.dashboard-content {
+  min-height: 100vh;
+  min-height: 100lvh;
+}
+html[data-theme="dark"]:has(.dashboard-shell),
+html[data-theme="dark"]:has(.dashboard-shell) body {
+  background: #17181b;
+}
