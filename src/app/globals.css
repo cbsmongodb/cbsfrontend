@@ -504,3 +504,16 @@ html:has(.login-container) body {
   min-height: 100vh;
   min-height: 100lvh; /* large viewport: reaches under Safari's toolbars */
 }
+
+/* ===== login: fixed backdrop so Safari tints its bars dark ===== */
+.login-container {
+  isolation: isolate;
+}
+.login-container::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #041221;
+  pointer-events: none;
+}
