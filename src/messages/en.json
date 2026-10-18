@@ -27,7 +27,8 @@
       "label": "Leave Balance",
       "paid": "Paid",
       "sick": "Sick",
-      "usedRemaining": "used {used} · left {remaining}/{total}"
+      "usedRemaining": "used {used} · left {remaining}/{total}",
+      "left": "left"
     },
     "notifications": {
       "label": "Notifications",

@@ -27,7 +27,8 @@
       "label": "Баланс отпусков",
       "paid": "Оплачиваемый",
       "sick": "Больничный",
-      "usedRemaining": "использовано {used} · осталось {remaining}/{total}"
+      "usedRemaining": "использовано {used} · осталось {remaining}/{total}",
+      "left": "осталось"
     },
     "notifications": {
       "label": "Уведомления",

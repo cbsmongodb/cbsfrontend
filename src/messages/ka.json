@@ -27,7 +27,8 @@
       "label": "შვებულების ბალანსი",
       "paid": "ანაზღაურებადი",
       "sick": "ავადმყოფობის",
-      "usedRemaining": "გამოყენებული {used} · დარჩენილი {remaining}/{total}"
+      "usedRemaining": "გამოყენებული {used} · დარჩენილი {remaining}/{total}",
+      "left": "დარჩა"
     },
     "notifications": {
       "label": "შეტყობინებები",

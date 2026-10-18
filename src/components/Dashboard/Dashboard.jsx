@@ -351,14 +351,13 @@ export default function Dashboard() {
               <div className="dashboard-stat-text">
                 <span className="dashboard-stat-label">{t('leaveBalance.label')}</span>
                 <div className="dashboard-stat-leave-rows">
-                  <span className="dashboard-stat-leave-row">
-                    <span>{t('leaveBalance.paid')}</span>
-                    <strong>{t('leaveBalance.usedRemaining', { used: balance.paid.used, remaining: balance.paid.remaining, total: balance.paid.total })}</strong>
-                  </span>
-                  <span className="dashboard-stat-leave-row">
-                    <span>{t('leaveBalance.sick')}</span>
-                    <strong>{t('leaveBalance.usedRemaining', { used: balance.sick.used, remaining: balance.sick.remaining, total: balance.sick.total })}</strong>
-                  </span>
+                  {[['paid', balance.paid], ['sick', balance.sick]].map(([kind, b]) => (
+                    <div key={kind} className="dashboard-leave-line" title={t('leaveBalance.usedRemaining', { used: b.used, remaining: b.remaining, total: b.total })}>
+                      <span className="dashboard-leave-name">{t(`leaveBalance.${kind}`)}</span>
+                      <span className="dashboard-leave-bar"><i style={{ width: `${b.total ? Math.max(0, Math.min(100, (b.remaining / b.total) * 100)) : 0}%` }} /></span>
+                      <span className="dashboard-leave-value"><strong>{b.remaining}/{b.total}</strong> {t('leaveBalance.left')}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
