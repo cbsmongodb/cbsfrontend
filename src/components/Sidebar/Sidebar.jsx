@@ -138,11 +138,20 @@ const Icon = {
   ),
 }
 
+Icon.leaveRequests = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="4" width="18" height="17" rx="2" />
+    <path d="M16 2v4M8 2v4M3 10h18" />
+    <path d="M9.5 15.5l1.8 1.8 3.4-3.6" />
+  </svg>
+)
+
 const NAV = [
   { type: 'link', href: 'dashboard', key: 'dashboard', icon: 'dashboard' },
   { type: 'link', href: 'dashboard/live-feeds', key: 'liveFeed', icon: 'liveFeed' },
   { type: 'link', href: 'dashboard/team-status', key: 'teamStatus', icon: 'teamStatus' },
   { type: 'link', href: 'dashboard/attendance-status', key: 'attendanceStatus', icon: 'attendanceStatus' },
+  { type: 'link', href: 'dashboard/leave-requests', key: 'leaveRequests', icon: 'leaveRequests' },
   {
     type: 'group',
     id: 'configureProduct',

@@ -121,7 +121,8 @@
         "employeeAccounts": "Employee Accounts"
       }
     },
-    "attendanceStatus": "Attendance Status"
+    "attendanceStatus": "Attendance Status",
+    "leaveRequests": "Leave"
   },
   "checkin": {
     "checkin": "Check In",
@@ -1074,5 +1075,49 @@
       "completed": "Done",
       "canceled": "Canceled"
     }
+  },
+  "leaveRequests": {
+    "title": "Leave",
+    "subtitle": "Pick days on the calendar and send a request for approval",
+    "tabs": {
+      "mine": "My leave",
+      "approvals": "To approve",
+      "archive": "Archive"
+    },
+    "types": {
+      "paid": "Paid",
+      "unpaid": "Unpaid",
+      "sick": "Sick leave"
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "canceled": "Canceled"
+    },
+    "left": "left",
+    "waiting": "waiting",
+    "usedThisYear": "used this year",
+    "brushHint": "1. Choose a type  2. Tap days on the calendar (you can mix types)",
+    "weekend": "Weekend",
+    "holiday": "Holiday",
+    "selected": "Selected",
+    "nothingSelected": "No days selected yet",
+    "days": "days",
+    "paidLeftAfter": "Paid days left after this",
+    "note": "Note (optional)",
+    "submit": "Send request",
+    "clear": "Clear",
+    "sent": "Request sent, waiting for approval",
+    "myRequests": "My requests",
+    "noRequests": "No requests yet",
+    "cancel": "Cancel",
+    "confirmCancel": "Cancel this leave?",
+    "approve": "Approve",
+    "reject": "Reject",
+    "rejectReason": "Reason for rejecting (optional)",
+    "noPending": "Nothing to approve",
+    "employee": "Employee",
+    "search": "Search employee..."
   }
 }
