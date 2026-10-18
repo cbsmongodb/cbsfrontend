@@ -517,3 +517,21 @@ html:has(.login-container) body {
   background: #041221;
   pointer-events: none;
 }
+
+/* ===== phone filter pills: wrap instead of a cut-off sideways row ===== */
+@media (max-width: 640px) {
+  body .team-status-pills,
+  body .attendance-status-filters {
+    flex-wrap: wrap !important;
+    overflow: visible !important;
+    margin: 0 0 14px !important;
+    padding: 0 !important;
+    gap: 8px !important;
+    scroll-snap-type: none;
+  }
+  body .team-status-pill,
+  body .attendance-status-filter-btn {
+    flex-shrink: 1;
+    scroll-snap-align: none;
+  }
+}
