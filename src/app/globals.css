@@ -564,9 +564,3 @@ html[data-theme="dark"]:has(.dashboard-shell),
 html[data-theme="dark"]:has(.dashboard-shell) body {
   background: #17181b;
 }
-
-/* ===== dark mode: canvas uses the LIGHT page colour (the filter turns it into the dark page colour) ===== */
-html[data-theme="dark"]:has(.dashboard-shell),
-html[data-theme="dark"]:has(.dashboard-shell) body {
-  background: var(--color-bg);
-}
