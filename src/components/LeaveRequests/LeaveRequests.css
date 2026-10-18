@@ -99,3 +99,53 @@
 .lr-row:hover td, .lr-row.open td { background: #f8fbff; }
 .lr-row-detail td { background: #fbfcfe; }
 .lr-detail-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 6px 0; }
+
+/* ===== summary panel v2 ===== */
+.lr-summary {
+  position: sticky; top: 16px; overflow: hidden;
+  padding: 22px 22px 20px; gap: 14px;
+  box-shadow: 0 10px 30px rgba(15, 39, 68, 0.06);
+}
+.lr-summary::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px;
+  background: linear-gradient(90deg, #3f74d6, #f59e0b, #e11d48);
+}
+.lr-summary h3 {
+  font-size: 11.5px; font-weight: 800; letter-spacing: 0.06em;
+  text-transform: uppercase; color: #94a3b8;
+}
+.lr-range { font-size: 20px; line-height: 1.25; color: #0f172a; }
+.lr-summary .lr-muted {
+  padding: 18px; border: 1.5px dashed #e2e8f0; border-radius: 14px;
+  text-align: center; color: #94a3b8;
+}
+.lr-paid-after {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 12px 14px; border-radius: 12px; background: #f5f8ff; border: 1px solid #e3ecfd;
+  font-size: 13px; color: #475569;
+}
+.lr-paid-after strong { font-size: 20px; color: #2f5fbf; font-variant-numeric: tabular-nums; }
+.lr-paid-after.bad { background: #fff1f2; border-color: #fecdd3; color: #be123c; }
+.lr-paid-after.bad strong { color: #dc2626; }
+.lr-summary textarea {
+  min-height: 84px; resize: vertical; border-radius: 12px;
+  padding: 12px 14px; font-size: 14px; line-height: 1.45;
+  border: 1.5px solid #e8edf4; background: #fbfcfe;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+.lr-summary textarea:focus {
+  outline: none; background: #fff; border-color: #3f74d6;
+  box-shadow: 0 0 0 4px rgba(63, 116, 214, 0.12);
+}
+.lr-actions { flex-direction: column; align-items: stretch; gap: 8px; }
+.lr-actions .btn { width: 100%; justify-content: center; min-height: 48px; font-size: 15px; }
+.lr-actions .btn:disabled { opacity: 0.55; box-shadow: none; }
+.lr-actions .btn-gray {
+  align-self: center; background: none; border: 0; box-shadow: none;
+  color: #64748b; font-weight: 700; font-size: 13px; padding: 6px 10px; text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.lr-actions .btn-gray:hover { color: #dc2626; background: none; }
+.lr-ok {
+  padding: 10px 12px; border-radius: 12px; background: #ecfdf3; border: 1px solid #bbf7d0;
+}

@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import TodayVisits from '@/components/Plannings/TodayVisits'
+import LeaveApprovalsCard from '@/components/LeaveApprovalsCard/LeaveApprovalsCard'
 import TeamTodayVisits from '@/components/TeamTodayVisits/TeamTodayVisits'
 
 // people who lead a team: they see their team's visits today, not their own
@@ -386,6 +387,8 @@ export default function Dashboard() {
           )}
         </div>
       )}
+
+      {!loading && <LeaveApprovalsCard />}
 
       {!loading && canSeeVisits && teamStats && teamStats.teamSize > 0 && (
         <div className="dashboard-team-stats">
