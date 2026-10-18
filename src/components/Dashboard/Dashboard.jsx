@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import TodayVisits from '@/components/Plannings/TodayVisits'
+import MyLeaveRequestsCard from '@/components/MyLeaveRequestsCard/MyLeaveRequestsCard'
 import LeaveApprovalsCard from '@/components/LeaveApprovalsCard/LeaveApprovalsCard'
 import TeamTodayVisits from '@/components/TeamTodayVisits/TeamTodayVisits'
 
@@ -388,6 +389,7 @@ export default function Dashboard() {
         </div>
       )}
 
+      {!loading && <MyLeaveRequestsCard />}
       {!loading && <LeaveApprovalsCard />}
 
       {!loading && canSeeVisits && teamStats && teamStats.teamSize > 0 && (
