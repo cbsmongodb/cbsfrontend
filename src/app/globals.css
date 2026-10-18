@@ -413,7 +413,7 @@ body .rx-report-table-scroll { max-height: calc(100dvh - 300px); min-height: 280
 /* v2: brand buttons keep their colors, dark map, readable charts */
 html[data-theme="dark"]:has(.dashboard-shell) {
   filter: invert(1) hue-rotate(180deg) contrast(0.86);
-  background: #ffffff;
+  background: #17181b; /* the canvas behind the page (status bar, overscroll) - same tone as the dark page */
   color-scheme: light;
 }
 /* keep the real colors (never nested twice) */
