@@ -15,9 +15,30 @@ export function useDarkTheme() {
   return dark
 }
 
-// clean, modern map tiles (CARTO): soft colours in light mode, real dark map in dark mode
-export const MAP_TILES = {
-  light: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-  dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-}
+// map tiles: Mapbox when a token is set (NEXT_PUBLIC_MAPBOX_TOKEN), otherwise Esri canvas (no key)
+const MAPBOX = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas'
+const mb = (style) => `https://api.mapbox.com/styles/v1/mapbox/${style}/tiles/512/{z}/{x}/{y}@2x?access_token=${MAPBOX}`
+export const MAP_TILES = MAPBOX
+  ? {
+      provider: 'mapbox',
+      light: mb('streets-v12'),
+      dark: mb('dark-v11'),
+      lightLabels: null,
+      darkLabels: null,
+      tileSize: 512,
+      zoomOffset: -1,
+      maxZoom: 20,
+      attribution: '&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }
+  : {
+      provider: 'esri',
+      light: `${ESRI}/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}`,
+      lightLabels: `${ESRI}/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}`,
+      dark: `${ESRI}/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}`,
+      darkLabels: `${ESRI}/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}`,
+      tileSize: 256,
+      zoomOffset: 0,
+      maxZoom: 16,
+      attribution: 'Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors',
+    }

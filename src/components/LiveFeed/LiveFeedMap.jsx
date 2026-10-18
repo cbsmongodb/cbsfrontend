@@ -145,7 +145,10 @@ export default function LiveFeedMap({ events = [], focusKey }) {
         style={{ height: `${mapHeight}px`, width: '100%' }}
         attributionControl={false}
       >
-        <TileLayer key={darkMap ? 'dark' : 'light'} url={darkMap ? MAP_TILES.dark : MAP_TILES.light} attribution={MAP_TILES.attribution} subdomains="abcd" maxZoom={20} />
+        <TileLayer key={darkMap ? 'dark' : 'light'} url={darkMap ? MAP_TILES.dark : MAP_TILES.light} attribution={MAP_TILES.attribution} tileSize={MAP_TILES.tileSize} zoomOffset={MAP_TILES.zoomOffset} maxZoom={MAP_TILES.maxZoom} />
+        {(darkMap ? MAP_TILES.darkLabels : MAP_TILES.lightLabels) && (
+          <TileLayer key={darkMap ? 'dark-labels' : 'light-labels'} url={darkMap ? MAP_TILES.darkLabels : MAP_TILES.lightLabels} maxZoom={MAP_TILES.maxZoom} />
+        )}
         <FitBounds events={events} focusKey={focusKey} />
 
         {routePoints.length > 1 && (

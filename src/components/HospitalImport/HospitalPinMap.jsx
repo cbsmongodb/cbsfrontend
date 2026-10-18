@@ -137,7 +137,10 @@ export default function HospitalPinMap({ position, onPick, initialQuery }) {
         zoom={position ? 16 : 7}
         style={{ height: 500, width: '100%', borderRadius: 8 }}
       >
-        <TileLayer key={darkMap ? 'dark' : 'light'} url={darkMap ? MAP_TILES.dark : MAP_TILES.light} attribution={MAP_TILES.attribution} subdomains="abcd" maxZoom={20} />
+        <TileLayer key={darkMap ? 'dark' : 'light'} url={darkMap ? MAP_TILES.dark : MAP_TILES.light} attribution={MAP_TILES.attribution} tileSize={MAP_TILES.tileSize} zoomOffset={MAP_TILES.zoomOffset} maxZoom={MAP_TILES.maxZoom} />
+        {(darkMap ? MAP_TILES.darkLabels : MAP_TILES.lightLabels) && (
+          <TileLayer key={darkMap ? 'dark-labels' : 'light-labels'} url={darkMap ? MAP_TILES.darkLabels : MAP_TILES.lightLabels} maxZoom={MAP_TILES.maxZoom} />
+        )}
         <ClickHandler onPick={onPick} />
         {flyTarget && <FlyTo position={flyTarget} />}
         {position && <Marker position={position} icon={pinIcon()} />}
