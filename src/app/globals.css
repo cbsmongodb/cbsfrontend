@@ -535,3 +535,14 @@ html:has(.login-container) body {
     scroll-snap-align: none;
   }
 }
+
+/* ===== dark mode: really dark behind the page (phone bars, overscroll) ===== */
+.dashboard-shell {
+  background: var(--color-bg);
+  min-height: 100vh;
+  min-height: 100lvh;
+}
+html[data-theme="dark"]:has(.dashboard-shell),
+html[data-theme="dark"]:has(.dashboard-shell) body {
+  background: #17181b;
+}

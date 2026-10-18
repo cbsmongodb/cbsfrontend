@@ -21,6 +21,18 @@ function SunIcon() {
   )
 }
 
+
+// phone status bar / toolbar colour
+function setBarColor(dark) {
+  let meta = document.querySelector('meta[name="theme-color"]')
+  if (!meta) {
+    meta = document.createElement('meta')
+    meta.setAttribute('name', 'theme-color')
+    document.head.appendChild(meta)
+  }
+  meta.setAttribute('content', dark ? '#17181b' : '#f8fafc')
+}
+
 export default function ThemeToggle() {
   const t = useTranslations('theme')
   const [dark, setDark] = useState(false)
@@ -32,11 +44,13 @@ export default function ThemeToggle() {
     if (isDark) document.documentElement.setAttribute('data-theme', 'dark')
     else document.documentElement.removeAttribute('data-theme')
     setDark(isDark)
+    setBarColor(isDark)
   })
 
   function toggle() {
     const next = !dark
     setDark(next)
+    setBarColor(next)
     if (next) document.documentElement.setAttribute('data-theme', 'dark')
     else document.documentElement.removeAttribute('data-theme')
     try {

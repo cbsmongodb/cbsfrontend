@@ -3,11 +3,15 @@ import { getMessages } from "next-intl/server";
 import { cookies } from "next/headers";
 import '../globals.css'
 
-// let the page draw under the iPhone status bar and Safari toolbars (edge to edge, like other sites)
-export const viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  viewportFit: 'cover',
+// edge to edge on iPhone + status bar / toolbar colour that follows light / dark mode
+export async function generateViewport() {
+  const dark = (await cookies()).get("cbs-theme")?.value === "dark";
+  return {
+    width: "device-width",
+    initialScale: 1,
+    viewportFit: "cover",
+    themeColor: dark ? "#17181b" : "#f8fafc",
+  };
 }
 
 export default async function LocaleLayout({ children, params }) {
