@@ -81,7 +81,7 @@ export default function TeamTodayVisits() {
     return team.filter((e) => e.isActive !== false && e.employeeType === 'field' && !busy.has(String(e._id)))
   }, [team, plans])
 
-  const time = (d) => (d ? new Date(d).toLocaleTimeString(locale === 'ka' ? 'ka-GE' : locale, { hour: '2-digit', minute: '2-digit' }) : '')
+  const time = (d) => (d && !(new Date(d).getUTCHours() === 0 && new Date(d).getUTCMinutes() === 0) ? new Date(d).toLocaleTimeString(locale === 'ka' ? 'ka-GE' : locale, { hour: '2-digit', minute: '2-digit' }) : '')
 
   return (
     <div className="ttv">

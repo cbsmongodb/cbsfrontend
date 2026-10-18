@@ -585,3 +585,13 @@
   background: linear-gradient(180deg, #0c3557, #13608f 50%, #8fd3f0);
   background: linear-gradient(in oklch 180deg, #0c3557, #13608f 50%, #8fd3f0);
 }
+
+/* ===== gap between dashboard cards ===== */
+.dashboard-today-visits-section {
+  margin-top: 22px;
+  min-height: 0;
+  border-radius: 18px;
+}
+@media (max-width: 640px) {
+  .dashboard-today-visits-section { margin-top: 16px; min-height: 0; }
+}

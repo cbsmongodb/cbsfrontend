@@ -481,3 +481,16 @@ button:disabled .btn-spinner { opacity: 0.9; }
 .dashboard-content input:is([placeholder*="Search" i], [placeholder*="ძებნ"], [placeholder*="ძიებ"], [placeholder*="Поиск" i]):not(.resource-search-input):not(.live-search-input):not([type="checkbox"]):not([type="radio"]):focus {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233f74d6' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.6-3.6'/%3E%3C/svg%3E");
 }
+
+/* ===== edge to edge on phones: keep content clear of the status bar ===== */
+@media (max-width: 768px) {
+  body .dashboard-content {
+    padding-top: calc(14px + env(safe-area-inset-top));
+    padding-left: calc(12px + env(safe-area-inset-left));
+    padding-right: calc(12px + env(safe-area-inset-right));
+  }
+  .login-container {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

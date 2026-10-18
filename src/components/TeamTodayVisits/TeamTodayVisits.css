@@ -44,3 +44,18 @@
 
 .ttv-idle { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: #fff7ed; border: 1px solid #fde7c7; font-size: 13px; color: #9a3412; line-height: 1.5; }
 .ttv-idle-title { font-weight: 700; margin-right: 6px; }
+
+/* ===== more room, no card-in-card ===== */
+.dashboard-today-visits-section .ttv {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+}
+.ttv-head { margin-bottom: 18px; }
+.ttv-summary { gap: 12px; margin-bottom: 18px; }
+.ttv-chip { padding: 14px 16px; gap: 4px; }
+.ttv-filter { margin-bottom: 16px; }
+.ttv-list { gap: 12px; }
+.ttv-person { padding: 16px 18px; }
+.ttv-visits { margin-top: 12px; gap: 8px; }

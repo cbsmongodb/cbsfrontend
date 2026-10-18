@@ -224,3 +224,32 @@
   justify-content: flex-end;
   gap: 10px;
 }
+
+/* ===== today visits: more breathing room ===== */
+.today-visits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.today-visits .today-visit-card {
+  padding: 18px 22px 20px;
+}
+.today-visits .today-visit-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.today-visits .today-visit-distance {
+  margin-top: 6px;
+}
+.today-visits .today-visit-actions {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+@media (max-width: 480px) {
+  .today-visits .today-visit-card { padding: 16px 16px 18px; }
+}
