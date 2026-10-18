@@ -149,3 +149,8 @@
 .lr-ok {
   padding: 10px 12px; border-radius: 12px; background: #ecfdf3; border: 1px solid #bbf7d0;
 }
+
+/* ===== phones: no sticky summary (keeps Safari bars translucent) ===== */
+@media (max-width: 900px) {
+  .lr-summary { position: static; }
+}
