@@ -1,0 +1,46 @@
+.ttv {
+  background: #fff; border: 1px solid #e8edf4; border-radius: 18px;
+  padding: 20px 22px; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+.ttv-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.ttv-head h3 { margin: 0; font-size: 16px; color: #0f172a; }
+.ttv-link { font-size: 13px; font-weight: 600; color: #3f74d6; text-decoration: none; }
+.ttv-link:hover { text-decoration: underline; }
+
+.ttv-summary { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+@media (max-width: 720px) { .ttv-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.ttv-chip { background: #f8fafc; border: 1px solid #eef2f7; border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+.ttv-chip strong { font-size: 20px; color: #0f172a; font-variant-numeric: tabular-nums; }
+.ttv-chip span { font-size: 11.5px; color: #64748b; font-weight: 600; }
+.ttv-chip.onsite strong { color: #2563eb; }
+.ttv-chip.planned strong { color: #b45309; }
+.ttv-chip.done strong { color: #15803d; }
+.ttv-chip.canceled strong { color: #b91c1c; }
+
+.ttv-filter { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: #475569; margin-bottom: 10px; cursor: pointer; }
+.ttv-empty { color: #94a3b8; font-size: 13.5px; margin: 10px 0; }
+
+.ttv-list { display: flex; flex-direction: column; gap: 10px; max-height: 520px; overflow-y: auto; padding-right: 2px; }
+.ttv-person { border: 1px solid #eef2f7; border-radius: 12px; padding: 10px 12px; }
+.ttv-person-head { display: grid; grid-template-columns: auto 1fr auto 90px; align-items: center; gap: 10px; }
+.ttv-dot { width: 9px; height: 9px; border-radius: 50%; background: #f59e0b; }
+.ttv-dot.onsite { background: #2563eb; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15); }
+.ttv-dot.done { background: #16a34a; }
+.ttv-name { font-weight: 700; font-size: 14px; color: #0f172a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ttv-progress { font-size: 12.5px; font-weight: 700; color: #475569; font-variant-numeric: tabular-nums; }
+.ttv-bar { height: 6px; background: #f1f5f9; border-radius: 999px; overflow: hidden; }
+.ttv-bar i { display: block; height: 100%; background: linear-gradient(90deg, #22c55e, #16a34a); border-radius: 999px; }
+
+.ttv-visits { list-style: none; margin: 8px 0 0; padding: 0 0 0 19px; display: flex; flex-direction: column; gap: 5px; }
+.ttv-visits li { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px; font-size: 13px; color: #334155; }
+.ttv-visits li.is-canceled .ttv-place { text-decoration: line-through; color: #94a3b8; }
+.ttv-place { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ttv-time { font-size: 12px; color: #94a3b8; font-variant-numeric: tabular-nums; }
+.ttv-badge { font-size: 11.5px; font-weight: 700; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.ttv-badge.planned { background: #fef3c7; color: #b45309; }
+.ttv-badge.onsite { background: #dbeafe; color: #1d4ed8; }
+.ttv-badge.done { background: #dcfce7; color: #15803d; }
+.ttv-badge.canceled { background: #fee2e2; color: #b91c1c; }
+
+.ttv-idle { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: #fff7ed; border: 1px solid #fde7c7; font-size: 13px; color: #9a3412; line-height: 1.5; }
+.ttv-idle-title { font-weight: 700; margin-right: 6px; }

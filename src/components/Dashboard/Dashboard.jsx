@@ -6,6 +6,10 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import TodayVisits from '@/components/Plannings/TodayVisits'
+import TeamTodayVisits from '@/components/TeamTodayVisits/TeamTodayVisits'
+
+// people who lead a team: they see their team's visits today, not their own
+const TEAM_MANAGER_ROLES = new Set(['division manager', 'group manager', 'regional manager', 'product manager'])
 
 const OFFICE_ONLY_ROLES = new Set([
   'office',
@@ -184,6 +188,7 @@ export default function Dashboard() {
   // office management roles see everyone's data but never make visits themselves,
   // so "today's visits / refresh location" is not for them
   const isOfficeOnly = OFFICE_ONLY_ROLES.has((employee?.role?.name || '').toLowerCase().trim())
+  const isTeamManager = TEAM_MANAGER_ROLES.has((employee?.role?.name || '').toLowerCase().trim())
 
   useEffect(() => {
     const stored = localStorage.getItem('employee')
@@ -423,7 +428,12 @@ export default function Dashboard() {
         </div>
       )}
 
-      {!loading && employee?.employeeType === 'field' && canPlan && !isOfficeOnly && (
+      {!loading && isTeamManager && (
+        <div className="dashboard-today-visits-section">
+          <TeamTodayVisits />
+        </div>
+      )}
+      {!loading && !isTeamManager && employee?.employeeType === 'field' && canPlan && !isOfficeOnly && (
         <div className="dashboard-today-visits-section">
           <TodayVisits />
         </div>

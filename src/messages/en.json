@@ -1054,5 +1054,24 @@
   "theme": {
     "dark": "Dark mode",
     "light": "Light mode"
+  },
+  "teamToday": {
+    "title": "Team visits today",
+    "viewAll": "Field team status",
+    "total": "Total",
+    "onSite": "On site",
+    "notStarted": "Not started",
+    "done": "Done",
+    "canceled": "Canceled",
+    "onlyOpen": "Only unfinished",
+    "noPlans": "No visits planned for the team today",
+    "nothingPlanned": "Nothing planned today",
+    "status": {
+      "planned": "Planned",
+      "i_went": "On site",
+      "i_left": "Done",
+      "completed": "Done",
+      "canceled": "Canceled"
+    }
   }
 }
