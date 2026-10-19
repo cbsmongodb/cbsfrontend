@@ -1,4 +1,7 @@
 @import url('https://cdn.jsdelivr.net/npm/@fontsource/firago@5.2.5/index.min.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/firago@5.2.5/500.min.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/firago@5.2.5/600.min.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/firago@5.2.5/700.min.css');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
 :root {
@@ -611,4 +614,29 @@ h1, h2, h3, h4 {
 @media (min-width: 769px) and (max-width: 1280px) {
   body .sidebar { width: 256px; }
   body .dashboard-content { margin-left: 256px; }
+}
+
+/* ===== sidebar menu: FiraGO uppercase everywhere ===== */
+.sidebar .nav-label,
+.sidebar .sidebar-group-header,
+.sidebar .sidebar-group-header span,
+.sidebar .sidebar-group-items a,
+.sidebar .sidebar-group-items a span {
+  text-transform: uppercase;
+  font-feature-settings: "case" on !important;
+  letter-spacing: 0.01em;
+}
+
+/* ===== buttons use the site font (FiraGO) like everything else ===== */
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-sans);
+}
+.sidebar .sidebar-group-header,
+.sidebar .sidebar-group-header .nav-label {
+  font-family: var(--font-sans) !important;
+  font-feature-settings: "case" on !important;
+  text-transform: uppercase;
 }
