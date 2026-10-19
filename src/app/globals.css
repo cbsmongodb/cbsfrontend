@@ -586,3 +586,29 @@ html[data-theme="dark"]:has(.dashboard-shell) body::before {
   z-index: 2000;
   pointer-events: none;
 }
+
+/* ===== sidebar: all titles in caps style + a bit wider ===== */
+/* Georgian "case" = the capital (mtavruli) look, everywhere in the menu and on page titles */
+.sidebar .nav-label,
+.sidebar .sidebar-group-header,
+.sidebar .sidebar-group-items a,
+.sidebar .sidebar-group-items a span,
+h1, h2, h3, h4 {
+  font-feature-settings: "case" on !important;
+}
+.sidebar .nav-label,
+.sidebar .sidebar-group-items a {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* wider menu so long titles fit */
+@media (min-width: 769px) {
+  body .sidebar { width: 272px; }
+  body .dashboard-content { margin-left: 272px; }
+}
+@media (min-width: 769px) and (max-width: 1280px) {
+  body .sidebar { width: 256px; }
+  body .dashboard-content { margin-left: 256px; }
+}
