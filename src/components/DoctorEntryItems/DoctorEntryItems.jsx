@@ -177,7 +177,14 @@ export default function DoctorEntryItems() {
   function updateDoctorField(index, field, value) {
     setDoctorEntries((prev) => {
       const next = [...prev]
-      next[index] = { ...next[index], [field]: value }
+      const updated = { ...next[index], [field]: value }
+      // picking a doctor fills in his hospital automatically (can still be changed)
+      if (field === 'doctorId' && value) {
+        const d = doctors.find((x) => x._id === value)
+        const h = d?.hospitalIds?.[0] || d?.hospitals?.[0]?.hospital?._id || d?.hospitals?.[0]?.hospital
+        if (h) updated.hospitalId = String(h)
+      }
+      next[index] = updated
       return next
     })
   }
