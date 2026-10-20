@@ -101,6 +101,24 @@ export default function DoctorEntryItems() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [pickerDoctorIndex, setPickerDoctorIndex] = useState(null)
+  const [pharmacySales, setPharmacySales] = useState({})
+  const [visitCounts, setVisitCounts] = useState({})
+
+  // completed visits per doctor this month (from the visit plans) -> fills "visits"
+  useEffect(() => {
+    if (!employeeId) { setVisitCounts({}); return }
+    apiFetch(`/api/doctor-entry-items/visit-counts?employee=${employeeId}&period=${encodeURIComponent(monthValueToPeriod(monthValue))}`)
+      .then((c) => setVisitCounts(c || {}))
+      .catch(() => setVisitCounts({}))
+  }, [employeeId, monthValue])
+
+  // doctors already on the form with an empty "visits" get the count too
+  useEffect(() => {
+    setDoctorEntries((prev) => prev.map((e) =>
+      e.doctorId && !String(e.visits || '').trim() && visitCounts[e.doctorId]
+        ? { ...e, visits: String(visitCounts[e.doctorId]) }
+        : e))
+  }, [visitCounts])
 
   useEffect(() => {
     async function loadOptions() {
@@ -126,11 +144,17 @@ export default function DoctorEntryItems() {
   useEffect(() => {
     if (!employeeId) {
       setDoctorEntries([emptyDoctorEntry()])
+      setPharmacySales({})
       return
     }
     handleLoad()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [employeeId, monthValue])
+
+  function rxTotal(drugId) {
+    return doctorEntries.reduce((sum, e) => sum + (e.drugs || []).filter((r) => r.drugId === drugId)
+      .reduce((a, r) => a + (Number(r.prescription) || 0), 0), 0)
+  }
 
   function drugNameById(id) {
     const d = drugs.find((x) => x._id === id)
@@ -157,6 +181,7 @@ export default function DoctorEntryItems() {
       const period = monthValueToPeriod(monthValue)
       const data = await apiFetch(`/api/doctor-entry-items?employee=${employeeId}&period=${encodeURIComponent(period)}`)
       const loaded = groupItemsIntoDoctorEntries(data.items || [])
+      setPharmacySales(data.pharmacySales || {})
       setDoctorEntries(loaded.length > 0 ? loaded : [emptyDoctorEntry()])
       if (loaded.length === 0) setSuccess(tu('k039'))
     } catch (err) {
@@ -183,6 +208,7 @@ export default function DoctorEntryItems() {
         const d = doctors.find((x) => x._id === value)
         const h = d?.hospitalIds?.[0] || d?.hospitals?.[0]?.hospital?._id || d?.hospitals?.[0]?.hospital
         if (h) updated.hospitalId = String(h)
+        if (!String(updated.visits || '').trim() && visitCounts[value]) updated.visits = String(visitCounts[value])
       }
       next[index] = updated
       return next
@@ -374,6 +400,9 @@ export default function DoctorEntryItems() {
                   value={entry.visits}
                   onChange={(e) => updateDoctorField(doctorIndex, 'visits', e.target.value)}
                 />
+                {entry.doctorId && visitCounts[entry.doctorId] != null && (
+                  <small className="doctor-entry-hint">{tu('visitsFromPlans')}: {visitCounts[entry.doctorId]}</small>
+                )}
               </div>
 
               <div className="doctor-entries-field">
@@ -458,15 +487,6 @@ export default function DoctorEntryItems() {
                         />
                       </div>
                       <div className="doctor-entry-drug-number">
-                        <label>{tu('k065')}</label>
-                        <input
-                          type="number"
-                          className="field-input"
-                          value={row.sale}
-                          onChange={(e) => updateDrugField(doctorIndex, drugIndex, 'sale', e.target.valueAsNumber || 0)}
-                        />
-                      </div>
-                      <div className="doctor-entry-drug-number">
                         <label>{tu('k066')}</label>
                         <input
                           type="number"
@@ -475,6 +495,13 @@ export default function DoctorEntryItems() {
                           onChange={(e) => updateDrugField(doctorIndex, drugIndex, 'budget', e.target.valueAsNumber || 0)}
                         />
                       </div>
+
+                      {pharmacySales[row.drugId] != null && (
+                        <div className="doctor-entry-drug-computed doctor-entry-pharmacy">
+                          <span>{tu('pharmacySold')}: <strong>{fmt(pharmacySales[row.drugId])}</strong></span>
+                          <span>{tu('rxTotal')}: {fmt(rxTotal(row.drugId))}</span>
+                        </div>
+                      )}
 
                       {row.totalBudget != null && (
                         <div className="doctor-entry-drug-computed">

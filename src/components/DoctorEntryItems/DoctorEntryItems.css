@@ -211,3 +211,10 @@
 .doctor-entry-drug-number label { font-size: 11px; font-weight: 600; color: #64748b; }
 .doctor-entry-drug-number .field-input { height: 38px; }
 .doctor-entry-drug-computed { display: flex; flex-direction: column; gap: 2px; font-size: 11px; color: #64748b; justify-content: center; }
+
+.doctor-entry-hint { display: block; margin-top: 4px; font-size: 11.5px; color: #64748b; }
+
+.doctor-entry-pharmacy {
+  padding: 6px 10px; border-radius: 10px; background: #ecfdf3; border: 1px solid #bbf7d0;
+}
+.doctor-entry-pharmacy strong { color: #15803d; }
