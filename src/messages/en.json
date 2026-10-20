@@ -1054,7 +1054,8 @@
     "k216": "Drugs",
     "visitsFromPlans": "From visit plans",
     "pharmacySold": "Sold (pharmacies)",
-    "rxTotal": "Prescriptions in total"
+    "rxTotal": "Prescriptions in total",
+    "bonusAuto": "Bonus"
   },
   "theme": {
     "dark": "Dark mode",

@@ -218,3 +218,9 @@
   padding: 6px 10px; border-radius: 10px; background: #ecfdf3; border: 1px solid #bbf7d0;
 }
 .doctor-entry-pharmacy strong { color: #15803d; }
+
+.doctor-entry-bonus-value {
+  height: 40px; display: flex; align-items: center; padding: 0 12px;
+  border-radius: 10px; background: #f5f8ff; border: 1px dashed #c7d7f5;
+  font-weight: 700; color: #2f5fbf; font-variant-numeric: tabular-nums; white-space: nowrap;
+}

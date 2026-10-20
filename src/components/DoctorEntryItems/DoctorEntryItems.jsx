@@ -102,6 +102,7 @@ export default function DoctorEntryItems() {
   const [success, setSuccess] = useState('')
   const [pickerDoctorIndex, setPickerDoctorIndex] = useState(null)
   const [pharmacySales, setPharmacySales] = useState({})
+  const [monthBonuses, setMonthBonuses] = useState({})
   const [visitCounts, setVisitCounts] = useState({})
 
   // completed visits per doctor this month (from the visit plans) -> fills "visits"
@@ -151,6 +152,12 @@ export default function DoctorEntryItems() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [employeeId, monthValue])
 
+  function bonusFor(row) {
+    if (monthBonuses[row.drugId] != null) return monthBonuses[row.drugId]
+    const d = drugs.find((x) => x._id === row.drugId)
+    return d?.bonus || row.budget || 0
+  }
+
   function rxTotal(drugId) {
     return doctorEntries.reduce((sum, e) => sum + (e.drugs || []).filter((r) => r.drugId === drugId)
       .reduce((a, r) => a + (Number(r.prescription) || 0), 0), 0)
@@ -182,6 +189,7 @@ export default function DoctorEntryItems() {
       const data = await apiFetch(`/api/doctor-entry-items?employee=${employeeId}&period=${encodeURIComponent(period)}`)
       const loaded = groupItemsIntoDoctorEntries(data.items || [])
       setPharmacySales(data.pharmacySales || {})
+      setMonthBonuses(data.bonuses || {})
       setDoctorEntries(loaded.length > 0 ? loaded : [emptyDoctorEntry()])
       if (loaded.length === 0) setSuccess(tu('k039'))
     } catch (err) {
@@ -486,14 +494,9 @@ export default function DoctorEntryItems() {
                           onChange={(e) => updateDrugField(doctorIndex, drugIndex, 'prescription', e.target.valueAsNumber || 0)}
                         />
                       </div>
-                      <div className="doctor-entry-drug-number">
-                        <label>{tu('k066')}</label>
-                        <input
-                          type="number"
-                          className="field-input"
-                          value={row.budget}
-                          onChange={(e) => updateDrugField(doctorIndex, drugIndex, 'budget', e.target.valueAsNumber || 0)}
-                        />
+                      <div className="doctor-entry-drug-number doctor-entry-bonus">
+                        <label>{tu('bonusAuto')}</label>
+                        <div className="doctor-entry-bonus-value">{fmt(bonusFor(row))} ₾</div>
                       </div>
 
                       {pharmacySales[row.drugId] != null && (
