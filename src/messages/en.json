@@ -653,7 +653,8 @@
       "active": "Active",
       "budget": "Budget",
       "salesBoxes": "Sales (boxes)",
-      "salesAmount": "Sales (amount)"
+      "salesAmount": "Sales (amount)",
+      "prescriptions": "Prescriptions"
     },
     "monthlyTarget": "Monthly target",
     "boxesSold": "Boxes sold",
@@ -689,7 +690,9 @@
       "doctors": "No doctors found"
     },
     "details": "Details",
-    "share": "Share"
+    "share": "Share",
+    "estimatedNote": "Sales are estimated: each rep's real pharmacy sales are shared out over their doctors by prescriptions. * = real sales not entered yet for that drug / month",
+    "unknownSales": "Real sales not entered yet"
   },
   "reports": {
     "common": {

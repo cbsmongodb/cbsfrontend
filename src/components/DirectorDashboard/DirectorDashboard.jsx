@@ -874,7 +874,12 @@ function DoctorDrugBreakdown({ rows }) {
         return (
           <div className="director-breakdown-grid director-breakdown-row" key={i}>
             <span className="director-breakdown-rank">{i + 1}</span>
-            <span className="director-breakdown-name">{d.drugName}</span>
+            <span className="director-breakdown-name">
+              {d.drugName}
+              {d.prescriptions != null && (
+                <small className="director-breakdown-rx"> · {t('col.prescriptions')}: {d.prescriptions}{d.unknown ? ' *' : ''}</small>
+              )}
+            </span>
             <span className="director-breakdown-share-col director-breakdown-share">
               <span className="director-breakdown-bar">
                 <span style={{ width: `${(boxes / maxBoxes) * 100}%` }} />
@@ -1069,6 +1074,7 @@ function DoctorsReportTab() {
       {data && data.docs.length > 0 && (
         <div className="director-table-wrap">
           <table className="director-table">
+            <caption className="director-estimate-note">{t('estimatedNote')}</caption>
             <thead>
               <tr>
                 <th></th>
@@ -1077,6 +1083,7 @@ function DoctorsReportTab() {
                 <th>{t('col.profile')}</th>
                 <th>{t('col.active')}</th>
                 <th>{t('col.budget')}</th>
+                <th>{t('col.prescriptions')}</th>
                 <th>{t('col.salesBoxes')}</th>
                 <th>{t('col.salesAmount')}</th>
               </tr>
@@ -1105,12 +1112,13 @@ function DoctorsReportTab() {
                       <td>{d.profileName}</td>
                       <td>{d.isActive ? '✓' : '✕'}</td>
                       <td>{d.isBudgeted ? '✓' : '✕'}</td>
-                      <td className="director-num">{d.totalSaleBoxes}</td>
+                      <td className="director-num">{d.totalPrescriptions ?? '—'}</td>
+                      <td className="director-num">~{d.totalSaleBoxes}{d.unknownLines ? <span className="director-unknown" title={t('unknownSales')}> *</span> : null}</td>
                       <td className="director-num">{d.totalSalesAmount.toLocaleString()} ₾</td>
                     </tr>
                     {isExpanded && (
                       <tr className="director-breakdown-tr">
-                        <td colSpan={8}>
+                        <td colSpan={9}>
                           <DoctorDrugBreakdown rows={d.drugBreakdown} />
                         </td>
                       </tr>

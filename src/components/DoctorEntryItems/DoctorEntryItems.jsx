@@ -219,7 +219,8 @@ export default function DoctorEntryItems() {
         if (saved) Object.assign(updated, JSON.parse(JSON.stringify(saved)), { doctorId: value, existing: true })
         else Object.assign(updated, { existing: false, hospitalId: '', visits: '' })
         const d = doctors.find((x) => x._id === value)
-        const h = d?.hospitalIds?.[0] || d?.hospitals?.[0]?.hospital?._id || d?.hospitals?.[0]?.hospital
+        const first = d?.hospitals?.[0]?.hospital || d?.hospitalIds?.[0]
+        const h = first?._id || first   // populated hospital object or a plain id
         if (h && !updated.hospitalId) updated.hospitalId = String(h)
         if (!String(updated.visits || '').trim() && visitCounts[value]) updated.visits = String(visitCounts[value])
       }

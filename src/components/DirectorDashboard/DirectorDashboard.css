@@ -1333,3 +1333,11 @@
   color: var(--ink, #0f2744);
   font-variant-numeric: tabular-nums;
 }
+
+.director-estimate-note {
+  caption-side: top; text-align: left; padding: 10px 14px; margin-bottom: 8px;
+  font-size: 12.5px; line-height: 1.5; color: #475569;
+  background: #f5f8ff; border: 1px solid #e3ecfd; border-radius: 12px;
+}
+.director-unknown { color: #d97706; font-weight: 800; cursor: help; }
+.director-breakdown-rx { color: #94a3b8; font-weight: 500; }
