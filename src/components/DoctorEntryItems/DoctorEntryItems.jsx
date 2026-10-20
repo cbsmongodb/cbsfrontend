@@ -504,10 +504,6 @@ export default function DoctorEntryItems() {
                           onChange={(e) => updateDrugField(doctorIndex, drugIndex, 'prescription', e.target.valueAsNumber || 0)}
                         />
                       </div>
-                      <div className="doctor-entry-drug-number doctor-entry-bonus">
-                        <label>{tu('bonusAuto')}</label>
-                        <div className="doctor-entry-bonus-value">{fmt(bonusFor(row))} ₾</div>
-                      </div>
 
                       {pharmacySales[row.drugId] != null && (
                         <div className="doctor-entry-drug-computed doctor-entry-pharmacy">
