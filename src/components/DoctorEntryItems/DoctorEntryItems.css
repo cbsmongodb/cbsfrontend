@@ -224,3 +224,12 @@
   border-radius: 10px; background: #f5f8ff; border: 1px dashed #c7d7f5;
   font-weight: 700; color: #2f5fbf; font-variant-numeric: tabular-nums; white-space: nowrap;
 }
+
+.doctor-entry-existing {
+  margin-left: 10px; padding: 3px 10px; border-radius: 999px;
+  background: #fef3c7; color: #b45309; font-size: 12px; font-weight: 700;
+}
+.doctor-entries-info {
+  margin: 0 0 12px; padding: 10px 14px; border-radius: 12px;
+  background: #f5f8ff; border: 1px solid #e3ecfd; color: #2f5fbf; font-size: 13px;
+}

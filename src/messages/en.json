@@ -1055,7 +1055,9 @@
     "visitsFromPlans": "From visit plans",
     "pharmacySold": "Sold (pharmacies)",
     "rxTotal": "Prescriptions in total",
-    "bonusAuto": "Bonus"
+    "bonusAuto": "Bonus",
+    "alreadySaved": "Already saved, changes will be saved",
+    "savedThisMonth": "{count} doctors already saved this month. Pick one to see and edit his data"
   },
   "theme": {
     "dark": "Dark mode",

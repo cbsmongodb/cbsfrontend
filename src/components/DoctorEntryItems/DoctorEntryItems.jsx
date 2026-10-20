@@ -75,6 +75,7 @@ function groupItemsIntoDoctorEntries(items) {
       budget: item.budget || 0,
       coefficient: item.coefficient ?? null,
       totalBudget: item.totalBudget ?? null,
+      fromSaved: true,
     })
   }
   return [...byDoctor.values()]
@@ -102,6 +103,7 @@ export default function DoctorEntryItems() {
   const [success, setSuccess] = useState('')
   const [pickerDoctorIndex, setPickerDoctorIndex] = useState(null)
   const [pharmacySales, setPharmacySales] = useState({})
+  const [savedByDoctor, setSavedByDoctor] = useState({})
   const [monthBonuses, setMonthBonuses] = useState({})
   const [visitCounts, setVisitCounts] = useState({})
 
@@ -190,8 +192,8 @@ export default function DoctorEntryItems() {
       const loaded = groupItemsIntoDoctorEntries(data.items || [])
       setPharmacySales(data.pharmacySales || {})
       setMonthBonuses(data.bonuses || {})
-      setDoctorEntries(loaded.length > 0 ? loaded : [emptyDoctorEntry()])
-      if (loaded.length === 0) setSuccess(tu('k039'))
+      setSavedByDoctor(Object.fromEntries(loaded.map((e) => [e.doctorId, e])))
+      setDoctorEntries([emptyDoctorEntry()])
     } catch (err) {
       setError(err.message)
     } finally {
@@ -213,9 +215,12 @@ export default function DoctorEntryItems() {
       const updated = { ...next[index], [field]: value }
       // picking a doctor fills in his hospital automatically (can still be changed)
       if (field === 'doctorId' && value) {
+        const saved = savedByDoctor[value]
+        if (saved) Object.assign(updated, JSON.parse(JSON.stringify(saved)), { doctorId: value, existing: true })
+        else Object.assign(updated, { existing: false, hospitalId: '', visits: '' })
         const d = doctors.find((x) => x._id === value)
         const h = d?.hospitalIds?.[0] || d?.hospitals?.[0]?.hospital?._id || d?.hospitals?.[0]?.hospital
-        if (h) updated.hospitalId = String(h)
+        if (h && !updated.hospitalId) updated.hospitalId = String(h)
         if (!String(updated.visits || '').trim() && visitCounts[value]) updated.visits = String(visitCounts[value])
       }
       next[index] = updated
@@ -281,7 +286,7 @@ export default function DoctorEntryItems() {
       .filter((e) => e.doctorId)
       .map((e) => ({
         ...e,
-        drugs: e.drugs.filter((d) => d.drugId),
+        drugs: e.drugs.filter((d) => d.drugId).map((d) => (d.fromSaved ? d : { ...d, sale: undefined, budget: undefined })),
       }))
       .filter((e) => e.drugs.length > 0)
 
@@ -350,6 +355,9 @@ export default function DoctorEntryItems() {
       </div>
 
       {error && <p className="resource-error">{error}</p>}
+      {employeeId && Object.keys(savedByDoctor).length > 0 && (
+        <p className="doctor-entries-info">{tu('savedThisMonth', { count: Object.keys(savedByDoctor).length })}</p>
+      )}
       {success && (
         <div className="doctor-entries-success">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -366,6 +374,7 @@ export default function DoctorEntryItems() {
           <div key={doctorIndex} className="doctor-entry-card">
             <div className="doctor-entry-card-header">
               <strong>{tu('k047')}</strong>
+              {entry.existing && <span className="doctor-entry-existing">{tu('alreadySaved')}</span>}
               <button type="button" className="btn-gray btn-sm" onClick={() => removeDoctor(doctorIndex)}>
                 <span>{tu('k048')}</span>
               </button>
