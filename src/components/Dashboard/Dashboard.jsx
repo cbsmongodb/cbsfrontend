@@ -289,7 +289,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {employee && (canPlan ? (
+      {employee && !isFinance && (canPlan ? (
       <Link
         href={`/${locale}/dashboard/plannings`}
         className={`dashboard-plan-visit-btn${theme ? ` theme-${theme.scheme}` : ''}`}
