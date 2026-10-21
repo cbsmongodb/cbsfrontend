@@ -504,20 +504,56 @@ export default function DoctorEntryItems() {
                           onChange={(e) => updateDrugField(doctorIndex, drugIndex, 'prescription', e.target.valueAsNumber || 0)}
                         />
                       </div>
+                      <div className="doctor-entry-drug-number doctor-entry-bonus">
+                        <label>{tu('bonusAuto')}</label>
+                        <div className="doctor-entry-bonus-value">{fmt(bonusFor(row))} ₾</div>
+                      </div>
 
-                      {pharmacySales[row.drugId] != null && (
-                        <div className="doctor-entry-drug-computed doctor-entry-pharmacy">
-                          <span>{tu('pharmacySold')}: <strong>{fmt(pharmacySales[row.drugId])}</strong></span>
-                          <span>{tu('rxTotal')}: {fmt(rxTotal(row.drugId))}</span>
-                        </div>
-                      )}
+                      {(() => {
 
-                      {row.totalBudget != null && (
-                        <div className="doctor-entry-drug-computed">
-                          <span>{tu('k067')}{" "}{fmt(row.coefficient != null ? row.coefficient * 100 : null)}%</span>
-                          <span>{tu('k068')}{" "}{fmt(row.totalBudget)}</span>
-                        </div>
-                      )}
+                        const rx = Number(row.prescription) || 0
+
+                        const bonus = Number(bonusFor(row)) || 0
+
+                        const sum = rxTotal(row.drugId)
+
+                        const real = pharmacySales[row.drugId]
+
+                        const hasReal = real != null && sum > 0
+
+                        const coef = hasReal ? real / sum : (row.fromSaved && row.coefficient != null ? row.coefficient : 0)
+
+                        const pct = fmt(coef * 100)
+
+                        const total = fmt(rx * bonus * coef)
+
+                        return (
+
+                          <div className="doctor-entry-formula">
+
+                            {hasReal ? (
+
+                              <div>{tu('formulaCoef', { real: fmt(real), rx: fmt(sum), pct })}</div>
+
+                            ) : row.fromSaved && row.coefficient != null ? (
+
+                              <div>{tu('savedCoef', { pct })}</div>
+
+                            ) : (
+
+                              <div className="doctor-entry-formula-warn">{tu('noRealSales')}</div>
+
+                            )}
+
+                            {!bonus && <div className="doctor-entry-formula-warn">{tu('noBonus')}</div>}
+
+                            <div className="doctor-entry-formula-main">{tu('formulaBudget', { rx: fmt(rx), bonus: fmt(bonus), pct, total })}</div>
+
+                          </div>
+
+                        )
+
+                      })()}
                     </>
                   )}
 

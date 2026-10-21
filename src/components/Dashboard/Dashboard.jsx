@@ -6,6 +6,10 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import TodayVisits from '@/components/Plannings/TodayVisits'
+import FinanceSummaryCard from '@/components/FinanceSummaryCard/FinanceSummaryCard'
+
+// finance people see money, not visit statistics
+const FINANCE_ROLES = new Set(['finance manager', "accountant's assistant"])
 import MyLeaveRequestsCard from '@/components/MyLeaveRequestsCard/MyLeaveRequestsCard'
 import LeaveApprovalsCard from '@/components/LeaveApprovalsCard/LeaveApprovalsCard'
 import TeamTodayVisits from '@/components/TeamTodayVisits/TeamTodayVisits'
@@ -190,6 +194,7 @@ export default function Dashboard() {
   // office management roles see everyone's data but never make visits themselves,
   // so "today's visits / refresh location" is not for them
   const isOfficeOnly = OFFICE_ONLY_ROLES.has((employee?.role?.name || '').toLowerCase().trim())
+  const isFinance = FINANCE_ROLES.has((employee?.role?.name || '').toLowerCase().trim())
   const isTeamManager = TEAM_MANAGER_ROLES.has((employee?.role?.name || '').toLowerCase().trim())
 
   useEffect(() => {
@@ -392,7 +397,9 @@ export default function Dashboard() {
       {!loading && <MyLeaveRequestsCard />}
       {!loading && <LeaveApprovalsCard />}
 
-      {!loading && canSeeVisits && teamStats && teamStats.teamSize > 0 && (
+      {!loading && isFinance && <FinanceSummaryCard />}
+
+      {!loading && !isFinance && canSeeVisits && teamStats && teamStats.teamSize > 0 && (
         <div className="dashboard-team-stats">
           <div className="dashboard-team-stats-head">
             <span className="dashboard-team-stats-title">

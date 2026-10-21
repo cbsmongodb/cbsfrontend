@@ -61,6 +61,7 @@ export default function SalesListing() {
       const period = monthValueToPeriod(monthValue)
       const data = await apiFetch(`/api/doctor-entry-items?employee=${employeeId}&period=${encodeURIComponent(period)}`)
       setItems(data.items || [])
+      setPharmacy(data.pharmacySales || {})
       setLoaded(true)
     } catch (err) {
       setError(err.message)
@@ -70,9 +71,11 @@ export default function SalesListing() {
   }
 
   function doctorLabel(doctor) {
-    if (!doctor) return '—'
+    if (!doctor) return tu('deletedDoctor')
     return `${doctor.firstName || ''} ${doctor.lastName || ''}`.trim() || '—'
   }
+
+  const [pharmacy, setPharmacy] = useState({})
 
   const visibleItems = useMemo(() => {
     if (!drugSearch.trim()) return items
@@ -127,6 +130,17 @@ export default function SalesListing() {
       {error && <p className="resource-error">{error}</p>}
 
       {loaded && (
+        <div className="sales-listing-formulas">
+          <strong>{tu('formulasTitle')}</strong>
+          <span>{tu('fCoef')}</span>
+          <span>{tu('fTotal')}</span>
+          <span>{tu('fPlanned')}</span>
+          <span>{tu('fDiff')}</span>
+          <span>{tu('fCalc')}</span>
+        </div>
+      )}
+
+      {loaded && (
         <div className="sales-listing-scroll">
           <table className="sales-listing-table">
             <thead>
@@ -135,12 +149,13 @@ export default function SalesListing() {
                 <th>{tu('k076')}</th>
                 <th>{tu('k077')}</th>
                 <th>{tu('k055')}</th>
-                <th>{tu('k078')}</th>
+                <th>{tu('planCol')}</th>
                 <th>{tu('k064')}</th>
-                <th>{tu('k065')}</th>
-                <th>{tu('k079')}</th>
+                <th>{tu('pharmacyCol')}</th>
+                <th>{tu('bonusCol')}</th>
                 <th>{tu('k080')}</th>
                 <th>{tu('k081')}</th>
+                <th>{tu('howCol')}</th>
                 <th>{tu('k051')}</th>
                 <th>{tu('k057')}</th>
                 <th>{tu('k058')}</th>
@@ -158,10 +173,11 @@ export default function SalesListing() {
                   <td>{item.bank || '—'}</td>
                   <td>{fmt(item.quota)}</td>
                   <td>{fmt(item.prescription)}</td>
-                  <td>{fmt(item.sale)}</td>
+                  <td>{pharmacy[item.drug?._id] != null ? fmt(pharmacy[item.drug?._id]) : '—'}</td>
                   <td>{fmt(item.budget)}</td>
                   <td>{fmtPercent(item.coefficient)}</td>
                   <td>{fmt(item.totalBudget)}</td>
+                  <td className="sales-listing-how">{fmt(item.prescription)} × {fmt(item.budget)} ₾ × {fmtPercent(item.coefficient)} = {fmt(item.totalBudget)} ₾</td>
                   <td>{fmt(item.issuedBudget)}</td>
                   <td>{fmt(item.plannedBudget)}</td>
                   <td className={item.difference < 0 ? 'negative' : ''}>{fmt(item.difference)}</td>
@@ -172,7 +188,7 @@ export default function SalesListing() {
               ))}
               {visibleItems.length === 0 && (
                 <tr>
-                  <td colSpan={16}>{drugSearch ? tu('k085') : tu('k086')}</td>
+                  <td colSpan={17}>{drugSearch ? tu('k085') : tu('k086')}</td>
                 </tr>
               )}
             </tbody>
