@@ -1450,7 +1450,6 @@ html[data-theme="dark"]:has(.dashboard-shell) .budgets-list-filters { filter: co
 /* header: title + "new budget" */
 .budgets-list-page-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 .budgets-list-new-btn { min-height: 44px; padding: 0 22px !important; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; }
-.budgets-list-new-btn::before { content: "+"; font-size: 20px; font-weight: 800; line-height: 1; }
 
 /* amounts */
 .budgets-list-table td.budgets-list-num, .budgets-list-num { text-align: right; font-weight: 700; color: #0f172a; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -1772,3 +1771,175 @@ html:lang(ru) .dashboard-content:has(:is(.planning-filters-card, .sales-listing-
   .employee-sales-table-wrap, .employee-targets-table-wrap, .budgets-list-table-wrap, .planning-table-scroll, .director-table-wrap)::before {
   content: "" !important;
 }
+
+/* ===== director filters: sidebar colour + glass inputs ===== */
+.dashboard-shell:has(.sidebar.theme-gold) .director-filters {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #071a2e 0%, #0c3557 28%, #13608f 55%, #2a93c4 78%, #8fd3f0 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #071a2e 0%, #0c3557 28%, #13608f 55%, #2a93c4 78%, #8fd3f0 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-gold) { --dir-a: #0c3557; --dir-b: #2a93c4; }
+.dashboard-shell:has(.sidebar.theme-division1) .director-filters {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #0f2a20 0%, #1b4332 18%, #2d6a4f 38%, #40916c 56%, #52b788 76%, #8fd3ae 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #0f2a20 0%, #1b4332 18%, #2d6a4f 38%, #40916c 56%, #52b788 76%, #8fd3ae 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-division1) { --dir-a: #1b4332; --dir-b: #52b788; }
+.dashboard-shell:has(.sidebar.theme-division2) .director-filters {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(45deg, #051a33 0%, #0b3a6e 30%, #0e7fb0 60%, #14a38b 82%, #0d6b5c 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 45deg, #051a33 0%, #0b3a6e 30%, #0e7fb0 60%, #14a38b 82%, #0d6b5c 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-division2) { --dir-a: #0b3a6e; --dir-b: #14a38b; }
+.dashboard-shell:has(.sidebar.theme-division3) .director-filters {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #2a1238 0%, #45205c 15%, #5a2a72 30%, #8e4f9a 55%, #b36a90 72%, #c27a8a 85%, #e0a37a 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #2a1238 0%, #45205c 15%, #5a2a72 30%, #8e4f9a 55%, #b36a90 72%, #c27a8a 85%, #e0a37a 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-division3) { --dir-a: #45205c; --dir-b: #b36a90; }
+.dashboard-shell:has(.sidebar.theme-office) .director-filters {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #241640 0%, #3e2a6e 20%, #5f45a0 42%, #8a63c4 64%, #b77fc0 84%, #d9a0c4 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #241640 0%, #3e2a6e 20%, #5f45a0 42%, #8a63c4 64%, #b77fc0 84%, #d9a0c4 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-office) { --dir-a: #3e2a6e; --dir-b: #8a63c4; }
+
+.dashboard-shell .director-filters {
+  border: 1px solid rgba(255, 255, 255, 0.14) !important; border-radius: 18px !important;
+  box-shadow: 0 14px 36px rgba(7, 26, 46, 0.25) !important; padding: 18px 20px !important;
+}
+.dashboard-shell .director-filters :is(label, .director-field > span:first-child) { color: #ffffff !important; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22); font-weight: 700 !important; }
+.dashboard-shell .director-filters :is(.field-input, input, select, .searchable-select-control input) {
+  min-height: 42px; border-radius: 11px !important;
+  background-color: rgba(255, 255, 255, 0.13) !important; border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important; font-weight: 600 !important; box-shadow: none !important;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.dashboard-shell .director-filters .searchable-select-control input { background-color: transparent !important; border: 0 !important; backdrop-filter: none; }
+.dashboard-shell .director-filters .searchable-select-control {
+  border-radius: 11px !important; background: rgba(255, 255, 255, 0.13) !important; border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+.dashboard-shell .director-filters :is(input, .field-input)::placeholder { color: rgba(255, 255, 255, 0.75) !important; }
+.dashboard-shell .director-filters :is(.field-input, input, select):focus {
+  background-color: rgba(255, 255, 255, 0.22) !important; border-color: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18) !important; outline: none;
+}
+.dashboard-shell .director-filters select {
+  appearance: none; -webkit-appearance: none; padding-right: 36px !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important;
+  background-position: right 12px center !important; background-size: 16px 16px !important;
+}
+.dashboard-shell .director-filters select option { color: #0f172a !important; background: #ffffff !important; }
+.dashboard-shell .director-filters :is(input[type='date'], input[type='month'])::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+.dashboard-shell .director-filters :is(.searchable-select-clear, .searchable-select-control button) { color: #ffffff !important; }
+.dashboard-shell .director-filters .searchable-select-dropdown { background: #ffffff !important; }
+.dashboard-shell .director-filters .searchable-select-dropdown * { color: #0f172a !important; text-shadow: none !important; }
+html[data-theme="dark"]:has(.dashboard-shell) .director-filters { filter: contrast(1.1628) hue-rotate(-180deg) invert(1); }
+html[data-theme="dark"]:has(.dashboard-shell) .director-filters * { filter: none !important; }
+
+/* "Show" button + quick dates, in the theme colour */
+.dashboard-shell .director-submit-row .btn {
+  min-height: 44px; padding: 0 28px !important; border-radius: 14px !important;
+  background: linear-gradient(120deg, var(--dir-a, #0c3557), var(--dir-b, #2a93c4)) !important;
+  color: #ffffff !important; border: 0 !important;
+  box-shadow: 0 10px 24px -8px var(--dir-a, #0c3557) !important;
+}
+.dashboard-shell .director-submit-row .btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.dashboard-shell .director-quick-dates button {
+  border-radius: 999px !important; border: 1.5px solid color-mix(in srgb, var(--dir-b, #2a93c4) 40%, #ffffff) !important;
+  background: color-mix(in srgb, var(--dir-b, #2a93c4) 8%, #ffffff) !important; color: var(--dir-a, #0c3557) !important;
+  font-weight: 700 !important;
+}
+.dashboard-shell .director-quick-dates button:hover { background: color-mix(in srgb, var(--dir-b, #2a93c4) 18%, #ffffff) !important; }
+.dashboard-shell .director-quick-dates button:is(.active, [aria-pressed='true']) {
+  background: linear-gradient(120deg, var(--dir-a, #0c3557), var(--dir-b, #2a93c4)) !important; color: #ffffff !important; border-color: transparent !important;
+}
+
+
+/* ===== table search: no more jumping underline (the pill shows focus itself) ===== */
+.resource-search::before,
+.resource-search:focus-within::before {
+  content: none !important; display: none !important;
+}
+.resource-search { overflow: hidden; }
+
+/* small "loading" inside a form (spinner + text on one line) */
+.inline-loading { display: inline-flex; align-items: center; gap: 10px; margin: 6px 0; font-size: 13px; font-weight: 600; color: #1e3a6e; }
+.inline-loading .btn-spinner { color: #3f74d6; width: 16px; height: 16px; }
+
+/* ===== data entry: title like every other page ===== */
+.dashboard-shell .doctor-entries-header {
+  display: flex !important; align-items: center !important; justify-content: space-between !important;
+  gap: 12px; flex-wrap: wrap; margin: 0 0 16px !important; min-height: 0 !important;
+}
+.dashboard-shell .doctor-entries-header h1 {
+  margin: 0 !important; font-size: 24px !important; line-height: 1.25 !important; font-weight: 800 !important;
+  letter-spacing: 0 !important; color: #0f172a !important; opacity: 1 !important;
+  -webkit-text-stroke: 0 !important; text-shadow: none !important; background: none !important;
+  -webkit-background-clip: border-box !important; background-clip: border-box !important;
+}
+.dashboard-shell .doctor-entries-header .btn { min-height: 44px; padding: 0 26px !important; }
+@media (max-width: 640px) { .dashboard-shell .doctor-entries-header h1 { font-size: 20px !important; } }
+html[data-theme="dark"]:has(.dashboard-shell) .doctor-entries-header h1 { color: #0f172a !important; }
+
+/* ===== budget form (new / edit): sidebar colour + glass ===== */
+.dashboard-shell:has(.sidebar.theme-gold) .prescedit-card {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #071a2e 0%, #0c3557 28%, #13608f 55%, #2a93c4 78%, #8fd3f0 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #071a2e 0%, #0c3557 28%, #13608f 55%, #2a93c4 78%, #8fd3f0 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-division1) .prescedit-card {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #0f2a20 0%, #1b4332 18%, #2d6a4f 38%, #40916c 56%, #52b788 76%, #8fd3ae 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #0f2a20 0%, #1b4332 18%, #2d6a4f 38%, #40916c 56%, #52b788 76%, #8fd3ae 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-division2) .prescedit-card {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(45deg, #051a33 0%, #0b3a6e 30%, #0e7fb0 60%, #14a38b 82%, #0d6b5c 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 45deg, #051a33 0%, #0b3a6e 30%, #0e7fb0 60%, #14a38b 82%, #0d6b5c 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-division3) .prescedit-card {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #2a1238 0%, #45205c 15%, #5a2a72 30%, #8e4f9a 55%, #b36a90 72%, #c27a8a 85%, #e0a37a 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #2a1238 0%, #45205c 15%, #5a2a72 30%, #8e4f9a 55%, #b36a90 72%, #c27a8a 85%, #e0a37a 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-office) .prescedit-card {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #241640 0%, #3e2a6e 20%, #5f45a0 42%, #8a63c4 64%, #b77fc0 84%, #d9a0c4 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #241640 0%, #3e2a6e 20%, #5f45a0 42%, #8a63c4 64%, #b77fc0 84%, #d9a0c4 100%) !important;
+  background-attachment: fixed !important;
+}
+
+.dashboard-shell .prescedit-card {
+  border: 1px solid rgba(255, 255, 255, 0.14) !important; border-radius: 20px !important;
+  box-shadow: 0 16px 40px rgba(7, 26, 46, 0.25) !important; color: #ffffff;
+}
+.dashboard-shell .prescedit-card .prescedit-card-header { border-bottom-color: rgba(255, 255, 255, 0.18) !important; }
+.dashboard-shell .prescedit-card :is(h1, h2, h3, label, .prescedit-field > span, .prescedit-status-toggle, .prescedit-status-toggle *) {
+  color: #ffffff !important; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+}
+.dashboard-shell .prescedit-card :is(.field-input, select, .searchable-select-control input, .budgetnew-amount-input, .budgetnew-amount-readonly) {
+  min-height: 44px; border-radius: 12px !important;
+  background-color: rgba(255, 255, 255, 0.13) !important; border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important; font-weight: 600 !important; box-shadow: none !important;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.dashboard-shell .prescedit-card .searchable-select-control input { background: transparent !important; border: 0 !important; backdrop-filter: none; }
+.dashboard-shell .prescedit-card .searchable-select-control { border-radius: 12px !important; background: rgba(255, 255, 255, 0.13) !important; border: 1px solid rgba(255, 255, 255, 0.3) !important; }
+.dashboard-shell .prescedit-card .budgetnew-amount-ok { background-color: rgba(52, 211, 153, 0.14) !important; border-color: rgba(110, 231, 183, 0.55) !important; }
+.dashboard-shell .prescedit-card .budgetnew-check { color: #6ee7b7 !important; text-shadow: none; }
+.dashboard-shell .prescedit-card :is(input, .field-input)::placeholder { color: rgba(255, 255, 255, 0.75) !important; }
+.dashboard-shell .prescedit-card :is(.field-input, input, select):focus {
+  background-color: rgba(255, 255, 255, 0.22) !important; border-color: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18) !important; outline: none;
+}
+.dashboard-shell .prescedit-card input[type='date']::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+.dashboard-shell .prescedit-card :is(.searchable-select-clear, .searchable-select-control button) { color: #ffffff !important; }
+.dashboard-shell .prescedit-card .searchable-select-dropdown { background: #ffffff !important; }
+.dashboard-shell .prescedit-card .searchable-select-dropdown * { color: #0f172a !important; text-shadow: none !important; }
+.dashboard-shell .prescedit-card .prescedit-toggle-thumb { box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25); }
+.dashboard-shell .prescedit-card .prescedit-header-actions .btn { background: #ffffff !important; color: #0b1b33 !important; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important; }
+.dashboard-shell .prescedit-card .prescedit-header-actions .btn * { color: #0b1b33 !important; text-shadow: none !important; }
+.dashboard-shell .prescedit-card .prescedit-header-actions .btn-gray { background: rgba(255, 255, 255, 0.14) !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.35) !important; }
+html[data-theme="dark"]:has(.dashboard-shell) .prescedit-card { filter: contrast(1.1628) hue-rotate(-180deg) invert(1); }
+html[data-theme="dark"]:has(.dashboard-shell) .prescedit-card * { filter: none !important; }
+

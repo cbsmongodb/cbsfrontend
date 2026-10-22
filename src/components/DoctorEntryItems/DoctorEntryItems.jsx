@@ -6,6 +6,7 @@ import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import DrugPickerModal from './DrugPickerModal'
 import './DoctorEntryItems.css'
 import { useTranslations } from 'next-intl'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 const BANKS = ['BOG', 'TBC', 'Liberty', 'Cash', 'Pharmacy']
 
@@ -323,6 +324,7 @@ export default function DoctorEntryItems() {
 
   return (
     <div className="doctor-entries-page">
+      {loading && <ReportLoader variant="page" />}
       <div className="doctor-entries-header">
         <h1>{tu('k042')}</h1>
         <button type="button" className="btn" onClick={handleSave} disabled={saving}>

@@ -97,7 +97,20 @@ export default function DevErrorsWidget() {
               <div className={`devterm-log-row${e.read ? '' : ' is-new'}`} key={e._id}>
                 <span className="devterm-log-tag">[ERROR]</span>
                 <span className="devterm-log-time">{timeAgo(e.createdAt)}</span>
-                <span className="devterm-log-msg">{e.message}</span>
+                {(e.employeeName || e.action || e.page) && (
+                  <div className="devterm-ctx">
+                    {e.employeeName && <span><b>👤</b> {e.employeeName}{e.employeeRole ? ` · ${e.employeeRole}` : ''}</span>}
+                    {e.action && <span><b>⚡</b> {e.action}</span>}
+                    {e.page && <span><b>📄</b> {e.page.replace(/^\/(ka|en|ru)/, '')}</span>}
+                    {e.apiPath && <span className="devterm-dim"><b>↳</b> {e.method} {e.apiPath}{e.query ? `?${e.query}` : ''}</span>}
+                    {e.bodyKeys && <span className="devterm-dim"><b>✎</b> {e.bodyKeys}</span>}
+                  </div>
+                )}
+                {e.hint && <div className="devterm-hint">💡 {e.hint}</div>}
+                <details className="devterm-details">
+                  <summary>{String(e.message).split('\n')[0].slice(0, 160)}</summary>
+                  <span className="devterm-log-msg">{e.message}</span>
+                </details>
               </div>
             ))}
           </div>

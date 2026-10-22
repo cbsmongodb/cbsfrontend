@@ -6,6 +6,7 @@ import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import TodayVisits from './TodayVisits'
 import './PlanningsManager.css'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 const PLAN_TYPE_IDS = ['hospital', 'pharmacy', 'general', 'double visit']
 const STATUS_IDS = ['planned', 'i_went', 'i_left', 'canceled', 'completed']
@@ -359,7 +360,7 @@ export default function PlanningsManager() {
                 style={{ marginBottom: 8 }}
               />
               <div className="planning-doctor-list">
-                {loadingDoctors && <p style={{ fontSize: 13, color: '#64748b' }}>{t('loading')}</p>}
+                {loadingDoctors && <p className="inline-loading"><span className="btn-spinner" aria-hidden="true" />{t('loading')}</p>}
                 {!loadingDoctors && filteredDoctors.length === 0 && (
                   <p style={{ fontSize: 13, color: '#64748b' }}>{t('noDoctorsFound')}</p>
                 )}
@@ -462,6 +463,8 @@ export default function PlanningsManager() {
           </div>
         </div>
       </div>
+
+      {loadingList && <ReportLoader variant="page" />}
 
       <div className="planning-table-scroll">
         <table className="planning-table">

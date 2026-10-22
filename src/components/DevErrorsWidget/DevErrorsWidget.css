@@ -156,3 +156,12 @@
   background: #1e2b1e;
   color: #7ee8de;
 }
+
+.devterm-ctx { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 6px 0 4px; font-size: 12.5px; color: #e2e8f0; }
+.devterm-ctx b { color: #7dd3fc; font-weight: 400; margin-right: 2px; }
+.devterm-ctx .devterm-dim { color: #94a3b8; }
+.devterm-hint { margin: 4px 0 6px; padding: 6px 10px; border-left: 3px solid #fbbf24; background: rgba(251, 191, 36, 0.08); color: #fde68a; font-size: 12.5px; line-height: 1.5; border-radius: 0 6px 6px 0; }
+.devterm-details summary { cursor: pointer; color: #fca5a5; font-size: 12.5px; list-style: none; }
+.devterm-details summary::before { content: "▸ "; color: #94a3b8; }
+.devterm-details[open] summary::before { content: "▾ "; }
+.devterm-details .devterm-log-msg { display: block; margin-top: 6px; white-space: pre-wrap; opacity: 0.85; }

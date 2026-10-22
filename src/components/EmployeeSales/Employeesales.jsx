@@ -6,6 +6,7 @@ import EmployeeSaleModal from './EmployeeSaleModal'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './EmployeeSales.css'
 import { useTranslations } from 'next-intl'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 export default function EmployeeSales() {
   const tu = useTranslations('ui')
@@ -65,6 +66,7 @@ export default function EmployeeSales() {
 
   return (
     <div className="employee-sales-page">
+      {loading && <ReportLoader variant="page" />}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}><h1>{tu('k148')}</h1>
         <button className="btn" onClick={() => { setEditId(null); setShowModal(true) }}><span>{tu('k149')}</span></button>
       </div>

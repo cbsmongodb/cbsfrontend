@@ -21,6 +21,8 @@ export async function apiFetch(path, options = {}) {
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      // which page of the app made this call (shown in the developer error monitor)
+      ...(typeof window !== "undefined" ? { "X-Page": window.location.pathname } : {}),
       ...options.headers,
     },
   });

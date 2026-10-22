@@ -6,6 +6,7 @@ import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './EmployeeTargets.css'
 import EmployeeTargetModal from './EmployeeTargetModal'
 import { useTranslations } from 'next-intl'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 export default function EmployeeTargets() {
   const tu = useTranslations('ui')
@@ -65,6 +66,7 @@ export default function EmployeeTargets() {
 
   return (
     <div className="employee-targets-page">
+      {loading && <ReportLoader variant="page" />}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}><h1>{tu('k137')}</h1>
         <button className="btn" onClick={() => { setEditId(null); setShowModal(true) }}><span>{tu('k138')}</span></button>
       </div>

@@ -5,6 +5,7 @@ import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './SalesListing.css'
 import { useTranslations } from 'next-intl'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 function currentPeriodValue() {
   const now = new Date()
@@ -85,6 +86,7 @@ export default function SalesListing() {
 
   return (
     <div className="sales-listing-page">
+      {loading && <ReportLoader variant="page" />}
       <h1>{tu('k072')}</h1>
 
       <div className="sales-listing-filters">

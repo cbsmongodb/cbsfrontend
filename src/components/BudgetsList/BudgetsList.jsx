@@ -7,6 +7,7 @@ import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './BudgetsList.css'
 import { useTranslations } from 'next-intl'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 function fmtMoney(n) {
   const num = Number(n) || 0
@@ -103,6 +104,7 @@ export default function BudgetsList() {
 
   return (
     <div className="budgets-list-page">
+      {loading && <ReportLoader variant="page" />}
       <div className="budgets-list-page-header">
         <h1>{tu('k161')}</h1>
         <Link href={`/${locale}/dashboard/budgets/new`} className="btn budgets-list-new-btn">

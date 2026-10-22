@@ -398,12 +398,29 @@ export default function LeaveRequests() {
                     const reqs = open ? archive.requests.filter((r) => String(r.employee?._id || '') === id) : []
                     return [
                       <tr key={id} className={`lr-row ${open ? 'open' : ''}`} onClick={() => setOpenPerson(open ? null : id)}>
-                        <td>{personName(p.employee)}</td>
-                        <td className="num">{p.used.paid}</td>
-                        <td className={`num ${p.paidRemaining <= 3 ? 'low' : ''}`}>{p.paidRemaining}/{p.paidTotal}</td>
-                        <td className="num">{p.used.unpaid}</td>
-                        <td className="num">{p.used.sick}</td>
-                        <td className="num">{p.pending || ''}</td>
+                        <td>
+                          <span className="lr-person-cell">
+                            <span className="lr-avatar">{personName(p.employee).split(' ').filter(Boolean).map((x) => x[0]).join('').slice(0, 2).toUpperCase()}</span>
+                            <strong>{personName(p.employee)}</strong>
+                            <span className="lr-expand" aria-hidden="true">›</span>
+                          </span>
+                        </td>
+                        <td className="num"><span className={`lr-num ${p.used.paid ? 'on paid' : ''}`}>{p.used.paid}</span></td>
+                        <td className="num">
+                          {(() => {
+                            const ratio = p.paidTotal ? p.paidRemaining / p.paidTotal : 0
+                            const level = ratio > 0.5 ? 'ok' : ratio > 0.2 ? 'mid' : 'low'
+                            return (
+                              <div className="lr-remain">
+                                <div className="lr-remain-bar"><i className={level} style={{ width: `${Math.max(0, Math.min(100, ratio * 100))}%` }} /></div>
+                                <span className={`lr-remain-pill ${level}`}>{p.paidRemaining}/{p.paidTotal}</span>
+                              </div>
+                            )
+                          })()}
+                        </td>
+                        <td className="num"><span className={`lr-num ${p.used.unpaid ? 'on unpaid' : ''}`}>{p.used.unpaid}</span></td>
+                        <td className="num"><span className={`lr-num ${p.used.sick ? 'on sick' : ''}`}>{p.used.sick}</span></td>
+                        <td className="num">{p.pending ? <span className="lr-pending-badge">{p.pending}</span> : <span className="lr-dash">—</span>}</td>
                       </tr>,
                       open && (
                         <tr key={`${id}-x`} className="lr-row-detail">
