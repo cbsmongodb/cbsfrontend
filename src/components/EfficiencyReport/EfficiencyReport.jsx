@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './EfficiencyReport.css'
+import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -102,7 +103,20 @@ export default function EfficiencyReport() {
 
   return (
     <div className="efficiency-report">
-      <h1>{t('efficiency.title')}</h1>
+      <div className="report-title-row">
+        <h1>{t('efficiency.title')}</h1>
+        <ExcelExportButton title={t('efficiency.title')} build={() => ({
+            headers: [t('efficiency.colDate'), t('common.employee'), t('efficiency.colDoctors'), t('efficiency.colProfile'), t('common.hospital'), t('efficiency.colVisits')],
+            rows: visibleGroups.map((g) => [
+              { value: new Date(g.date), kind: 'date' },
+              g.employeeName,
+              g.doctors.map((d) => d.name).join(', '),
+              g.doctors.map((d) => String(d.profile || '').split('/').pop().trim()).filter(Boolean).join(', '),
+              g.placeName,
+              { value: g.visitCount, kind: 'number' },
+            ]),
+          })} />
+      </div>
 
       <div className="efficiency-filters-card">
         <div className="efficiency-filters-grid">

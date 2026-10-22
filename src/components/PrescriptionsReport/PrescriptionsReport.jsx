@@ -6,6 +6,7 @@ import { apiFetch } from '@/lib/api'
 import { useMonthNames } from '@/lib/months'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './PrescriptionsReport.css'
+import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 
 const pad2 = (n) => String(n).padStart(2, '0')
 function currentMonth() {
@@ -100,7 +101,10 @@ export default function PrescriptionsReport() {
 
   return (
     <div className="rx-report">
-      <h1>{t('prescriptions.title')}</h1>
+      <div className="report-title-row">
+        <h1>{t('prescriptions.title')}</h1>
+        <ExcelExportButton title={t('prescriptions.title')} tableSelector=".rx-report-table" />
+      </div>
       <p className="rx-report-subtitle">{t('prescriptions.subtitle')}</p>
 
       <div className="rx-report-filters-card">

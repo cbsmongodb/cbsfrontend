@@ -717,7 +717,13 @@
       "myAccount": "My account",
       "noRecords": "No records found",
       "noRecordsFilter": "No records match this filter",
-      "totalCount": "{n} total"
+      "totalCount": "{n} total",
+      "exportExcel": "Export to Excel",
+      "exportedAt": "exported",
+      "exportRows": "rows",
+      "exportTotal": "Total",
+      "exportNothing": "Load the data first (search)",
+      "exportFailed": "Export failed, try again"
     },
     "efficiency": {
       "title": "Employee Efficiency",

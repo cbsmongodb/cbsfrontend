@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './StaffPerformanceReport.css'
+import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -97,7 +98,10 @@ export default function StaffPerformanceReport() {
 
   return (
     <div className="staff-performance">
-      <h1>{t('staff.title')}</h1>
+      <div className="report-title-row">
+        <h1>{t('staff.title')}</h1>
+        <ExcelExportButton title={t('staff.title')} tableSelector=".staff-performance-table" />
+      </div>
 
       <div className="staff-performance-filters">
         <div className="staff-performance-mode-toggle">

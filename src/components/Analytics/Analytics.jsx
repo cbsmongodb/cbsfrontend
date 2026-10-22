@@ -15,6 +15,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import './Analytics.css'
+import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -195,7 +196,10 @@ export default function Analytics() {
 
   return (
     <div className="analytics-page">
-      <h1>{t('analytics.title')}</h1>
+      <div className="report-title-row">
+        <h1>{t('analytics.title')}</h1>
+        <ExcelExportButton title={t('analytics.title')} tableSelector=".analytics-table" />
+      </div>
 
       <div className="analytics-filters">
         <div className="analytics-filters-grid">

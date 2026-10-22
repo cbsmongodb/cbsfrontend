@@ -717,7 +717,13 @@
       "myAccount": "Мой аккаунт",
       "noRecords": "Записи не найдены",
       "noRecordsFilter": "По этому фильтру записей нет",
-      "totalCount": "всего {n}"
+      "totalCount": "всего {n}",
+      "exportExcel": "Экспорт в Excel",
+      "exportedAt": "экспорт:",
+      "exportRows": "строк",
+      "exportTotal": "Итого",
+      "exportNothing": "Сначала загрузите данные (поиск)",
+      "exportFailed": "Не удалось, попробуйте ещё раз"
     },
     "efficiency": {
       "title": "Эффективность сотрудников",

@@ -5,6 +5,8 @@ import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch, apiDownload } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './ReimbursementReport.css'
+import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
+import '@/components/ExcelExportButton/ExcelExportButton.css'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -105,18 +107,10 @@ export default function ReimbursementReport() {
   return (
     <div className="reimbursement-report">
       <div className="reimbursement-header">
-        <h1>{t('reimbursement.title')}</h1>
-        <button
-          type="button"
-          className="btn reimbursement-export-btn"
-          onClick={handleExport}
-          disabled={exporting || loading}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 15V3M12 15l-4-4M12 15l4-4M2 17l.6 3a2 2 0 0 0 2 1.6h14.8a2 2 0 0 0 2-1.6l.6-3" />
-          </svg>
-          <span>{exporting ? t('reimbursement.exporting') : t('reimbursement.export')}</span>
-        </button>
+        <div className="report-title-row report-title-row-spread">
+          <h1>{t('reimbursement.title')}</h1>
+          <ExcelExportButton title={t('reimbursement.title')} tableSelector=".reimbursement-table" />
+        </div>
       </div>
 
       <div className="reimbursement-filters-card">

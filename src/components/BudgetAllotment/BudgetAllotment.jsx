@@ -15,6 +15,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import './BudgetAllotment.css'
+import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -79,7 +80,10 @@ export default function BudgetAllotment() {
   return (
     <div className="budgetallot-page">
       <div className="budgetallot-header">
-        <h1>{t('budget.title')}</h1>
+        <div className="report-title-row">
+          <h1>{t('budget.title')}</h1>
+          <ExcelExportButton title={t('budget.title')} tableSelector=".budgetallot-table" />
+        </div>
         {canAdd && (
           <Link href={`/${locale}/dashboard/budgets/new`} className="btn budgetallot-new-btn">
             <span>{t('budget.create')}</span>
