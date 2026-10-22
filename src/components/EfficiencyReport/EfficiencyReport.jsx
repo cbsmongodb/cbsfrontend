@@ -203,9 +203,18 @@ export default function EfficiencyReport() {
                 <tr key={i}>
                   <td className="nowrap">{new Date(g.date).toLocaleDateString(localeTag(locale), { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
                   <td className="strong">{g.employeeName}</td>
-                  <td>{g.doctors.map((d) => d.name).join(', ')}</td>
-                  <td className="muted">{g.doctors.map((d) => d.profile).filter(Boolean).join(', ')}</td>
-                  <td>{g.placeName}</td>
+                  <td className="efficiency-col-doctors">
+                    <div className="efficiency-clamp" title={g.doctors.map((d) => d.name).join(', ')}>{g.doctors.map((d) => d.name).join(', ')}</div>
+                  </td>
+                  <td className="muted efficiency-col-profile">
+                    <div className="efficiency-clamp">
+                      {Object.entries(g.doctors.reduce((acc, d) => { if (d.profile) { const k = String(d.profile).split('/').pop().trim(); acc[k] = (acc[k] || 0) + 1 } return acc }, {}))
+                        .map(([k, n]) => (n > 1 ? `${k} ×${n}` : k)).join(', ')}
+                    </div>
+                  </td>
+                  <td className="efficiency-col-place">
+                    <div className="efficiency-clamp efficiency-clamp-3" title={g.placeName}>{g.placeName}</div>
+                  </td>
                   <td className="num strong">{g.visitCount}</td>
                 </tr>
               ))}

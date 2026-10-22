@@ -188,3 +188,15 @@
 .efficiency-table .strong { font-weight: 700; color: #0f172a; }
 .efficiency-table .muted { color: #64748b; }
 .efficiency-table .nowrap { white-space: nowrap; }
+
+.efficiency-table .efficiency-col-doctors { width: 30%; max-width: 360px; min-width: 220px; }
+.efficiency-table .efficiency-col-profile { width: 18%; max-width: 240px; min-width: 150px; }
+.efficiency-clamp {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4;
+  overflow: hidden; line-height: 1.45; white-space: normal; word-break: normal; overflow-wrap: anywhere;
+}
+.efficiency-table td:nth-child(5) { min-width: 200px; }
+
+.efficiency-table .efficiency-col-place { width: 20%; max-width: 260px; min-width: 170px; }
+.efficiency-table td:nth-child(5) { min-width: 0; }
+.efficiency-clamp-3 { -webkit-line-clamp: 3; line-clamp: 3; }
