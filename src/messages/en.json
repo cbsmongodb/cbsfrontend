@@ -608,7 +608,8 @@
       "productSale": "Monthly Product Sales",
       "stock": "Stock Availability",
       "order": "Orders",
-      "doctors": "Doctors Report"
+      "doctors": "Doctors Report",
+      "overview": "📊 Overview"
     },
     "startDate": "Start date",
     "endDate": "End date",
@@ -695,7 +696,27 @@
     "details": "Details",
     "share": "Share",
     "estimatedNote": "Sales are estimated: each rep's real pharmacy sales are shared out over their doctors by prescriptions. * = real sales not entered yet for that drug / month",
-    "unknownSales": "Real sales not entered yet"
+    "unknownSales": "Real sales not entered yet",
+    "overview": {
+      "title": "Year overview",
+      "subtitle": "Real sales, visits and prescriptions on one screen",
+      "sales": "Sales",
+      "boxes": "boxes",
+      "visits": "Visits",
+      "doctorVisits": "doctor visits",
+      "prescriptions": "Prescriptions",
+      "fromDataEntry": "from data entry",
+      "budget": "Doctors' budget",
+      "employees": "employees",
+      "salesByMonth": "Sales by month (by division)",
+      "divisionShare": "Division share",
+      "total": "total",
+      "topDrugs": "Top 10 products",
+      "visitsVsRx": "Visits and prescriptions",
+      "topReps": "Top 10 reps (by sales)",
+      "noSales": "No sales entered for this year yet",
+      "inBoxes": "in boxes (drugs have no price)"
+    }
   },
   "reports": {
     "common": {

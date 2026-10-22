@@ -53,3 +53,6 @@ html[data-theme="dark"] .report-loader { filter: contrast(1.1628) hue-rotate(-18
 }
 @keyframes rl-breathe { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .rl__g, .rl__rect { animation-duration: 3s; } }
+
+/* only one loader on screen at a time */
+.report-loader ~ .report-loader { display: none !important; }

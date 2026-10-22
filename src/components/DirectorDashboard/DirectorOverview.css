@@ -1,0 +1,84 @@
+.ov { display: flex; flex-direction: column; gap: 18px; }
+.ov-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.ov-head h2 { margin: 0; font-size: 20px; color: #0f172a; }
+.ov-head span { font-size: 13px; color: #64748b; font-weight: 500; }
+.ov-years { display: inline-flex; gap: 4px; padding: 4px; background: #e8eef7; border-radius: 12px; }
+.ov-years button { border: 0; background: transparent; padding: 8px 16px; border-radius: 9px; font-weight: 700; color: #475569; cursor: pointer; font-family: inherit; }
+.ov-years button.active { background: #ffffff; color: #0f172a; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1); }
+
+/* KPI cards: deep gradients + light sparkline, a little 3D lift */
+.ov-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 1100px) { .ov-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .ov-kpis { grid-template-columns: 1fr; } }
+.ov-kpi {
+  position: relative; overflow: hidden; border-radius: 20px; color: #ffffff; padding: 18px 18px 0;
+  box-shadow: 0 18px 34px -14px var(--sh), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform: perspective(900px) rotateX(2deg); transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.ov-kpi:hover { transform: perspective(900px) rotateX(0deg) translateY(-3px); }
+.ov-kpi::after {
+  content: ""; position: absolute; right: -40px; top: -40px; width: 150px; height: 150px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.28), transparent 70%);
+}
+.ov-kpi-blue { background: linear-gradient(135deg, #071a2e, #13608f 60%, #2a93c4); --sh: rgba(19, 96, 143, 0.7); }
+.ov-kpi-green { background: linear-gradient(135deg, #0f2a20, #2d6a4f 60%, #52b788); --sh: rgba(45, 106, 79, 0.7); }
+.ov-kpi-purple { background: linear-gradient(135deg, #2a1238, #5a2a72 60%, #b36a90); --sh: rgba(90, 42, 114, 0.7); }
+.ov-kpi-amber { background: linear-gradient(135deg, #3b2208, #8a5a12 60%, #e0a35a); --sh: rgba(138, 90, 18, 0.7); }
+.ov-kpi-top { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 4px; }
+.ov-kpi-top span { font-size: 12.5px; font-weight: 700; opacity: 0.85; letter-spacing: 0.02em; }
+.ov-kpi-top strong { font-size: 26px; line-height: 1.1; font-variant-numeric: tabular-nums; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); }
+.ov-kpi-top em { font-style: normal; font-size: 12px; opacity: 0.8; }
+.ov-kpi-spark { margin: 8px -18px 0; }
+
+/* cards */
+.ov-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.ov-grid-main { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
+@media (max-width: 1000px) { .ov-grid, .ov-grid-main { grid-template-columns: 1fr; } }
+.ov-card {
+  background: #ffffff; border: 1px solid #dfe5ee; border-radius: 20px; padding: 18px 18px 12px;
+  box-shadow: 0 10px 30px rgba(15, 39, 68, 0.07);
+}
+.ov-card h3 { margin: 0 0 12px; font-size: 15px; color: #0f172a; display: flex; align-items: center; gap: 10px; }
+.ov-card h3::before { content: ""; width: 4px; height: 16px; border-radius: 4px; background: linear-gradient(180deg, #2a93c4, #0c3557); }
+
+/* donut */
+.ov-donut { position: relative; }
+.ov-donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+.ov-donut-center strong { font-size: 24px; color: #0f172a; font-variant-numeric: tabular-nums; }
+.ov-donut-center span { font-size: 12px; color: #64748b; font-weight: 600; }
+.ov-legend { list-style: none; margin: 6px 0 4px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.ov-legend li { display: grid; grid-template-columns: 14px 1fr auto; align-items: center; gap: 10px; font-size: 13px; }
+.ov-legend i { width: 14px; height: 14px; border-radius: 5px; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.2); }
+.ov-legend span { color: #334155; font-weight: 600; }
+.ov-legend strong { color: #0f172a; font-variant-numeric: tabular-nums; }
+
+/* tooltip */
+.ov-tooltip {
+  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border: 1px solid #e3e8ef; border-radius: 14px;
+  padding: 10px 12px; box-shadow: 0 12px 28px rgba(15, 39, 68, 0.16); min-width: 160px;
+}
+.ov-tooltip-label { font-weight: 800; color: #0f172a; font-size: 12.5px; margin-bottom: 6px; }
+.ov-tooltip-row { display: grid; grid-template-columns: 10px 1fr auto; align-items: center; gap: 8px; font-size: 12.5px; padding: 2px 0; }
+.ov-tooltip-row i { width: 10px; height: 10px; border-radius: 3px; }
+.ov-tooltip-row span { color: #475569; }
+.ov-tooltip-row strong { color: #0f172a; font-variant-numeric: tabular-nums; }
+
+/* top reps */
+.ov-reps { display: flex; flex-direction: column; gap: 10px; }
+.ov-rep { display: grid; grid-template-columns: 30px minmax(120px, 220px) 1fr auto; align-items: center; gap: 12px; }
+@media (max-width: 640px) { .ov-rep { grid-template-columns: 26px 1fr auto; } .ov-rep-bar { grid-column: 2 / -1; } }
+.ov-rep-rank {
+  width: 28px; height: 28px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 13px; color: #ffffff; background: linear-gradient(135deg, #8fa3bf, #3b4a63);
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.18);
+}
+.ov-rep-rank.r1 { background: linear-gradient(135deg, #ffd76a, #b8860b); }
+.ov-rep-rank.r2 { background: linear-gradient(135deg, #e5e9f0, #8a94a6); }
+.ov-rep-rank.r3 { background: linear-gradient(135deg, #f0b27a, #9a5b2a); }
+.ov-rep-name { font-weight: 700; color: #0f172a; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ov-rep-bar { height: 10px; border-radius: 999px; background: #eef2f7; overflow: hidden; }
+.ov-rep-bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #0c3557, #2a93c4, #52b788); box-shadow: 0 2px 6px rgba(42, 147, 196, 0.35); }
+.ov-rep strong { font-variant-numeric: tabular-nums; color: #0c3557; font-size: 13.5px; }
+.ov-empty { color: #64748b; margin: 4px 0; }
+
+.ov-note { margin-left: auto; font-size: 11.5px; font-weight: 600; color: #b45309; background: #fff6e8; border: 1px solid #f6dfb6; padding: 3px 10px; border-radius: 999px; }

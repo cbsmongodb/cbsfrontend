@@ -17,6 +17,7 @@ import {
   PieChart,
   Pie,
   Cell,
+  LabelList,
 } from 'recharts'
 import {
   useReactTable,
@@ -27,6 +28,7 @@ import {
   flexRender,
 } from '@tanstack/react-table'
 import './DirectorDashboard.css'
+import DirectorOverview from './DirectorOverview'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 function fmtMoney(n) {
@@ -171,14 +173,17 @@ function BarChart({ data, valueKey, labelKey, seriesName }) {
       <RBarChart data={data} layout="vertical" margin={{ top: 4, right: 24, bottom: 4, left: 4 }} barCategoryGap="28%">
         <defs>
           <linearGradient id="salesBarGradient" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#3f74d6" /><stop offset="100%" stopColor="#2f9e6e" />
+            <stop offset="0%" stopColor="#0c3557" /><stop offset="55%" stopColor="#13608f" /><stop offset="100%" stopColor="#2a93c4" />
           </linearGradient>
+          <filter id="barShadow" x="-10%" y="-30%" width="130%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3.5" floodColor="#0c3557" floodOpacity="0.28" /></filter>
         </defs>
         <CartesianGrid horizontal={false} stroke="#eceef2" />
         <XAxis type="number" tick={{ fontSize: 11, fill: '#9aa7ba' }} axisLine={false} tickLine={false} />
-        <YAxis type="category" dataKey={labelKey} width={130} tick={{ fontSize: 12, fontWeight: 600, fill: '#0f2744' }} axisLine={false} tickLine={false} />
+        <YAxis type="category" dataKey={labelKey} width={130} tick={{ fontSize: 12, fontWeight: 600, fill: '#0b1b33' }} axisLine={false} tickLine={false} />
         <Tooltip content={<PremiumTooltip />} cursor={{ fill: 'rgba(63, 116, 214, 0.05)' }} />
-        <Bar dataKey={valueKey} name={seriesName || t('saleBoxes')} fill="url(#salesBarGradient)" radius={[0, 8, 8, 0]} maxBarSize={22} animationDuration={700} animationEasing="ease-out" />
+        <Bar dataKey={valueKey} name={seriesName || t('saleBoxes')} fill="url(#salesBarGradient)" radius={[0, 10, 10, 0]} maxBarSize={22} animationDuration={700} animationEasing="ease-out" filter="url(#barShadow)">
+          <LabelList dataKey={valueKey} position="right" formatter={(v) => Number(v || 0).toLocaleString()} style={{ fill: '#0c3557', fontWeight: 700, fontSize: 11.5 }} />
+        </Bar>
       </RBarChart>
     </ResponsiveContainer>
   )
@@ -192,16 +197,19 @@ function DualBarChart({ data, labelKey, targetKey, soldKey }) {
       <RBarChart data={data} layout="vertical" margin={{ top: 4, right: 24, bottom: 4, left: 4 }} barCategoryGap="28%" barGap={4}>
         <defs>
           <linearGradient id="soldBarGradient" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#3f74d6" /><stop offset="100%" stopColor="#2f9e6e" />
+            <stop offset="0%" stopColor="#0c3557" /><stop offset="55%" stopColor="#13608f" /><stop offset="100%" stopColor="#2a93c4" />
           </linearGradient>
+          <filter id="barShadow" x="-10%" y="-30%" width="130%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3.5" floodColor="#0c3557" floodOpacity="0.28" /></filter>
         </defs>
         <CartesianGrid horizontal={false} stroke="#eceef2" />
         <XAxis type="number" tick={{ fontSize: 11, fill: '#9aa7ba' }} axisLine={false} tickLine={false} />
-        <YAxis type="category" dataKey={labelKey} width={130} tick={{ fontSize: 12, fontWeight: 600, fill: '#0f2744' }} axisLine={false} tickLine={false} />
+        <YAxis type="category" dataKey={labelKey} width={130} tick={{ fontSize: 12, fontWeight: 600, fill: '#0b1b33' }} axisLine={false} tickLine={false} />
         <Tooltip content={<PremiumTooltip />} cursor={{ fill: 'rgba(63, 116, 214, 0.05)' }} />
         <Legend verticalAlign="top" align="left" height={28} iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11, fontWeight: 600, color: '#5b6b82' }} />
-        <Bar dataKey={targetKey} name={t('monthlyTarget')} fill="#c3cad4" radius={[0, 6, 6, 0]} maxBarSize={14} animationDuration={700} />
-        <Bar dataKey={soldKey} name={t('boxesSold')} fill="url(#soldBarGradient)" radius={[0, 6, 6, 0]} maxBarSize={14} animationDuration={700} animationBegin={150} />
+        <Bar dataKey={targetKey} name={t('monthlyTarget')} fill="#d5dce6" radius={[0, 8, 8, 0]} maxBarSize={14} animationDuration={700} />
+        <Bar dataKey={soldKey} name={t('boxesSold')} fill="url(#soldBarGradient)" radius={[0, 8, 8, 0]} maxBarSize={14} animationDuration={700} animationBegin={150} filter="url(#barShadow)">
+          <LabelList dataKey={soldKey} position="right" formatter={(v) => Number(v || 0).toLocaleString()} style={{ fill: '#0c3557', fontWeight: 700, fontSize: 11 }} />
+        </Bar>
       </RBarChart>
     </ResponsiveContainer>
   )
@@ -214,14 +222,17 @@ function StockChart({ data }) {
       <RBarChart data={data} margin={{ top: 4, right: 12, bottom: 70, left: 4 }} barCategoryGap="30%">
         <defs>
           <linearGradient id="stockBarGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#3f74d6" /><stop offset="100%" stopColor="#2f9e6e" />
+            <stop offset="0%" stopColor="#0c3557" /><stop offset="55%" stopColor="#13608f" /><stop offset="100%" stopColor="#2a93c4" />
           </linearGradient>
+          <filter id="barShadow" x="-10%" y="-30%" width="130%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3.5" floodColor="#0c3557" floodOpacity="0.28" /></filter>
         </defs>
         <CartesianGrid vertical={false} stroke="#eceef2" />
         <XAxis dataKey="name" tick={{ fontSize: 11, fontWeight: 600, fill: '#5b6b82' }} axisLine={false} tickLine={false} angle={-35} textAnchor="end" interval={0} height={80} />
         <YAxis tick={{ fontSize: 11, fill: '#9aa7ba' }} axisLine={false} tickLine={false} />
         <Tooltip content={<PremiumTooltip />} cursor={{ fill: 'rgba(63, 116, 214, 0.05)' }} />
-        <Bar dataKey="stocks" name={t('stocks')} fill="url(#stockBarGradient)" radius={[8, 8, 0, 0]} maxBarSize={44} animationDuration={700} />
+        <Bar dataKey="stocks" name={t('stocks')} fill="url(#stockBarGradient)" radius={[10, 10, 0, 0]} maxBarSize={44} animationDuration={700} filter="url(#barShadow)">
+          <LabelList dataKey="stocks" position="top" formatter={(v) => Number(v || 0).toLocaleString()} style={{ fill: '#0c3557', fontWeight: 700, fontSize: 11 }} />
+        </Bar>
       </RBarChart>
     </ResponsiveContainer>
   )
@@ -235,7 +246,7 @@ function Skeleton({ rows = 5 }) {
           <div className="director-skeleton-row" key={i} />
         ))}
       </div>
-      <ReportLoader />
+      <ReportLoader variant="page" />
     </>
   )
 }
@@ -339,7 +350,7 @@ export default function DirectorDashboard() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const [tab, setTabState] = useState(searchParams.get('tab') || 'product-sale')
+  const [tab, setTabState] = useState(searchParams.get('tab') || 'overview')
 
   function setTab(next) {
     setTabState(next)
@@ -381,12 +392,14 @@ export default function DirectorDashboard() {
       </div>
 
       <div className="director-tabs">
+        <button type="button" className={tab === 'overview' ? 'active' : ''} onClick={() => setTab('overview')}>{t('tabs.overview')}</button>
         <button type="button" className={tab === 'product-sale' ? 'active' : ''} onClick={() => setTab('product-sale')}>{t('tabs.productSale')}</button>
         <button type="button" className={tab === 'stock-availability' ? 'active' : ''} onClick={() => setTab('stock-availability')}>{t('tabs.stock')}</button>
         <button type="button" className={tab === 'order' ? 'active' : ''} onClick={() => setTab('order')}>{t('tabs.order')}</button>
         <button type="button" className={tab === 'doctors-report' ? 'active' : ''} onClick={() => setTab('doctors-report')}>{t('tabs.doctors')}</button>
       </div>
 
+      {tab === 'overview' && <DirectorOverview />}
       {tab === 'product-sale' && <ProductSaleTab />}
       {tab === 'stock-availability' && <StockAvailabilityTab />}
       {tab === 'order' && <OrderTab />}
@@ -489,7 +502,7 @@ function ProductSaleTab() {
 
       {error && <p className="resource-error">{error}</p>}
 
-      {loading && (data ? <ReportLoader /> : <Skeleton />)}
+      {loading && (data ? <ReportLoader variant="page" /> : <Skeleton />)}
 
       {data && rows.length > 0 && (
         <div className="director-kpi-row">
@@ -635,7 +648,7 @@ function StockAvailabilityTab() {
   return (
     <div className="director-tab-panel">
       {error && <p className="resource-error">{error}</p>}
-      {loading && (data ? <ReportLoader /> : <Skeleton />)}
+      {loading && (data ? <ReportLoader variant="page" /> : <Skeleton />)}
 
       {data && (
         <div className="director-kpi-row">
@@ -790,7 +803,7 @@ function OrderTab() {
   return (
     <div className="director-tab-panel">
       {error && <p className="resource-error">{error}</p>}
-      {loading && (data ? <ReportLoader /> : <Skeleton />)}
+      {loading && (data ? <ReportLoader variant="page" /> : <Skeleton />)}
 
       <div className="director-filters">
         <div className="director-field">
@@ -1020,7 +1033,7 @@ function DoctorsReportTab() {
       </div>
 
       {error && <p className="resource-error">{error}</p>}
-      {loading && (data ? <ReportLoader /> : <Skeleton />)}
+      {loading && (data ? <ReportLoader variant="page" /> : <Skeleton />)}
 
       {data && (
         <div className="director-kpi-row">
