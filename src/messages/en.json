@@ -748,7 +748,15 @@
       "period": "Period",
       "performer": "Performer",
       "region": "Region",
-      "amount": "Reimbursement amount"
+      "amount": "Reimbursement amount",
+      "division": "Division",
+      "allDivisions": "All divisions",
+      "viewDetails": "By day",
+      "viewByEmployee": "By employee (total)",
+      "regions": "Regions",
+      "days": "Days",
+      "fromTo": "Period",
+      "totalToPay": "Total to pay"
     },
     "attendance": {
       "title": "Attendance Report",

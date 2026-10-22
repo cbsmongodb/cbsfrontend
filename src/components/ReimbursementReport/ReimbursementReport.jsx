@@ -35,6 +35,10 @@ export default function ReimbursementReport() {
   const [to, setTo] = useState(defaultTo())
   const [employeeId, setEmployeeId] = useState('')
   const [search, setSearch] = useState('')
+  const [divisionId, setDivisionId] = useState('')
+  const [divisions, setDivisions] = useState([])
+  const [view, setView] = useState('details') // details | employees
+  const [page, setPage] = useState(0)
 
   const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(false)
@@ -47,6 +51,7 @@ export default function ReimbursementReport() {
       try {
         const e = await apiFetch('/api/employees')
         setEmployees(e)
+        apiFetch('/api/reports/reimbursement/divisions').then(setDivisions).catch(() => {})
       } catch (err) {
         setError(err.message)
       }
@@ -64,6 +69,7 @@ export default function ReimbursementReport() {
       if (from) params.set('from', from)
       if (to) params.set('to', to)
       if (employeeId) params.set('employee', employeeId)
+      if (divisionId) params.set('division', divisionId)
       const data = await apiFetch(`/api/reports/reimbursement?${params}`)
       setRows(data)
       setLoaded(true)
@@ -104,12 +110,36 @@ export default function ReimbursementReport() {
     return { totalAmount, uniqueEmployees, rows: visibleRows.length }
   }, [visibleRows])
 
+  // one line per person: total for the whole period
+  const byEmployee = useMemo(() => {
+    const m = new Map()
+    visibleRows.forEach((r) => {
+      const k = r.employeeId || r.employeeName
+      if (!m.has(k)) m.set(k, { employeeName: r.employeeName, days: 0, amount: 0, regions: new Set(), first: r.date, last: r.date })
+      const x = m.get(k)
+      x.days += 1
+      x.amount += r.amount || 0
+      if (r.regionName) x.regions.add(r.regionName)
+      if (new Date(r.date) < new Date(x.first)) x.first = r.date
+      if (new Date(r.date) > new Date(x.last)) x.last = r.date
+    })
+    return [...m.values()].sort((a, b) => b.amount - a.amount || a.employeeName.localeCompare(b.employeeName))
+  }, [visibleRows])
+
+  // pages of 50
+  const PAGE = 50
+  const list = view === 'employees' ? byEmployee : visibleRows
+  const pageCount = Math.max(1, Math.ceil(list.length / PAGE))
+  const safePage = Math.min(page, pageCount - 1)
+  const pageRows = list.slice(safePage * PAGE, safePage * PAGE + PAGE)
+  useEffect(() => { setPage(0) }, [rows, search, view])
+
   return (
     <div className="reimbursement-report">
       <div className="reimbursement-header">
         <div className="report-title-row report-title-row-spread">
           <h1>{t('reimbursement.title')}</h1>
-          <ExcelExportButton title={t('reimbursement.title')} tableSelector=".reimbursement-table" />
+          <ExcelExportButton title={t('reimbursement.title')} tableSelector=".reimbursement-table" pages={pageCount} currentPage={safePage + 1} goToPage={(n) => setPage(n - 1)} />
         </div>
       </div>
 
@@ -132,6 +162,13 @@ export default function ReimbursementReport() {
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
               placeholder={t('common.all')}
             />
+          </div>
+          <div className="reimbursement-field">
+            <label>{t('reimbursement.division')}</label>
+            <select className="field-input" value={divisionId} onChange={(e) => setDivisionId(e.target.value)}>
+              <option value="">{t('reimbursement.allDivisions')}</option>
+              {divisions.map((d) => <option key={d._id} value={d._id}>{d.name}</option>)}
+            </select>
           </div>
           <button type="button" className="btn reimbursement-search-btn" onClick={loadReport} disabled={loading}>
             <span>{loading ? <span className="btn-spinner" aria-hidden="true" /> : t('common.search')}</span>
@@ -167,33 +204,76 @@ export default function ReimbursementReport() {
         </div>
       )}
 
+      {loaded && (
+        <div className="reimb-view-toggle" role="tablist">
+          <button type="button" className={view === 'details' ? 'active' : ''} onClick={() => setView('details')}>{t('reimbursement.viewDetails')}</button>
+          <button type="button" className={view === 'employees' ? 'active' : ''} onClick={() => setView('employees')}>{t('reimbursement.viewByEmployee')}</button>
+        </div>
+      )}
+
       <div className="reimbursement-table-scroll">
-        <table className="reimbursement-table">
-          <thead>
-            <tr>
-              <th>{t('reimbursement.period')}</th>
-              <th>{t('reimbursement.performer')}</th>
-              <th>{t('reimbursement.region')}</th>
-              <th>{t('reimbursement.amount')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {visibleRows.map((r, i) => (
-              <tr key={i}>
-                <td>{new Date(r.date).toLocaleDateString(localeTag(locale))}</td>
-                <td>{r.employeeName}</td>
-                <td>{r.regionName}</td>
-                <td className="reimbursement-amount">{r.amount} ₾</td>
-              </tr>
-            ))}
-            {loaded && visibleRows.length === 0 && (
+        {view === 'details' ? (
+          <table className="reimbursement-table">
+            <thead>
               <tr>
-                <td colSpan={4}>{t('common.noRecords')}</td>
+                <th>{t('reimbursement.period')}</th>
+                <th>{t('reimbursement.performer')}</th>
+                <th>{t('reimbursement.region')}</th>
+                <th>{t('reimbursement.amount')}</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {pageRows.map((r, i) => (
+                <tr key={i}>
+                  <td>{new Date(r.date).toLocaleDateString('en-GB')}</td>
+                  <td>{r.employeeName}</td>
+                  <td>{r.regionName}</td>
+                  <td className="reimbursement-amount">{r.amount} ₾</td>
+                </tr>
+              ))}
+              {loaded && pageRows.length === 0 && (
+                <tr><td colSpan={4}>{t('common.noRecords')}</td></tr>
+              )}
+            </tbody>
+          </table>
+        ) : (
+          <table className="reimbursement-table">
+            <thead>
+              <tr>
+                <th>{t('reimbursement.performer')}</th>
+                <th>{t('reimbursement.regions')}</th>
+                <th>{t('reimbursement.days')}</th>
+                <th>{t('reimbursement.fromTo')}</th>
+                <th>{t('reimbursement.totalToPay')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pageRows.map((r, i) => (
+                <tr key={i}>
+                  <td className="reimb-strong">{r.employeeName}</td>
+                  <td>{[...r.regions].join(', ')}</td>
+                  <td>{r.days}</td>
+                  <td>{new Date(r.first).toLocaleDateString('en-GB')} – {new Date(r.last).toLocaleDateString('en-GB')}</td>
+                  <td className="reimbursement-amount reimb-strong">{r.amount.toLocaleString('en-US')} ₾</td>
+                </tr>
+              ))}
+              {loaded && pageRows.length === 0 && (
+                <tr><td colSpan={5}>{t('common.noRecords')}</td></tr>
+              )}
+            </tbody>
+          </table>
+        )}
       </div>
+
+      {pageCount > 1 && (
+        <div className="reimb-pagination">
+          <button type="button" onClick={() => setPage(0)} disabled={safePage === 0}>«</button>
+          <button type="button" onClick={() => setPage(safePage - 1)} disabled={safePage === 0}>‹</button>
+          <span>{safePage * PAGE + 1}–{Math.min((safePage + 1) * PAGE, list.length)} / {list.length}</span>
+          <button type="button" onClick={() => setPage(safePage + 1)} disabled={safePage >= pageCount - 1}>›</button>
+          <button type="button" onClick={() => setPage(pageCount - 1)} disabled={safePage >= pageCount - 1}>»</button>
+        </div>
+      )}
     </div>
   )
 }

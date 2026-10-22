@@ -164,3 +164,16 @@
     justify-content: center;
   }
 }
+
+.reimb-view-toggle { display: inline-flex; gap: 4px; padding: 4px; margin: 4px 0 14px; background: #e8eef7; border-radius: 12px; }
+.reimb-view-toggle button { border: 0; background: transparent; padding: 8px 16px; border-radius: 9px; font-weight: 700; font-size: 13px; color: #475569; cursor: pointer; font-family: inherit; }
+.reimb-view-toggle button.active { background: #ffffff; color: #0f172a; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1); }
+.reimb-strong { font-weight: 700; color: #0f172a; }
+.reimb-pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 16px 0 20px; }
+.reimb-pagination button {
+  min-width: 38px; height: 38px; border-radius: 10px; border: 1.5px solid #cbd5e1; background: #ffffff;
+  color: #1e293b; font-weight: 700; cursor: pointer; font-family: inherit;
+}
+.reimb-pagination button:hover:not(:disabled) { border-color: #3f74d6; background: #eef4fd; }
+.reimb-pagination button:disabled { opacity: 0.4; cursor: default; }
+.reimb-pagination span { color: #334155; font-weight: 600; font-size: 13.5px; padding: 0 8px; }

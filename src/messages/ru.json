@@ -748,7 +748,15 @@
       "period": "Период",
       "performer": "Исполнитель",
       "region": "Регион",
-      "amount": "Сумма возмещения"
+      "amount": "Сумма возмещения",
+      "division": "Дивизион",
+      "allDivisions": "Все дивизионы",
+      "viewDetails": "По дням",
+      "viewByEmployee": "По сотрудникам (итого)",
+      "regions": "Регионы",
+      "days": "Дней",
+      "fromTo": "Период",
+      "totalToPay": "Итого к оплате"
     },
     "attendance": {
       "title": "Отчёт о посещаемости",
