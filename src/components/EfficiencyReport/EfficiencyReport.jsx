@@ -95,6 +95,27 @@ export default function EfficiencyReport() {
     )
   }, [groups, search])
 
+  // pages of 50 (cards and table)
+  const PAGE = 50
+  const [page, setPage] = useState(0)
+  useEffect(() => { setPage(0) }, [visibleGroups])
+  const pageCount = Math.max(1, Math.ceil(visibleGroups.length / PAGE))
+  const safePage = Math.min(page, pageCount - 1)
+  const pageGroups = visibleGroups.slice(safePage * PAGE, safePage * PAGE + PAGE)
+  function goPage(n) {
+    setPage(n)
+    document.querySelector('.efficiency-view-toggle, .efficiency-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+  const pager = pageCount > 1 ? (
+    <div className="eff-pagination">
+      <button type="button" onClick={() => goPage(0)} disabled={safePage === 0}>«</button>
+      <button type="button" onClick={() => goPage(safePage - 1)} disabled={safePage === 0}>‹</button>
+      <span>{safePage * PAGE + 1}–{Math.min((safePage + 1) * PAGE, visibleGroups.length)} / {visibleGroups.length.toLocaleString('en-US')}</span>
+      <button type="button" onClick={() => goPage(safePage + 1)} disabled={safePage >= pageCount - 1}>›</button>
+      <button type="button" onClick={() => goPage(pageCount - 1)} disabled={safePage >= pageCount - 1}>»</button>
+    </div>
+  ) : null
+
   const totals = useMemo(() => {
     const totalVisits = visibleGroups.reduce((sum, g) => sum + g.visitCount, 0)
     const uniqueEmployees = new Set(visibleGroups.map((g) => g.employeeName)).size
@@ -201,6 +222,8 @@ export default function EfficiencyReport() {
         </div>
       )}
 
+      {loaded && pager}
+
       {view === 'table' && loaded && (
         <div className="efficiency-table-wrap">
           <table className="efficiency-table">
@@ -215,7 +238,7 @@ export default function EfficiencyReport() {
               </tr>
             </thead>
             <tbody>
-              {visibleGroups.map((g, i) => (
+              {pageGroups.map((g, i) => (
                 <tr key={i}>
                   <td className="nowrap">{new Date(g.date).toLocaleDateString(localeTag(locale), { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
                   <td className="strong">{g.employeeName}</td>
@@ -243,7 +266,7 @@ export default function EfficiencyReport() {
       )}
 
       <div className="efficiency-list" style={view === 'cards' ? undefined : { display: 'none' }}>
-        {visibleGroups.map((g, i) => (
+        {pageGroups.map((g, i) => (
           <div key={i} className="efficiency-card">
             <div className="efficiency-card-header">
               <div className="efficiency-card-date">
@@ -270,6 +293,8 @@ export default function EfficiencyReport() {
           <p style={{ color: '#94a3b8', fontSize: 13 }}>{t('common.noRecordsFilter')}</p>
         )}
       </div>
+
+      {loaded && pager}
     </div>
   )
 }
