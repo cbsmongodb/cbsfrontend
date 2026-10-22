@@ -1,3 +1,4 @@
+/* contrast-v1 */
 .et-modal-overlay {
   position: fixed; inset: 0;
   background: rgba(15, 23, 42, 0.5);
@@ -18,7 +19,7 @@
 .et-modal-head h2 { font-size: 17px; font-weight: 700; color: #0f2744; margin: 0; }
 .et-modal-close {
   border: none; background: none; cursor: pointer;
-  font-size: 24px; line-height: 1; color: #94a3b8;
+  font-size: 24px; line-height: 1; color: #64748b;
 }
 .et-modal-close:hover { color: #dc2626; }
 
@@ -27,7 +28,7 @@
   padding: 20px 24px 8px;
 }
 .et-modal-field { display: flex; flex-direction: column; gap: 6px; }
-.et-modal-field label { font-size: 12.5px; font-weight: 600; color: #64748b; }
+.et-modal-field label { font-size: 12.5px; font-weight: 600; color: #475569; }
 
 .et-modal-druglabel {
   display: flex; align-items: center; justify-content: space-between;
@@ -48,13 +49,13 @@
   min-height: 52px !important;
   height: 52px !important;
   box-sizing: border-box;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #d5dce6;
   border-radius: 14px;
   background: #f8fafc;
   transition: border-color .2s, background .2s;
 }
 .et-modal-searchwrap:focus-within { border-color: #3f74d6; background: #fff; }
-.et-modal-searchwrap svg { width: 18px; height: 18px; color: #94a3b8; flex-shrink: 0; }
+.et-modal-searchwrap svg { width: 18px; height: 18px; color: #64748b; flex-shrink: 0; }
 .et-modal-search {
   flex: 1;
   border: none !important;
@@ -111,7 +112,7 @@
   to { opacity: 1; transform: translateX(0); }
 }
 
-.et-modal-empty { text-align: center; color: #94a3b8; padding: 34px 0; font-size: 13px; }
+.et-modal-empty { text-align: center; color: #64748b; padding: 34px 0; font-size: 13px; }
 
 .et-modal-actions {
   display: flex; gap: 10px; padding: 16px 24px;

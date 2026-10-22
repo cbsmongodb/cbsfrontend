@@ -1,3 +1,4 @@
+/* contrast-v1 */
 .budgetnew-amounts-row {
   margin-top: 4px;
 }
@@ -14,7 +15,7 @@
   position: relative;
   padding: 10px 36px 10px 12px;
   background: #f7f9fc;
-  border: 1px solid #e9ebef;
+  border: 1px solid #d5dce6;
   border-radius: 10px;
   font-size: 13.5px;
   color: #0f2744;

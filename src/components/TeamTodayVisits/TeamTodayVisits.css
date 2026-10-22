@@ -1,3 +1,4 @@
+/* contrast-v1 */
 .ttv {
   background: #fff; border: 1px solid #e8edf4; border-radius: 18px;
   padding: 20px 22px; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
@@ -11,14 +12,14 @@
 @media (max-width: 720px) { .ttv-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .ttv-chip { background: #f8fafc; border: 1px solid #eef2f7; border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
 .ttv-chip strong { font-size: 20px; color: #0f172a; font-variant-numeric: tabular-nums; }
-.ttv-chip span { font-size: 11.5px; color: #64748b; font-weight: 600; }
+.ttv-chip span { font-size: 11.5px; color: #475569; font-weight: 600; }
 .ttv-chip.onsite strong { color: #2563eb; }
 .ttv-chip.planned strong { color: #b45309; }
 .ttv-chip.done strong { color: #15803d; }
 .ttv-chip.canceled strong { color: #b91c1c; }
 
 .ttv-filter { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: #475569; margin-bottom: 10px; cursor: pointer; }
-.ttv-empty { color: #94a3b8; font-size: 13.5px; margin: 10px 0; }
+.ttv-empty { color: #64748b; font-size: 13.5px; margin: 10px 0; }
 
 .ttv-list { display: flex; flex-direction: column; gap: 10px; max-height: 520px; overflow-y: auto; padding-right: 2px; }
 .ttv-person { border: 1px solid #eef2f7; border-radius: 12px; padding: 10px 12px; }
@@ -33,9 +34,9 @@
 
 .ttv-visits { list-style: none; margin: 8px 0 0; padding: 0 0 0 19px; display: flex; flex-direction: column; gap: 5px; }
 .ttv-visits li { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px; font-size: 13px; color: #334155; }
-.ttv-visits li.is-canceled .ttv-place { text-decoration: line-through; color: #94a3b8; }
+.ttv-visits li.is-canceled .ttv-place { text-decoration: line-through; color: #64748b; }
 .ttv-place { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ttv-time { font-size: 12px; color: #94a3b8; font-variant-numeric: tabular-nums; }
+.ttv-time { font-size: 12px; color: #64748b; font-variant-numeric: tabular-nums; }
 .ttv-badge { font-size: 11.5px; font-weight: 700; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
 .ttv-badge.planned { background: #fef3c7; color: #b45309; }
 .ttv-badge.onsite { background: #dbeafe; color: #1d4ed8; }

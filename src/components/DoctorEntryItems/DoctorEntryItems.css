@@ -1,3 +1,4 @@
+/* contrast-v1 */
 .doctor-entries-page {
   padding: 4px;
 }
@@ -17,7 +18,7 @@
   margin-bottom: 20px;
   padding: 14px;
   background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #d5dce6;
   border-radius: 12px;
 }
 
@@ -30,12 +31,12 @@
 
 .doctor-entries-field label {
   font-size: 12px;
-  color: #64748b;
+  color: #475569;
   font-weight: 600;
 }
 
 .doctor-entry-card {
-  border: 1px solid #e2e8f0;
+  border: 1px solid #d5dce6;
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 16px;
@@ -48,7 +49,7 @@
   align-items: center;
   margin-bottom: 14px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #e3e8ef;
 }
 
 .doctor-entry-row {
@@ -61,7 +62,7 @@
 .doctor-entry-drugs {
   margin-top: 10px;
   padding-top: 12px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid #e3e8ef;
 }
 
 .doctor-entry-drug-row {
@@ -70,7 +71,7 @@
   gap: 10px;
   flex-wrap: wrap;
   padding: 10px 0;
-  border-bottom: 1px dashed #f1f5f9;
+  border-bottom: 1px dashed #e3e8ef;
 }
 
 .doctor-entry-drug-number {
@@ -82,7 +83,7 @@
 
 .doctor-entry-drug-number label {
   font-size: 11px;
-  color: #94a3b8;
+  color: #64748b;
   font-weight: 600;
 }
 
@@ -97,7 +98,7 @@
   padding: 10px 14px;
   margin-bottom: 14px;
   background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #d5dce6;
   border-radius: 10px;
 }
 
@@ -109,7 +110,7 @@
 
 .doctor-entry-summary-item span {
   font-size: 11px;
-  color: #94a3b8;
+  color: #64748b;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -128,7 +129,7 @@
   flex-direction: column;
   gap: 2px;
   font-size: 11.5px;
-  color: #64748b;
+  color: #475569;
   white-space: nowrap;
   padding: 0 6px;
 }
@@ -184,7 +185,7 @@
 .doctor-entry-drug-number label {
   font-size: 11px;
   font-weight: 600;
-  color: #64748b;
+  color: #475569;
 }
 .doctor-entry-drug-number .field-input {
   height: 38px;
@@ -194,7 +195,7 @@
   flex-direction: column;
   gap: 2px;
   font-size: 11px;
-  color: #64748b;
+  color: #475569;
   justify-content: center;
 }
 
@@ -208,11 +209,11 @@
   color: #0f2744; padding-bottom: 9px;
 }
 .doctor-entry-drug-number { display: flex; flex-direction: column; gap: 4px; width: 88px; flex: 0 0 auto; }
-.doctor-entry-drug-number label { font-size: 11px; font-weight: 600; color: #64748b; }
+.doctor-entry-drug-number label { font-size: 11px; font-weight: 600; color: #475569; }
 .doctor-entry-drug-number .field-input { height: 38px; }
-.doctor-entry-drug-computed { display: flex; flex-direction: column; gap: 2px; font-size: 11px; color: #64748b; justify-content: center; }
+.doctor-entry-drug-computed { display: flex; flex-direction: column; gap: 2px; font-size: 11px; color: #475569; justify-content: center; }
 
-.doctor-entry-hint { display: block; margin-top: 4px; font-size: 11.5px; color: #64748b; }
+.doctor-entry-hint { display: block; margin-top: 4px; font-size: 11.5px; color: #475569; }
 
 .doctor-entry-pharmacy {
   padding: 6px 10px; border-radius: 10px; background: #ecfdf3; border: 1px solid #bbf7d0;

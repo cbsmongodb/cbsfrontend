@@ -1,3 +1,4 @@
+/* contrast-v1 */
 .mss-root {
   position: relative;
   width: 100%;
@@ -11,7 +12,7 @@
   gap: 0.5rem;
   padding: 0.65rem 0.9rem;
   background: #f4f5f7;
-  border: 1px solid #e2e4e9;
+  border: 1px solid #d5dce6;
   border-radius: 0.6rem;
   font-size: 0.9rem;
   color: #1e3a68;
@@ -66,7 +67,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.2rem;
-  border-bottom: 1px solid #eceef2;
+  border-bottom: 1px solid #dbe1ea;
   font-size: 1rem;
   font-weight: 600;
   color: #1e3a68;
@@ -89,7 +90,7 @@
 
 .mss-search-input {
   border: none;
-  border-bottom: 1px solid #eceef2;
+  border-bottom: 1px solid #dbe1ea;
   padding: 0.75rem 1.2rem;
   font-size: 0.92rem;
   color: #1e3a68;
@@ -107,7 +108,7 @@
   justify-content: space-between;
   padding: 0.6rem 1.2rem;
   background: #fafbfc;
-  border-bottom: 1px solid #eceef2;
+  border-bottom: 1px solid #dbe1ea;
   flex-shrink: 0;
 }
 
@@ -169,7 +170,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.9rem 1.2rem;
-  border-top: 1px solid #eceef2;
+  border-top: 1px solid #dbe1ea;
   background: #fafbfc;
   flex-shrink: 0;
 }

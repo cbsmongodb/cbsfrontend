@@ -1,3 +1,4 @@
+/* contrast-v1 */
 .notifications-page {
   padding: 4px;
 }
@@ -88,7 +89,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #64748b;
+  color: #475569;
   margin-bottom: 6px;
 }
 
@@ -101,7 +102,7 @@
 
 .notification-time {
   font-size: 11.5px;
-  color: #94a3b8;
+  color: #64748b;
   margin-top: 8px;
   font-weight: 500;
 }

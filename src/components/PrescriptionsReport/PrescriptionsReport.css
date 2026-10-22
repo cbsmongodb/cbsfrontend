@@ -1,7 +1,8 @@
+/* contrast-v1 */
 .rx-report { display: flex; flex-direction: column; gap: 18px; }
 .rx-report h1 { font-size: 20px; margin: 0; color: #0f172a; }
 .rx-report-subtitle {
-  margin: -10px 0 0; font-size: 13px; color: #94a3b8;
+  margin: -10px 0 0; font-size: 13px; color: #64748b;
   text-transform: none; letter-spacing: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Georgian", sans-serif;
 }
@@ -18,7 +19,7 @@
 }
 .rx-report-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .rx-report-field label {
-  font-size: 11.5px; font-weight: 700; color: #64748b; letter-spacing: 0.02em;
+  font-size: 11.5px; font-weight: 700; color: #475569; letter-spacing: 0.02em;
 }
 .rx-report-field .field-input { height: 42px; border-radius: 10px; font-size: 14px; }
 .rx-report-search-btn {
@@ -56,7 +57,7 @@
 .rx-report-kpi::before {
   content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent);
 }
-.rx-report-kpi span { font-size: 12px; color: #64748b; font-weight: 600; }
+.rx-report-kpi span { font-size: 12px; color: #475569; font-weight: 600; }
 .rx-report-kpi strong { font-size: 26px; line-height: 1.1; color: #0f172a; font-variant-numeric: tabular-nums; }
 .rx-kpi-blue { --accent: #3f74d6; }
 .rx-kpi-green { --accent: #16a34a; }
@@ -74,7 +75,7 @@
 .rx-report-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
 .rx-report-table thead th {
   position: sticky; top: 0; z-index: 1;
-  text-align: left; background: #f8fafc; color: #64748b;
+  text-align: left; background: #f8fafc; color: #475569;
   font-size: 11.5px; font-weight: 700; letter-spacing: 0.02em;
   padding: 12px 14px; white-space: nowrap; border-bottom: 1px solid #e8edf4;
 }
@@ -86,7 +87,7 @@
   position: sticky; bottom: 0;
   font-weight: 700; background: #f8fafc; border-top: 1px solid #e2e8f0; border-bottom: 0;
 }
-.rx-report-muted { font-size: 11.5px; color: #94a3b8; margin-top: 2px; }
+.rx-report-muted { font-size: 11.5px; color: #64748b; margin-top: 2px; }
 
 .rx-pct {
   display: inline-block; min-width: 52px; text-align: center;
@@ -100,16 +101,16 @@
 .rx-pager {
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
 }
-.rx-pager-info { font-size: 13px; color: #64748b; font-variant-numeric: tabular-nums; }
+.rx-pager-info { font-size: 13px; color: #475569; font-variant-numeric: tabular-nums; }
 .rx-pager-buttons { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .rx-pager-group { display: inline-flex; align-items: center; gap: 6px; }
 .rx-pager button {
   min-width: 36px; height: 36px; padding: 0 10px;
-  border: 1px solid #e2e8f0; border-radius: 10px; background: #fff;
+  border: 1px solid #d5dce6; border-radius: 10px; background: #fff;
   font-size: 13px; font-weight: 600; color: #334155; cursor: pointer;
   font-variant-numeric: tabular-nums; transition: background 0.15s, border-color 0.15s;
 }
 .rx-pager button:hover:not(:disabled) { background: #f1f5f9; border-color: #cbd5e1; }
 .rx-pager button.active { background: #1e3a68; border-color: #1e3a68; color: #fff; }
 .rx-pager button:disabled { opacity: 0.4; cursor: default; }
-.rx-pager-dots { color: #94a3b8; padding: 0 2px; }
+.rx-pager-dots { color: #64748b; padding: 0 2px; }

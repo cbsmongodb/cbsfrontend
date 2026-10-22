@@ -1,3 +1,4 @@
+/* contrast-v1 */
 .theme-toggle {
   position: fixed;
   right: 20px;
@@ -6,7 +7,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #d5dce6;
   background: #ffffff;
   color: #1e293b;
   display: flex;

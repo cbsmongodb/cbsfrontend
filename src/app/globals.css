@@ -722,3 +722,14 @@ select.field-input { color: #0f172a; }
   color: #1e293b;
 }
 .resource-pagination-info { color: #334155; font-weight: 600; }
+
+/* ===== contrast-v1: darker shared tokens, heavier text ===== */
+:root {
+  --color-border: #d5dce6;
+  --color-text-muted: #475569;
+  --ink-soft: #475569;
+  --ink-faint: #6b7a90;
+  --line: #dde2ea;
+}
+.dashboard-content { font-weight: 500; color: #1e293b; }
+.dashboard-content h1, .dashboard-content h2, .dashboard-content h3 { color: #0f172a; }
