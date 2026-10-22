@@ -439,14 +439,16 @@ export default function Dashboard() {
         </div>
       )}
 
+      {/* my own visits today (with check-in) - reps AND managers who plan their own visits */}
+      {!loading && (isTeamManager || employee?.employeeType === 'field') && canPlan && !isOfficeOnly && (
+        <div className="dashboard-today-visits-section">
+          <TodayVisits />
+        </div>
+      )}
+      {/* managers: the team's visits today */}
       {!loading && isTeamManager && (
         <div className="dashboard-today-visits-section">
           <TeamTodayVisits />
-        </div>
-      )}
-      {!loading && !isTeamManager && employee?.employeeType === 'field' && canPlan && !isOfficeOnly && (
-        <div className="dashboard-today-visits-section">
-          <TodayVisits />
         </div>
       )}
     </div>

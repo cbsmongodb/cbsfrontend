@@ -792,3 +792,13 @@ select.field-input { color: #0f172a; }
   border-color: var(--tint-border, #eef2f7);
 }
 
+
+/* ===== a bit more space at the bottom of every page ===== */
+.dashboard-content {
+  padding-bottom: calc(44px + env(safe-area-inset-bottom)) !important;
+}
+.resource-pagination {
+  margin-top: 14px !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 20px !important;
+}

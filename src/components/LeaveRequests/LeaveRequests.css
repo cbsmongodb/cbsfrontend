@@ -232,3 +232,11 @@
 .lr-table td { font-weight: 500; }
 .lr-table tbody tr.lr-row:nth-child(4n+1) td { background: #fafbfd; }
 .lr-muted { color: #64748b; }
+
+/* ===== picked days always readable (hover / today) ===== */
+.lr-day.picked, .lr-day.picked:hover { color: #ffffff !important; border-color: transparent !important; }
+.lr-day.picked.paid, .lr-day.picked.paid:hover { background: #3f74d6 !important; }
+.lr-day.picked.unpaid, .lr-day.picked.unpaid:hover { background: #f59e0b !important; }
+.lr-day.picked.sick, .lr-day.picked.sick:hover { background: #e11d48 !important; }
+.lr-day.picked:hover { filter: brightness(1.08); }
+.lr-day.picked.today { box-shadow: inset 0 0 0 2px #ffffff, 0 6px 14px rgba(15, 23, 42, 0.2) !important; }
