@@ -249,3 +249,15 @@
     min-width: 44px;
   }
 }
+
+.tracker-where { display: flex; flex-direction: column; gap: 4px; margin: 6px 0 12px; }
+.tracker-where-place {
+  display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; max-width: 100%;
+  padding: 5px 12px; border-radius: 10px; background: #eef4fd; border: 1px solid #d6e3f8;
+  color: #1e3a6e; font-size: 13.5px; font-weight: 700;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.tracker-where-doctors {
+  display: inline-flex; align-items: center; gap: 6px; padding-left: 4px;
+  color: #475569; font-size: 12.5px; font-weight: 500;
+}

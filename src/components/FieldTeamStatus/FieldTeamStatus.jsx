@@ -169,7 +169,19 @@ export default function FieldTeamStatus() {
             <div key={plan._id} className={`tracker-card ${isCanceled ? 'canceled' : ''}`}>
               <div className="tracker-card-header">
                 <span className="tracker-name">{performerName(plan)}</span>
-                <span className="tracker-place">{placeName(plan)}</span>
+              </div>
+              <div className="tracker-where">
+                <span className="tracker-where-place">
+                  <span aria-hidden="true">{plan.pharmacy && !plan.hospital ? '💊' : '🏥'}</span>
+                  {placeName(plan) === '—' ? tu('noPlace') : placeName(plan)}
+                </span>
+                {plan.doctors?.length > 0 && (
+                  <span className="tracker-where-doctors">
+                    <span aria-hidden="true">👨‍⚕️</span>
+                    {plan.doctors.slice(0, 3).map((d) => `${d.firstName || ''} ${d.lastName || ''}`.trim()).join(', ')}
+                    {plan.doctors.length > 3 && ` +${plan.doctors.length - 3}`}
+                  </span>
+                )}
               </div>
               {isCanceled ? (
                 <div className="tracker-canceled-label">{tu('k132')}</div>
