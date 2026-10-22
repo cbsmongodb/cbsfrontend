@@ -1390,3 +1390,72 @@ html[data-theme="dark"]:has(.dashboard-shell) :is(.planning-form-card, .planning
 .planning-table-scroll tbody tr:nth-child(even) td, .sales-listing-scroll tbody tr:nth-child(even) td, .budgets-list-table-wrap tbody tr:nth-child(even) td, .employee-sales-table-wrap tbody tr:nth-child(even) td, .employee-targets-table-wrap tbody tr:nth-child(even) td { background: #f8fafd; }
 .planning-table-scroll tbody tr:hover td, .sales-listing-scroll tbody tr:hover td, .budgets-list-table-wrap tbody tr:hover td, .employee-sales-table-wrap tbody tr:hover td, .employee-targets-table-wrap tbody tr:hover td { background: #edf3fd; }
 
+
+/* ===== budgets list: themed filters, header, amounts ===== */
+.dashboard-shell:has(.sidebar.theme-gold) .budgets-list-filters {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #071a2e 0%, #0c3557 28%, #13608f 55%, #2a93c4 78%, #8fd3f0 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #071a2e 0%, #0c3557 28%, #13608f 55%, #2a93c4 78%, #8fd3f0 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-division1) .budgets-list-filters {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #0f2a20 0%, #1b4332 18%, #2d6a4f 38%, #40916c 56%, #52b788 76%, #8fd3ae 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #0f2a20 0%, #1b4332 18%, #2d6a4f 38%, #40916c 56%, #52b788 76%, #8fd3ae 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-division2) .budgets-list-filters {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(45deg, #051a33 0%, #0b3a6e 30%, #0e7fb0 60%, #14a38b 82%, #0d6b5c 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 45deg, #051a33 0%, #0b3a6e 30%, #0e7fb0 60%, #14a38b 82%, #0d6b5c 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-division3) .budgets-list-filters {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #2a1238 0%, #45205c 15%, #5a2a72 30%, #8e4f9a 55%, #b36a90 72%, #c27a8a 85%, #e0a37a 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #2a1238 0%, #45205c 15%, #5a2a72 30%, #8e4f9a 55%, #b36a90 72%, #c27a8a 85%, #e0a37a 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-office) .budgets-list-filters {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #241640 0%, #3e2a6e 20%, #5f45a0 42%, #8a63c4 64%, #b77fc0 84%, #d9a0c4 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #241640 0%, #3e2a6e 20%, #5f45a0 42%, #8a63c4 64%, #b77fc0 84%, #d9a0c4 100%) !important;
+  background-attachment: fixed !important;
+}
+
+.dashboard-shell .budgets-list-filters {
+  padding: 20px 22px !important; border: 1px solid rgba(255, 255, 255, 0.14) !important; border-radius: 18px !important;
+  box-shadow: 0 14px 36px rgba(7, 26, 46, 0.25) !important; color: #ffffff;
+}
+.dashboard-shell .budgets-list-filters :is(label, strong, span) { color: #ffffff !important; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22); }
+.dashboard-shell .budgets-list-filters :is(.field-input, select, .searchable-select-control input) {
+  min-height: 42px; border-radius: 11px !important;
+  background-color: rgba(255, 255, 255, 0.13) !important; border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important; font-weight: 600 !important;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.dashboard-shell .budgets-list-filters :is(.field-input, input)::placeholder { color: rgba(255, 255, 255, 0.75) !important; }
+.dashboard-shell .budgets-list-filters :is(.field-input, select, .searchable-select-control input):focus {
+  background-color: rgba(255, 255, 255, 0.22) !important; border-color: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18) !important; outline: none;
+}
+.dashboard-shell .budgets-list-filters select {
+  appearance: none; -webkit-appearance: none; padding-right: 36px !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important;
+  background-position: right 12px center !important; background-size: 16px 16px !important;
+}
+.dashboard-shell .budgets-list-filters select option { color: #0f172a !important; background: #ffffff !important; }
+.dashboard-shell .budgets-list-filters input[type='date']::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+.dashboard-shell .budgets-list-filters :is(.searchable-select-dropdown, .searchable-select-dropdown *) { background-color: #ffffff; color: #0f172a !important; text-shadow: none !important; }
+.dashboard-shell .budgets-list-filters .btn { background: #ffffff !important; color: #0b1b33 !important; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18) !important; }
+.dashboard-shell .budgets-list-filters .btn * { color: #0b1b33 !important; text-shadow: none !important; }
+.dashboard-shell .budgets-list-filters .btn-gray { background: rgba(255, 255, 255, 0.14) !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.35) !important; }
+html[data-theme="dark"]:has(.dashboard-shell) .budgets-list-filters { filter: contrast(1.1628) hue-rotate(-180deg) invert(1); }
+
+/* header: title + "new budget" */
+.budgets-list-page-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.budgets-list-new-btn { min-height: 44px; padding: 0 22px !important; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; }
+.budgets-list-new-btn::before { content: "+"; font-size: 20px; font-weight: 800; line-height: 1; }
+
+/* amounts */
+.budgets-list-table td.budgets-list-num, .budgets-list-num { text-align: right; font-weight: 700; color: #0f172a; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* pagination */
+.budgets-list-pagination button { min-height: 38px; border: 1.5px solid #cbd5e1 !important; background: #ffffff !important; color: #1e293b !important; border-radius: 10px !important; }
+.budgets-list-pagination-info { color: #334155; font-weight: 600; }
+
