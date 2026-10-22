@@ -6,6 +6,7 @@ import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './PrescriptionEdit.css'
 import { useTranslations } from 'next-intl'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 export default function PrescriptionEdit() {
   const tu = useTranslations('ui')
@@ -140,7 +141,7 @@ export default function PrescriptionEdit() {
     }
   }
 
-  if (loading) return <div className="prescedit-page"><p className="page-loading">{tu('k003')}</p></div>
+  if (loading) return <div className="prescedit-page"><ReportLoader label={tu('k003')} /></div>
   if (!data) return <div className="prescedit-page">{error || tu('k113')}</div>
 
   return (

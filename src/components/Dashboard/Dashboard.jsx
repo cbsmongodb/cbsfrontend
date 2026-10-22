@@ -29,6 +29,7 @@ const OFFICE_ONLY_ROLES = new Set([
 import CheckInButton from '@/components/Sidebar/CheckInButton'
 import StockStat from './StockStat'
 import './Dashboard.css'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 function currentYear() {
   return new Date().getFullYear()
@@ -311,6 +312,8 @@ export default function Dashboard() {
           <CheckInButton />
         </div>
       ))}
+
+      {loading && <ReportLoader variant="page" />}
 
       {!loading && (checkinStatus || balance) && (
         <div className="dashboard-stat-strip">

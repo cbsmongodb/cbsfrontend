@@ -9,6 +9,7 @@ import DrugBonusEditor from './DrugBonusEditor'
 import HospitalDoctorsEditor from './HospitalDoctorsEditor'
 import './DrugBonusEditor.css'
 import './ResourceTable.css'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 // endpoint -> Roles resource key, so the table can hide Add / Edit / Delete
 // for roles that only have view access (backend enforces the same rules).
@@ -627,7 +628,7 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
       </form>
 
       {loading ? (
-        <p className="page-loading">{t('loading')}</p>
+        <ReportLoader label={t('loading')} />
       ) : (
         <div className="resource-table-scroll">
         <table>

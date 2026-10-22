@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './Leaves.css'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 function currentYear() {
   return new Date().getFullYear()
@@ -150,7 +151,7 @@ export default function Leaves() {
     }
   }
 
-  if (loading) return <p className="page-loading">{t('loading')}</p>
+  if (loading) return <ReportLoader label={t('loading')} />
 
   return (
     <div className="leaves-page">

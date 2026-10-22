@@ -27,6 +27,7 @@ import {
   flexRender,
 } from '@tanstack/react-table'
 import './DirectorDashboard.css'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 function fmtMoney(n) {
   const num = Number(n) || 0
@@ -228,11 +229,14 @@ function StockChart({ data }) {
 
 function Skeleton({ rows = 5 }) {
   return (
-    <div className="director-skeleton">
-      {Array.from({ length: rows }).map((_, i) => (
-        <div className="director-skeleton-row" key={i} />
-      ))}
-    </div>
+    <>
+      <div className="director-skeleton">
+        {Array.from({ length: rows }).map((_, i) => (
+          <div className="director-skeleton-row" key={i} />
+        ))}
+      </div>
+      <ReportLoader />
+    </>
   )
 }
 
@@ -485,7 +489,7 @@ function ProductSaleTab() {
 
       {error && <p className="resource-error">{error}</p>}
 
-      {loading && !data && <Skeleton />}
+      {loading && (data ? <ReportLoader /> : <Skeleton />)}
 
       {data && rows.length > 0 && (
         <div className="director-kpi-row">
@@ -631,7 +635,7 @@ function StockAvailabilityTab() {
   return (
     <div className="director-tab-panel">
       {error && <p className="resource-error">{error}</p>}
-      {loading && !data && <Skeleton />}
+      {loading && (data ? <ReportLoader /> : <Skeleton />)}
 
       {data && (
         <div className="director-kpi-row">
@@ -786,7 +790,7 @@ function OrderTab() {
   return (
     <div className="director-tab-panel">
       {error && <p className="resource-error">{error}</p>}
-      {loading && !data && <Skeleton />}
+      {loading && (data ? <ReportLoader /> : <Skeleton />)}
 
       <div className="director-filters">
         <div className="director-field">
@@ -1016,7 +1020,7 @@ function DoctorsReportTab() {
       </div>
 
       {error && <p className="resource-error">{error}</p>}
-      {loading && !data && <Skeleton />}
+      {loading && (data ? <ReportLoader /> : <Skeleton />)}
 
       {data && (
         <div className="director-kpi-row">

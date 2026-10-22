@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { useParams } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import './Notifications.css'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 const DATE_LOCALES = { ka: 'ka-GE', en: 'en-US', ru: 'ru-RU' }
 
@@ -116,7 +117,7 @@ export default function Notifications() {
       {error && <p className="resource-error">{error}</p>}
 
       {loading ? (
-        <p className="page-loading">{t('loading')}</p>
+        <ReportLoader label={t('loading')} />
       ) : notifications.length === 0 ? (
         <div className="notifications-empty">
           <div className="notifications-empty-icon">

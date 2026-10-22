@@ -7,7 +7,7 @@ import './ReportLoader.css'
 
 // big loader for reports (squares chasing each other), in the user's theme colours.
 // Drawn straight into <body>, so no parent animation / transform can hide it.
-export default function ReportLoader() {
+export default function ReportLoader({ label, variant }) {
   const t = useTranslations('reports')
   const id = useId().replace(/:/g, '')
   const [mounted, setMounted] = useState(false)
@@ -43,7 +43,7 @@ export default function ReportLoader() {
           <g className="rl__base">{squares}</g>
           <g mask={`url(#m${id})`} className="rl__accent">{squares}</g>
         </svg>
-        <span className="report-loader-text">{t('common.reportLoading')}</span>
+        <span className="report-loader-text">{label || t(variant === 'page' ? 'common.pageLoading' : 'common.reportLoading')}</span>
       </div>
     </div>,
     document.body

@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import './RolePermissions.css'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 // grouped to mirror the Sidebar's own structure, so it's clear which
 // checkbox controls which menu section
@@ -215,7 +216,7 @@ export default function RolePermissions() {
     }
   }
 
-  if (loading) return <p className="page-loading">{t('loading')}</p>
+  if (loading) return <ReportLoader label={t('loading')} />
 
   return (
     <div className="role-permissions">

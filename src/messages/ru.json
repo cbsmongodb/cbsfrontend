@@ -724,7 +724,8 @@
       "exportTotal": "Итого",
       "exportNothing": "Сначала загрузите данные (поиск)",
       "exportFailed": "Не удалось, попробуйте ещё раз",
-      "reportLoading": "Загружаем отчёт…"
+      "reportLoading": "Загружаем отчёт…",
+      "pageLoading": "Загрузка…"
     },
     "efficiency": {
       "title": "Эффективность сотрудников",
