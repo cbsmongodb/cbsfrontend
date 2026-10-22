@@ -576,7 +576,14 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
       <h1>{title}</h1>
 
       {(perms.add || (editingId && perms.update)) && (
-      <form className="resource-form" onSubmit={handleSubmit}>
+      <form className={`resource-form ${editingId ? 'is-editing' : ''}`} onSubmit={handleSubmit}>
+        <div className="resource-form-head">
+          <span className="resource-form-icon" aria-hidden="true">{editingId ? '✎' : '+'}</span>
+          <div>
+            <strong>{editingId ? t('formEditTitle') : t('formNewTitle')}</strong>
+            <span>{t('formHint')}</span>
+          </div>
+        </div>
         {fields.map((f) => renderInput(f))}
         <div className="resource-form-actions">
           <button type="submit" className="btn">
