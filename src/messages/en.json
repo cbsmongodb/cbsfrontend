@@ -723,7 +723,8 @@
       "exportRows": "rows",
       "exportTotal": "Total",
       "exportNothing": "Load the data first (search)",
-      "exportFailed": "Export failed, try again"
+      "exportFailed": "Export failed, try again",
+      "reportLoading": "Loading the report…"
     },
     "efficiency": {
       "title": "Employee Efficiency",

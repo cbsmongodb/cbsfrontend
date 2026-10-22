@@ -150,7 +150,7 @@ export default function Leaves() {
     }
   }
 
-  if (loading) return <p>{t('loading')}</p>
+  if (loading) return <p className="page-loading">{t('loading')}</p>
 
   return (
     <div className="leaves-page">

@@ -16,6 +16,7 @@ import {
 } from 'recharts'
 import './Analytics.css'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -199,6 +200,7 @@ export default function Analytics() {
       <div className="report-title-row">
         <h1>{t('analytics.title')}</h1>
         <ExcelExportButton title={t('analytics.title')} tableSelector=".analytics-table" />
+        {loading && <ReportLoader />}
       </div>
 
       <div className="analytics-filters">

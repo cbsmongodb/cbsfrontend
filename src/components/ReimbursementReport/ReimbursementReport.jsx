@@ -7,6 +7,7 @@ import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './ReimbursementReport.css'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 import '@/components/ExcelExportButton/ExcelExportButton.css'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -128,7 +129,27 @@ export default function ReimbursementReport() {
 
   // pages of 50
   const PAGE = 50
-  const list = view === 'employees' ? byEmployee : visibleRows
+  // sorting by a column (click the header)
+  const [sort, setSort] = useState({ key: '', dir: 'asc' })
+  useEffect(() => { setSort({ key: '', dir: 'asc' }) }, [view])
+  function toggleSort(key) {
+    setSort((s) => (s.key === key ? { key, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: key === 'amount' || key === 'days' || key === 'date' ? 'desc' : 'asc' }))
+    setPage(0)
+  }
+  const sortValue = (r, key) => {
+    if (key === 'date') return new Date(r.date).getTime()
+    if (key === 'regions') return [...(r.regions || [])].join(', ')
+    return r[key]
+  }
+  const baseList = view === 'employees' ? byEmployee : visibleRows
+  const list = !sort.key ? baseList : [...baseList].sort((a, b) => {
+    const x = sortValue(a, sort.key), y = sortValue(b, sort.key)
+    const c = typeof x === 'number' && typeof y === 'number' ? x - y : String(x ?? '').localeCompare(String(y ?? ''), 'ka')
+    return sort.dir === 'asc' ? c : -c
+  })
+  const sortTh = (key, label) => (
+    <th className="reimb-sortable" data-sort={sort.key === key ? sort.dir : 'none'} onClick={() => toggleSort(key)}>{label}</th>
+  )
   const pageCount = Math.max(1, Math.ceil(list.length / PAGE))
   const safePage = Math.min(page, pageCount - 1)
   const pageRows = list.slice(safePage * PAGE, safePage * PAGE + PAGE)
@@ -140,6 +161,7 @@ export default function ReimbursementReport() {
         <div className="report-title-row report-title-row-spread">
           <h1>{t('reimbursement.title')}</h1>
           <ExcelExportButton title={t('reimbursement.title')} tableSelector=".reimbursement-table" pages={pageCount} currentPage={safePage + 1} goToPage={(n) => setPage(n - 1)} />
+          {loading && <ReportLoader />}
         </div>
       </div>
 
@@ -216,10 +238,10 @@ export default function ReimbursementReport() {
           <table className="reimbursement-table">
             <thead>
               <tr>
-                <th>{t('reimbursement.period')}</th>
-                <th>{t('reimbursement.performer')}</th>
-                <th>{t('reimbursement.region')}</th>
-                <th>{t('reimbursement.amount')}</th>
+                {sortTh('date', t('reimbursement.period'))}
+                {sortTh('employeeName', t('reimbursement.performer'))}
+                {sortTh('regionName', t('reimbursement.region'))}
+                {sortTh('amount', t('reimbursement.amount'))}
               </tr>
             </thead>
             <tbody>
@@ -240,11 +262,11 @@ export default function ReimbursementReport() {
           <table className="reimbursement-table">
             <thead>
               <tr>
-                <th>{t('reimbursement.performer')}</th>
-                <th>{t('reimbursement.regions')}</th>
-                <th>{t('reimbursement.days')}</th>
+                {sortTh('employeeName', t('reimbursement.performer'))}
+                {sortTh('regions', t('reimbursement.regions'))}
+                {sortTh('days', t('reimbursement.days'))}
                 <th>{t('reimbursement.fromTo')}</th>
-                <th>{t('reimbursement.totalToPay')}</th>
+                {sortTh('amount', t('reimbursement.totalToPay'))}
               </tr>
             </thead>
             <tbody>

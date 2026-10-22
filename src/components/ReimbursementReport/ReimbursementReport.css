@@ -177,3 +177,9 @@
 .reimb-pagination button:hover:not(:disabled) { border-color: #3f74d6; background: #eef4fd; }
 .reimb-pagination button:disabled { opacity: 0.4; cursor: default; }
 .reimb-pagination span { color: #334155; font-weight: 600; font-size: 13.5px; padding: 0 8px; }
+
+.reimb-sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+.reimb-sortable:hover { color: #1f3c6e !important; background: #e3eaf5 !important; }
+.reimb-sortable::after { margin-left: 6px; font-size: 11px; color: #94a3b8; content: "↕"; }
+.reimb-sortable[data-sort="asc"]::after { content: "▲"; color: #2f5fbf; }
+.reimb-sortable[data-sort="desc"]::after { content: "▼"; color: #2f5fbf; }

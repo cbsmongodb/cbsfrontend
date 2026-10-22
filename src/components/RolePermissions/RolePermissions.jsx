@@ -215,7 +215,7 @@ export default function RolePermissions() {
     }
   }
 
-  if (loading) return <p>{t('loading')}</p>
+  if (loading) return <p className="page-loading">{t('loading')}</p>
 
   return (
     <div className="role-permissions">

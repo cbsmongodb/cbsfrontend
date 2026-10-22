@@ -7,6 +7,7 @@ import { useMonthNames } from '@/lib/months'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './PrescriptionsReport.css'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 const pad2 = (n) => String(n).padStart(2, '0')
 function currentMonth() {
@@ -104,6 +105,7 @@ export default function PrescriptionsReport() {
       <div className="report-title-row">
         <h1>{t('prescriptions.title')}</h1>
         <ExcelExportButton title={t('prescriptions.title')} tableSelector=".rx-report-table" />
+        {loading && <ReportLoader />}
       </div>
       <p className="rx-report-subtitle">{t('prescriptions.subtitle')}</p>
 

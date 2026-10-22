@@ -6,6 +6,7 @@ import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './EfficiencyReport.css'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -105,6 +106,7 @@ export default function EfficiencyReport() {
     <div className="efficiency-report">
       <div className="report-title-row">
         <h1>{t('efficiency.title')}</h1>
+        {loading && <ReportLoader />}
         <ExcelExportButton title={t('efficiency.title')} build={() => ({
             headers: [t('efficiency.colDate'), t('common.employee'), t('efficiency.colDoctors'), t('efficiency.colProfile'), t('common.hospital'), t('efficiency.colVisits')],
             rows: visibleGroups.map((g) => [

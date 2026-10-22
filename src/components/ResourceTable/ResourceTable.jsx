@@ -627,7 +627,7 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
       </form>
 
       {loading ? (
-        <p>{t('loading')}</p>
+        <p className="page-loading">{t('loading')}</p>
       ) : (
         <div className="resource-table-scroll">
         <table>

@@ -116,7 +116,7 @@ export default function Notifications() {
       {error && <p className="resource-error">{error}</p>}
 
       {loading ? (
-        <p>{t('loading')}</p>
+        <p className="page-loading">{t('loading')}</p>
       ) : notifications.length === 0 ? (
         <div className="notifications-empty">
           <div className="notifications-empty-icon">

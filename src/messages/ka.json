@@ -726,7 +726,8 @@
       "exportRows": "ჩანაწერი",
       "exportTotal": "სულ",
       "exportNothing": "ჯერ მონაცემები ჩატვირთე (ძებნა)",
-      "exportFailed": "ვერ მოხერხდა, სცადე თავიდან"
+      "exportFailed": "ვერ მოხერხდა, სცადე თავიდან",
+      "reportLoading": "რეპორტი იტვირთება…"
     },
     "efficiency": {
       "title": "თანამშრომელთა ეფექტურობა",

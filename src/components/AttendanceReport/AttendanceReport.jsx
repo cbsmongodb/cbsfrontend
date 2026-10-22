@@ -6,6 +6,7 @@ import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './AttendanceReport.css'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -115,6 +116,7 @@ export default function AttendanceReport() {
       <div className="report-title-row">
         <h1>{t('attendance.title')}</h1>
         <ExcelExportButton title={t('attendance.title')} tableSelector=".attendance-report-table" />
+        {loading && <ReportLoader />}
       </div>
 
       <div className="attendance-report-filters-card">

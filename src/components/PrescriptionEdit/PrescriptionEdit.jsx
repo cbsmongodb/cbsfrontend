@@ -140,7 +140,7 @@ export default function PrescriptionEdit() {
     }
   }
 
-  if (loading) return <div className="prescedit-page">{tu('k003')}</div>
+  if (loading) return <div className="prescedit-page"><p className="page-loading">{tu('k003')}</p></div>
   if (!data) return <div className="prescedit-page">{error || tu('k113')}</div>
 
   return (

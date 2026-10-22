@@ -723,7 +723,8 @@
       "exportRows": "строк",
       "exportTotal": "Итого",
       "exportNothing": "Сначала загрузите данные (поиск)",
-      "exportFailed": "Не удалось, попробуйте ещё раз"
+      "exportFailed": "Не удалось, попробуйте ещё раз",
+      "reportLoading": "Загружаем отчёт…"
     },
     "efficiency": {
       "title": "Эффективность сотрудников",

@@ -6,6 +6,7 @@ import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './StaffPerformanceReport.css'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
+import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -101,6 +102,7 @@ export default function StaffPerformanceReport() {
       <div className="report-title-row">
         <h1>{t('staff.title')}</h1>
         <ExcelExportButton title={t('staff.title')} tableSelector=".staff-performance-table" />
+        {loading && <ReportLoader />}
       </div>
 
       <div className="staff-performance-filters">
