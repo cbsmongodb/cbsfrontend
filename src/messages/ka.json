@@ -727,7 +727,13 @@
       "searchPlaceholder": "ძიება (თანამშრომელი, ჰოსპიტალი, ექიმი)...",
       "visitGroups": "ვიზიტის ჯგუფი",
       "doctorsSeen": "ნანახი ექიმი, სულ",
-      "doctorsCount": "{n} ექიმი"
+      "doctorsCount": "{n} ექიმი",
+      "viewCards": "ბარათები",
+      "viewTable": "ცხრილი",
+      "colDate": "თარიღი",
+      "colDoctors": "ექიმები",
+      "colProfile": "პროფილი",
+      "colVisits": "ვიზიტები"
     },
     "reimbursement": {
       "title": "ტრანსპორტის ანაზღაურების რეპორტი",

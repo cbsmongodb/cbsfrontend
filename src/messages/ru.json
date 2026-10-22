@@ -724,7 +724,13 @@
       "searchPlaceholder": "Поиск (сотрудник, больница, врач)...",
       "visitGroups": "Групп визитов",
       "doctorsSeen": "Посещено врачей, всего",
-      "doctorsCount": "{n} врачей"
+      "doctorsCount": "{n} врачей",
+      "viewCards": "Карточки",
+      "viewTable": "Таблица",
+      "colDate": "Дата",
+      "colDoctors": "Врачи",
+      "colProfile": "Профиль",
+      "colVisits": "Визиты"
     },
     "reimbursement": {
       "title": "Отчёт о возмещении транспортных расходов",

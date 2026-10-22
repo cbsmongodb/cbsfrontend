@@ -724,7 +724,13 @@
       "searchPlaceholder": "Search (employee, hospital, doctor)...",
       "visitGroups": "Visit groups",
       "doctorsSeen": "Doctors seen, total",
-      "doctorsCount": "{n} doctors"
+      "doctorsCount": "{n} doctors",
+      "viewCards": "Cards",
+      "viewTable": "Table",
+      "colDate": "Date",
+      "colDoctors": "Doctors",
+      "colProfile": "Profile",
+      "colVisits": "Visits"
     },
     "reimbursement": {
       "title": "Transport Reimbursement Report",

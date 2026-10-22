@@ -40,6 +40,10 @@ export default function EfficiencyReport() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [loaded, setLoaded] = useState(false)
+  // cards or table - remembered in this browser
+  const [view, setView] = useState('cards')
+  useEffect(() => { try { const v = localStorage.getItem('efficiencyView'); if (v) setView(v) } catch {} }, [])
+  function chooseView(v) { setView(v); try { localStorage.setItem('efficiencyView', v) } catch {} }
 
   useEffect(() => {
     async function loadOptions() {
@@ -168,7 +172,52 @@ export default function EfficiencyReport() {
         </div>
       )}
 
-      <div className="efficiency-list">
+      {loaded && (
+        <div className="efficiency-view-toggle" role="tablist">
+          <button type="button" className={view === 'cards' ? 'active' : ''} onClick={() => chooseView('cards')}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><rect x="3" y="4" width="18" height="7" rx="2" /><rect x="3" y="13" width="18" height="7" rx="2" /></svg>
+            {t('efficiency.viewCards')}
+          </button>
+          <button type="button" className={view === 'table' ? 'active' : ''} onClick={() => chooseView('table')}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 10h18M3 15h18M9 4v16" /></svg>
+            {t('efficiency.viewTable')}
+          </button>
+        </div>
+      )}
+
+      {view === 'table' && loaded && (
+        <div className="efficiency-table-wrap">
+          <table className="efficiency-table">
+            <thead>
+              <tr>
+                <th>{t('efficiency.colDate')}</th>
+                <th>{t('common.employee')}</th>
+                <th>{t('efficiency.colDoctors')}</th>
+                <th>{t('efficiency.colProfile')}</th>
+                <th>{t('common.hospital')}</th>
+                <th className="num">{t('efficiency.colVisits')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {visibleGroups.map((g, i) => (
+                <tr key={i}>
+                  <td className="nowrap">{new Date(g.date).toLocaleDateString(localeTag(locale), { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
+                  <td className="strong">{g.employeeName}</td>
+                  <td>{g.doctors.map((d) => d.name).join(', ')}</td>
+                  <td className="muted">{g.doctors.map((d) => d.profile).filter(Boolean).join(', ')}</td>
+                  <td>{g.placeName}</td>
+                  <td className="num strong">{g.visitCount}</td>
+                </tr>
+              ))}
+              {visibleGroups.length === 0 && (
+                <tr><td colSpan={6} className="muted">{t('common.noRecordsFilter')}</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <div className="efficiency-list" style={view === 'cards' ? undefined : { display: 'none' }}>
         {visibleGroups.map((g, i) => (
           <div key={i} className="efficiency-card">
             <div className="efficiency-card-header">
