@@ -36,3 +36,6 @@
   padding: 9px 16px; border-radius: 999px; cursor: pointer; font-family: inherit;
 }
 .errmon-read:hover { border-color: #3f74d6; background: #eef4fd; }
+
+/* errmon spacing */
+.errmon { margin: 22px 0 28px !important; }

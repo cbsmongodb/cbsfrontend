@@ -58,7 +58,8 @@ function hintOf(e) {
   if (/Unable to geocode|Invalid Request/i.test(m)) return 'მისამართი ზედმეტად ზოგადია: გაასწორე, ან კოორდინატები ხელით ჩაწერე.'
   return null
 }
-const isSystem = (e) => !e.employeeName && !e.apiPath
+// background jobs only (map script, imports); anything else came from a person using the app
+const isSystem = (e) => !e.employeeName && !e.apiPath && /^(geocode failed|import|seed|script|cron)/i.test(String(e.message || ''))
 
 export default function DevErrorsWidget() {
   const [isDev, setIsDev] = useState(false)
