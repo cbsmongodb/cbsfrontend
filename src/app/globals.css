@@ -1943,3 +1943,29 @@ html[data-theme="dark"]:has(.dashboard-shell) .doctor-entries-header h1 { color:
 html[data-theme="dark"]:has(.dashboard-shell) .prescedit-card { filter: contrast(1.1628) hue-rotate(-180deg) invert(1); }
 html[data-theme="dark"]:has(.dashboard-shell) .prescedit-card * { filter: none !important; }
 
+
+/* ===== director filters: buttons inside the coloured card ===== */
+.dashboard-shell .director-filters .btn, .dashboard-shell .director-filters button[type="submit"] {
+  min-height: 42px; padding: 0 26px !important; border-radius: 12px !important; border: 0 !important;
+  background: #ffffff !important; color: #0b1b33 !important; font-weight: 800 !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important; filter: none !important;
+}
+.dashboard-shell .director-filters .btn * { color: #0b1b33 !important; text-shadow: none !important; }
+.dashboard-shell .director-filters .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(0, 0, 0, 0.24) !important; }
+.dashboard-shell .director-filters .btn .btn-spinner { color: #0b1b33; }
+
+/* quick dates: no light box, glass pills, the chosen one white */
+.dashboard-shell .director-filters .director-quick-dates {
+  background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; gap: 8px !important;
+}
+.dashboard-shell .director-filters .director-quick-dates > :not(button) { color: rgba(255, 255, 255, 0.85) !important; }
+.dashboard-shell .director-filters .director-quick-dates button {
+  min-height: 38px; padding: 0 16px !important; border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.13) !important; border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  color: #ffffff !important; font-weight: 700 !important; box-shadow: none !important;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.dashboard-shell .director-filters .director-quick-dates button:hover { background: rgba(255, 255, 255, 0.22) !important; border-color: rgba(255, 255, 255, 0.55) !important; }
+.dashboard-shell .director-filters .director-quick-dates button:is(.active, [aria-pressed="true"]) {
+  background: #ffffff !important; color: #0b1b33 !important; border-color: #ffffff !important;
+}
