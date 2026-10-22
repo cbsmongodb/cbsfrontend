@@ -733,3 +733,62 @@ select.field-input { color: #0f172a; }
 }
 .dashboard-content { font-weight: 500; color: #1e293b; }
 .dashboard-content h1, .dashboard-content h2, .dashboard-content h3 { color: #0f172a; }
+
+/* ===== dashboard: cards tinted with the user's own theme colour ===== */
+.dashboard-content:has(.dashboard-hero.theme-division1) {
+  --tint-bg: #eefaf3; --tint-border: #c9ecd8; --tint-soft: #f2fbf6; --tint-strong: #1b6b48;
+}
+.dashboard-content:has(.dashboard-hero.theme-division2) {
+  --tint-bg: #ecf6fb; --tint-border: #c6e3f1; --tint-soft: #f1f8fc; --tint-strong: #0b4f7d;
+}
+.dashboard-content:has(.dashboard-hero.theme-division3) {
+  --tint-bg: #f8f0f7; --tint-border: #ead3e6; --tint-soft: #faf4f9; --tint-strong: #6b3a7d;
+}
+.dashboard-content:has(.dashboard-hero.theme-gold) {
+  --tint-bg: #ecf5fb; --tint-border: #c5e1f2; --tint-soft: #f1f8fc; --tint-strong: #0c3557;
+}
+.dashboard-content:has(.dashboard-hero.theme-office) {
+  --tint-bg: #f6f0fb; --tint-border: #e3d4f2; --tint-soft: #f9f5fc; --tint-strong: #5f45a0;
+}
+.dashboard-content:has(.dashboard-hero.theme-warehouse) {
+  --tint-bg: #fbf4ec; --tint-border: #efdcc6; --tint-soft: #fcf7f1; --tint-strong: #7a4a20;
+}
+.dashboard-content:has(.dashboard-hero:not([class*="theme-"])) {
+  --tint-bg: #f6f0fb; --tint-border: #e3d4f2; --tint-soft: #f9f5fc; --tint-strong: #5f45a0;
+}
+
+.dashboard-content:is([style], *) :is(.dashboard-team-stats, .dashboard-today-visits-section, .mlr, .lac, .fin, .dashboard-stats) {
+  background: linear-gradient(180deg, var(--tint-bg, #ffffff) 0%, #ffffff 70%) !important;
+  border-color: var(--tint-border, #d5dce6) !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+}
+/* small coloured bar before card titles */
+.dashboard-content :is(.dashboard-team-stats-title, .mlr-head h3, .lac-head h3, .fin-head h3, .ttv-head h3, .today-visits h2, .today-visits h3) {
+  position: relative;
+  padding-left: 12px;
+}
+.dashboard-content :is(.dashboard-team-stats-title, .mlr-head h3, .lac-head h3, .fin-head h3, .ttv-head h3, .today-visits h2, .today-visits h3)::before {
+  content: "";
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 4px; height: 1.05em; border-radius: 4px;
+  background: var(--tint-strong, #3f74d6);
+}
+/* stat tiles */
+.dashboard-content .team-stat-card,
+.dashboard-content .ttv-chip,
+.dashboard-content .fin-card,
+.dashboard-content .dashboard-stat {
+  background: var(--tint-soft, #f8fafc) !important;
+  border-color: var(--tint-border, #e2e8f0) !important;
+}
+.dashboard-content .team-stat-value,
+.dashboard-content .ttv-chip strong {
+  color: var(--tint-strong, #0f172a);
+}
+.dashboard-content .mlr-item,
+.dashboard-content .lac-item,
+.dashboard-content .ttv-person {
+  background: #ffffff;
+  border-color: var(--tint-border, #eef2f7);
+}
+
