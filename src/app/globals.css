@@ -1305,3 +1305,88 @@ html[data-theme="dark"]:has(.dashboard-shell) .stock-upload .stock-card:first-of
 .resource-table:has(> textarea) > .btn { min-height: 44px; padding: 0 26px; margin-top: 14px !important; }
 html[data-theme="dark"]:has(.dashboard-shell) .resource-table > textarea.field-input { filter: contrast(1.1628) hue-rotate(-180deg) invert(1); }
 
+
+/* ===== sales-entry pages: themed filter/form cards + clean tables ===== */
+.dashboard-shell:has(.sidebar.theme-gold) .planning-form-card, .dashboard-shell:has(.sidebar.theme-gold) .planning-filters-card, .dashboard-shell:has(.sidebar.theme-gold) .doctor-entries-header, .dashboard-shell:has(.sidebar.theme-gold) .sales-listing-filters, .dashboard-shell:has(.sidebar.theme-gold) .employee-sales-filters, .dashboard-shell:has(.sidebar.theme-gold) .employee-targets-filters {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #071a2e 0%, #0c3557 28%, #13608f 55%, #2a93c4 78%, #8fd3f0 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #071a2e 0%, #0c3557 28%, #13608f 55%, #2a93c4 78%, #8fd3f0 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-division1) .planning-form-card, .dashboard-shell:has(.sidebar.theme-division1) .planning-filters-card, .dashboard-shell:has(.sidebar.theme-division1) .doctor-entries-header, .dashboard-shell:has(.sidebar.theme-division1) .sales-listing-filters, .dashboard-shell:has(.sidebar.theme-division1) .employee-sales-filters, .dashboard-shell:has(.sidebar.theme-division1) .employee-targets-filters {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #0f2a20 0%, #1b4332 18%, #2d6a4f 38%, #40916c 56%, #52b788 76%, #8fd3ae 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #0f2a20 0%, #1b4332 18%, #2d6a4f 38%, #40916c 56%, #52b788 76%, #8fd3ae 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-division2) .planning-form-card, .dashboard-shell:has(.sidebar.theme-division2) .planning-filters-card, .dashboard-shell:has(.sidebar.theme-division2) .doctor-entries-header, .dashboard-shell:has(.sidebar.theme-division2) .sales-listing-filters, .dashboard-shell:has(.sidebar.theme-division2) .employee-sales-filters, .dashboard-shell:has(.sidebar.theme-division2) .employee-targets-filters {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(45deg, #051a33 0%, #0b3a6e 30%, #0e7fb0 60%, #14a38b 82%, #0d6b5c 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 45deg, #051a33 0%, #0b3a6e 30%, #0e7fb0 60%, #14a38b 82%, #0d6b5c 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-division3) .planning-form-card, .dashboard-shell:has(.sidebar.theme-division3) .planning-filters-card, .dashboard-shell:has(.sidebar.theme-division3) .doctor-entries-header, .dashboard-shell:has(.sidebar.theme-division3) .sales-listing-filters, .dashboard-shell:has(.sidebar.theme-division3) .employee-sales-filters, .dashboard-shell:has(.sidebar.theme-division3) .employee-targets-filters {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #2a1238 0%, #45205c 15%, #5a2a72 30%, #8e4f9a 55%, #b36a90 72%, #c27a8a 85%, #e0a37a 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #2a1238 0%, #45205c 15%, #5a2a72 30%, #8e4f9a 55%, #b36a90 72%, #c27a8a 85%, #e0a37a 100%) !important;
+  background-attachment: fixed !important;
+}
+.dashboard-shell:has(.sidebar.theme-office) .planning-form-card, .dashboard-shell:has(.sidebar.theme-office) .planning-filters-card, .dashboard-shell:has(.sidebar.theme-office) .doctor-entries-header, .dashboard-shell:has(.sidebar.theme-office) .sales-listing-filters, .dashboard-shell:has(.sidebar.theme-office) .employee-sales-filters, .dashboard-shell:has(.sidebar.theme-office) .employee-targets-filters {
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(165deg, #241640 0%, #3e2a6e 20%, #5f45a0 42%, #8a63c4 64%, #b77fc0 84%, #d9a0c4 100%) !important;
+  background: linear-gradient(135deg, #ffffff1a, #ffffff05), linear-gradient(in oklch 165deg, #241640 0%, #3e2a6e 20%, #5f45a0 42%, #8a63c4 64%, #b77fc0 84%, #d9a0c4 100%) !important;
+  background-attachment: fixed !important;
+}
+
+.dashboard-shell .planning-form-card, .dashboard-shell .planning-filters-card, .dashboard-shell .doctor-entries-header, .dashboard-shell .sales-listing-filters, .dashboard-shell .employee-sales-filters, .dashboard-shell .employee-targets-filters {
+  border: 1px solid rgba(255, 255, 255, 0.14) !important; border-radius: 18px !important;
+  box-shadow: 0 14px 36px rgba(7, 26, 46, 0.25) !important; color: #ffffff;
+}
+.dashboard-shell .planning-form-card :is(label, h2, h3, h4, strong, legend, .planning-showcount, .planning-showcount *), .dashboard-shell .planning-filters-card :is(label, h2, h3, h4, strong, legend, .planning-showcount, .planning-showcount *), .dashboard-shell .doctor-entries-header :is(label, h2, h3, h4, strong, legend, .planning-showcount, .planning-showcount *), .dashboard-shell .sales-listing-filters :is(label, h2, h3, h4, strong, legend, .planning-showcount, .planning-showcount *), .dashboard-shell .employee-sales-filters :is(label, h2, h3, h4, strong, legend, .planning-showcount, .planning-showcount *), .dashboard-shell .employee-targets-filters :is(label, h2, h3, h4, strong, legend, .planning-showcount, .planning-showcount *) {
+  color: #ffffff !important; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+}
+.dashboard-shell .planning-form-card :is(.field-input, select, .searchable-select-control input, .mss-trigger), .dashboard-shell .planning-filters-card :is(.field-input, select, .searchable-select-control input, .mss-trigger), .dashboard-shell .doctor-entries-header :is(.field-input, select, .searchable-select-control input, .mss-trigger), .dashboard-shell .sales-listing-filters :is(.field-input, select, .searchable-select-control input, .mss-trigger), .dashboard-shell .employee-sales-filters :is(.field-input, select, .searchable-select-control input, .mss-trigger), .dashboard-shell .employee-targets-filters :is(.field-input, select, .searchable-select-control input, .mss-trigger) {
+  min-height: 42px; border-radius: 11px !important;
+  background-color: rgba(255, 255, 255, 0.13) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important; font-weight: 600 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.dashboard-shell .planning-form-card :is(.field-input, input)::placeholder, .dashboard-shell .planning-filters-card :is(.field-input, input)::placeholder, .dashboard-shell .doctor-entries-header :is(.field-input, input)::placeholder, .dashboard-shell .sales-listing-filters :is(.field-input, input)::placeholder, .dashboard-shell .employee-sales-filters :is(.field-input, input)::placeholder, .dashboard-shell .employee-targets-filters :is(.field-input, input)::placeholder { color: rgba(255, 255, 255, 0.75) !important; }
+.dashboard-shell .planning-form-card :is(.field-input, select, .searchable-select-control input):focus, .dashboard-shell .planning-filters-card :is(.field-input, select, .searchable-select-control input):focus, .dashboard-shell .doctor-entries-header :is(.field-input, select, .searchable-select-control input):focus, .dashboard-shell .sales-listing-filters :is(.field-input, select, .searchable-select-control input):focus, .dashboard-shell .employee-sales-filters :is(.field-input, select, .searchable-select-control input):focus, .dashboard-shell .employee-targets-filters :is(.field-input, select, .searchable-select-control input):focus {
+  background-color: rgba(255, 255, 255, 0.22) !important; border-color: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18) !important; outline: none;
+}
+.dashboard-shell .planning-form-card select, .dashboard-shell .planning-filters-card select, .dashboard-shell .doctor-entries-header select, .dashboard-shell .sales-listing-filters select, .dashboard-shell .employee-sales-filters select, .dashboard-shell .employee-targets-filters select {
+  appearance: none; -webkit-appearance: none; padding-right: 36px !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important;
+  background-position: right 12px center !important; background-size: 16px 16px !important;
+}
+.dashboard-shell .planning-form-card select option, .dashboard-shell .planning-filters-card select option, .dashboard-shell .doctor-entries-header select option, .dashboard-shell .sales-listing-filters select option, .dashboard-shell .employee-sales-filters select option, .dashboard-shell .employee-targets-filters select option { color: #0f172a !important; background: #ffffff !important; }
+.dashboard-shell .planning-form-card :is(input[type='date'], input[type='month'])::-webkit-calendar-picker-indicator, .dashboard-shell .planning-filters-card :is(input[type='date'], input[type='month'])::-webkit-calendar-picker-indicator, .dashboard-shell .doctor-entries-header :is(input[type='date'], input[type='month'])::-webkit-calendar-picker-indicator, .dashboard-shell .sales-listing-filters :is(input[type='date'], input[type='month'])::-webkit-calendar-picker-indicator, .dashboard-shell .employee-sales-filters :is(input[type='date'], input[type='month'])::-webkit-calendar-picker-indicator, .dashboard-shell .employee-targets-filters :is(input[type='date'], input[type='month'])::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+.dashboard-shell .planning-form-card :is(.searchable-select-clear, .searchable-select-control button), .dashboard-shell .planning-filters-card :is(.searchable-select-clear, .searchable-select-control button), .dashboard-shell .doctor-entries-header :is(.searchable-select-clear, .searchable-select-control button), .dashboard-shell .sales-listing-filters :is(.searchable-select-clear, .searchable-select-control button), .dashboard-shell .employee-sales-filters :is(.searchable-select-clear, .searchable-select-control button), .dashboard-shell .employee-targets-filters :is(.searchable-select-clear, .searchable-select-control button) { color: #ffffff !important; }
+/* dropdown lists stay white & readable */
+.dashboard-shell .planning-form-card :is(.searchable-select-dropdown, .mss-dropdown), .dashboard-shell .planning-filters-card :is(.searchable-select-dropdown, .mss-dropdown), .dashboard-shell .doctor-entries-header :is(.searchable-select-dropdown, .mss-dropdown), .dashboard-shell .sales-listing-filters :is(.searchable-select-dropdown, .mss-dropdown), .dashboard-shell .employee-sales-filters :is(.searchable-select-dropdown, .mss-dropdown), .dashboard-shell .employee-targets-filters :is(.searchable-select-dropdown, .mss-dropdown) { background: #ffffff !important; color: #0f172a !important; text-shadow: none !important; }
+.dashboard-shell .planning-form-card :is(.searchable-select-dropdown, .mss-dropdown) *, .dashboard-shell .planning-filters-card :is(.searchable-select-dropdown, .mss-dropdown) *, .dashboard-shell .doctor-entries-header :is(.searchable-select-dropdown, .mss-dropdown) *, .dashboard-shell .sales-listing-filters :is(.searchable-select-dropdown, .mss-dropdown) *, .dashboard-shell .employee-sales-filters :is(.searchable-select-dropdown, .mss-dropdown) *, .dashboard-shell .employee-targets-filters :is(.searchable-select-dropdown, .mss-dropdown) * { color: #0f172a !important; text-shadow: none !important; }
+/* buttons */
+.dashboard-shell .planning-form-card .btn, .dashboard-shell .planning-filters-card .btn, .dashboard-shell .doctor-entries-header .btn, .dashboard-shell .sales-listing-filters .btn, .dashboard-shell .employee-sales-filters .btn, .dashboard-shell .employee-targets-filters .btn { background: #ffffff !important; color: #0b1b33 !important; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18) !important; }
+.dashboard-shell .planning-form-card .btn *, .dashboard-shell .planning-filters-card .btn *, .dashboard-shell .doctor-entries-header .btn *, .dashboard-shell .sales-listing-filters .btn *, .dashboard-shell .employee-sales-filters .btn *, .dashboard-shell .employee-targets-filters .btn * { color: #0b1b33 !important; text-shadow: none !important; }
+.dashboard-shell .planning-form-card .btn .btn-spinner, .dashboard-shell .planning-filters-card .btn .btn-spinner, .dashboard-shell .doctor-entries-header .btn .btn-spinner, .dashboard-shell .sales-listing-filters .btn .btn-spinner, .dashboard-shell .employee-sales-filters .btn .btn-spinner, .dashboard-shell .employee-targets-filters .btn .btn-spinner { border-color: #0b1b33 !important; border-right-color: transparent !important; }
+.dashboard-shell .planning-form-card .btn-gray, .dashboard-shell .planning-filters-card .btn-gray, .dashboard-shell .doctor-entries-header .btn-gray, .dashboard-shell .sales-listing-filters .btn-gray, .dashboard-shell .employee-sales-filters .btn-gray, .dashboard-shell .employee-targets-filters .btn-gray { background: rgba(255, 255, 255, 0.14) !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.35) !important; }
+html[data-theme="dark"]:has(.dashboard-shell) :is(.planning-form-card, .planning-filters-card, .doctor-entries-header, .sales-listing-filters, .employee-sales-filters, .employee-targets-filters) { filter: contrast(1.1628) hue-rotate(-180deg) invert(1); }
+
+/* data entry: doctor cards stay white, with the theme colour on top */
+.dashboard-shell .doctor-entry-card {
+  border: 1px solid #d5dce6 !important; border-top: 4px solid var(--f-strong, #3f74d6) !important;
+  border-radius: 16px !important; box-shadow: 0 6px 20px rgba(15, 39, 68, 0.07) !important;
+}
+
+/* tables: clean and readable */
+.planning-table-scroll, .sales-listing-scroll, .budgets-list-table-wrap, .employee-sales-table-wrap, .employee-targets-table-wrap {
+  background: #ffffff; border: 1px solid #d5dce6 !important; border-radius: 16px !important;
+  box-shadow: 0 6px 20px rgba(15, 39, 68, 0.06);
+}
+.planning-table-scroll th, .sales-listing-scroll th, .budgets-list-table-wrap th, .employee-sales-table-wrap th, .employee-targets-table-wrap th {
+  background: #eef2f8 !important; color: #1e293b !important; font-weight: 800 !important;
+  border-bottom: 2px solid #d5dce6 !important;
+}
+.planning-table-scroll td, .sales-listing-scroll td, .budgets-list-table-wrap td, .employee-sales-table-wrap td, .employee-targets-table-wrap td { color: #1e293b; font-weight: 500; border-bottom: 1px solid #e3e8ef; }
+.planning-table-scroll tbody tr:nth-child(even) td, .sales-listing-scroll tbody tr:nth-child(even) td, .budgets-list-table-wrap tbody tr:nth-child(even) td, .employee-sales-table-wrap tbody tr:nth-child(even) td, .employee-targets-table-wrap tbody tr:nth-child(even) td { background: #f8fafd; }
+.planning-table-scroll tbody tr:hover td, .sales-listing-scroll tbody tr:hover td, .budgets-list-table-wrap tbody tr:hover td, .employee-sales-table-wrap tbody tr:hover td, .employee-targets-table-wrap tbody tr:hover td { background: #edf3fd; }
+
