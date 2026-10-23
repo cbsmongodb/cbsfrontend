@@ -1989,3 +1989,28 @@ html[data-theme="dark"]:has(.dashboard-shell) .prescedit-card * { filter: none !
   background-color: rgba(255, 255, 255, 0.22) !important; border-color: rgba(255, 255, 255, 0.85) !important;
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18) !important;
 }
+
+/* ===== search fields that already have their own icon: one frame only ===== */
+/* the input inside a wrapper that draws its own icon: no second frame / icon */
+.dashboard-content :is(div, label):has(> svg) > input:is([type="search"], [placeholder*="Search"], [placeholder*="search"],
+  [placeholder*="ძებნ"], [placeholder*="ძიებ"], [placeholder*="Поиск"], [placeholder*="поиск"]),
+.et-modal-searchwrap .et-modal-search {
+  border: 0 !important; background: transparent none !important; background-image: none !important;
+  box-shadow: none !important; padding: 0 !important; min-height: 0 !important; height: 40px;
+  border-radius: 0 !important; outline: none !important; flex: 1; min-width: 0;
+}
+/* the wrapper is the pill */
+.et-modal-searchwrap {
+  display: flex !important; align-items: center; gap: 10px;
+  min-height: 46px; padding: 0 18px !important; border-radius: 999px !important;
+  border: 1.5px solid #d9e1ec !important; background: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(15, 39, 68, 0.06) !important;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+.et-modal-searchwrap:focus-within {
+  border-color: #3f74d6 !important;
+  box-shadow: 0 0 0 4px rgba(63, 116, 214, 0.14), 0 4px 14px rgba(15, 39, 68, 0.08) !important;
+}
+.et-modal-searchwrap svg { color: #7b8aa0 !important; transition: color 0.18s; }
+.et-modal-searchwrap:focus-within svg { color: #3f74d6 !important; }
+.et-modal-search::placeholder { color: #8a97aa !important; font-weight: 500; }
