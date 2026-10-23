@@ -1969,3 +1969,23 @@ html[data-theme="dark"]:has(.dashboard-shell) .prescedit-card * { filter: none !
 .dashboard-shell .director-filters .director-quick-dates button:is(.active, [aria-pressed="true"]) {
   background: #ffffff !important; color: #0b1b33 !important; border-color: #ffffff !important;
 }
+
+/* ===== searchable selects in forms: one frame, not a box inside a box ===== */
+.dashboard-shell .resource-form .searchable-select-control {
+  display: flex !important; align-items: center; min-height: 40px !important;
+  padding: 0 12px 0 14px !important; border-radius: 11px !important;
+}
+.dashboard-shell .resource-form .searchable-select-control input,
+.dashboard-shell .resource-form .searchable-select-control input:hover,
+.dashboard-shell .resource-form .searchable-select-control input:focus {
+  flex: 1; min-width: 0; min-height: 0 !important; height: 36px;
+  padding: 0 !important; margin: 0 !important;
+  border: 0 !important; border-radius: 0 !important;
+  background: transparent !important; box-shadow: none !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  outline: none !important;
+}
+.dashboard-shell .resource-form .searchable-select-control:focus-within {
+  background-color: rgba(255, 255, 255, 0.22) !important; border-color: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18) !important;
+}
