@@ -130,7 +130,15 @@
     "gpsUnsupported": "Этот браузер не поддерживает GPS",
     "genericError": "Произошла ошибка",
     "alreadyIn": "Вы уже отметились сегодня",
-    "notIn": "Вы ещё не отметились"
+    "notIn": "Вы ещё не отметились",
+    "statusIn": "Вы отметили приход",
+    "since": "Приход: {time}",
+    "statusDone": "Рабочий день завершён",
+    "checkinAgain": "Отметить приход снова",
+    "confirmCheckout": "Подтвердите уход",
+    "confirmCheckin": "Подтвердите приход",
+    "durationHM": "{h} ч {m} мин",
+    "durationM": "{m} мин"
   },
   "notificationsPage": {
     "title": "Уведомления",

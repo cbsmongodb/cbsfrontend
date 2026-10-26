@@ -133,7 +133,15 @@
     "gpsUnsupported": "ეს ბრაუზერი GPS-ს არ უჭერს მხარს",
     "genericError": "შეცდომა მოხდა",
     "alreadyIn": "დღეს უკვე დაჩექინებული ხართ",
-    "notIn": "ჯერ არ დაჩექინებულხართ"
+    "notIn": "ჯერ არ დაჩექინებულხართ",
+    "statusIn": "დაჩექინებული ხართ",
+    "since": "ჩექინი: {time}",
+    "statusDone": "სამუშაო დღე დასრულდა",
+    "checkinAgain": "ხელახლა ჩექინი",
+    "confirmCheckout": "დაადასტურეთ ჩექაუთი",
+    "confirmCheckin": "დაადასტურეთ ჩექინი",
+    "durationHM": "{h} სთ {m} წთ",
+    "durationM": "{m} წთ"
   },
   "notificationsPage": {
     "title": "შეტყობინებები",

@@ -130,7 +130,15 @@
     "gpsUnsupported": "This browser does not support GPS",
     "genericError": "Something went wrong",
     "alreadyIn": "You are already checked in today",
-    "notIn": "You have not checked in yet"
+    "notIn": "You have not checked in yet",
+    "statusIn": "Checked in",
+    "since": "Since {time}",
+    "statusDone": "Workday completed",
+    "checkinAgain": "Check in again",
+    "confirmCheckout": "Confirm check-out",
+    "confirmCheckin": "Confirm check-in",
+    "durationHM": "{h}h {m}m",
+    "durationM": "{m}m"
   },
   "notificationsPage": {
     "title": "Notifications",
