@@ -93,3 +93,34 @@
 }
 .budgetnew-input-field .field-input:hover,
 .budgetnew-input-field .budgetnew-paid-input:hover { background: #ffffff !important; }
+
+/* ===== budget form v2: typed fields = white, automatic = glass + dashed ===== */
+.dashboard-shell .prescedit-card .budgetnew-input-field .budgetnew-amount-input {
+  background: transparent !important; border: 0 !important; backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important; min-height: 0 !important; padding: 0 !important;
+}
+.dashboard-shell .prescedit-card .budgetnew-input-field .field-input,
+.dashboard-shell .prescedit-card .budgetnew-input-field .searchable-select-control {
+  background: #ffffff !important; border: 2px solid #ffffff !important;
+  color: #0b1b33 !important; font-weight: 700 !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18) !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+}
+.dashboard-shell .prescedit-card .budgetnew-input-field .searchable-select-control input,
+.dashboard-shell .prescedit-card .budgetnew-input-field .searchable-select-control :is(button, .searchable-select-clear) {
+  color: #0b1b33 !important; text-shadow: none !important;
+}
+.dashboard-shell .prescedit-card .budgetnew-input-field :is(input, .field-input)::placeholder { color: #8a97a8 !important; }
+.dashboard-shell .prescedit-card .budgetnew-input-field input[type='date']::-webkit-calendar-picker-indicator { filter: none; }
+.dashboard-shell .prescedit-card .budgetnew-input-field .field-input:focus,
+.dashboard-shell .prescedit-card .budgetnew-input-field .searchable-select-control:focus-within {
+  background: #ffffff !important; border-color: #ffd166 !important;
+  box-shadow: 0 0 0 4px rgba(255, 209, 102, 0.35), 0 6px 16px rgba(0, 0, 0, 0.18) !important;
+}
+.dashboard-shell .prescedit-card .budgetnew-auto-field .budgetnew-amount-readonly {
+  background: rgba(0, 0, 0, 0.16) !important; border: 1.5px dashed rgba(255, 255, 255, 0.45) !important;
+  color: rgba(255, 255, 255, 0.92) !important; cursor: not-allowed;
+  display: flex; align-items: center;
+}
+.dashboard-shell .prescedit-card .budgetnew-auto-field > label { opacity: 0.8; }
+.dashboard-shell .prescedit-card .budgetnew-lock { color: rgba(255, 255, 255, 0.75) !important; }
