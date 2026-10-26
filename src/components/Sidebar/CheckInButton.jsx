@@ -111,18 +111,9 @@ export default function CheckInButton() {
     }
   }
 
-  // ჩექაუთი და ხელახალი ჩექინი — ორჯერ დაჭერით, რომ შემთხვევით არ მოხდეს
+  // ერთი დაჭერა საკმარისია — დადასტურება აღარ სჭირდება
   function handleClick() {
     if (loading) return
-    const needsConfirm = isIn || isDone
-    if (needsConfirm && !confirming) {
-      setConfirming(true)
-      clearTimeout(confirmTimer.current)
-      confirmTimer.current = setTimeout(() => setConfirming(false), 60000)
-      return
-    }
-    clearTimeout(confirmTimer.current)
-    setConfirming(false)
     submit()
   }
 
