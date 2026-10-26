@@ -33,7 +33,7 @@ export default function BudgetNew() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    Promise.all([apiFetch('/api/employees'), apiFetch('/api/doctors')])
+    Promise.all([apiFetch('/api/employees?lite=1'), apiFetch('/api/doctors?lite=1')])
       .then(([e, d]) => {
         setEmployees(e)
         setDoctors(d)
@@ -104,12 +104,23 @@ export default function BudgetNew() {
 
         {error && <p className="resource-error">{error}</p>}
 
+        <div className="budgetnew-legend">
+          <span className="budgetnew-legend-item budgetnew-legend-input">
+            <span className="budgetnew-legend-dot" />
+            {tu('budgetLegendInput')}
+          </span>
+          <span className="budgetnew-legend-item budgetnew-legend-auto">
+            <span className="budgetnew-legend-dot" />
+            {tu('budgetLegendAuto')}
+          </span>
+        </div>
+
         <div className="prescedit-fields">
-          <div className="prescedit-field">
+          <div className="prescedit-field budgetnew-input-field">
             <label>{tu('k176')}</label>
             <input type="date" className="field-input" value={date} onChange={(e) => setDate(e.target.value)} />
           </div>
-          <div className="prescedit-field">
+          <div className="prescedit-field budgetnew-input-field">
             <label>{tu('k108')}</label>
             <SearchableSelect
               options={employees}
@@ -119,7 +130,7 @@ export default function BudgetNew() {
               placeholder={tu('k109')}
             />
           </div>
-          <div className="prescedit-field">
+          <div className="prescedit-field budgetnew-input-field">
             <label>{tu('k110')}</label>
             <SearchableSelect
               options={doctors}
@@ -132,7 +143,7 @@ export default function BudgetNew() {
         </div>
 
         <div className="prescedit-fields budgetnew-amounts-row">
-          <div className="prescedit-field">
+          <div className="prescedit-field budgetnew-input-field">
             <label>{tu('k177')}</label>
             <div className="budgetnew-amount-input">
               <input
@@ -143,44 +154,44 @@ export default function BudgetNew() {
                 value={paidAmount}
                 onChange={(e) => setPaidAmount(e.target.value)}
               />
-              <span className="budgetnew-check">✓</span>
             </div>
           </div>
-          <div className="prescedit-field">
+          <div className="prescedit-field budgetnew-auto-field">
             <label>{tu('k178')}</label>
             <div className="budgetnew-amount-readonly">
               {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.advanceAmount}
+              <svg className="budgetnew-lock" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2"/></svg>
             </div>
           </div>
-          <div className="prescedit-field">
+          <div className="prescedit-field budgetnew-auto-field">
             <label>{tu('k179')}</label>
-            <div className="budgetnew-amount-readonly budgetnew-amount-ok">
+            <div className="budgetnew-amount-readonly">
               {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.salesAmount}
-              <span className="budgetnew-check">✓</span>
+              <svg className="budgetnew-lock" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2"/></svg>
             </div>
           </div>
         </div>
 
         <div className="prescedit-fields budgetnew-amounts-row">
-          <div className="prescedit-field">
+          <div className="prescedit-field budgetnew-auto-field">
             <label>{tu('k180')}</label>
-            <div className="budgetnew-amount-readonly budgetnew-amount-ok">
+            <div className="budgetnew-amount-readonly">
               {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.targetAmount}
-              <span className="budgetnew-check">✓</span>
+              <svg className="budgetnew-lock" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2"/></svg>
             </div>
           </div>
-          <div className="prescedit-field">
+          <div className="prescedit-field budgetnew-auto-field">
             <label>{tu('k181')}</label>
-            <div className="budgetnew-amount-readonly budgetnew-amount-ok">
+            <div className="budgetnew-amount-readonly">
               {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.prescriptionAmt}
-              <span className="budgetnew-check">✓</span>
+              <svg className="budgetnew-lock" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2"/></svg>
             </div>
           </div>
-          <div className="prescedit-field">
+          <div className="prescedit-field budgetnew-auto-field">
             <label>{tu('k182')}</label>
-            <div className="budgetnew-amount-readonly budgetnew-amount-ok">
+            <div className="budgetnew-amount-readonly">
               {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.payableAmt}
-              <span className="budgetnew-check">✓</span>
+              <svg className="budgetnew-lock" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2"/></svg>
             </div>
           </div>
         </div>

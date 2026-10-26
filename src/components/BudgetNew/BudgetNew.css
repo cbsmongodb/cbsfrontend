@@ -72,3 +72,22 @@
   -moz-appearance: textfield;
   appearance: textfield;
 }
+
+/* ===== what to TYPE vs what is FILLED AUTOMATICALLY ===== */
+.budgetnew-legend { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 4px 0 14px; font-size: 12.5px; font-weight: 600; }
+.budgetnew-legend-item { display: inline-flex; align-items: center; gap: 7px; }
+.budgetnew-legend-dot { width: 12px; height: 12px; border-radius: 4px; }
+.budgetnew-legend-input { color: #1d4ed8; }
+.budgetnew-legend-input .budgetnew-legend-dot { background: #ffffff; border: 2px solid #3b82f6; }
+.budgetnew-legend-auto { color: #64748b; }
+.budgetnew-legend-auto .budgetnew-legend-dot { background: #eef1f5; border: 2px dashed #94a3b8; }
+
+.budgetnew-input-field > label { color: #1d4ed8; font-weight: 700; }
+.budgetnew-input-field .field-input,
+.budgetnew-input-field .budgetnew-paid-input { border-color: #93b4f5 !important; background: #ffffff !important; box-shadow: inset 3px 0 0 #3b82f6; }
+.budgetnew-input-field .field-input:focus,
+.budgetnew-input-field .budgetnew-paid-input:focus { border-color: #3b82f6 !important; box-shadow: inset 3px 0 0 #3b82f6, 0 0 0 3px rgba(59, 130, 246, 0.15); }
+
+.budgetnew-auto-field > label { color: #64748b; }
+.budgetnew-auto-field .budgetnew-amount-readonly { background: #eef1f5; border: 1.5px dashed #b6c0cd; color: #334155; cursor: not-allowed; font-variant-numeric: tabular-nums; }
+.budgetnew-lock { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
