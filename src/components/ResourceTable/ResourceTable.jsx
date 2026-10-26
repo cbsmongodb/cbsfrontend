@@ -109,7 +109,9 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
     const entries = await Promise.all(
       optionFields.map(async (f) => {
         try {
-          const data = await apiFetch(f.optionsEndpoint)
+          // dropdowns only need names -> ?lite=1 (endpoints that don't know it just ignore it)
+          const url = f.optionsEndpoint + (f.optionsEndpoint.includes('?') ? '&' : '?') + 'lite=1'
+          const data = await apiFetch(url)
           return [f.name, data]
         } catch {
           return [f.name, []]
