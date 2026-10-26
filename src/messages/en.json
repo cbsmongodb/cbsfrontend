@@ -1133,9 +1133,7 @@
     "howCol": "How counted",
     "deletedDoctor": "(deleted doctor)",
     "pharmacyCol": "Sales from pharmacies",
-    "noPlace": "No place set",
-    "budgetLegendInput": "Fill in",
-    "budgetLegendAuto": "Filled automatically"
+    "noPlace": "No place set"
   },
   "theme": {
     "dark": "Dark mode",

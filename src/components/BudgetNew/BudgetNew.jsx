@@ -104,17 +104,6 @@ export default function BudgetNew() {
 
         {error && <p className="resource-error">{error}</p>}
 
-        <div className="budgetnew-legend">
-          <span className="budgetnew-legend-item budgetnew-legend-input">
-            <span className="budgetnew-legend-dot" />
-            {tu('budgetLegendInput')}
-          </span>
-          <span className="budgetnew-legend-item budgetnew-legend-auto">
-            <span className="budgetnew-legend-dot" />
-            {tu('budgetLegendAuto')}
-          </span>
-        </div>
-
         <div className="prescedit-fields">
           <div className="prescedit-field budgetnew-input-field">
             <label>{tu('k176')}</label>

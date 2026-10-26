@@ -1133,9 +1133,7 @@
     "howCol": "Как посчитано",
     "deletedDoctor": "(удалённый врач)",
     "pharmacyCol": "Продажи из аптек",
-    "noPlace": "Место не указано",
-    "budgetLegendInput": "Заполняется вручную",
-    "budgetLegendAuto": "Заполняется автоматически"
+    "noPlace": "Место не указано"
   },
   "theme": {
     "dark": "Тёмная тема",
