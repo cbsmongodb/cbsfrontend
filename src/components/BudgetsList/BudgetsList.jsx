@@ -39,19 +39,12 @@ export default function BudgetsList() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    Promise.all([
-      apiFetch('/api/doctors?lite=1'),
-      apiFetch('/api/employees?lite=1'),
-      apiFetch('/api/admin/sections'),
-      apiFetch('/api/admin/groups'),
-    ])
-      .then(([d, e, s, g]) => {
-        setDoctors(d)
-        setEmployees(e)
-        setSections(s)
-        setGroups(g)
-      })
-      .catch((err) => setError(err.message))
+    // each filter list loads on its own: one list this role may not read
+    // must not empty the others or show "Forbidden" over the whole page
+    apiFetch('/api/doctors?lite=1').then(setDoctors).catch(() => setDoctors([]))
+    apiFetch('/api/employees?lite=1').then(setEmployees).catch(() => setEmployees([]))
+    apiFetch('/api/admin/sections?lite=1').then(setSections).catch(() => setSections([]))
+    apiFetch('/api/admin/groups?lite=1').then(setGroups).catch(() => setGroups([]))
   }, [])
 
   async function load(targetPage = 1, size = pageSize) {
