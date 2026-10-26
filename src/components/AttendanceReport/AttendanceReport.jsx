@@ -62,7 +62,7 @@ export default function AttendanceReport() {
   useEffect(() => {
     async function loadOptions() {
       try {
-        const e = await apiFetch('/api/employees')
+        const e = await apiFetch('/api/employees?lite=1')
         setEmployees(e)
       } catch (err) {
         setError(err.message)
@@ -78,8 +78,13 @@ export default function AttendanceReport() {
     setError('')
     try {
       const params = new URLSearchParams()
-      if (from) params.set('from', from)
-      if (to) params.set('to', to)
+      // empty dates would mean "the whole history" -> fall back to the last 7 days
+      const f = from || defaultFrom()
+      const tt = to || defaultTo()
+      if (!from) setFrom(f)
+      if (!to) setTo(tt)
+      params.set('from', f)
+      params.set('to', tt)
       if (employeeId) params.set('employee', employeeId)
       const data = await apiFetch(`/api/reports/attendances?${params}`)
       setRows(data)
@@ -103,6 +108,26 @@ export default function AttendanceReport() {
     return list
   }, [rows, statusFilter, search])
 
+  // show 100 rows at a time — thousands of table rows at once freeze the browser
+  const PAGE = 100
+  const [page, setPage] = useState(0)
+  useEffect(() => { setPage(0) }, [visibleRows])
+  const pageCount = Math.max(1, Math.ceil(visibleRows.length / PAGE))
+  const safePage = Math.min(page, pageCount - 1)
+  const pageRows = visibleRows.slice(safePage * PAGE, safePage * PAGE + PAGE)
+  const fmtTime = (v) => new Date(v).toLocaleString(localeTag(locale), { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+  const typeText = (r) => (TYPE_LABELS[r.attendanceType] ? t(`attendance.${TYPE_LABELS[r.attendanceType]}`) : r.attendanceType)
+  const statusText = (r) => (STATUS_LABELS[r.attendanceStatus] ? t(`attendance.${STATUS_LABELS[r.attendanceStatus]}`) : r.attendanceStatus)
+  const pager = pageCount > 1 ? (
+    <div className="att-pagination">
+      <button type="button" onClick={() => setPage(0)} disabled={safePage === 0}>«</button>
+      <button type="button" onClick={() => setPage(safePage - 1)} disabled={safePage === 0}>‹</button>
+      <span>{safePage * PAGE + 1}–{Math.min((safePage + 1) * PAGE, visibleRows.length)} / {visibleRows.length.toLocaleString('en-US')}</span>
+      <button type="button" onClick={() => setPage(safePage + 1)} disabled={safePage >= pageCount - 1}>›</button>
+      <button type="button" onClick={() => setPage(pageCount - 1)} disabled={safePage >= pageCount - 1}>»</button>
+    </div>
+  ) : null
+
   const statusCounts = useMemo(() => {
     const c = { ontime: 0, late_checkin: 0, early_checkout: 0 }
     rows.forEach((r) => {
@@ -115,7 +140,10 @@ export default function AttendanceReport() {
     <div className="attendance-report">
       <div className="report-title-row">
         <h1>{t('attendance.title')}</h1>
-        <ExcelExportButton title={t('attendance.title')} tableSelector=".attendance-report-table" />
+        <ExcelExportButton title={t('attendance.title')} build={() => ({
+            headers: [t('common.employee'), t('attendance.time'), t('attendance.type'), t('attendance.address'), t('attendance.status')],
+            rows: visibleRows.map((r) => [r.employeeName, fmtTime(r.attendanceTime), typeText(r), r.address || '—', statusText(r)]),
+          })} />
         {loading && <ReportLoader />}
       </div>
 
@@ -179,6 +207,8 @@ export default function AttendanceReport() {
         </div>
       )}
 
+      {loaded && pager}
+
       <div className="attendance-report-table-scroll">
         <table className="attendance-report-table">
           <thead>
@@ -191,11 +221,11 @@ export default function AttendanceReport() {
             </tr>
           </thead>
           <tbody>
-            {visibleRows.map((r) => (
+            {pageRows.map((r) => (
               <tr key={r._id}>
                 <td>{r.employeeName}</td>
-                <td>{new Date(r.attendanceTime).toLocaleString(localeTag(locale), { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
-                <td>{TYPE_LABELS[r.attendanceType] ? t(`attendance.${TYPE_LABELS[r.attendanceType]}`) : r.attendanceType}</td>
+                <td>{fmtTime(r.attendanceTime)}</td>
+                <td>{typeText(r)}</td>
                 <td>{r.address || '—'}</td>
                 <td>
                   <span className="attendance-report-status-badge" style={{ color: STATUS_COLORS[r.attendanceStatus] }}>
@@ -212,6 +242,8 @@ export default function AttendanceReport() {
           </tbody>
         </table>
       </div>
+
+      {loaded && pager}
     </div>
   )
 }

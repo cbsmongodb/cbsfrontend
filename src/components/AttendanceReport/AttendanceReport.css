@@ -111,3 +111,13 @@
     width: 100%;
   }
 }
+
+/* ---------- pagination (100 rows per page) ---------- */
+.att-pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 14px 0 18px; flex-wrap: wrap; }
+.att-pagination button {
+  min-width: 38px; height: 38px; border-radius: 10px; border: 1.5px solid #cbd5e1; background: #ffffff;
+  color: #1e293b; font-weight: 700; cursor: pointer; font-family: inherit; transition: border-color 0.15s, background 0.15s;
+}
+.att-pagination button:hover:not(:disabled) { border-color: #3f74d6; background: #eef4fd; }
+.att-pagination button:disabled { opacity: 0.4; cursor: default; }
+.att-pagination span { color: #334155; font-weight: 600; font-size: 13.5px; padding: 0 10px; font-variant-numeric: tabular-nums; }
