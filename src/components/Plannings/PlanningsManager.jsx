@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
@@ -62,7 +62,9 @@ export default function PlanningsManager() {
   const [filterPerformer, setFilterPerformer] = useState('')
   const [filterStatus, setFilterStatus] = useState('')
   const [search, setSearch] = useState('')
-  const [showCount, setShowCount] = useState(100)
+  const [showCount, setShowCount] = useState(25)
+  const [page, setPage] = useState(1)
+  const [pageInfo, setPageInfo] = useState({ total: 0, pages: 1 })
 
   // doctors editing (only shown while editing an existing plan)
   const [availableDoctors, setAvailableDoctors] = useState([])
@@ -92,19 +94,28 @@ export default function PlanningsManager() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  async function loadPlans() {
+  // server-side pagination: only one page of plans is loaded at a time
+  async function loadPlans(targetPage = 1) {
     setLoadingList(true)
     setError('')
     try {
       const params = new URLSearchParams()
       if (filterPerformer) params.set('performer', filterPerformer)
       if (filterStatus) params.set('status', filterStatus)
+      if (filterType) params.set('planType', filterType)
+      if (search.trim()) params.set('search', search.trim())
       if (filterFrom) params.set('period_from', new Date(filterFrom).toISOString())
       if (filterTo) params.set('period_to', new Date(filterTo).toISOString())
-      // ცხრილი მაქს. 250 ხაზს აჩვენებს — მთელი ბაზის წამოღება არ გვჭირდება
-      params.set('limit', '1000')
+      params.set('page', String(targetPage))
+      params.set('limit', String(showCount))
       const data = await apiFetch(`/api/plannings?${params}`)
-      setPlans(data)
+      const docs = Array.isArray(data) ? data : data.docs || []
+      setPlans(docs)
+      setPage(Array.isArray(data) ? 1 : data.page || targetPage)
+      setPageInfo({
+        total: Array.isArray(data) ? docs.length : data.total || 0,
+        pages: Array.isArray(data) ? 1 : data.pages || 1,
+      })
     } catch (err) {
       setError(err.message)
     } finally {
@@ -112,19 +123,19 @@ export default function PlanningsManager() {
     }
   }
 
-  const visiblePlans = useMemo(() => {
-    let list = plans
-    if (filterType) list = list.filter((p) => p.planType === filterType)
-    if (search.trim()) {
-      const q = search.trim().toLowerCase()
-      list = list.filter((p) => {
-        const name = p.hospital?.name || p.pharmacy?.pharmacyName || ''
-        const performerName = p.performer?.name || `${p.performer?.firstName || ''} ${p.performer?.lastName || ''}`
-        return name.toLowerCase().includes(q) || performerName.toLowerCase().includes(q)
-      })
+  // type / page size change -> reload from page 1; typing in search -> reload after a short pause
+  const firstRun = useRef(true)
+  useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false
+      return
     }
-    return list.slice(0, showCount)
-  }, [plans, filterType, search, showCount])
+    const id = setTimeout(() => loadPlans(1), search ? 400 : 0)
+    return () => clearTimeout(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterType, showCount, search])
+
+  const visiblePlans = plans
 
   function updateField(field, value) {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -235,7 +246,7 @@ export default function PlanningsManager() {
       }
 
       cancelEdit()
-      await loadPlans()
+      await loadPlans(page)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -246,7 +257,7 @@ export default function PlanningsManager() {
   async function handleDelete(id) {
     try {
       await apiFetch(`/api/plannings/${id}`, { method: 'DELETE' })
-      await loadPlans()
+      await loadPlans(plans.length === 1 && page > 1 ? page - 1 : page)
     } catch (err) {
       setError(err.message)
     }
@@ -439,7 +450,7 @@ export default function PlanningsManager() {
             />
           </div>
 
-          <button type="button" className="btn planning-search-btn" onClick={loadPlans} disabled={loadingList}>
+          <button type="button" className="btn planning-search-btn" onClick={() => loadPlans(1)} disabled={loadingList}>
             <span>{loadingList ? <span className="btn-spinner" aria-hidden="true" /> : t('buttons.search')}</span>
           </button>
         </div>
@@ -508,6 +519,30 @@ export default function PlanningsManager() {
           </tbody>
         </table>
       </div>
+
+      {pageInfo.pages > 1 && (
+        <div className="resource-pagination">
+          <button
+            type="button"
+            className="btn-gray btn-sm"
+            disabled={page <= 1 || loadingList}
+            onClick={() => loadPlans(page - 1)}
+          >
+            <span>←</span>
+          </button>
+          <span className="resource-pagination-info">
+            {page} / {pageInfo.pages} ({pageInfo.total})
+          </span>
+          <button
+            type="button"
+            className="btn-gray btn-sm"
+            disabled={page >= pageInfo.pages || loadingList}
+            onClick={() => loadPlans(page + 1)}
+          >
+            <span>→</span>
+          </button>
+        </div>
+      )}
     </div>
   )
 }
