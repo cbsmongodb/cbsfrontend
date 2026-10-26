@@ -145,6 +145,27 @@
   margin-top: 16px;
 }
 
+.analytics-pagination {
+  flex-wrap: wrap;
+}
+
+.analytics-pagination-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.analytics-pagination-size select {
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1.5px solid #cbd5e1;
+  background: #fff;
+  font: inherit;
+}
+
 .analytics-pagination-info {
   font-size: 13px;
   font-weight: 600;
