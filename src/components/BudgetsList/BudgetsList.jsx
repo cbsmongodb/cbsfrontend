@@ -16,6 +16,7 @@ function fmtMoney(n) {
 
 export default function BudgetsList() {
   const tu = useTranslations('ui')
+  const tp = useTranslations('plannings')
   const { locale } = useParams()
   const [doctors, setDoctors] = useState([])
   const [employees, setEmployees] = useState([])
@@ -32,14 +33,15 @@ export default function BudgetsList() {
   const [showInactive, setShowInactive] = useState(false)
 
   const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(50)
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
     Promise.all([
-      apiFetch('/api/doctors'),
-      apiFetch('/api/employees'),
+      apiFetch('/api/doctors?lite=1'),
+      apiFetch('/api/employees?lite=1'),
       apiFetch('/api/admin/sections'),
       apiFetch('/api/admin/groups'),
     ])
@@ -52,13 +54,13 @@ export default function BudgetsList() {
       .catch((err) => setError(err.message))
   }, [])
 
-  async function load(targetPage = 1) {
+  async function load(targetPage = 1, size = pageSize) {
     setLoading(true)
     setError('')
     try {
       const params = new URLSearchParams()
       params.set('page', targetPage)
-      params.set('limit', 50)
+      params.set('limit', size)
       params.set('isActive', showInactive ? 'false' : 'true')
       if (search.trim()) params.set('search', search.trim())
       if (doctorId) params.set('doctor', doctorId)
@@ -256,17 +258,40 @@ export default function BudgetsList() {
         </table>
       </div>
 
-      {data && data.pages > 1 && (
+      {data && (
         <div className="budgets-list-pagination">
-          <button type="button" className="btn-gray btn-sm" disabled={page <= 1} onClick={() => load(page - 1)}>
+          <button type="button" className="btn-gray btn-sm" disabled={page <= 1 || loading} onClick={() => load(1)} title="1">
+            <span>«</span>
+          </button>
+          <button type="button" className="btn-gray btn-sm" disabled={page <= 1 || loading} onClick={() => load(page - 1)}>
             <span>←</span>
           </button>
           <span className="budgets-list-pagination-info">
             {page} / {data.pages} ({data.total} {tu('k103')}
           </span>
-          <button type="button" className="btn-gray btn-sm" disabled={page >= data.pages} onClick={() => load(page + 1)}>
+          <button type="button" className="btn-gray btn-sm" disabled={page >= data.pages || loading} onClick={() => load(page + 1)}>
             <span>→</span>
           </button>
+          <button type="button" className="btn-gray btn-sm" disabled={page >= data.pages || loading} onClick={() => load(data.pages)} title={String(data.pages)}>
+            <span>»</span>
+          </button>
+          <span className="budgets-list-pagination-size">
+            {tp('showCount.prefix')}{' '}
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                const size = Number(e.target.value)
+                setPageSize(size)
+                load(1, size)
+              }}
+            >
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+              <option value={200}>200</option>
+            </select>{' '}
+            {tp('showCount.suffix')}
+          </span>
         </div>
       )}
     </div>
