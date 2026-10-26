@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { apiFetch } from '@/lib/api'
 import { useTranslations } from 'next-intl'
 
@@ -83,7 +83,8 @@ export default function EmployeeImport() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const preview = parseEmployeeRows(text)
+  // parse the pasted text only when it changes, not on every re-render
+  const preview = useMemo(() => parseEmployeeRows(text), [text])
 
   async function handleImport() {
     setLoading(true)
