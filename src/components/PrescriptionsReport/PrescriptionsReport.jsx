@@ -34,7 +34,7 @@ export default function PrescriptionsReport() {
   const [page, setPage] = useState(0)
 
   useEffect(() => {
-    apiFetch('/api/employees').then(setEmployees).catch(() => {})
+    apiFetch('/api/employees?lite=1').then(setEmployees).catch(() => {})
     loadReport()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -95,6 +95,28 @@ export default function PrescriptionsReport() {
     document.querySelector('.rx-report-table-scroll')?.scrollTo({ top: 0 })
   }
 
+  const pager = visibleRows.length > 0 ? (
+        <div className="rx-pager">
+          <span className="rx-pager-info">
+            {safePage * PAGE_SIZE + 1}–{Math.min((safePage + 1) * PAGE_SIZE, visibleRows.length)} / {fmt(visibleRows.length)}
+          </span>
+          {pageCount > 1 && <div className="rx-pager-buttons">
+            <button type="button" onClick={() => goTo(0)} disabled={safePage === 0}>«</button>
+            <button type="button" onClick={() => goTo(safePage - 1)} disabled={safePage === 0}>‹</button>
+            {Array.from({ length: pageCount }, (_, i) => i)
+              .filter((i) => i === 0 || i === pageCount - 1 || Math.abs(i - safePage) <= 2)
+              .map((i, idx, arr) => (
+                <span key={i} className="rx-pager-group">
+                  {idx > 0 && i - arr[idx - 1] > 1 && <span className="rx-pager-dots">…</span>}
+                  <button type="button" className={i === safePage ? 'active' : ''} onClick={() => goTo(i)}>{i + 1}</button>
+                </span>
+              ))}
+            <button type="button" onClick={() => goTo(safePage + 1)} disabled={safePage >= pageCount - 1}>›</button>
+            <button type="button" onClick={() => goTo(pageCount - 1)} disabled={safePage >= pageCount - 1}>»</button>
+          </div>}
+        </div>
+  ) : null
+
   const monthLabel = (m) => {
     const [y, mo] = String(m || '').split('-')
     return mo ? `${months[Number(mo) - 1]} ${y}` : m
@@ -104,7 +126,19 @@ export default function PrescriptionsReport() {
     <div className="rx-report">
       <div className="report-title-row">
         <h1>{t('prescriptions.title')}</h1>
-        <ExcelExportButton title={t('prescriptions.title')} tableSelector=".rx-report-table" />
+        <ExcelExportButton title={t('prescriptions.title')} build={() => ({
+          headers: [t('common.month'), t('common.employee'), t('common.doctor'), t('common.hospital'), t('prescriptions.drug'), t('prescriptions.prescribed'), t('prescriptions.sold'), '%'],
+          rows: visibleRows.map((r) => [
+            monthLabel(r.month),
+            r.employeeName || '—',
+            [r.doctorName, r.doctorNumber].filter(Boolean).join(' ') || '—',
+            r.hospitalName || '—',
+            r.drugName || '—',
+            { value: r.prescription || 0, kind: 'number' },
+            { value: r.sale || 0, kind: 'number' },
+            { value: r.prescription ? (r.sale || 0) / r.prescription : 0, kind: 'pct' },
+          ]),
+        })} />
         {loading && <ReportLoader />}
       </div>
       <p className="rx-report-subtitle">{t('prescriptions.subtitle')}</p>
@@ -169,6 +203,8 @@ export default function PrescriptionsReport() {
         </div>
       )}
 
+      {loaded && pager}
+
       <div className="rx-report-table-scroll">
         <table className="rx-report-table">
           <thead>
@@ -221,27 +257,7 @@ export default function PrescriptionsReport() {
         </table>
       </div>
 
-      {visibleRows.length > PAGE_SIZE && (
-        <div className="rx-pager">
-          <span className="rx-pager-info">
-            {safePage * PAGE_SIZE + 1}–{Math.min((safePage + 1) * PAGE_SIZE, visibleRows.length)} / {fmt(visibleRows.length)}
-          </span>
-          <div className="rx-pager-buttons">
-            <button type="button" onClick={() => goTo(0)} disabled={safePage === 0}>«</button>
-            <button type="button" onClick={() => goTo(safePage - 1)} disabled={safePage === 0}>‹</button>
-            {Array.from({ length: pageCount }, (_, i) => i)
-              .filter((i) => i === 0 || i === pageCount - 1 || Math.abs(i - safePage) <= 2)
-              .map((i, idx, arr) => (
-                <span key={i} className="rx-pager-group">
-                  {idx > 0 && i - arr[idx - 1] > 1 && <span className="rx-pager-dots">…</span>}
-                  <button type="button" className={i === safePage ? 'active' : ''} onClick={() => goTo(i)}>{i + 1}</button>
-                </span>
-              ))}
-            <button type="button" onClick={() => goTo(safePage + 1)} disabled={safePage >= pageCount - 1}>›</button>
-            <button type="button" onClick={() => goTo(pageCount - 1)} disabled={safePage >= pageCount - 1}>»</button>
-          </div>
-        </div>
-      )}
+      {pager}
     </div>
   )
 }
