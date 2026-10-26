@@ -48,7 +48,7 @@ export default function BudgetAllotment() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    apiFetch('/api/employees')
+    apiFetch('/api/employees?lite=1')
       .then(setEmployees)
       .catch((err) => setError(err.message))
   }, [])
@@ -78,12 +78,44 @@ export default function BudgetAllotment() {
     (row) => !search || row.doctorName?.toLowerCase().includes(search.toLowerCase())
   )
 
+  // 50 rows per page on screen; Excel still gets every row
+  const PAGE = 50
+  const [page, setPage] = useState(0)
+  useEffect(() => { setPage(0) }, [data, search])
+  const pageCount = Math.max(1, Math.ceil(filteredDocs.length / PAGE))
+  const safePage = Math.min(page, pageCount - 1)
+  const pageDocs = filteredDocs.slice(safePage * PAGE, safePage * PAGE + PAGE)
+  const pager = pageCount > 1 ? (
+    <div className="budgetallot-pagination">
+      <button type="button" onClick={() => setPage(0)} disabled={safePage === 0}>«</button>
+      <button type="button" onClick={() => setPage(safePage - 1)} disabled={safePage === 0}>‹</button>
+      <span>{safePage * PAGE + 1}–{Math.min((safePage + 1) * PAGE, filteredDocs.length)} / {filteredDocs.length}</span>
+      <button type="button" onClick={() => setPage(safePage + 1)} disabled={safePage >= pageCount - 1}>›</button>
+      <button type="button" onClick={() => setPage(pageCount - 1)} disabled={safePage >= pageCount - 1}>»</button>
+    </div>
+  ) : null
+
   return (
     <div className="budgetallot-page">
       <div className="budgetallot-header">
         <div className="report-title-row">
           <h1>{t('budget.title')}</h1>
-          <ExcelExportButton title={t('budget.title')} tableSelector=".budgetallot-table" />
+          <ExcelExportButton title={t('budget.title')} build={() => ({
+            headers: [t('budget.budgetId'), t('common.date'), t('common.doctor'), t('budget.doctorId'), t('budget.paidAmount'), t('budget.advanceAmount'), t('budget.salesAmount'), t('budget.deltaAmount'), t('budget.targetAmount'), t('budget.prescriptionAmount'), t('budget.isActive')],
+            rows: filteredDocs.map((row) => [
+              row._id.slice(-6),
+              row.date ? { value: new Date(row.date), kind: 'date' } : '—',
+              row.doctorName,
+              row.doctorUniqueNumber,
+              { value: Number(row.paidAmount) || 0, kind: 'money' },
+              { value: Number(row.advanceAmount) || 0, kind: 'money' },
+              { value: Number(row.salesAmount) || 0, kind: 'money' },
+              { value: Number(row.deltaAmount) || 0, kind: 'money' },
+              { value: Number(row.targetAmount) || 0, kind: 'money' },
+              { value: Number(row.prescriptionAmt) || 0, kind: 'money' },
+              row.isActive ? '✓' : '✕',
+            ]),
+          })} />
           {loading && <ReportLoader />}
         </div>
         {canAdd && (
@@ -175,6 +207,8 @@ export default function BudgetAllotment() {
         onChange={(e) => setSearch(e.target.value)}
       />
 
+      {pager}
+
       <div className="budgetallot-table-wrap">
         <table className="budgetallot-table">
           <thead>
@@ -193,7 +227,7 @@ export default function BudgetAllotment() {
             </tr>
           </thead>
           <tbody>
-            {filteredDocs.map((row) => (
+            {pageDocs.map((row) => (
               <tr key={row._id}>
                 <td>{row._id.slice(-6)}</td>
                 <td>{row.date ? new Date(row.date).toLocaleDateString(localeTag(locale)) : '—'}</td>
@@ -217,8 +251,10 @@ export default function BudgetAllotment() {
         </table>
       </div>
 
+      {pager}
+
       <p className="budgetallot-showing">
-        Showing {filteredDocs.length ? 1 : 0} to {filteredDocs.length} of {filteredDocs.length} entries
+        Showing {filteredDocs.length ? safePage * PAGE + 1 : 0} to {Math.min((safePage + 1) * PAGE, filteredDocs.length)} of {filteredDocs.length} entries
       </p>
     </div>
   )
