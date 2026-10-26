@@ -50,7 +50,7 @@ export default function ReimbursementReport() {
   useEffect(() => {
     async function loadOptions() {
       try {
-        const e = await apiFetch('/api/employees')
+        const e = await apiFetch('/api/employees?lite=1')
         setEmployees(e)
         apiFetch('/api/reports/reimbursement/divisions').then(setDivisions).catch(() => {})
       } catch (err) {
@@ -67,8 +67,13 @@ export default function ReimbursementReport() {
     setError('')
     try {
       const params = new URLSearchParams()
-      if (from) params.set('from', from)
-      if (to) params.set('to', to)
+      // empty dates would mean "the whole history" -> fall back to the last 7 days
+      const f = from || defaultFrom()
+      const tt = to || defaultTo()
+      if (!from) setFrom(f)
+      if (!to) setTo(tt)
+      params.set('from', f)
+      params.set('to', tt)
       if (employeeId) params.set('employee', employeeId)
       if (divisionId) params.set('division', divisionId)
       const data = await apiFetch(`/api/reports/reimbursement?${params}`)
