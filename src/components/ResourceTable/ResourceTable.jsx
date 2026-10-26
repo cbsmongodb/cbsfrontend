@@ -106,12 +106,15 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
     const optionFields = fields.filter((f) => f.type === 'select' || f.type === 'multiselect' || f.type === 'multiselect-search' || f.type === 'searchable-select')
     if (optionFields.length === 0) return
 
+    // two fields with the same endpoint (e.g. Group "head" + "members") share ONE request
+    const requests = new Map()
     const entries = await Promise.all(
       optionFields.map(async (f) => {
         try {
           // dropdowns only need names -> ?lite=1 (endpoints that don't know it just ignore it)
           const url = f.optionsEndpoint + (f.optionsEndpoint.includes('?') ? '&' : '?') + 'lite=1'
-          const data = await apiFetch(url)
+          if (!requests.has(url)) requests.set(url, apiFetch(url))
+          const data = await requests.get(url)
           return [f.name, data]
         } catch {
           return [f.name, []]
