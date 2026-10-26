@@ -12,7 +12,7 @@ export default function Page() {
       endpoint="/api/admin/designations"
       fields={[
         { name: "position", label: t('fields.position') },
-        { name: "isActive", label: t('fields.isActive') },
+        { name: "isActive", label: t('fields.isActive'), type: "checkbox" },
       ]}
     />
   );
