@@ -118,7 +118,7 @@ export default function CheckInButton() {
     if (needsConfirm && !confirming) {
       setConfirming(true)
       clearTimeout(confirmTimer.current)
-      confirmTimer.current = setTimeout(() => setConfirming(false), 4000)
+      confirmTimer.current = setTimeout(() => setConfirming(false), 60000)
       return
     }
     clearTimeout(confirmTimer.current)

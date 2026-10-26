@@ -101,6 +101,8 @@ export default function PlanningsManager() {
       if (filterStatus) params.set('status', filterStatus)
       if (filterFrom) params.set('period_from', new Date(filterFrom).toISOString())
       if (filterTo) params.set('period_to', new Date(filterTo).toISOString())
+      // ცხრილი მაქს. 250 ხაზს აჩვენებს — მთელი ბაზის წამოღება არ გვჭირდება
+      params.set('limit', '1000')
       const data = await apiFetch(`/api/plannings?${params}`)
       setPlans(data)
     } catch (err) {
