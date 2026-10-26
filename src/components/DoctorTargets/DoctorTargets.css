@@ -96,6 +96,27 @@
   margin-top: 16px;
 }
 
+.doctor-targets-pagination {
+  flex-wrap: wrap;
+}
+
+.doctor-targets-pagination-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.doctor-targets-pagination-size select {
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1.5px solid #cbd5e1;
+  background: #fff;
+  font: inherit;
+}
+
 .doctor-targets-pagination-info {
   font-size: 13px;
   font-weight: 600;

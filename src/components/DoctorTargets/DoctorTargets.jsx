@@ -9,6 +9,7 @@ import { useTranslations } from 'next-intl'
 
 export default function DoctorTargets() {
   const tu = useTranslations('ui')
+  const tp = useTranslations('plannings')
   const [doctors, setDoctors] = useState([])
   const [employees, setEmployees] = useState([])
   const [search, setSearch] = useState('')
@@ -18,6 +19,7 @@ export default function DoctorTargets() {
   const [toDate, setToDate] = useState('')
 
   const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(50)
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -25,7 +27,7 @@ export default function DoctorTargets() {
   const [editId, setEditId] = useState(null)
 
   useEffect(() => {
-    Promise.all([apiFetch('/api/doctors'), apiFetch('/api/employees')])
+    Promise.all([apiFetch('/api/doctors?lite=1'), apiFetch('/api/employees?lite=1')])
       .then(([d, e]) => {
         setDoctors(d)
         setEmployees(e)
@@ -33,13 +35,13 @@ export default function DoctorTargets() {
       .catch((err) => setError(err.message))
   }, [])
 
-  async function load(targetPage = 1) {
+  async function load(targetPage = 1, size = pageSize) {
     setLoading(true)
     setError('')
     try {
       const params = new URLSearchParams()
       params.set('page', targetPage)
-      params.set('limit', 100)
+      params.set('limit', size)
       if (search.trim()) params.set('search', search.trim())
       if (doctorId) params.set('doctor', doctorId)
       if (employeeId) params.set('employee', employeeId)
@@ -159,17 +161,40 @@ export default function DoctorTargets() {
         </table>
       </div>
 
-      {data && data.pages > 1 && (
+      {data && (
         <div className="doctor-targets-pagination">
-          <button type="button" className="btn-gray btn-sm" disabled={page <= 1} onClick={() => load(page - 1)}>
+          <button type="button" className="btn-gray btn-sm" disabled={page <= 1 || loading} onClick={() => load(1)} title="1">
+            <span>«</span>
+          </button>
+          <button type="button" className="btn-gray btn-sm" disabled={page <= 1 || loading} onClick={() => load(page - 1)}>
             <span>←</span>
           </button>
           <span className="doctor-targets-pagination-info">
             {page} / {data.pages} ({data.total} {tu('k103')}
           </span>
-          <button type="button" className="btn-gray btn-sm" disabled={page >= data.pages} onClick={() => load(page + 1)}>
+          <button type="button" className="btn-gray btn-sm" disabled={page >= data.pages || loading} onClick={() => load(page + 1)}>
             <span>→</span>
           </button>
+          <button type="button" className="btn-gray btn-sm" disabled={page >= data.pages || loading} onClick={() => load(data.pages)} title={String(data.pages)}>
+            <span>»</span>
+          </button>
+          <span className="doctor-targets-pagination-size">
+            {tp('showCount.prefix')}{' '}
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                const size = Number(e.target.value)
+                setPageSize(size)
+                load(1, size)
+              }}
+            >
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+              <option value={200}>200</option>
+            </select>{' '}
+            {tp('showCount.suffix')}
+          </span>
         </div>
       )}
     
