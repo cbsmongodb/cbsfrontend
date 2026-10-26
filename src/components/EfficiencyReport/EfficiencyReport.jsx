@@ -51,8 +51,8 @@ export default function EfficiencyReport() {
     async function loadOptions() {
       try {
         const [e, h] = await Promise.all([
-          apiFetch('/api/employees'),
-          apiFetch('/api/hospitals'),
+          apiFetch('/api/employees?lite=1'),
+          apiFetch('/api/hospitals?lite=1'),
         ])
         setEmployees(e)
         setHospitals(h)
@@ -70,8 +70,13 @@ export default function EfficiencyReport() {
     setError('')
     try {
       const params = new URLSearchParams()
-      if (from) params.set('from', from)
-      if (to) params.set('to', to)
+      // empty dates would mean "the whole history" -> fall back to the last 7 days
+      const f = from || defaultFrom()
+      const tt = to || defaultTo()
+      if (!from) setFrom(f)
+      if (!to) setTo(tt)
+      params.set('from', f)
+      params.set('to', tt)
       if (employeeId) params.set('employee', employeeId)
       if (hospitalId) params.set('hospital', hospitalId)
       const data = await apiFetch(`/api/reports/efficiency?${params}`)
