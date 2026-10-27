@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
@@ -91,28 +91,35 @@ export default function TimesheetReport() {
   const t2 = (k, v) => t(`timesheet.${k}`, v)
 
   // ---- editing one day -------------------------------------------------------
-  function openPicker(e, member, i) {
+  // stable function, so the 45 x 31 grid cells don't re-render when the menu opens
+  const openPicker = useCallback((e, member, i) => {
     const r = e.currentTarget.getBoundingClientRect()
     setPicker({ member, i, x: Math.min(r.left, window.innerWidth - 250), y: r.bottom + 6 })
+  }, [])
+  function patchCell(memberId, i, value) {
+    setGrid((g) => ({
+      ...g,
+      members: g.members.map((m) => {
+        if (m._id !== memberId) return m
+        const values = [...m.values]; const edited = [...m.edited]
+        values[i] = value || m.auto[i]
+        edited[i] = !!value
+        const nums = values.filter((v) => /^\d/.test(v)).map(Number)
+        return { ...m, values, edited, totalDays: nums.length, totalHours: nums.reduce((s, n) => s + n, 0) }
+      }),
+    }))
   }
+  // shown at once, saved in the background; put back if saving fails
   async function setValue(value) {
     const { member, i } = picker
     const date = grid.days[i].key
+    const before = member.edited[i] ? member.values[i] : ''
     setPicker(null)
+    patchCell(member._id, i, value)
     try {
       await apiFetch('/api/reports/timesheet/cell', { method: 'PUT', body: JSON.stringify({ member: member._id, date, value }) })
-      setGrid((g) => ({
-        ...g,
-        members: g.members.map((m) => {
-          if (m._id !== member._id) return m
-          const values = [...m.values]; const edited = [...m.edited]
-          values[i] = value || m.auto[i]
-          edited[i] = !!value
-          const nums = values.filter((v) => /^\d/.test(v)).map(Number)
-          return { ...m, values, edited, totalDays: nums.length, totalHours: nums.reduce((s, n) => s + n, 0) }
-        }),
-      }))
     } catch (e) {
+      patchCell(member._id, i, before)
       setError(e.message)
     }
   }
@@ -272,22 +279,7 @@ export default function TimesheetReport() {
               </thead>
               <tbody>
                 {grid.members.map((m, idx) => (
-                  <tr key={m._id}>
-                    <td className="ts-sticky ts-c-num">{idx + 1}</td>
-                    <td className="ts-sticky ts-c-name">
-                      <strong>{m.nameKa}</strong>
-                      {!m.employee && <span className="ts-nolink" title={t2('notLinkedHint')}>{t2('notLinked')}</span>}
-                    </td>
-                    <td className="ts-c-id">{m.personalId}</td>
-                    <td className="ts-c-pos" title={m.position}>{m.position}</td>
-                    {m.values.map((v, i) => (
-                      <td key={i} className={`ts-cell ${codeClass(v)} ${m.edited[i] ? 'is-edited' : ''} ${grid.days[i].weekend || grid.days[i].holiday ? 'is-off' : ''}`}>
-                        <button type="button" onClick={(e) => openPicker(e, m, i)} title={`${grid.days[i].day} — ${v}`}>{v}</button>
-                      </td>
-                    ))}
-                    <td className="ts-total">{m.totalDays}</td>
-                    <td className="ts-total">{m.totalHours}</td>
-                  </tr>
+                  <GridRow key={m._id} m={m} idx={idx} days={grid.days} onPick={openPicker} notLinked={t2('notLinked')} notLinkedHint={t2('notLinkedHint')} />
                 ))}
                 {grid.members.length === 0 && (
                   <tr><td colSpan={grid.days.length + 6} className="ts-empty">{t2('empty')}</td></tr>
@@ -333,6 +325,28 @@ export default function TimesheetReport() {
     </div>
   )
 }
+
+// one person's line — re-renders only when that person's days change
+const GridRow = memo(function GridRow({ m, idx, days, onPick, notLinked, notLinkedHint }) {
+  return (
+    <tr>
+      <td className="ts-sticky ts-c-num">{idx + 1}</td>
+      <td className="ts-sticky ts-c-name">
+        <strong>{m.nameKa}</strong>
+        {!m.employee && <span className="ts-nolink" title={notLinkedHint}>{notLinked}</span>}
+      </td>
+      <td className="ts-c-id">{m.personalId}</td>
+      <td className="ts-c-pos" title={m.position}>{m.position}</td>
+      {m.values.map((v, i) => (
+        <td key={i} className={`ts-cell ${codeClass(v)} ${m.edited[i] ? 'is-edited' : ''} ${days[i].weekend || days[i].holiday ? 'is-off' : ''}`}>
+          <button type="button" onClick={(e) => onPick(e, m, i)} title={`${days[i].day} — ${v}`}>{v}</button>
+        </td>
+      ))}
+      <td className="ts-total">{m.totalDays}</td>
+      <td className="ts-total">{m.totalHours}</td>
+    </tr>
+  )
+})
 
 function ExcelIcon() {
   return (
