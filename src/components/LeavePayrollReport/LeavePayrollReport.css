@@ -48,3 +48,24 @@
 .leave-payroll .lp-chip.is-active { background: #ffffff; color: #0b1b33; border-color: #ffffff; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18); }
 .leave-payroll .lp-chip:disabled { opacity: 0.7; cursor: default; }
 .leave-payroll .reimbursement-filters-card .lp-chip.is-active, .leave-payroll .reimbursement-filters-card .lp-chip.is-active * { color: #0b1b33 !important; text-shadow: none !important; }
+
+/* chip v2: the chosen division = solid white with the division's own colour */
+.dashboard-shell .leave-payroll .reimbursement-filters-card .lp-division-chips button.lp-chip {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.45) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+.dashboard-shell .leave-payroll .reimbursement-filters-card .lp-division-chips button.lp-chip:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.24) !important;
+}
+.dashboard-shell .leave-payroll .reimbursement-filters-card .lp-division-chips button.lp-chip.is-active {
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+  color: var(--dir-a, #0c3557) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22) !important;
+}
+.dashboard-shell .leave-payroll .reimbursement-filters-card .lp-division-chips button.lp-chip.is-active * { color: var(--dir-a, #0c3557) !important; text-shadow: none !important; }
+.dashboard-shell .leave-payroll .reimbursement-filters-card .lp-division-chips button.lp-chip.is-active::before {
+  content: "✓ "; font-weight: 800;
+}
