@@ -36,6 +36,7 @@ const RESOURCE_KEY = {
   'dashboard/reports/attendances': 'attendance_report',
   'dashboard/reports/prescriptions': 'prescriptions_report',
   'dashboard/reports/staff-performance': 'staff_performance_report',
+  'dashboard/reports/leave-payroll': 'leave_payroll_report',
   'dashboard/director-dashboard': 'director_dashboard',
   'dashboard/analytics': 'analytics',
   'dashboard/budgets-list': 'budgets_report',
@@ -206,6 +207,7 @@ const NAV = [
       { href: 'dashboard/reports/staff-performance', key: 'staffPerformance' },
       { href: 'dashboard/analytics', key: 'analytics' },
       { href: 'dashboard/budgets/allotment', key: 'budgetAllotment' },
+      { href: 'dashboard/reports/leave-payroll', key: 'leavePayroll' },
     ],
   },
   {

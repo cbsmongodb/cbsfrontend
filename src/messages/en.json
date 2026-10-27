@@ -98,7 +98,8 @@
         "budgets": "Budgets",
         "budgetAllotment": "Budget Allotment",
         "directorDashboard": "Director Dashboard",
-        "prescriptionsReport": "Prescriptions Report"
+        "prescriptionsReport": "Prescriptions Report",
+        "leavePayroll": "Leave for payroll"
       },
       "administration": {
         "label": "Administration",
@@ -430,7 +431,8 @@
       "budgets_report": "Budgets (Report)",
       "director_dashboard": "Director Dashboard",
       "attendance_report": "Attendance Report",
-      "prescriptions_report": "Prescriptions Report"
+      "prescriptions_report": "Prescriptions Report",
+      "leave_payroll_report": "Leave for payroll (report)"
     },
     "actions": {
       "read": "View",
@@ -863,6 +865,31 @@
       "fulfillment": "Fulfillment",
       "doctors": "Doctors",
       "drug": "Drug"
+    },
+    "leavePayroll": {
+      "title": "Leave for payroll",
+      "subtitle": "Per month: paid, unpaid and sick days of every employee (approved only)",
+      "paid": "Paid",
+      "unpaid": "Unpaid",
+      "sick": "Sick",
+      "total": "Total",
+      "days": "Days (dates)",
+      "unpaidDates": "Unpaid — dates",
+      "sickDates": "Sick — dates",
+      "paidDates": "Paid — dates",
+      "unpaidDays": "Unpaid days",
+      "sickDays": "Sick days",
+      "paidDays": "Paid days",
+      "people": "Employees",
+      "noDivision": "No division",
+      "searchPlaceholder": "Search by name...",
+      "onlyUnpaid": "Only people with unpaid leave",
+      "pendingNote": "{n} employee(s) have requests this month that are not approved yet — not counted until approved",
+      "pendingTitle": "Not approved yet",
+      "pendingShort": "Waiting for approval",
+      "legendNote": "Numbers = days of the month; weekends and holidays are not counted",
+      "inactive": "Inactive",
+      "empty": "Nobody had leave in this month"
     }
   },
   "attendanceStatus": {
