@@ -1,0 +1,99 @@
+/* top bar: which timesheet, head / responsible, download */
+.timesheet-report .ts-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 24px; align-items: flex-start; margin: 16px 0 12px; padding: 16px 18px; background: #ffffff; border: 1px solid #e3e8ef; border-radius: 16px; box-shadow: 0 4px 14px rgba(15, 39, 68, 0.05); }
+.timesheet-report .ts-bar-info h2 { margin: 0 0 6px; font-size: 18px; color: #0f172a; }
+.timesheet-report .ts-bar-info h2 span { font-weight: 600; color: #64748b; }
+.timesheet-report .ts-head-line { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; font-size: 13.5px; color: #475569; }
+.timesheet-report .ts-head-line b { color: #0f172a; }
+.timesheet-report .ts-link { border: 0; background: none; color: #2563eb; font: inherit; font-weight: 700; cursor: pointer; padding: 0; }
+.timesheet-report .ts-meta { margin: 6px 0 0; font-size: 12.5px; color: #64748b; font-weight: 600; }
+.timesheet-report .ts-head-edit { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.timesheet-report .ts-head-edit label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 700; color: #475569; min-width: 200px; }
+.timesheet-report .ts-head-actions { display: flex; gap: 8px; }
+.timesheet-report .ts-bar-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.timesheet-report .ts-bar-actions .reimb-view-toggle { margin: 0; }
+.timesheet-report .ts-excel {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border-radius: 10px;
+  border: 1.5px solid #1d7a45; background: #ffffff; color: #14532d; font: inherit; font-weight: 700; font-size: 13.5px; cursor: pointer;
+}
+.timesheet-report .ts-excel:hover:not(:disabled) { background: #f0fdf4; }
+.timesheet-report .ts-excel-all { border-style: dashed; }
+.timesheet-report .ts-excel:disabled { opacity: 0.6; cursor: default; }
+
+/* the grid */
+.timesheet-report .ts-scroll { overflow: auto; max-height: 72vh; background: #ffffff; border: 1px solid #e3e8ef; border-radius: 14px; box-shadow: 0 4px 14px rgba(15, 39, 68, 0.05); margin-bottom: 24px; }
+.timesheet-report .ts-table { border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; font-size: 13px; }
+.timesheet-report .ts-table th, .timesheet-report .ts-table td { border-bottom: 1px solid #eef2f7; border-right: 1px solid #f1f5f9; padding: 0; }
+.timesheet-report .ts-table thead th { position: sticky; top: 0; z-index: 2; background: #f8fafc; color: #475569; font-size: 11.5px; font-weight: 700; padding: 8px 6px; text-align: left; white-space: nowrap; }
+.timesheet-report .ts-sticky { position: sticky; z-index: 1; background: #ffffff; }
+.timesheet-report thead .ts-sticky { z-index: 3; background: #f8fafc; }
+.timesheet-report .ts-c-num { left: 0; min-width: 34px; text-align: center !important; color: #94a3b8; }
+.timesheet-report .ts-c-name { left: 34px; min-width: 190px; box-shadow: 2px 0 0 #e3e8ef; }
+.timesheet-report td.ts-c-num, .timesheet-report td.ts-c-name, .timesheet-report td.ts-c-id, .timesheet-report td.ts-c-pos { padding: 6px 8px; }
+.timesheet-report td.ts-c-name strong { color: #0f172a; font-size: 13.5px; }
+.timesheet-report .ts-c-id { color: #475569; font-variant-numeric: tabular-nums; }
+.timesheet-report .ts-c-pos { max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #475569; }
+.timesheet-report .ts-nolink { display: inline-block; margin-left: 6px; padding: 1px 6px; border-radius: 999px; background: #f1f5f9; color: #64748b; font-size: 10.5px; font-weight: 700; }
+
+.timesheet-report th.ts-day { text-align: center; min-width: 34px; padding: 6px 2px; }
+.timesheet-report th.ts-day b { display: block; font-size: 12px; color: #1e293b; }
+.timesheet-report th.ts-day i { display: block; font-style: normal; font-size: 10px; font-weight: 600; }
+.timesheet-report th.ts-day.is-off { background: #fde8e8; }
+.timesheet-report th.ts-day.is-off b, .timesheet-report th.ts-day.is-off i { color: #dc2626; }
+
+.timesheet-report td.ts-cell { text-align: center; }
+.timesheet-report td.ts-cell button {
+  position: relative; width: 100%; min-width: 34px; height: 32px; border: 0; background: transparent;
+  font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; color: inherit;
+}
+.timesheet-report td.ts-cell button:hover { outline: 2px solid #3b82f6; outline-offset: -2px; border-radius: 4px; }
+.timesheet-report td.ts-cell.is-edited button::after { content: ""; position: absolute; top: 3px; right: 3px; width: 6px; height: 6px; border-radius: 50%; background: #2563eb; }
+
+/* code colours (grid, legend and the picker) */
+.timesheet-report .ts-work { color: #0f172a; }
+.timesheet-report .ts-rest { color: #dc2626; background: #fef2f2; }
+.timesheet-report .ts-paid { color: #166534; background: #dcfce7; }
+.timesheet-report .ts-unpaid { color: #ffffff; background: #ef4444; }
+.timesheet-report .ts-sick { color: #92400e; background: #fde68a; }
+.timesheet-report .ts-absent { color: #ffffff; background: #7c3aed; }
+.timesheet-report .ts-maternity { color: #9d174d; background: #fce7f3; }
+
+.timesheet-report td.ts-total { padding: 6px 10px; text-align: center; font-weight: 800; color: #0f172a; background: #f8fafc; font-variant-numeric: tabular-nums; }
+.timesheet-report th.ts-total { text-align: center; }
+.timesheet-report .ts-empty { padding: 24px !important; text-align: center; color: #64748b; }
+
+.timesheet-report .ts-sw { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 22px; padding: 0 5px; border-radius: 6px; font-style: normal; font-size: 11.5px; font-weight: 800; border: 1px solid #e2e8f0; }
+.timesheet-report .ts-legend-hint { color: #2563eb; }
+
+/* the small menu for one day */
+.timesheet-report .ts-picker { position: fixed; z-index: 1000; width: 240px; padding: 10px; background: #ffffff; border: 1px solid #dbe3ee; border-radius: 12px; box-shadow: 0 16px 40px rgba(15, 39, 68, 0.22); }
+.timesheet-report .ts-picker p { margin: 0 0 8px; font-size: 12px; font-weight: 700; color: #475569; }
+.timesheet-report .ts-picker-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.timesheet-report .ts-picker-grid button { height: 34px; border: 1px solid #e2e8f0; border-radius: 8px; font: inherit; font-size: 12.5px; font-weight: 800; cursor: pointer; }
+.timesheet-report .ts-picker-grid button.ts-work { background: #f8fafc; }
+.timesheet-report .ts-picker-grid button:hover { outline: 2px solid #3b82f6; }
+.timesheet-report .ts-picker-reset { width: 100%; margin-top: 8px; height: 32px; border: 1px dashed #94a3b8; border-radius: 8px; background: #ffffff; color: #334155; font: inherit; font-weight: 700; font-size: 12.5px; cursor: pointer; }
+
+/* people editor */
+.timesheet-report .ts-people-hint { margin: 0 0 10px; font-size: 13px; color: #64748b; }
+.timesheet-report .ts-people-table td { padding: 6px; vertical-align: middle; }
+.timesheet-report .ts-people-table .field-input { width: 100%; min-width: 120px; padding: 7px 9px; border: 1px solid #d5dce6; border-radius: 8px; font-size: 13px; }
+.timesheet-report .ts-people-table .ts-in-id { min-width: 120px; }
+.timesheet-report .ts-in-hours { width: 64px !important; min-width: 64px !important; }
+.timesheet-report .ts-people-table tr.is-dirty td { background: #fffbeb; }
+.timesheet-report .ts-order { white-space: nowrap; }
+.timesheet-report .ts-order button { width: 26px; height: 26px; border: 1px solid #e2e8f0; border-radius: 6px; background: #ffffff; cursor: pointer; font-size: 10px; color: #475569; }
+.timesheet-report .ts-order button:disabled { opacity: 0.35; cursor: default; }
+.timesheet-report .ts-wd { display: inline-flex; gap: 3px; }
+.timesheet-report .ts-wd button { width: 28px; height: 26px; border: 1px solid #d5dce6; border-radius: 6px; background: #ffffff; font: inherit; font-size: 11px; font-weight: 700; color: #94a3b8; cursor: pointer; }
+.timesheet-report .ts-wd button.on { background: #2563eb; border-color: #2563eb; color: #ffffff; }
+.timesheet-report .ts-crm { font-size: 12.5px; color: #334155; white-space: nowrap; }
+.timesheet-report .ts-row-actions { white-space: nowrap; }
+.timesheet-report .ts-row-actions .btn { margin-right: 6px; }
+.timesheet-report .ts-remove { width: 30px; height: 30px; border: 1px solid #fecaca; border-radius: 8px; background: #ffffff; color: #dc2626; cursor: pointer; font-weight: 800; }
+.timesheet-report .ts-remove:hover { background: #fef2f2; }
+
+.timesheet-report .ts-add { margin-bottom: 28px; padding: 16px 18px; background: #ffffff; border: 1px dashed #b6c0cd; border-radius: 14px; }
+.timesheet-report .ts-add h3 { margin: 0 0 12px; font-size: 15px; color: #0f172a; }
+.timesheet-report .ts-add-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; margin-bottom: 12px; }
+.timesheet-report .ts-add-grid label { display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #475569; }
+.timesheet-report .ts-add-grid .field-input { padding: 8px 10px; border: 1px solid #d5dce6; border-radius: 8px; font-size: 13px; }

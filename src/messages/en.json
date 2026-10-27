@@ -99,7 +99,8 @@
         "budgetAllotment": "Budget Allotment",
         "directorDashboard": "Director Dashboard",
         "prescriptionsReport": "Prescriptions Report",
-        "leavePayroll": "Leave for payroll"
+        "leavePayroll": "Leave for payroll",
+        "timesheet": "Timesheet"
       },
       "administration": {
         "label": "Administration",
@@ -432,7 +433,8 @@
       "director_dashboard": "Director Dashboard",
       "attendance_report": "Attendance Report",
       "prescriptions_report": "Prescriptions Report",
-      "leave_payroll_report": "Leave for payroll (report)"
+      "leave_payroll_report": "Leave for payroll (report)",
+      "timesheet_report": "Timesheet (report)"
     },
     "actions": {
       "read": "View",
@@ -893,6 +895,57 @@
       "weekend": "Weekend",
       "peopleShort": "employees",
       "daysCount": "Days"
+    },
+    "timesheet": {
+      "title": "Timesheet",
+      "subtitle": "Working time record — filled in automatically (working days, weekends and holidays, leave, sick leave). Change any day and download it in the official Excel form.",
+      "docDate": "Document date",
+      "department": "Timesheet",
+      "head": "Head",
+      "responsible": "Responsible person",
+      "sheetTitle": "Title",
+      "save": "Save",
+      "cancel": "Cancel",
+      "change": "Change",
+      "workingDays": "{n} working days",
+      "people": "{n} employees",
+      "viewGrid": "Timesheet",
+      "viewPeople": "Employees",
+      "download": "Download Excel",
+      "downloadAll": "All timesheets (ZIP)",
+      "fileName": "Timesheet",
+      "filesName": "Timesheets",
+      "code": {
+        "work": "Hours worked",
+        "rest": "Day off / holiday",
+        "paid": "Paid leave",
+        "unpaid": "Unpaid leave",
+        "sick": "Sick leave",
+        "absent": "Absence",
+        "maternity": "Maternity leave"
+      },
+      "editHint": "Click a cell to change the day (blue dot = changed by hand)",
+      "name": "Name",
+      "personalId": "Personal ID",
+      "position": "Position",
+      "holiday": "Public holiday",
+      "totalDays": "Days",
+      "totalHours": "Hours",
+      "notLinked": "not in CRM",
+      "notLinkedHint": "Not linked to a CRM employee — leave is not filled in automatically",
+      "empty": "Nobody on this timesheet yet — add people under “Employees”",
+      "resetAuto": "Back to automatic",
+      "peopleHint": "Who is on this timesheet, in which order and with which data. At most {n} people per timesheet.",
+      "nameKa": "Name (Georgian)",
+      "hours": "Hours a day",
+      "workDaysLabel": "Working days",
+      "crmEmployee": "CRM employee",
+      "moveTo": "Move to another timesheet",
+      "removeConfirm": "Remove {name} from this timesheet?",
+      "remove": "Remove",
+      "addPerson": "Add an employee",
+      "crmOptional": "Choose (optional)",
+      "add": "Add"
     }
   },
   "attendanceStatus": {
