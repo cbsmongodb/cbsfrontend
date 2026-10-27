@@ -164,3 +164,21 @@
   height: 16px;
   cursor: pointer;
 }
+
+/* long hospital / doctor names: 2–3 lines instead of one very wide line */
+.planning-table td.planning-cell-wrap {
+  white-space: normal;
+  min-width: 200px;
+  max-width: 300px;
+}
+.planning-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  line-height: 1.35;
+  word-break: break-word;
+}
+.planning-clamp > span { display: block; }
+.planning-clamp > .planning-place-alt { color: #64748b; font-size: 0.92em; }

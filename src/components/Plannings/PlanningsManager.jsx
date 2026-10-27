@@ -497,9 +497,26 @@ export default function PlanningsManager() {
               <tr key={plan._id}>
                 <td>{typeLabel(plan.planType)}</td>
                 <td>{plan.period ? new Date(plan.period).toLocaleDateString('ka-GE') : '—'}</td>
-                <td>{plan.hospital?.name || plan.pharmacy?.pharmacyName || '—'}</td>
+                <td className="planning-cell-wrap">
+                  {(() => {
+                    const place = plan.hospital?.name || plan.pharmacy?.pharmacyName || '—'
+                    return (
+                      <div className="planning-clamp" title={place}>
+                        {place.split(/\s*\/\s*/).filter(Boolean).map((part, i) => (
+                          <span key={i} className={i ? 'planning-place-alt' : undefined}>{part}</span>
+                        ))}
+                      </div>
+                    )
+                  })()}
+                </td>
                 <td>{plan.performer?.name || `${plan.performer?.firstName || ''} ${plan.performer?.lastName || ''}`}</td>
-                <td>{plan.doctors?.length > 0 ? plan.doctors.map(doctorLabel).join(', ') : '—'}</td>
+                <td className="planning-cell-wrap">
+                  {plan.doctors?.length > 0 ? (
+                    <div className="planning-clamp" title={plan.doctors.map(doctorLabel).join(', ')}>
+                      {plan.doctors.map(doctorLabel).join(', ')}
+                    </div>
+                  ) : '—'}
+                </td>
                 <td>{statusLabel(plan.status)}</td>
                 <td>
                   <button type="button" className="btn-gray btn-sm" onClick={() => startEdit(plan)}>
