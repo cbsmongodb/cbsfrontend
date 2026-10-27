@@ -881,7 +881,7 @@
       "sickDays": "Sick days",
       "paidDays": "Paid days",
       "people": "Employees",
-      "noDivision": "No division",
+      "noDivision": "Office",
       "searchPlaceholder": "Search by name...",
       "onlyUnpaid": "Only people with unpaid leave",
       "pendingNote": "{n} employee(s) have requests this month that are not approved yet — not counted until approved",
