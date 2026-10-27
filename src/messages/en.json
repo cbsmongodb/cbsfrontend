@@ -889,7 +889,10 @@
       "pendingShort": "Waiting for approval",
       "legendNote": "Numbers = days of the month; weekends and holidays are not counted",
       "inactive": "Inactive",
-      "empty": "Nobody had leave in this month"
+      "empty": "Nobody had leave in this month",
+      "weekend": "Weekend",
+      "peopleShort": "employees",
+      "daysCount": "Days"
     }
   },
   "attendanceStatus": {

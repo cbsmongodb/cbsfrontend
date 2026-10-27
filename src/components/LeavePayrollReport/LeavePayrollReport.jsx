@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
@@ -91,9 +91,43 @@ export default function LeavePayrollReport() {
     return { headers, rows }
   }
 
-  const Dates = ({ list, cls }) => list.length ? (
-    <span className={`lp-dates ${cls}`}>{list.map(dayOnly).join(', ')}</span>
+  // the month as a row of days: 1 … 28/30/31, weekends marked
+  const WD = { ka: ['კვ', 'ორ', 'სა', 'ოთ', 'ხუ', 'პა', 'შა'], en: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'], ru: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'] }
+  const calendar = useMemo(() => {
+    const [y, m] = (data?.month || month).split('-').map(Number)
+    const count = new Date(y, m, 0).getDate()
+    const today = new Date()
+    const isThisMonth = today.getFullYear() === y && today.getMonth() + 1 === m
+    return Array.from({ length: count }, (_, i) => {
+      const wd = new Date(y, m - 1, i + 1).getDay()
+      return { day: i + 1, key: `${y}-${String(m).padStart(2, '0')}-${String(i + 1).padStart(2, '0')}`, wd, weekend: wd === 0 || wd === 6, today: isThisMonth && today.getDate() === i + 1 }
+    })
+  }, [data, month])
+  const wdName = (wd) => (WD[locale] || WD.ka)[wd]
+
+  const TYPE_LABEL = { paid: t('leavePayroll.paid'), unpaid: t('leavePayroll.unpaid'), sick: t('leavePayroll.sick') }
+  function dayMap(r) {
+    const m = new Map()
+    r.paidDates.forEach((k) => m.set(k, 'paid'))
+    r.sickDates.forEach((k) => m.set(k, 'sick'))
+    r.unpaidDates.forEach((k) => m.set(k, 'unpaid'))
+    r.pending.forEach((p) => { if (!m.has(p.date)) m.set(p.date, 'pending') })
+    return m
+  }
+
+  const Pill = ({ type, n }) => n ? (
+    <span className={`lp-pill lp-pill-${type}`}><b>{n}</b> {TYPE_LABEL[type]}</span>
   ) : null
+
+  const CalHead = () => (
+    <div className="lp-cal lp-cal-head" aria-hidden="true">
+      {calendar.map((c) => (
+        <span key={c.day} className={`${c.weekend ? 'is-weekend' : ''} ${c.today ? 'is-today' : ''}`}>
+          <b>{c.day}</b><i>{wdName(c.wd)}</i>
+        </span>
+      ))}
+    </div>
+  )
 
   return (
     <div className="reimbursement-report leave-payroll">
@@ -147,23 +181,11 @@ export default function LeavePayrollReport() {
       {error && <p className="resource-error">{error}</p>}
 
       {data && (
-        <div className="reimbursement-summary">
-          <div className="reimbursement-summary-item highlight lp-sum-unpaid">
-            <span>{grand.unpaid}</span>
-            <label>{t('leavePayroll.unpaidDays')}</label>
-          </div>
-          <div className="reimbursement-summary-item">
-            <span>{grand.sick}</span>
-            <label>{t('leavePayroll.sickDays')}</label>
-          </div>
-          <div className="reimbursement-summary-item">
-            <span>{grand.paid}</span>
-            <label>{t('leavePayroll.paidDays')}</label>
-          </div>
-          <div className="reimbursement-summary-item">
-            <span>{grand.people}</span>
-            <label>{t('leavePayroll.people')}</label>
-          </div>
+        <div className="lp-summary">
+          <div className="lp-sum lp-sum-unpaid"><b>{grand.unpaid}</b><span>{t('leavePayroll.unpaidDays')}</span></div>
+          <div className="lp-sum lp-sum-sick"><b>{grand.sick}</b><span>{t('leavePayroll.sickDays')}</span></div>
+          <div className="lp-sum lp-sum-paid"><b>{grand.paid}</b><span>{t('leavePayroll.paidDays')}</span></div>
+          <div className="lp-sum"><b>{grand.people}</b><span>{t('leavePayroll.people')}</span></div>
         </div>
       )}
 
@@ -171,67 +193,71 @@ export default function LeavePayrollReport() {
         <p className="lp-pending-note">⏳ {t('leavePayroll.pendingNote', { n: grand.pending })}</p>
       )}
 
-      <div className="reimbursement-table-scroll">
-        <table className="reimbursement-table lp-table">
-          <thead>
-            <tr>
-              <th>{t('common.employee')}</th>
-              <th className="lp-num">{t('leavePayroll.paid')}</th>
-              <th className="lp-num lp-col-unpaid">{t('leavePayroll.unpaid')}</th>
-              <th className="lp-num">{t('leavePayroll.sick')}</th>
-              <th className="lp-num">{t('leavePayroll.total')}</th>
-              <th>{t('leavePayroll.days')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {shown.map((d) => (
-              <Fragment key={d._id || 'none'}>
-                <tr className="lp-division-row">
-                  <td>{divisionName(d)} <em>· {d.rows.length}</em></td>
-                  <td className="lp-num">{d.totals.paid}</td>
-                  <td className="lp-num lp-col-unpaid">{d.totals.unpaid}</td>
-                  <td className="lp-num">{d.totals.sick}</td>
-                  <td className="lp-num">{d.totals.paid + d.totals.unpaid + d.totals.sick}</td>
-                  <td></td>
-                </tr>
-                {d.rows.map((r) => (
-                  <tr key={r.employeeId}>
-                    <td className="reimb-strong">
-                      {r.employeeName}
-                      {!r.isActive && <span className="lp-inactive">{t('leavePayroll.inactive')}</span>}
-                    </td>
-                    <td className="lp-num">{r.paid || '—'}</td>
-                    <td className={`lp-num lp-col-unpaid ${r.unpaid ? 'lp-has-unpaid' : ''}`}>{r.unpaid || '—'}</td>
-                    <td className="lp-num">{r.sick || '—'}</td>
-                    <td className="lp-num reimb-strong">{r.paid + r.unpaid + r.sick || '—'}</td>
-                    <td className="lp-dates-cell">
-                      <Dates list={r.unpaidDates} cls="lp-unpaid" />
-                      <Dates list={r.sickDates} cls="lp-sick" />
-                      <Dates list={r.paidDates} cls="lp-paid" />
-                      {r.pending.length > 0 && (
-                        <span className="lp-dates lp-pending" title={t('leavePayroll.pendingTitle')}>⏳ {r.pending.map((p) => dayOnly(p.date)).join(', ')}</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </Fragment>
-            ))}
-            {data && shown.length === 0 && (
-              <tr><td colSpan={6}>{t('leavePayroll.empty')}</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
       {data && (
         <div className="lp-legend">
-          <span className="lp-dates lp-unpaid">{t('leavePayroll.unpaid')}</span>
-          <span className="lp-dates lp-sick">{t('leavePayroll.sick')}</span>
-          <span className="lp-dates lp-paid">{t('leavePayroll.paid')}</span>
-          <span className="lp-dates lp-pending">⏳ {t('leavePayroll.pendingShort')}</span>
-          <em>{t('leavePayroll.legendNote')}</em>
+          <span><i className="lp-sw lp-c-unpaid" />{t('leavePayroll.unpaid')}</span>
+          <span><i className="lp-sw lp-c-sick" />{t('leavePayroll.sick')}</span>
+          <span><i className="lp-sw lp-c-paid" />{t('leavePayroll.paid')}</span>
+          <span><i className="lp-sw lp-c-pending" />{t('leavePayroll.pendingShort')}</span>
+          <span><i className="lp-sw is-weekend" />{t('leavePayroll.weekend')}</span>
         </div>
       )}
+
+      <div className="lp-board-scroll">
+        <div className="lp-board" style={{ '--lp-days': calendar.length }}>
+          {shown.map((d) => (
+            <section className="lp-div" key={d._id || 'none'}>
+              <header className="lp-div-head">
+                <h3>{divisionName(d)}</h3>
+                <span className="lp-div-count">{d.rows.length} {t('leavePayroll.peopleShort')}</span>
+                <span className="lp-div-pills">
+                  <Pill type="unpaid" n={d.totals.unpaid} />
+                  <Pill type="sick" n={d.totals.sick} />
+                  <Pill type="paid" n={d.totals.paid} />
+                </span>
+              </header>
+              <div className="lp-row lp-row-head">
+                <div className="lp-col-name">{t('common.employee')}</div>
+                <div className="lp-col-sum">{t('leavePayroll.daysCount')}</div>
+                <CalHead />
+              </div>
+              {d.rows.map((r) => {
+                const map = dayMap(r)
+                return (
+                  <div className={`lp-row ${r.unpaid ? 'has-unpaid' : ''}`} key={r.employeeId}>
+                    <div className="lp-col-name">
+                      <strong>{r.employeeName}</strong>
+                      {!r.isActive && <span className="lp-inactive">{t('leavePayroll.inactive')}</span>}
+                    </div>
+                    <div className="lp-col-sum">
+                      <Pill type="unpaid" n={r.unpaid} />
+                      <Pill type="sick" n={r.sick} />
+                      <Pill type="paid" n={r.paid} />
+                      {r.pending.length > 0 && <span className="lp-pill lp-pill-pending">⏳ {r.pending.length}</span>}
+                    </div>
+                    <div className="lp-cal">
+                      {calendar.map((c) => {
+                        const type = map.get(c.key)
+                        const label = type ? (type === 'pending' ? t('leavePayroll.pendingShort') : TYPE_LABEL[type]) : ''
+                        return (
+                          <span
+                            key={c.day}
+                            className={`${type ? `lp-c-${type}` : ''} ${c.weekend ? 'is-weekend' : ''} ${c.today ? 'is-today' : ''}`}
+                            title={type ? `${c.day} — ${label}` : undefined}
+                          >
+                            {type ? c.day : ''}
+                          </span>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              })}
+            </section>
+          ))}
+          {data && shown.length === 0 && <p className="lp-empty">{t('leavePayroll.empty')}</p>}
+        </div>
+      </div>
     </div>
   )
 }

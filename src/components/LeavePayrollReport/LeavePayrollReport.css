@@ -2,70 +2,87 @@
 .leave-payroll .lp-only-unpaid { display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; font-weight: 600; font-size: 13.5px; cursor: pointer; }
 .leave-payroll .lp-only-unpaid input { width: 16px; height: 16px; accent-color: #dc2626; }
 
-.leave-payroll .lp-sum-unpaid { background: linear-gradient(135deg, #b91c1c, #ef4444) !important; }
-
-.leave-payroll .lp-pending-note { margin: 0 0 12px; padding: 10px 14px; border-radius: 10px; background: #fff7e6; border: 1px solid #fcd9a0; color: #92400e; font-size: 13.5px; font-weight: 600; }
-
-.leave-payroll .lp-table th, .leave-payroll .lp-table td { vertical-align: middle; }
-.leave-payroll .lp-num { text-align: center; width: 1%; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.leave-payroll .lp-col-unpaid { background: rgba(239, 68, 68, 0.05); }
-.leave-payroll .lp-has-unpaid { color: #b91c1c !important; font-weight: 800 !important; font-size: 15px; }
-
-.leave-payroll .lp-division-row td {
-  background: #eef3fb !important;
-  color: #1f3c6e !important;
-  font-weight: 800 !important;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  border-top: 2px solid #c9d7ee;
-}
-.leave-payroll .lp-division-row td em { font-style: normal; font-weight: 600; color: #64748b; text-transform: none; }
-
-.leave-payroll .lp-inactive { margin-left: 8px; padding: 1px 7px; border-radius: 999px; background: #f1f5f9; color: #64748b; font-size: 11px; font-weight: 600; }
-
-.leave-payroll .lp-dates-cell { display: flex; flex-wrap: wrap; gap: 6px; min-width: 220px; }
-.leave-payroll .lp-dates { display: inline-block; padding: 3px 9px; border-radius: 8px; font-size: 12.5px; font-weight: 700; line-height: 1.4; }
-.leave-payroll .lp-unpaid { background: #fee2e2; color: #b91c1c; }
-.leave-payroll .lp-sick { background: #fef3c7; color: #92400e; }
-.leave-payroll .lp-paid { background: #dcfce7; color: #166534; }
-.leave-payroll .lp-pending { background: #f1f5f9; color: #475569; border: 1px dashed #94a3b8; }
-
-.leave-payroll .lp-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0 24px; }
-.leave-payroll .lp-legend em { font-style: normal; color: #64748b; font-size: 12.5px; margin-left: 6px; }
-
-/* division filter: one click = that division */
+/* division filter buttons */
 .leave-payroll .lp-division-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
 .leave-payroll .lp-chips-label { font-weight: 700; font-size: 13px; margin-right: 2px; }
+.dashboard-shell .leave-payroll .reimbursement-filters-card .lp-division-chips button.lp-chip,
 .leave-payroll .lp-chip {
   min-height: 38px; padding: 0 18px; border-radius: 999px; cursor: pointer;
   font: inherit; font-weight: 700; font-size: 13.5px;
-  background: rgba(255, 255, 255, 0.14); color: #ffffff;
-  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.12) !important; color: #ffffff !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.45) !important; box-shadow: none !important;
   transition: background 0.15s ease, transform 0.15s ease;
 }
-.leave-payroll .lp-chip:hover:not(:disabled) { background: rgba(255, 255, 255, 0.26); transform: translateY(-1px); }
-.leave-payroll .lp-chip.is-active { background: #ffffff; color: #0b1b33; border-color: #ffffff; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18); }
-.leave-payroll .lp-chip:disabled { opacity: 0.7; cursor: default; }
-.leave-payroll .reimbursement-filters-card .lp-chip.is-active, .leave-payroll .reimbursement-filters-card .lp-chip.is-active * { color: #0b1b33 !important; text-shadow: none !important; }
-
-/* chip v2: the chosen division = solid white with the division's own colour */
-.dashboard-shell .leave-payroll .reimbursement-filters-card .lp-division-chips button.lp-chip {
-  background: rgba(255, 255, 255, 0.12) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.45) !important;
-  color: #ffffff !important;
-  box-shadow: none !important;
-}
-.dashboard-shell .leave-payroll .reimbursement-filters-card .lp-division-chips button.lp-chip:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.24) !important;
-}
-.dashboard-shell .leave-payroll .reimbursement-filters-card .lp-division-chips button.lp-chip.is-active {
-  background: #ffffff !important;
-  border-color: #ffffff !important;
-  color: var(--dir-a, #0c3557) !important;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22) !important;
+.dashboard-shell .leave-payroll .reimbursement-filters-card .lp-division-chips button.lp-chip:hover:not(:disabled) { background: rgba(255, 255, 255, 0.24) !important; transform: translateY(-1px); }
+.dashboard-shell .leave-payroll .reimbursement-filters-card .lp-division-chips button.lp-chip.is-active,
+.leave-payroll .lp-chip.is-active {
+  background: #ffffff !important; border-color: #ffffff !important;
+  color: var(--dir-a, #0c3557) !important; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22) !important;
 }
 .dashboard-shell .leave-payroll .reimbursement-filters-card .lp-division-chips button.lp-chip.is-active * { color: var(--dir-a, #0c3557) !important; text-shadow: none !important; }
-.dashboard-shell .leave-payroll .reimbursement-filters-card .lp-division-chips button.lp-chip.is-active::before {
-  content: "✓ "; font-weight: 800;
+.leave-payroll .lp-chip.is-active::before { content: "✓ "; font-weight: 800; }
+.leave-payroll .lp-chip:disabled { opacity: 0.7; cursor: default; }
+
+/* summary cards */
+.leave-payroll .lp-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 16px 0 12px; }
+.leave-payroll .lp-sum { display: flex; flex-direction: column; gap: 2px; padding: 14px 18px; border-radius: 14px; background: #ffffff; border: 1px solid #e3e8ef; box-shadow: 0 4px 14px rgba(15, 39, 68, 0.05); }
+.leave-payroll .lp-sum b { font-size: 26px; line-height: 1.1; color: #0f172a; font-variant-numeric: tabular-nums; }
+.leave-payroll .lp-sum span { font-size: 12.5px; font-weight: 600; color: #64748b; }
+.leave-payroll .lp-sum-unpaid { border-left: 5px solid #ef4444; }
+.leave-payroll .lp-sum-unpaid b { color: #b91c1c; }
+.leave-payroll .lp-sum-sick { border-left: 5px solid #f59e0b; }
+.leave-payroll .lp-sum-paid { border-left: 5px solid #22c55e; }
+@media (max-width: 760px) { .leave-payroll .lp-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.leave-payroll .lp-pending-note { margin: 0 0 12px; padding: 10px 14px; border-radius: 10px; background: #fff7e6; border: 1px solid #fcd9a0; color: #92400e; font-size: 13.5px; font-weight: 600; }
+
+/* colour legend */
+.leave-payroll .lp-legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0 0 12px; font-size: 13px; font-weight: 600; color: #334155; }
+.leave-payroll .lp-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.leave-payroll .lp-sw { display: inline-block; width: 16px; height: 16px; border-radius: 4px; border: 1px solid #e2e8f0; }
+
+/* the board: one block per division, one line per person, the month as day cells */
+.leave-payroll .lp-board-scroll { overflow-x: auto; padding-bottom: 6px; margin-bottom: 24px; }
+.leave-payroll .lp-board { --lp-cell: 26px; min-width: calc(200px + 230px + var(--lp-days) * (var(--lp-cell) + 3px) + 40px); }
+.leave-payroll .lp-div { background: #ffffff; border: 1px solid #e3e8ef; border-radius: 16px; margin-bottom: 16px; overflow: hidden; box-shadow: 0 4px 14px rgba(15, 39, 68, 0.05); }
+.leave-payroll .lp-div-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 12px 16px; background: linear-gradient(120deg, var(--dir-a, #0c3557), var(--dir-b, #2a93c4)); color: #ffffff; }
+.leave-payroll .lp-div-head h3 { margin: 0; font-size: 15px; font-weight: 800; letter-spacing: 0.02em; color: #ffffff !important; }
+.leave-payroll .lp-div-count { font-size: 12.5px; font-weight: 600; opacity: 0.85; }
+.leave-payroll .lp-div-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.leave-payroll .lp-div-head .lp-pill { background: rgba(255, 255, 255, 0.92); }
+
+.leave-payroll .lp-row { display: grid; grid-template-columns: 200px 230px 1fr; align-items: center; gap: 0 12px; padding: 8px 16px; border-top: 1px solid #eef2f7; }
+.leave-payroll .lp-row:hover { background: #f8fafd; }
+.leave-payroll .lp-row.has-unpaid { box-shadow: inset 4px 0 0 #ef4444; }
+.leave-payroll .lp-row-head { padding-top: 6px; padding-bottom: 6px; background: #f8fafc; font-size: 11.5px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.02em; }
+.leave-payroll .lp-row-head:hover { background: #f8fafc; }
+.leave-payroll .lp-col-name strong { font-size: 14px; color: #0f172a; }
+.leave-payroll .lp-col-sum { display: flex; flex-wrap: wrap; gap: 5px; }
+
+.leave-payroll .lp-pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.leave-payroll .lp-pill b { font-size: 13px; font-weight: 800; }
+.leave-payroll .lp-pill-unpaid { background: #fee2e2; color: #b91c1c; }
+.leave-payroll .lp-pill-sick { background: #fef3c7; color: #92400e; }
+.leave-payroll .lp-pill-paid { background: #dcfce7; color: #166534; }
+.leave-payroll .lp-pill-pending { background: #f1f5f9; color: #475569; border: 1px dashed #94a3b8; }
+
+.leave-payroll .lp-cal { display: flex; gap: 3px; }
+.leave-payroll .lp-cal > span {
+  flex: 0 0 var(--lp-cell); height: var(--lp-cell); border-radius: 6px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: #ffffff; background: #f1f5f9;
 }
+.leave-payroll .lp-cal > span.is-weekend, .leave-payroll .lp-sw.is-weekend { background: repeating-linear-gradient(45deg, #e2e8f0 0 3px, #f8fafc 3px 6px); }
+.leave-payroll .lp-cal > span.is-today { outline: 2px solid #3b82f6; outline-offset: 1px; }
+.leave-payroll .lp-c-unpaid { background: #ef4444 !important; }
+.leave-payroll .lp-c-sick { background: #f59e0b !important; }
+.leave-payroll .lp-c-paid { background: #22c55e !important; }
+.leave-payroll .lp-c-pending { background: repeating-linear-gradient(45deg, #94a3b8 0 4px, #cbd5e1 4px 8px) !important; }
+.leave-payroll .lp-cal-head > span { background: transparent; color: #64748b; flex-direction: column; height: auto; line-height: 1.1; }
+.leave-payroll .lp-cal-head > span b { font-size: 11.5px; color: #334155; }
+.leave-payroll .lp-cal-head > span i { font-style: normal; font-size: 9.5px; font-weight: 600; text-transform: none; }
+.leave-payroll .lp-cal-head > span.is-weekend { background: transparent; }
+.leave-payroll .lp-cal-head > span.is-weekend b, .leave-payroll .lp-cal-head > span.is-weekend i { color: #b6c0cd; }
+
+.leave-payroll .lp-inactive { margin-left: 8px; padding: 1px 7px; border-radius: 999px; background: #f1f5f9; color: #64748b; font-size: 11px; font-weight: 600; }
+.leave-payroll .lp-empty { padding: 24px; text-align: center; color: #64748b; background: #ffffff; border-radius: 14px; border: 1px dashed #cbd5e1; }
