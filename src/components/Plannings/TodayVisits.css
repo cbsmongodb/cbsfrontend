@@ -254,3 +254,25 @@
 @media (max-width: 480px) {
   .today-visits .today-visit-card { padding: 16px 16px 18px; }
 }
+
+/* "refresh location" — in the division's colour so people notice it */
+.today-visits .today-visits-locbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(120deg, var(--dir-a, #0c3557), var(--dir-b, #2a93c4));
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px -8px var(--dir-a, #0c3557);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+.today-visits .today-visits-locbtn * { color: #ffffff !important; text-shadow: none !important; }
+.today-visits .today-visits-locbtn:hover { transform: translateY(-1px); filter: brightness(1.08); box-shadow: 0 12px 24px -8px var(--dir-a, #0c3557); }
+.today-visits .today-visits-locbtn:active { transform: translateY(0); }
+.today-visits .today-visits-locbtn.is-updated { background: linear-gradient(120deg, #15803d, #22c55e); box-shadow: 0 8px 20px -8px #15803d; }

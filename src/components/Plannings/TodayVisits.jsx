@@ -226,7 +226,15 @@ export default function TodayVisits() {
     <div className="today-visits">
       <div className="today-visits-header">
         <h2>{t('title')}</h2>
-        <button type="button" className="btn-gray btn-sm" onClick={refreshLocation}>
+        <button
+          type="button"
+          className={`today-visits-locbtn ${locationUpdated ? 'is-updated' : ''}`}
+          onClick={refreshLocation}
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+            <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+            <circle cx="12" cy="10" r="2.4" fill="currentColor" />
+          </svg>
           <span>{locationUpdated ? tu('k036') : t('refreshLocation')}</span>
         </button>
       </div>
