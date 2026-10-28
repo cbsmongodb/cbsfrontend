@@ -156,7 +156,14 @@ export default function DoctorEntryItems() {
   // automatically and can't be changed (managers still pick from their people)
   const onlySelf = employees.length === 1
   useEffect(() => {
-    if (onlySelf && employeeId !== employees[0]._id) setEmployeeId(employees[0]._id)
+    if (onlySelf && employeeId !== employees[0]._id) { setEmployeeId(employees[0]._id); return }
+    // defaultMe: the logged-in person's own name is filled in from the start
+    if (!employeeId && employees.length) {
+      try {
+        const me = JSON.parse(localStorage.getItem('employee') || 'null')
+        if (me?._id && employees.some((e) => e._id === me._id)) setEmployeeId(me._id)
+      } catch { /* ignore */ }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onlySelf, employees])
 
@@ -329,12 +336,8 @@ export default function DoctorEntryItems() {
       setTimeout(() => setSuccess(''), 3000)
       // clear the form for the next employee — keep the period, since a
       // whole batch of employees is usually entered for the same month
-      if (onlySelf) {
-        handleLoad()
-      } else {
-        setEmployeeId('')
-        setDoctorEntries([emptyDoctorEntry()])
-      }
+      // the same person stays selected and their saved entries reload
+      handleLoad()
     } catch (err) {
       setError(err.message)
     } finally {
