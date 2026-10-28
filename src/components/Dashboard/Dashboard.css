@@ -620,3 +620,6 @@
 @media (max-width: 768px) {
   .dashboard-stat { flex: 0 0 auto; padding: 16px 18px; }
 }
+
+/* today's planned visits, right under the plan-visit button */
+.dashboard-today-visits-top { margin: 14px 0 22px; }

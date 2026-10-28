@@ -313,6 +313,13 @@ export default function Dashboard() {
         </div>
       ))}
 
+      {/* my planned visits for today — right under "plan a visit", for everyone who plans visits */}
+      {employee && canPlan && !isFinance && !isOfficeOnly && (
+        <div className="dashboard-today-visits-section dashboard-today-visits-top">
+          <TodayVisits />
+        </div>
+      )}
+
       {loading && <ReportLoader variant="page" />}
 
       {!loading && (checkinStatus || balance) && (
@@ -442,12 +449,6 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* my own visits today (with check-in) - reps AND managers who plan their own visits */}
-      {!loading && (isTeamManager || employee?.employeeType === 'field') && canPlan && !isOfficeOnly && (
-        <div className="dashboard-today-visits-section">
-          <TodayVisits />
-        </div>
-      )}
       {/* managers: the team's visits today */}
       {!loading && isTeamManager && (
         <div className="dashboard-today-visits-section">
