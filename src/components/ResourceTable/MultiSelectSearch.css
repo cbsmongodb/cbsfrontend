@@ -195,3 +195,34 @@
 .mss-modal-done:hover {
   opacity: 0.92;
 }
+
+/* ===== mss modal readable: the white pop-up sits inside the coloured form,
+   which makes all text (and the search box) white — put dark text back ===== */
+.dashboard-shell .resource-form .mss-modal, .dashboard-shell .resource-form .mss-modal label.mss-row, .dashboard-shell .resource-form .mss-modal label.mss-row span, .dashboard-shell .resource-form .mss-modal .mss-empty, .dashboard-shell .resource-form .mss-modal .mss-modal-count {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+.dashboard-shell .resource-form .mss-modal label.mss-row span { font-weight: 500; }
+.dashboard-shell .resource-form .mss-modal label.mss-row-all span { font-weight: 700; }
+.dashboard-shell .resource-form .mss-modal .mss-empty { color: #64748b !important; }
+.dashboard-shell .resource-form .mss-modal .mss-modal-header span { color: #1f3c6e !important; text-shadow: none !important; }
+.dashboard-shell .resource-form .mss-modal .mss-modal-close { color: #64748b !important; }
+.dashboard-shell .resource-form .mss-modal .mss-clear-all { color: #dc2626 !important; text-shadow: none !important; }
+.dashboard-shell .resource-form .mss-modal input.mss-search-input:not(.x1):not(.x2):not(.x3):not(.x4) {
+  background-color: #ffffff !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") !important;
+  border: 1.5px solid #c7d2e3 !important;
+  color: #0f172a !important;
+  font-weight: 500 !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  display: block;
+  margin: 12px 18px 8px !important;
+  width: calc(100% - 36px) !important;
+  min-height: 42px;
+  border-radius: 12px !important;
+}
+.dashboard-shell .resource-form .mss-modal input.mss-search-input:not(.x1):not(.x2):not(.x3):not(.x4)::placeholder { color: #8a97a8 !important; opacity: 1; }
+.dashboard-shell .resource-form .mss-modal input.mss-search-input:not(.x1):not(.x2):not(.x3):not(.x4):focus { border-color: #3b82f6 !important; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important; }
