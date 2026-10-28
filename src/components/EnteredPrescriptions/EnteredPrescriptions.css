@@ -66,3 +66,22 @@
   .erx-n[data-label] .erx-num { margin-left: 6px; }
   .erx-row.is-editing .erx-n { text-align: left; }
 }
+
+/* erx v2 — filters laid out on their own (SalesListing.css isn't loaded on this page) */
+.dashboard-shell .erx-page .erx-filters {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px;
+  padding: 16px 18px !important; margin-bottom: 18px;
+}
+.dashboard-shell .erx-page .erx-field { display: flex; flex-direction: column; gap: 6px; flex: 1 1 220px; min-width: 0; }
+.dashboard-shell .erx-page .erx-field.erx-search { flex: 2 1 260px; }
+.dashboard-shell .erx-page .erx-field > label {
+  font-size: 12px !important; font-weight: 600 !important; letter-spacing: .02em;
+  opacity: .85; margin: 0 0 0 2px; line-height: 1.2;
+}
+.dashboard-shell .erx-page .erx-field :is(input.field-input, .searchable-select-control input) {
+  width: 100%; box-sizing: border-box; height: 42px; min-height: 42px; font-size: 14px !important;
+}
+.dashboard-shell .erx-page .erx-head { margin-bottom: 14px; }
+@media (max-width: 640px) {
+  .dashboard-shell .erx-page .erx-field, .dashboard-shell .erx-page .erx-field.erx-search { flex-basis: 100%; }
+}

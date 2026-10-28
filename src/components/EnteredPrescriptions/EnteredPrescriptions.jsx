@@ -3,8 +3,6 @@
 // "შეყვანილი რეცეპტები" — every rep sees the prescriptions they entered for
 // a month, grouped by doctor, and can fix a number or delete a line / doctor.
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import Link from 'next/link'
-import { useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
@@ -28,7 +26,6 @@ const IconTrash = () => (
 
 export default function EnteredPrescriptions() {
   const t = useTranslations('enteredRx')
-  const { locale } = useParams()
 
   const [me, setMe] = useState(null)
   const [employees, setEmployees] = useState([])
@@ -176,14 +173,11 @@ export default function EnteredPrescriptions() {
           <h1>{t('title')}</h1>
           <p className="erx-sub">{t('subtitle')}</p>
         </div>
-        <Link href={`/${locale}/dashboard/doctor-entry-items`} className="btn erx-add">
-          <span>+ {t('addNew')}</span>
-        </Link>
       </div>
 
       <div className="sales-listing-filters erx-filters">
         {showEmployeePicker && (
-          <div className="sales-listing-field">
+          <div className="erx-field">
             <label>{t('employee')}</label>
             <SearchableSelect
               options={employees}
@@ -194,11 +188,11 @@ export default function EnteredPrescriptions() {
             />
           </div>
         )}
-        <div className="sales-listing-field">
+        <div className="erx-field">
           <label>{t('month')}</label>
           <input type="month" className="field-input field-date" value={month} onChange={(e) => e.target.value && setMonth(e.target.value)} />
         </div>
-        <div className="sales-listing-field erx-search">
+        <div className="erx-field erx-search">
           <label>{t('search')}</label>
           <input type="text" className="field-input" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('searchPh')} />
         </div>
@@ -218,7 +212,6 @@ export default function EnteredPrescriptions() {
       {!loading && items.length === 0 && employeeId && (
         <div className="erx-empty">
           <p>{t('empty')}</p>
-          <Link href={`/${locale}/dashboard/doctor-entry-items`} className="erx-empty-link">{t('addNew')} →</Link>
         </div>
       )}
 
