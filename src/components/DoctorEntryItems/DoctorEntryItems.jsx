@@ -152,6 +152,14 @@ export default function DoctorEntryItems() {
     loadOptions()
   }, [])
 
+  // a rep only ever sees themselves in the list -> the employee is filled in
+  // automatically and can't be changed (managers still pick from their people)
+  const onlySelf = employees.length === 1
+  useEffect(() => {
+    if (onlySelf && employeeId !== employees[0]._id) setEmployeeId(employees[0]._id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onlySelf, employees])
+
   // auto-load on employee/period change (no button)
   useEffect(() => {
     if (!employeeId) {
@@ -321,8 +329,12 @@ export default function DoctorEntryItems() {
       setTimeout(() => setSuccess(''), 3000)
       // clear the form for the next employee — keep the period, since a
       // whole batch of employees is usually entered for the same month
-      setEmployeeId('')
-      setDoctorEntries([emptyDoctorEntry()])
+      if (onlySelf) {
+        handleLoad()
+      } else {
+        setEmployeeId('')
+        setDoctorEntries([emptyDoctorEntry()])
+      }
     } catch (err) {
       setError(err.message)
     } finally {
@@ -343,13 +355,22 @@ export default function DoctorEntryItems() {
       <div className="doctor-entries-top">
         <div className="doctor-entries-field">
           <label>{tu('k044')}</label>
-          <SearchableSelect
-            options={employees}
-            value={employeeId}
-            onChange={setEmployeeId}
-            getLabel={(emp) => emp.name || `${emp.firstName} ${emp.lastName}`}
-            placeholder={tu('k045')}
-          />
+          {onlySelf ? (
+            <input
+              type="text"
+              className="field-input"
+              value={employees[0].name || `${employees[0].firstName || ''} ${employees[0].lastName || ''}`.trim()}
+              readOnly
+            />
+          ) : (
+            <SearchableSelect
+              options={employees}
+              value={employeeId}
+              onChange={setEmployeeId}
+              getLabel={(emp) => emp.name || `${emp.firstName} ${emp.lastName}`}
+              placeholder={tu('k045')}
+            />
+          )}
         </div>
 
         <div className="doctor-entries-field">
