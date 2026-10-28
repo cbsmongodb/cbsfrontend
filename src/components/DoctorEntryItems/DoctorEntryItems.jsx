@@ -132,16 +132,28 @@ export default function DoctorEntryItems() {
         : e))
   }, [visitCounts])
 
+  // fastMe: the logged-in person is known right away (saved at login) ->
+  // their name and entries show without waiting for the big lists
+  const [me, setMe] = useState(null)
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('employee') || 'null')
+      if (stored?._id) {
+        setMe(stored)
+        setEmployeeId((cur) => cur || stored._id)
+      }
+    } catch { /* ignore */ }
+    apiFetch('/api/employees?lite=1').then((list) => setEmployees(Array.isArray(list) ? list : [])).catch(() => {})
+  }, [])
+
   useEffect(() => {
     async function loadOptions() {
       try {
-        const [e, d, h, dr] = await Promise.all([
-          apiFetch('/api/employees'),
+        const [d, h, dr] = await Promise.all([
           apiFetch('/api/doctors'),
           apiFetch('/api/hospitals'),
           apiFetch('/api/drugs'),
         ])
-        setEmployees(e)
         setDoctors(d)
         setHospitals(h)
         setDrugs(dr)
@@ -358,11 +370,11 @@ export default function DoctorEntryItems() {
       <div className="doctor-entries-top">
         <div className="doctor-entries-field">
           <label>{tu('k044')}</label>
-          {onlySelf ? (
+          {onlySelf || (!employees.length && me) ? (
             <input
               type="text"
               className="field-input"
-              value={employees[0].name || `${employees[0].firstName || ''} ${employees[0].lastName || ''}`.trim()}
+              value={(() => { const p = onlySelf ? employees[0] : me; return p.name || `${p.firstName || ''} ${p.lastName || ''}`.trim() })()}
               readOnly
             />
           ) : (
