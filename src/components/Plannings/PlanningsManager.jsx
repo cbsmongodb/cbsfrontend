@@ -74,6 +74,24 @@ export default function PlanningsManager() {
   const [doctorSearch, setDoctorSearch] = useState('')
   const [loadingDoctors, setLoadingDoctors] = useState(false)
 
+  // the performer is filled in with the logged-in person; a rep (who sees
+  // only themselves) can't change it, managers can pick someone else
+  const onlySelf = employees.length === 1
+  function defaultPerformer() {
+    if (onlySelf) return employees[0]._id
+    try {
+      const me = JSON.parse(localStorage.getItem('employee') || 'null')
+      if (me?._id && employees.some((e) => e._id === me._id)) return me._id
+    } catch { /* ignore */ }
+    return ''
+  }
+  useEffect(() => {
+    if (editingId || !employees.length) return
+    const id = defaultPerformer()
+    if (id) setForm((prev) => (prev.performer ? prev : { ...prev, performer: id }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [employees])
+
   useEffect(() => {
     async function loadOptions() {
       try {
@@ -191,7 +209,7 @@ export default function PlanningsManager() {
 
   function cancelEdit() {
     setEditingId(null)
-    setForm(emptyForm())
+    setForm({ ...emptyForm(), performer: defaultPerformer() })
     setSelectedDoctorIds([])
     setOriginalDoctorIds([])
     setAvailableDoctors([])
@@ -341,13 +359,22 @@ export default function PlanningsManager() {
 
           <div className="planning-field">
             <label>{t('fields.performer')}</label>
-            <SearchableSelect
-              options={employees}
-              value={form.performer}
-              onChange={(v) => updateField('performer', v)}
-              getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder={t('placeholders.typeName')}
-            />
+            {onlySelf ? (
+              <input
+                type="text"
+                className="field-input"
+                value={employees[0].name || `${employees[0].firstName || ''} ${employees[0].lastName || ''}`.trim()}
+                readOnly
+              />
+            ) : (
+              <SearchableSelect
+                options={employees}
+                value={form.performer}
+                onChange={(v) => updateField('performer', v)}
+                getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
+                placeholder={t('placeholders.typeName')}
+              />
+            )}
           </div>
 
           <div className="planning-field">
