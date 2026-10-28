@@ -108,12 +108,28 @@ export default function PlanningsManager() {
       }
     }
     loadOptions()
-    loadPlans()
+    // repToday: a representative first sees only today's visits (dates can be changed / cleared)
+    let isRep = false
+    try {
+      const me = JSON.parse(localStorage.getItem('employee') || 'null')
+      isRep = (me?.role?.name || '').toLowerCase().trim() === 'representative'
+    } catch { /* ignore */ }
+    if (isRep) {
+      const d = new Date()
+      const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+      setFilterFrom(today)
+      setFilterTo(today)
+      loadPlans(1, { from: today, to: today })
+    } else {
+      loadPlans()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // server-side pagination: only one page of plans is loaded at a time
-  async function loadPlans(targetPage = 1) {
+  async function loadPlans(targetPage = 1, over = {}) {
+    const fFrom = over.from !== undefined ? over.from : filterFrom
+    const fTo = over.to !== undefined ? over.to : filterTo
     setLoadingList(true)
     setError('')
     try {
@@ -122,8 +138,9 @@ export default function PlanningsManager() {
       if (filterStatus) params.set('status', filterStatus)
       if (filterType) params.set('planType', filterType)
       if (search.trim()) params.set('search', search.trim())
-      if (filterFrom) params.set('period_from', new Date(filterFrom).toISOString())
-      if (filterTo) params.set('period_to', new Date(filterTo).toISOString())
+      // whole days in Georgian time, so "to = today" includes today's visits
+      if (fFrom) params.set('period_from', new Date(`${fFrom}T00:00:00+04:00`).toISOString())
+      if (fTo) params.set('period_to', new Date(`${fTo}T23:59:59.999+04:00`).toISOString())
       params.set('page', String(targetPage))
       params.set('limit', String(showCount))
       const data = await apiFetch(`/api/plannings?${params}`)
