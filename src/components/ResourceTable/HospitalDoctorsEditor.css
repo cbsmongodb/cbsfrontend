@@ -40,3 +40,42 @@
   align-self: flex-start;
   margin-top: 2px;
 }
+
+/* ===== hosp-doctors v2: readable search box, list opens below without being cut off ===== */
+.dashboard-shell .resource-form .hosp-doctors .field-input,
+.resource-form .hosp-doctors .field-input {
+  background-color: #ffffff !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: 12px center !important;
+  background-size: 18px 18px !important;
+  padding-left: 40px !important;
+  color: #0f172a !important;
+  font-weight: 500 !important;
+  border: 1.5px solid #c7d2e3 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.dashboard-shell .resource-form .hosp-doctors .field-input::placeholder,
+.resource-form .hosp-doctors .field-input::placeholder { color: #8a97a8 !important; }
+.dashboard-shell .resource-form .hosp-doctors .field-input:focus,
+.resource-form .hosp-doctors .field-input:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+  outline: none;
+}
+/* the result list sits under the box inside the card (pushes the rest down), so the form edge can't cut it */
+.hosp-doctors .hosp-doctors-dropdown {
+  position: static;
+  margin-top: 6px;
+  max-height: 300px;
+}
+.hosp-doctors .hosp-doctors-option span { color: #0f2744; }
+.hosp-doctors .hosp-doctors-option .hosp-doctors-option-id { color: #6b7a90; }
+.hosp-doctors .hosp-doctors-option::before {
+  content: "+"; flex: 0 0 22px; height: 22px; border-radius: 6px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #e8f0fe; color: #2563eb; font-weight: 800; font-size: 15px;
+}
+.hosp-doctors .hosp-doctors-option > span:first-of-type { flex: 1; }
