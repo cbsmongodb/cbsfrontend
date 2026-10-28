@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import DrugPickerModal from './DrugPickerModal'
@@ -93,6 +93,14 @@ export default function DoctorEntryItems() {
   const [doctors, setDoctors] = useState([])
   const [hospitals, setHospitals] = useState([])
   const [drugs, setDrugs] = useState([])
+  // inactive drugs (e.g. "Zito") can't be picked any more; a line saved earlier
+  // with such a drug still shows its name
+  const activeDrugs = useMemo(() => drugs.filter((d) => d.isActive !== false), [drugs])
+  const drugOptionsFor = (drugId) => {
+    if (!drugId || activeDrugs.some((d) => d._id === drugId)) return activeDrugs
+    const old = drugs.find((d) => d._id === drugId)
+    return old ? [...activeDrugs, old] : activeDrugs
+  }
 
   const [employeeId, setEmployeeId] = useState('')
   const [monthValue, setMonthValue] = useState(currentPeriodValue())
@@ -479,7 +487,7 @@ export default function DoctorEntryItems() {
               {entry.drugs.map((row, drugIndex) => (
                 <div key={drugIndex} className="doctor-entry-drug-row">
                   <SearchableSelect
-                    options={drugs}
+                    options={drugOptionsFor(row.drugId)}
                     value={row.drugId}
                     onChange={(val) => updateDrugField(doctorIndex, drugIndex, 'drugId', val)}
                     getLabel={(dr) => dr.name}
@@ -579,7 +587,7 @@ export default function DoctorEntryItems() {
     
       {pickerDoctorIndex !== null && (
         <DrugPickerModal
-          drugs={drugs}
+          drugs={activeDrugs}
           alreadyAddedIds={(doctorEntries[pickerDoctorIndex]?.drugs || []).map((r) => r.drugId).filter(Boolean)}
           onClose={() => setPickerDoctorIndex(null)}
           onConfirm={(ids) => addDrugs(pickerDoctorIndex, ids)}
