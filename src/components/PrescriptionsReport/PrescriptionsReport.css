@@ -114,3 +114,23 @@
 .rx-pager button.active { background: #1e3a68; border-color: #1e3a68; color: #fff; }
 .rx-pager button:disabled { opacity: 0.4; cursor: default; }
 .rx-pager-dots { color: #64748b; padding: 0 2px; }
+
+/* search button v2 — white, text in the division colour (fits every theme) */
+.dashboard-shell .rx-report-filters-card .rx-report-search-btn {
+  background: #ffffff !important;
+  color: var(--dir-a, #1e3a68) !important;
+  border: 0 !important;
+  font-weight: 700;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18) !important;
+  text-shadow: none !important;
+  transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+.dashboard-shell .rx-report-filters-card .rx-report-search-btn:hover {
+  background: #f1f5f9 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22) !important;
+}
+.dashboard-shell .rx-report-filters-card .rx-report-search-btn .rx-spinner {
+  border-color: rgba(0, 0, 0, 0.15);
+  border-top-color: var(--dir-a, #1e3a68);
+}
