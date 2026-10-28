@@ -248,6 +248,18 @@ export default function Sidebar() {
   useEffect(() => {
     const stored = localStorage.getItem('employee')
     if (stored) setEmployee(JSON.parse(stored))
+    // freshRole: permissions changed on the Roles page show up without logging
+    // out — the role is re-read from the server on every page load
+    apiFetch('/api/auth/me')
+      .then((fresh) => {
+        if (!fresh?.role) return
+        let base = {}
+        try { base = JSON.parse(localStorage.getItem('employee') || '{}') || {} } catch { /* ignore */ }
+        const next = { ...base, role: fresh.role }
+        localStorage.setItem('employee', JSON.stringify(next))
+        setEmployee(next)
+      })
+      .catch(() => {})
   }, [])
   const isAdmin = employee?.role?.name?.toLowerCase() === 'admin'
   const privileges = employee?.role?.privileges
