@@ -30,6 +30,7 @@ const RESOURCE_KEY = {
   'dashboard/profiles': 'profiles',
   'dashboard/plannings': 'plannings',
   'dashboard/doctor-entry-items': 'sales',
+  'dashboard/entered-prescriptions': 'sales',
   'dashboard/sales-listing': 'sales',
   'dashboard/reports/efficiency': 'efficiency_report',
   'dashboard/reports/reimbursement': 'reimbursement_report',
@@ -190,6 +191,7 @@ const NAV = [
     items: [
       { href: 'dashboard/plannings', key: 'plannings' },
       { href: 'dashboard/doctor-entry-items', key: 'doctorEntryItems' },
+      { href: 'dashboard/entered-prescriptions', key: 'enteredPrescriptions' },
       { href: 'dashboard/sales-listing', key: 'salesListing' },
       { href: 'dashboard/budgets-list', key: 'budgets' },
       { href: 'dashboard/employee-sales', key: 'employeeSales' },
