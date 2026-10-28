@@ -39,17 +39,33 @@ export default function SalesListing() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  const [me, setMe] = useState(null)
   useEffect(() => {
-    async function loadEmployees() {
-      try {
-        const data = await apiFetch('/api/employees')
-        setEmployees(data)
-      } catch (err) {
-        setError(err.message)
-      }
-    }
-    loadEmployees()
+    try {
+      const stored = JSON.parse(localStorage.getItem('employee') || 'null')
+      if (stored?._id) { setMe(stored); setEmployeeId((cur) => cur || stored._id) }
+    } catch { /* ignore */ }
+    apiFetch('/api/employees?lite=1')
+      .then((data) => setEmployees(Array.isArray(data) ? data : []))
+      .catch((err) => setError(err.message))
   }, [])
+  const onlySelf = employees.length === 1
+  useEffect(() => {
+    if (onlySelf && employeeId !== employees[0]._id) setEmployeeId(employees[0]._id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onlySelf, employees])
+
+  // autoLoadMonth: the table follows the chosen employee / month on its own
+  useEffect(() => {
+    if (employeeId) handleLoad()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [employeeId, monthValue])
+
+  function shiftMonth(delta) {
+    const [y, m] = monthValue.split('-').map(Number)
+    const d = new Date(y, m - 1 + delta, 1)
+    setMonthValue(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
+  }
 
   async function handleLoad() {
     if (!employeeId) {
@@ -92,30 +108,39 @@ export default function SalesListing() {
       <div className="sales-listing-filters">
         <div className="sales-listing-field">
           <label>{tu('k044')}</label>
-          <SearchableSelect
-            options={employees}
-            value={employeeId}
-            onChange={setEmployeeId}
-            getLabel={(emp) => emp.name || `${emp.firstName} ${emp.lastName}`}
-            placeholder={tu('k045')}
-          />
+          {onlySelf || (!employees.length && me) ? (
+            <input
+              type="text"
+              className="field-input"
+              value={(() => { const p = onlySelf ? employees[0] : me; return p.name || `${p.firstName || ''} ${p.lastName || ''}`.trim() })()}
+              readOnly
+            />
+          ) : (
+            <SearchableSelect
+              options={employees}
+              value={employeeId}
+              onChange={setEmployeeId}
+              getLabel={(emp) => emp.name || `${emp.firstName} ${emp.lastName}`}
+              placeholder={tu('k045')}
+            />
+          )}
         </div>
 
         <div className="sales-listing-field">
           <label>{tu('k046')}</label>
-          <input
-            type="month"
-            className="field-date"
-            value={monthValue}
-            onChange={(e) => setMonthValue(e.target.value)}
-          />
+          <div className="sl-month">
+            <button type="button" className="sl-month-btn" onClick={() => shiftMonth(-1)} aria-label="previous month">‹</button>
+            <input
+              type="month"
+              className="field-input field-date"
+              value={monthValue}
+              onChange={(e) => e.target.value && setMonthValue(e.target.value)}
+            />
+            <button type="button" className="sl-month-btn" onClick={() => shiftMonth(1)} aria-label="next month">›</button>
+          </div>
         </div>
 
-        <button type="button" className="btn" onClick={handleLoad} disabled={loading}>
-          <span>{loading ? tu('k003') : tu('k073')}</span>
-        </button>
-
-        {loaded && (
+        {(
           <div className="sales-listing-field" style={{ minWidth: 220 }}>
             <label>{tu('k074')}</label>
             <input

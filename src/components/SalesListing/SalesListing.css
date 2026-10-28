@@ -133,3 +133,13 @@
 }
 .sales-listing-formulas strong { color: #2f5fbf; font-size: 13.5px; }
 .sales-listing-how { white-space: nowrap; color: #475569; font-variant-numeric: tabular-nums; }
+
+/* month switcher */
+.sl-month { display: flex; align-items: center; gap: 6px; }
+.sl-month .field-date { min-width: 170px; }
+.dashboard-shell .sales-listing-filters .sl-month-btn {
+  width: 38px; height: 42px; flex-shrink: 0; border-radius: 11px; cursor: pointer;
+  font-size: 22px; line-height: 1; font-weight: 700;
+  background: rgba(255, 255, 255, 0.13); border: 1px solid rgba(255, 255, 255, 0.3); color: #fff;
+}
+.dashboard-shell .sales-listing-filters .sl-month-btn:hover { background: rgba(255, 255, 255, 0.24); }
