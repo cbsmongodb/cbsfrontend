@@ -2027,3 +2027,19 @@ html body .dashboard-shell:has(.sidebar) .doctor-entries-header.doctor-entries-h
   padding: 0 !important;
   border-radius: 0 !important;
 }
+
+/* calendar icon always visible — on white AND on coloured fields
+   (some themes inverted it to white, so on a white field it vanished) */
+.dashboard-shell input:is([type='month'], [type='date'])::-webkit-calendar-picker-indicator {
+  filter: none !important;
+  opacity: 1 !important;
+  cursor: pointer;
+  background-color: #ffffff;
+  border-radius: 7px;
+  padding: 5px;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.18);
+}
+.dashboard-shell input:is([type='month'], [type='date'])::-webkit-calendar-picker-indicator:hover {
+  background-color: #e0ecff;
+}
+.dashboard-shell input:is([type='month'], [type='date']) { cursor: pointer; }
