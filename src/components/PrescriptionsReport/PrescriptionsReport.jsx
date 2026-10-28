@@ -33,6 +33,13 @@ export default function PrescriptionsReport() {
   const [loaded, setLoaded] = useState(false)
   const [page, setPage] = useState(0)
 
+  // a representative sees only their own prescriptions -> no employee filter, just their name
+  const [me, setMe] = useState(null)
+  useEffect(() => {
+    try { setMe(JSON.parse(localStorage.getItem('employee') || 'null')) } catch { /* ignore */ }
+  }, [])
+  const isRep = (me?.role?.name || '').toLowerCase().trim() === 'representative' || employees.length === 1
+
   useEffect(() => {
     apiFetch('/api/employees?lite=1').then(setEmployees).catch(() => {})
     loadReport()
@@ -155,13 +162,22 @@ export default function PrescriptionsReport() {
           </div>
           <div className="rx-report-field">
             <label>{t('common.employee')}</label>
-            <SearchableSelect
-              options={employees}
-              value={employeeId}
-              onChange={setEmployeeId}
-              getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-              placeholder={t('common.all')}
-            />
+            {isRep ? (
+              <input
+                type="text"
+                className="field-input"
+                value={me ? (me.name || `${me.firstName || ''} ${me.lastName || ''}`.trim()) : ''}
+                readOnly
+              />
+            ) : (
+              <SearchableSelect
+                options={employees}
+                value={employeeId}
+                onChange={setEmployeeId}
+                getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
+                placeholder={t('common.all')}
+              />
+            )}
           </div>
           <div className="rx-report-field rx-report-field-wide">
             <label>{t('common.search')}</label>
