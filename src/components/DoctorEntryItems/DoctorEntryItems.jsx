@@ -628,7 +628,7 @@ export default function DoctorEntryItems() {
 
       <div className="doctor-entries-bottombar">
         <button type="button" className="btn doctor-entries-save" onClick={handleSave} disabled={saving}>
-          <span>{saving ? <span className="btn-spinner" aria-hidden="true" /> : tu('k043')}</span>
+          <span>{saving ? <span className="btn-spinner" aria-hidden="true" /> : tu('addPrescription')}</span>
         </button>
       </div>
     
