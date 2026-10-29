@@ -2043,3 +2043,8 @@ html body .dashboard-shell:has(.sidebar) .doctor-entries-header.doctor-entries-h
   background-color: #e0ecff;
 }
 .dashboard-shell input:is([type='month'], [type='date']) { cursor: pointer; }
+
+/* form dropdowns not clipped — the list can open past the bottom of the form */
+.resource-form { overflow: visible !important; }
+.resource-form::before { border-radius: 16px 16px 0 0; }
+.resource-form .searchable-select-dropdown { z-index: 80 !important; max-height: 300px; }
