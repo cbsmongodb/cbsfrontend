@@ -1218,7 +1218,10 @@
     "deletedDoctor": "(deleted doctor)",
     "pharmacyCol": "Sales from pharmacies",
     "noPlace": "No place set",
-    "addPrescription": "Add prescription"
+    "addPrescription": "Add prescription",
+    "budgetFromBudgets": "From budgets",
+    "budgetNotEntered": "No budget entered yet",
+    "budgetTyped": "Typed in earlier"
   },
   "theme": {
     "dark": "Dark mode",

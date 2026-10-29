@@ -1218,7 +1218,10 @@
     "deletedDoctor": "(удалённый врач)",
     "pharmacyCol": "Продажи из аптек",
     "noPlace": "Место не указано",
-    "addPrescription": "Добавить рецепт"
+    "addPrescription": "Добавить рецепт",
+    "budgetFromBudgets": "Из бюджетов",
+    "budgetNotEntered": "Бюджет ещё не введён",
+    "budgetTyped": "Введено вручную ранее"
   },
   "theme": {
     "dark": "Тёмная тема",

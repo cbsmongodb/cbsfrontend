@@ -60,6 +60,7 @@ function groupItemsIntoDoctorEntries(items) {
         bank: item.bank || '',
         visits: item.visits || '',
         issuedBudget: item.issuedBudget || 0,
+        issuedBudgetSource: item.issuedBudgetSource || '',
         plannedBudget: item.plannedBudget ?? null,
         difference: item.difference ?? null,
         analysisOfPreviousMonth: item.analysisOfPreviousMonth ?? null,
@@ -120,6 +121,21 @@ export default function DoctorEntryItems() {
   const [savedByDoctor, setSavedByDoctor] = useState({})
   const [monthBonuses, setMonthBonuses] = useState({})
   const [visitCounts, setVisitCounts] = useState({})
+  const [budgetSums, setBudgetSums] = useState({})
+
+  // paid budgets per doctor this month (Budgets page) -> fills an EMPTY "issued budget"
+  useEffect(() => {
+    if (!employeeId) { setBudgetSums({}); return }
+    apiFetch(`/api/doctor-entry-items/budget-sums?employee=${employeeId}&period=${encodeURIComponent(monthValueToPeriod(monthValue))}`)
+      .then((b) => setBudgetSums(b || {}))
+      .catch(() => setBudgetSums({}))
+  }, [employeeId, monthValue])
+  useEffect(() => {
+    setDoctorEntries((prev) => prev.map((e) =>
+      e.doctorId && !Number(e.issuedBudget) && budgetSums[e.doctorId]
+        ? { ...e, issuedBudget: budgetSums[e.doctorId] }
+        : e))
+  }, [budgetSums])
 
   // completed visits per doctor this month (from the visit plans) -> fills "visits"
   useEffect(() => {
@@ -264,6 +280,7 @@ export default function DoctorEntryItems() {
         const h = first?._id || first   // populated hospital object or a plain id
         if (h && !updated.hospitalId) updated.hospitalId = String(h)
         if (!String(updated.visits || '').trim() && visitCounts[value]) updated.visits = String(visitCounts[value])
+        if (!Number(updated.issuedBudget) && budgetSums[value]) updated.issuedBudget = budgetSums[value]
       }
       next[index] = updated
       return next
@@ -443,13 +460,20 @@ export default function DoctorEntryItems() {
 
               <div className="doctor-entries-field">
                 <label>{tu('k051')}</label>
-                <input
-                  type="number"
-                  className="field-input"
-                  value={showNum(entry.issuedBudget)}
-                  placeholder="0"
-                  onChange={(e) => updateDoctorField(doctorIndex, 'issuedBudget', readNum(e))}
-                />
+                {(() => {
+                  const amount = Number(entry.issuedBudget) || 0
+                  const typed = entry.issuedBudgetSource === 'manual' || (entry.existing && amount && !budgetSums[entry.doctorId] && entry.issuedBudgetSource !== 'budget')
+                  return (
+                    <>
+                      <div className={`doctor-entry-issued ${amount ? '' : 'is-empty'}`}>
+                        {amount ? `${fmt(amount)} ₾` : tu('budgetNotEntered')}
+                      </div>
+                      {entry.doctorId && amount > 0 && (
+                        <small className="doctor-entry-hint">{typed ? tu('budgetTyped') : tu('budgetFromBudgets')}</small>
+                      )}
+                    </>
+                  )
+                })()}
               </div>
 
               <div className="doctor-entries-field">

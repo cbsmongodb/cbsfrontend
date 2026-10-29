@@ -1221,7 +1221,10 @@
     "deletedDoctor": "(წაშლილი ექიმი)",
     "pharmacyCol": "გაყიდვები აფთიაქებიდან",
     "noPlace": "ადგილი არ არის მითითებული",
-    "addPrescription": "რეცეპტის დამატება"
+    "addPrescription": "რეცეპტის დამატება",
+    "budgetFromBudgets": "ბიუჯეტებიდან",
+    "budgetNotEntered": "ბიუჯეტი ჯერ არ არის შეყვანილი",
+    "budgetTyped": "ადრე ხელით შეყვანილი"
   },
   "theme": {
     "dark": "მუქი რეჟიმი",

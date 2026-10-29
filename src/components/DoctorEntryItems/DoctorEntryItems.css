@@ -285,3 +285,11 @@
 @media (max-width: 640px) {
   .doctor-entries-bottombar .doctor-entries-save { width: 100%; }
 }
+
+/* issued budget: read-only, comes from the Budgets page */
+.doctor-entry-issued {
+  min-height: 42px; display: flex; align-items: center; padding: 0 14px;
+  border: 1px dashed #c7d2fe; border-radius: 11px; background: #f5f7ff;
+  color: #1e3a8a; font-weight: 700; font-size: 15px;
+}
+.doctor-entry-issued.is-empty { color: #94a3b8; font-weight: 600; font-size: 13px; background: #f8fafc; border-color: #d5dce6; }
