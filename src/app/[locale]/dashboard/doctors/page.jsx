@@ -18,13 +18,13 @@ export default function Page() {
         {
           name: "profile",
           label: t('fields.profile'),
-          type: "select",
+          type: "searchable-select",
           optionsEndpoint: "/api/profiles",
         },
         {
           name: "doctorCategory",
           label: t('fields.category'),
-          type: "select",
+          type: "searchable-select",
           optionsEndpoint: "/api/doctor-categories",
         },
         {
