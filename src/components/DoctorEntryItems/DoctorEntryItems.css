@@ -249,3 +249,18 @@
   font-weight: 700; color: #2f5fbf; white-space: nowrap;
 }
 .doctor-entry-drug-row { flex-wrap: wrap; }
+
+/* save at the bottom — after filling in the doctors */
+.doctor-entries-bottombar {
+  position: sticky; bottom: 0; z-index: 5;
+  display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin-top: 8px; padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border: 1px solid #e2e8f0; border-radius: 14px;
+  box-shadow: 0 -6px 20px rgba(15, 23, 42, 0.08);
+}
+.doctor-entries-bottombar .doctor-entries-save { min-width: 180px; }
+@media (max-width: 640px) {
+  .doctor-entries-bottombar > * { flex: 1 1 100%; }
+}

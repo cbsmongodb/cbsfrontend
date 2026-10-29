@@ -367,9 +367,6 @@ export default function DoctorEntryItems() {
       {loading && <ReportLoader variant="page" />}
       <div className="doctor-entries-header">
         <h1>{tu('k042')}</h1>
-        <button type="button" className="btn" onClick={handleSave} disabled={saving}>
-          <span>{saving ? <span className="btn-spinner" aria-hidden="true" /> : tu('k043')}</span>
-        </button>
       </div>
 
       <div className="doctor-entries-top">
@@ -625,9 +622,14 @@ export default function DoctorEntryItems() {
         )
       })}
 
-      <button type="button" className="btn-gray" onClick={addDoctor} style={{ marginTop: 4 }}>
-        <span>{tu('k071')}</span>
-      </button>
+      <div className="doctor-entries-bottombar">
+        <button type="button" className="btn-gray" onClick={addDoctor}>
+          <span>{tu('k071')}</span>
+        </button>
+        <button type="button" className="btn doctor-entries-save" onClick={handleSave} disabled={saving}>
+          <span>{saving ? <span className="btn-spinner" aria-hidden="true" /> : tu('k043')}</span>
+        </button>
+      </div>
     
       {pickerDoctorIndex !== null && (
         <DrugPickerModal
