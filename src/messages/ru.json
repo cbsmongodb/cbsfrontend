@@ -1337,6 +1337,8 @@
     "saved": "Сохранено",
     "deleted": "Удалено",
     "deletedDoctor": "Удалённый врач",
-    "deletedDrug": "Удалённый препарат"
+    "deletedDrug": "Удалённый препарат",
+    "allEmployees": "Все сотрудники",
+    "employeesCount": "сотрудников"
   }
 }

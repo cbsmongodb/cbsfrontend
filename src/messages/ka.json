@@ -1340,6 +1340,8 @@
     "saved": "შენახულია",
     "deleted": "წაიშალა",
     "deletedDoctor": "წაშლილი ექიმი",
-    "deletedDrug": "წაშლილი წამალი"
+    "deletedDrug": "წაშლილი წამალი",
+    "allEmployees": "ყველა თანამშრომელი",
+    "employeesCount": "თანამშრომელი"
   }
 }

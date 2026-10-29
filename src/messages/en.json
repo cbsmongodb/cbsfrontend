@@ -1337,6 +1337,8 @@
     "saved": "Saved",
     "deleted": "Deleted",
     "deletedDoctor": "Deleted doctor",
-    "deletedDrug": "Deleted drug"
+    "deletedDrug": "Deleted drug",
+    "allEmployees": "All employees",
+    "employeesCount": "employees"
   }
 }

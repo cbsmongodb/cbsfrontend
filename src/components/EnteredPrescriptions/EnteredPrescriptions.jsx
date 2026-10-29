@@ -15,6 +15,7 @@ function currentMonth() {
 }
 const toPeriod = (m) => { const [y, mm] = m.split('-'); return `${mm}/${y}` }
 const personName = (p) => (p ? `${p.firstName || ''} ${p.lastName || ''}`.trim() : '')
+const ALL_ID = 'all'
 const num = (n) => Number(n || 0).toLocaleString('ka-GE', { maximumFractionDigits: 2 })
 
 const IconEdit = () => (
@@ -84,20 +85,23 @@ export default function EnteredPrescriptions() {
     const q = search.trim().toLowerCase()
     const map = new Map()
     for (const it of items) {
-      const key = it.doctor?._id || 'none'
-      if (!map.has(key)) map.set(key, { doctorId: it.doctor?._id, doctor: personName(it.doctor) || t('deletedDoctor'), hospital: it.hospital?.name || '', rows: [] })
+      const key = `${it.employee?._id || ''}|${it.doctor?._id || 'none'}`
+      if (!map.has(key)) map.set(key, {
+        key, doctorId: it.doctor?._id, doctor: personName(it.doctor) || t('deletedDoctor'), hospital: it.hospital?.name || '',
+        employeeId: it.employee?._id, employeeName: personName(it.employee), rows: [],
+      })
       map.get(key).rows.push(it)
     }
     let list = [...map.values()]
     if (q) {
       list = list
-        .map((g) => g.doctor.toLowerCase().includes(q) || g.hospital.toLowerCase().includes(q)
+        .map((g) => g.doctor.toLowerCase().includes(q) || g.hospital.toLowerCase().includes(q) || g.employeeName.toLowerCase().includes(q)
           ? g
           : { ...g, rows: g.rows.filter((r) => (r.drug?.name || '').toLowerCase().includes(q)) })
         .filter((g) => g.rows.length)
     }
     list.forEach((g) => g.rows.sort((a, b) => (a.drug?.name || '').localeCompare(b.drug?.name || '')))
-    return list.sort((a, b) => a.doctor.localeCompare(b.doctor, 'ka'))
+    return list.sort((a, b) => a.employeeName.localeCompare(b.employeeName, 'ka') || a.doctor.localeCompare(b.doctor, 'ka'))
   }, [items, search, t])
 
   const totals = useMemo(() => ({
@@ -146,13 +150,14 @@ export default function EnteredPrescriptions() {
   }
 
   async function deleteDoctor(g) {
-    setBusyId(`doc:${g.doctorId}`)
+    setBusyId(`doc:${g.key}`)
     setError('')
     try {
-      const own = me && employeeId === me._id
-      const q = `period=${encodeURIComponent(toPeriod(month))}${own ? '' : `&employee=${employeeId}`}`
+      const emp = isAll ? g.employeeId : employeeId
+      const own = me && emp === me._id
+      const q = `period=${encodeURIComponent(toPeriod(month))}${own ? '' : `&employee=${emp}`}`
       await apiFetch(`/api/my-entries/doctor/${g.doctorId}?${q}`, { method: 'DELETE' })
-      setItems((prev) => prev.filter((x) => x.doctor?._id !== g.doctorId))
+      setItems((prev) => prev.filter((x) => !(x.doctor?._id === g.doctorId && x.employee?._id === g.employeeId)))
       setConfirmKey(null)
       setNotice(t('deleted'))
     } catch (err) {
@@ -163,6 +168,11 @@ export default function EnteredPrescriptions() {
   }
 
   const showEmployeePicker = employees.length > 1
+  const isAll = employeeId === ALL_ID
+  const pickerOptions = useMemo(
+    () => (employees.length > 1 ? [{ _id: ALL_ID, firstName: t('allEmployees'), lastName: '' }, ...employees] : employees),
+    [employees, t]
+  )
 
   return (
     <div className="erx-page">
@@ -180,7 +190,7 @@ export default function EnteredPrescriptions() {
           <div className="erx-field">
             <label>{t('employee')}</label>
             <SearchableSelect
-              options={employees}
+              options={pickerOptions}
               value={employeeId}
               onChange={(v) => setEmployeeId(v || (me?._id ?? ''))}
               getLabel={(e) => personName(e)}
@@ -203,6 +213,7 @@ export default function EnteredPrescriptions() {
 
       {!loading && items.length > 0 && (
         <div className="erx-stats">
+          {isAll && <div className="erx-stat"><b>{new Set(groups.map((g) => g.employeeId)).size}</b><span>{t('employeesCount')}</span></div>}
           <div className="erx-stat"><b>{totals.doctors}</b><span>{t('doctors')}</span></div>
           <div className="erx-stat"><b>{totals.lines}</b><span>{t('lines')}</span></div>
           <div className="erx-stat"><b>{num(totals.rx)}</b><span>{t('prescriptions')}</span></div>
@@ -219,13 +230,14 @@ export default function EnteredPrescriptions() {
 
       <div className="erx-list">
         {groups.map((g) => {
-          const docKey = `doc:${g.doctorId}`
+          const docKey = `doc:${g.key}`
           return (
-            <section key={g.doctorId || 'none'} className="erx-card">
+            <section key={g.key} className="erx-card">
               <header className="erx-card-head">
                 <div className="erx-doc">
                   <span className="erx-avatar" aria-hidden="true">{g.doctor.charAt(0)}</span>
                   <div>
+                    {isAll && g.employeeName && <div className="erx-emp">{g.employeeName}</div>}
                     <div className="erx-doc-name">{g.doctor}</div>
                     {g.hospital && <div className="erx-doc-hosp">{g.hospital}</div>}
                   </div>
