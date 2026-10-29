@@ -82,6 +82,11 @@ function groupItemsIntoDoctorEntries(items) {
   return [...byDoctor.values()]
 }
 
+// numOrEmpty: a 0 shows as an empty field (with a grey "0" hint), so typing
+// starts clean instead of "05"; an empty field is saved as 0
+const showNum = (v) => (v === 0 || v === '' || v == null ? '' : v)
+const readNum = (e) => (e.target.value === '' ? '' : Number(e.target.value))
+
 function fmt(n) {
   if (n == null) return '—'
   return Number(n).toLocaleString('ka-GE', { maximumFractionDigits: 2 })
@@ -444,8 +449,9 @@ export default function DoctorEntryItems() {
                 <input
                   type="number"
                   className="field-input"
-                  value={entry.issuedBudget}
-                  onChange={(e) => updateDoctorField(doctorIndex, 'issuedBudget', e.target.valueAsNumber || 0)}
+                  value={showNum(entry.issuedBudget)}
+                  placeholder="0"
+                  onChange={(e) => updateDoctorField(doctorIndex, 'issuedBudget', readNum(e))}
                 />
               </div>
 
@@ -537,8 +543,9 @@ export default function DoctorEntryItems() {
                         <input
                           type="number"
                           className="field-input"
-                          value={row.quota}
-                          onChange={(e) => updateDrugField(doctorIndex, drugIndex, 'quota', e.target.valueAsNumber || 0)}
+                          value={showNum(row.quota)}
+                          placeholder="0"
+                          onChange={(e) => updateDrugField(doctorIndex, drugIndex, 'quota', readNum(e))}
                         />
                       </div>
                       <div className="doctor-entry-drug-number">
@@ -546,8 +553,9 @@ export default function DoctorEntryItems() {
                         <input
                           type="number"
                           className="field-input"
-                          value={row.prescription}
-                          onChange={(e) => updateDrugField(doctorIndex, drugIndex, 'prescription', e.target.valueAsNumber || 0)}
+                          value={showNum(row.prescription)}
+                          placeholder="0"
+                          onChange={(e) => updateDrugField(doctorIndex, drugIndex, 'prescription', readNum(e))}
                         />
                       </div>
                       <div className="doctor-entry-drug-number doctor-entry-bonus">
