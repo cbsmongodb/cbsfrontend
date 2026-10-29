@@ -13,7 +13,7 @@ export default function Page() {
         { name: "firstName", label: t('fields.firstName') },
         { name: "lastName", label: t('fields.lastName') },
         { name: "uniqueNumber", label: t('fields.uniqueNumber') },
-        { name: "email", label: t('fields.email') },
+        { name: "email", label: t('fields.email'), required: false },
         { name: "phoneNumber", label: t('fields.phoneNumber') },
         {
           name: "profile",
