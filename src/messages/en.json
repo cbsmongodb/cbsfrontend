@@ -1339,6 +1339,9 @@
     "deletedDoctor": "Deleted doctor",
     "deletedDrug": "Deleted drug",
     "allEmployees": "All employees",
-    "employeesCount": "employees"
+    "employeesCount": "employees",
+    "prev": "Previous",
+    "next": "Next",
+    "pageOf": "Page {page} of {pages}"
   }
 }

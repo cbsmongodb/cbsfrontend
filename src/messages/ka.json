@@ -1342,6 +1342,9 @@
     "deletedDoctor": "წაშლილი ექიმი",
     "deletedDrug": "წაშლილი წამალი",
     "allEmployees": "ყველა თანამშრომელი",
-    "employeesCount": "თანამშრომელი"
+    "employeesCount": "თანამშრომელი",
+    "prev": "წინა",
+    "next": "შემდეგი",
+    "pageOf": "გვერდი {page} / {pages}"
   }
 }

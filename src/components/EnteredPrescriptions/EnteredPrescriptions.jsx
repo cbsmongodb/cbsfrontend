@@ -16,6 +16,7 @@ function currentMonth() {
 const toPeriod = (m) => { const [y, mm] = m.split('-'); return `${mm}/${y}` }
 const personName = (p) => (p ? `${p.firstName || ''} ${p.lastName || ''}`.trim() : '')
 const ALL_ID = 'all'
+const PAGE_SIZE = 15
 const num = (n) => Number(n || 0).toLocaleString('ka-GE', { maximumFractionDigits: 2 })
 
 const IconEdit = () => (
@@ -35,6 +36,17 @@ export default function EnteredPrescriptions() {
   const [search, setSearch] = useState('')
 
   const [items, setItems] = useState([])
+  // pages of 15 doctor cards, loaded one page at a time from the server
+  const [page, setPage] = useState(1)
+  const [pages, setPages] = useState(1)
+  const [order, setOrder] = useState([])
+  const [srvTotals, setSrvTotals] = useState({ doctors: 0, lines: 0, rx: 0, employees: 0 })
+  const [q, setQ] = useState('')
+  useEffect(() => {
+    const id = setTimeout(() => setQ(search.trim()), 400)
+    return () => clearTimeout(id)
+  }, [search])
+  useEffect(() => { setPage(1) }, [employeeId, month, q])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
@@ -60,16 +72,25 @@ export default function EnteredPrescriptions() {
     setError('')
     try {
       const own = me && employeeId === me._id
-      const q = `period=${encodeURIComponent(toPeriod(month))}${own ? '' : `&employee=${employeeId}`}`
-      const data = await apiFetch(`/api/my-entries?${q}`)
-      setItems(Array.isArray(data) ? data : [])
+      const qs = `period=${encodeURIComponent(toPeriod(month))}${own ? '' : `&employee=${employeeId}`}`
+        + `&page=${page}&limit=${PAGE_SIZE}${q ? `&search=${encodeURIComponent(q)}` : ''}`
+      const data = await apiFetch(`/api/my-entries?${qs}`)
+      if (Array.isArray(data)) {           // older server without pages
+        setItems(data); setOrder([]); setPages(1); setSrvTotals(null)
+      } else {
+        setItems(data.items || [])
+        setOrder(data.order || [])
+        setPages(data.pages || 1)
+        setSrvTotals(data.totals || null)
+        if (page > (data.pages || 1)) setPage(data.pages || 1)
+      }
     } catch (err) {
       setError(err.message)
       setItems([])
     } finally {
       setLoading(false)
     }
-  }, [employeeId, month, me])
+  }, [employeeId, month, me, page, q])
 
   useEffect(() => { load() }, [load])
   useEffect(() => { setEditId(null); setConfirmKey(null) }, [employeeId, month])
@@ -92,23 +113,21 @@ export default function EnteredPrescriptions() {
       })
       map.get(key).rows.push(it)
     }
-    let list = [...map.values()]
-    if (q) {
-      list = list
-        .map((g) => g.doctor.toLowerCase().includes(q) || g.hospital.toLowerCase().includes(q) || g.employeeName.toLowerCase().includes(q)
-          ? g
-          : { ...g, rows: g.rows.filter((r) => (r.drug?.name || '').toLowerCase().includes(q)) })
-        .filter((g) => g.rows.length)
-    }
+    const list = [...map.values()]
     list.forEach((g) => g.rows.sort((a, b) => (a.drug?.name || '').localeCompare(b.drug?.name || '')))
+    if (order.length) {
+      const pos = new Map(order.map((k, i) => [k, i]))
+      return list.sort((a, b) => (pos.get(a.key) ?? 1e9) - (pos.get(b.key) ?? 1e9))
+    }
     return list.sort((a, b) => a.employeeName.localeCompare(b.employeeName, 'ka') || a.doctor.localeCompare(b.doctor, 'ka'))
-  }, [items, search, t])
+  }, [items, order, t])
 
-  const totals = useMemo(() => ({
+  const totals = useMemo(() => srvTotals || ({
+    employees: new Set(groups.map((g) => g.employeeId)).size,
     doctors: groups.length,
     lines: groups.reduce((s, g) => s + g.rows.length, 0),
     rx: groups.reduce((s, g) => s + g.rows.reduce((a, r) => a + (r.prescription || 0), 0), 0),
-  }), [groups])
+  }), [groups, srvTotals])
 
   function startEdit(row) {
     setConfirmKey(null)
@@ -139,7 +158,7 @@ export default function EnteredPrescriptions() {
     setError('')
     try {
       await apiFetch(`/api/my-entries/${row._id}`, { method: 'DELETE' })
-      setItems((prev) => prev.filter((x) => x._id !== row._id))
+      await load()
       setConfirmKey(null)
       setNotice(t('deleted'))
     } catch (err) {
@@ -157,7 +176,7 @@ export default function EnteredPrescriptions() {
       const own = me && emp === me._id
       const q = `period=${encodeURIComponent(toPeriod(month))}${own ? '' : `&employee=${emp}`}`
       await apiFetch(`/api/my-entries/doctor/${g.doctorId}?${q}`, { method: 'DELETE' })
-      setItems((prev) => prev.filter((x) => !(x.doctor?._id === g.doctorId && x.employee?._id === g.employeeId)))
+      await load()
       setConfirmKey(null)
       setNotice(t('deleted'))
     } catch (err) {
@@ -213,7 +232,7 @@ export default function EnteredPrescriptions() {
 
       {!loading && items.length > 0 && (
         <div className="erx-stats">
-          {isAll && <div className="erx-stat"><b>{new Set(groups.map((g) => g.employeeId)).size}</b><span>{t('employeesCount')}</span></div>}
+          {isAll && <div className="erx-stat"><b>{totals.employees}</b><span>{t('employeesCount')}</span></div>}
           <div className="erx-stat"><b>{totals.doctors}</b><span>{t('doctors')}</span></div>
           <div className="erx-stat"><b>{totals.lines}</b><span>{t('lines')}</span></div>
           <div className="erx-stat"><b>{num(totals.rx)}</b><span>{t('prescriptions')}</span></div>
@@ -222,11 +241,9 @@ export default function EnteredPrescriptions() {
 
       {!loading && items.length === 0 && employeeId && (
         <div className="erx-empty">
-          <p>{t('empty')}</p>
+          <p>{q ? t('noMatch') : t('empty')}</p>
         </div>
       )}
-
-      {!loading && items.length > 0 && groups.length === 0 && <div className="erx-empty"><p>{t('noMatch')}</p></div>}
 
       <div className="erx-list">
         {groups.map((g) => {
@@ -311,6 +328,14 @@ export default function EnteredPrescriptions() {
           )
         })}
       </div>
+
+      {pages > 1 && (
+        <div className="erx-pager">
+          <button type="button" className="erx-btn" disabled={page <= 1 || loading} onClick={() => { setPage((p) => p - 1); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>‹ {t('prev')}</button>
+          <span className="erx-pager-info">{t('pageOf', { page, pages })}</span>
+          <button type="button" className="erx-btn" disabled={page >= pages || loading} onClick={() => { setPage((p) => p + 1); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>{t('next')} ›</button>
+        </div>
+      )}
     </div>
   )
 }
