@@ -551,3 +551,14 @@ tbody tr:hover {
 .resource-table td.resource-actions > * + * {
   margin-left: 6px;
 }
+
+/* field names above the boxes */
+.resource-form { align-items: end; }
+.rf-field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.rf-field > .rf-label {
+  font-size: 12px; font-weight: 600; line-height: 1.2; letter-spacing: .01em;
+  color: inherit; opacity: .8; padding-left: 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rf-field > :not(.rf-label) { width: 100%; min-width: 0; }
+.dashboard-shell .resource-form .rf-field > .rf-label { color: #ffffff !important; opacity: .85; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }

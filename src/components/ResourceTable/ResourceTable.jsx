@@ -271,7 +271,21 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
     }
   }
 
+  // every simple field gets its name written above it, so while editing
+  // it's clear which box is the price, the stock, etc.
+  const NO_LABEL_TYPES = ['weekdays', 'location', 'drug-bonuses', 'hospital-doctors', 'multiselect', 'checkbox', 'hidden']
   function renderInput(f) {
+    const el = renderInputRaw(f)
+    if (!el || NO_LABEL_TYPES.includes(f.type)) return el
+    return (
+      <div key={f.name} className="rf-field">
+        <span className="rf-label">{f.label}</span>
+        {el}
+      </div>
+    )
+  }
+
+  function renderInputRaw(f) {
     if (f.type === 'weekdays') {
       const selected = form[f.name] || []
       return (
