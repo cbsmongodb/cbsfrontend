@@ -622,10 +622,11 @@ export default function DoctorEntryItems() {
         )
       })}
 
+      <button type="button" className="doctor-entries-add-doctor" onClick={addDoctor}>
+        <span>{tu('k071')}</span>
+      </button>
+
       <div className="doctor-entries-bottombar">
-        <button type="button" className="btn-gray" onClick={addDoctor}>
-          <span>{tu('k071')}</span>
-        </button>
         <button type="button" className="btn doctor-entries-save" onClick={handleSave} disabled={saving}>
           <span>{saving ? <span className="btn-spinner" aria-hidden="true" /> : tu('k043')}</span>
         </button>

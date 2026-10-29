@@ -264,3 +264,24 @@
 @media (max-width: 640px) {
   .doctor-entries-bottombar > * { flex: 1 1 100%; }
 }
+
+/* bottom v2 — "+ add doctor" on its own row, "Save" separately below it */
+.doctor-entries-add-doctor {
+  display: flex; align-items: center; justify-content: center; width: 100%;
+  margin: 4px 0 18px; padding: 16px; cursor: pointer;
+  border: 2px dashed #cbd5e1; border-radius: 14px; background: transparent;
+  color: #334155; font-family: inherit; font-size: 14px; font-weight: 700;
+  transition: border-color .15s, background-color .15s, color .15s;
+}
+.doctor-entries-add-doctor:hover { border-color: var(--dir-a, #1e3a68); color: var(--dir-a, #1e3a68); background: rgba(30, 58, 104, 0.04); }
+.doctor-entries-bottombar {
+  position: sticky; bottom: 0; z-index: 5;
+  display: flex; justify-content: flex-end;
+  margin-top: 0; padding: 12px 0;
+  background: transparent !important; border: 0 !important; box-shadow: none !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+}
+.doctor-entries-bottombar .doctor-entries-save { min-width: 220px; box-shadow: 0 10px 24px rgba(15, 23, 42, 0.22); }
+@media (max-width: 640px) {
+  .doctor-entries-bottombar .doctor-entries-save { width: 100%; }
+}
