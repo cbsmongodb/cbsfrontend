@@ -71,10 +71,27 @@ export default function DirectorOverview() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  // instantOverview: the last numbers seen on this device show right away,
+  // fresh ones replace them as soon as the server answers
   useEffect(() => {
-    setLoading(true); setError('')
+    const key = `dirOverview:${year}`
+    let shown = false
+    try {
+      const saved = JSON.parse(localStorage.getItem(key) || 'null')
+      if (saved?.months) { setData(saved); shown = true }
+    } catch { /* ignore */ }
+    if (!shown) setData(null)
+    setLoading(!shown); setError('')
+    let alive = true
     apiFetch(`/api/director-dashboard/overview?year=${year}`)
-      .then(setData).catch((e) => setError(e.message)).finally(() => setLoading(false))
+      .then((d) => {
+        if (!alive) return
+        setData(d)
+        try { localStorage.setItem(key, JSON.stringify(d)) } catch { /* ignore */ }
+      })
+      .catch((e) => { if (alive && !shown) setError(e.message) })
+      .finally(() => { if (alive) setLoading(false) })
+    return () => { alive = false }
   }, [year])
 
   const months = useMemo(() => (data?.months || []).map((m, i) => ({ ...m, label: MONTHS.ka[i] })), [data])
