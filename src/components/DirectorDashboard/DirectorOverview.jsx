@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   PieChart, Pie, Cell, BarChart, Bar, ComposedChart, Line, LabelList,
@@ -20,7 +20,11 @@ const FALLBACK = [{ a: '#8fa3bf', b: '#3b4a63' }, { a: '#f2c66d', b: '#8a5a12' }
 const colorsFor = (name, i) => DIV_COLORS.find((c) => c.test.test(String(name || '').trim())) || FALLBACK[i % FALLBACK.length]
 const money = (n) => `₾${Math.round(n || 0).toLocaleString('en-US')}`
 const short = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${(n / 1e3).toFixed(n >= 1e4 ? 0 : 1)}k` : `${Math.round(n)}`)
-const MONTHS = { ka: ['იან', 'თებ', 'მარ', 'აპრ', 'მაი', 'ივნ', 'ივლ', 'აგვ', 'სექ', 'ოქტ', 'ნოე', 'დეკ'] }
+const MONTHS = {
+  ka: ['იან', 'თებ', 'მარ', 'აპრ', 'მაი', 'ივნ', 'ივლ', 'აგვ', 'სექ', 'ოქტ', 'ნოე', 'დეკ'],
+  en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  ru: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+}
 
 function GlassTooltip({ active, payload, label, fmt = money }) {
   if (!active || !payload?.length) return null
@@ -94,7 +98,8 @@ export default function DirectorOverview() {
     return () => { alive = false }
   }, [year])
 
-  const months = useMemo(() => (data?.months || []).map((m, i) => ({ ...m, label: MONTHS.ka[i] })), [data])
+  const locale = useLocale()
+  const months = useMemo(() => (data?.months || []).map((m, i) => ({ ...m, label: (MONTHS[locale] || MONTHS.en)[i] })), [data, locale])
   const divisions = data?.divisions || []
   const divNames = divisions.map((d) => d.name)
   // only months up to now in the current year
