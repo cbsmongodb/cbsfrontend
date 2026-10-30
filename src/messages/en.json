@@ -729,7 +729,10 @@
       "topReps": "Top 10 reps (by sales)",
       "noSales": "No sales entered for this year yet",
       "inBoxes": "in boxes (drugs have no price)"
-    }
+    },
+    "stockOut": "Out of stock",
+    "stockLow": "Low",
+    "stockOk": "In stock"
   },
   "reports": {
     "common": {

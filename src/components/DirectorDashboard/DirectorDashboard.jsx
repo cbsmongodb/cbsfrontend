@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, Fragment } from 'react'
+import { useEffect, useMemo, useState, Fragment } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
@@ -408,20 +408,39 @@ export default function DirectorDashboard() {
   )
 }
 
-const getSaleColumns = (t) => [
-  { accessorKey: 'drugName', header: t('col.drugName') },
-  { accessorKey: 'openingStocks', header: t('col.openingStocks') },
-  { accessorKey: 'monthlyTarget', header: t('monthlyTarget') },
-  { accessorKey: 'saleBoxes', header: t('saleBoxes') },
+// ddNum: 28079 -> 28,079 · 3148.571 -> 3,148.57 (no long tails, thousands grouped)
+const ddNum = (n) => (Number(n) || 0).toLocaleString('en-US', { maximumFractionDigits: 2 })
+const ddName = (v) => { const s = String(v || '').trim(); return s ? s.charAt(0).toUpperCase() + s.slice(1) : '—' }
+const ddBar = (v, max, tone) => (
+  <span className="dd-bar"><span className={`dd-bar-fill dd-bar-${tone}`} style={{ width: `${max > 0 ? Math.max(3, Math.min(100, (v / max) * 100)) : 0}%` }} /></span>
+)
+
+const getSaleColumns = (t, maxBoxes = 0) => [
+  { accessorKey: 'drugName', header: t('col.drugName'), cell: (info) => <span className="dd-drug">{ddName(info.getValue())}</span> },
   {
-    accessorKey: 'closingStocks',
-    header: t('col.closingStocks'),
+    accessorKey: 'openingStocks', header: t('col.openingStocks'), meta: { num: true },
+    cell: (info) => { const v = Number(info.getValue()) || 0; return <span className={v < 0 ? 'dd-neg-text' : 'dd-muted'}>{ddNum(v)}</span> },
+  },
+  {
+    accessorKey: 'monthlyTarget', header: t('monthlyTarget'), meta: { num: true },
+    cell: (info) => { const v = Number(info.getValue()) || 0; return v ? ddNum(v) : <span className="dd-dash">—</span> },
+  },
+  {
+    accessorKey: 'saleBoxes', header: t('saleBoxes'), meta: { num: true },
+    cell: (info) => { const v = Number(info.getValue()) || 0; return <span className="dd-withbar"><b>{ddNum(v)}</b>{ddBar(v, maxBoxes, 'blue')}</span> },
+  },
+  {
+    accessorKey: 'closingStocks', header: t('col.closingStocks'), meta: { num: true },
     cell: (info) => {
-      const v = info.getValue()
-      return <span className={v < 0 ? 'director-negative' : ''}>{v}</span>
+      const v = Number(info.getValue()) || 0
+      const tone = v < 0 ? 'neg' : v < 20 ? 'low' : 'ok'
+      return <span className={`dd-pill dd-pill-${tone}`}>{ddNum(v)}</span>
     },
   },
-  { accessorKey: 'totalSaleAmount', header: t('col.totalSaleAmount'), cell: (info) => fmtMoney(info.getValue()) },
+  {
+    accessorKey: 'totalSaleAmount', header: t('col.totalSaleAmount'), meta: { num: true },
+    cell: (info) => <span className="dd-money">{fmtMoney(info.getValue())} <small>₾</small></span>,
+  },
 ]
 
 function ProductSaleTab() {
@@ -466,13 +485,14 @@ function ProductSaleTab() {
   }
 
   const rows = data?.docs || []
+  const maxBoxes = rows.reduce((m, r) => Math.max(m, Number(r.saleBoxes) || 0), 0)
   const totalAmount = rows.reduce((s, r) => s + (r.totalSaleAmount || 0), 0)
   const totalBoxes = rows.reduce((s, r) => s + (r.saleBoxes || 0), 0)
   const topProduct = rows.length ? [...rows].sort((a, b) => b.saleBoxes - a.saleBoxes)[0] : null
 
   const table = useReactTable({
     data: rows,
-    columns: getSaleColumns(t),
+    columns: getSaleColumns(t, maxBoxes),
     state: { sorting, globalFilter },
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
@@ -560,7 +580,7 @@ function ProductSaleTab() {
                 {table.getHeaderGroups().map((hg) => (
                   <tr key={hg.id}>
                     {hg.headers.map((header) => (
-                      <th key={header.id} onClick={header.column.getToggleSortingHandler()} className="director-th-sortable">
+                      <th key={header.id} onClick={header.column.getToggleSortingHandler()} className={`director-th-sortable${header.column.columnDef.meta?.num ? ' dd-num' : ''}`}>
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         <span className="director-sort-indicator">{{ asc: ' ▲', desc: ' ▼' }[header.column.getIsSorted()] ?? ''}</span>
                       </th>
@@ -572,7 +592,7 @@ function ProductSaleTab() {
                 {table.getRowModel().rows.map((row) => (
                   <tr key={row.id}>
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id}>{flexRender(cell.column.columnDef.cell ?? cell.getValue(), cell.getContext())}</td>
+                      <td key={cell.id} className={cell.column.columnDef.meta?.num ? 'dd-num' : undefined}>{flexRender(cell.column.columnDef.cell ?? cell.getValue(), cell.getContext())}</td>
                     ))}
                   </tr>
                 ))}
@@ -591,15 +611,20 @@ function ProductSaleTab() {
   )
 }
 
-const getStockColumns = (t) => [
-  { accessorKey: 'name', header: t('col.drugName') },
+const stockLevel = (v) => (v <= 0 ? 'zero' : v < 20 ? 'low' : 'ok')
+const getStockColumns = (t, maxStock = 0) => [
+  { accessorKey: 'name', header: t('col.drugName'), cell: (info) => <span className="dd-drug">{ddName(info.getValue())}</span> },
   {
-    accessorKey: 'stocks',
-    header: t('stocks'),
+    accessorKey: 'stocks', header: t('stocks'), meta: { num: true },
     cell: (info) => {
-      const v = info.getValue()
-      const level = v <= 0 ? 'zero' : v < 20 ? 'low' : 'ok'
-      return <span className={`director-stock-badge director-stock-badge-${level}`}>{v}</span>
+      const v = Number(info.getValue()) || 0
+      const level = stockLevel(v)
+      return (
+        <span className="dd-stockcell">
+          {ddBar(Math.max(v, 0), maxStock, level === 'ok' ? 'green' : 'amber')}
+          <span className={`dd-pill dd-pill-${level === 'zero' ? 'neg' : level}`}>{level === 'zero' ? t('stockOut') : ddNum(v)}</span>
+        </span>
+      )
     },
   },
 ]
@@ -610,9 +635,19 @@ function StockAvailabilityTab() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [lastLoaded, setLastLoaded] = useState(null)
-  const [sorting, setSorting] = useState([])
+  const [sorting, setSorting] = useState([{ id: 'stocks', desc: true }])
   const [globalFilter, setGlobalFilter] = useState('')
   const [chartMode, setChartMode] = useState('low')
+  const [level, setLevel] = useState('all')
+  // memoised: a new array on every render would make the table jump back to page 1
+  const { counts, maxStock, shownDocs } = useMemo(() => {
+    const docs = data?.docs || []
+    const counts = { all: docs.length, ok: 0, low: 0, zero: 0 }
+    docs.forEach((d) => { counts[stockLevel(Number(d.stocks) || 0)]++ })
+    const maxStock = docs.reduce((m, d) => Math.max(m, Number(d.stocks) || 0), 0)
+    const shownDocs = level === 'all' ? docs : docs.filter((d) => stockLevel(Number(d.stocks) || 0) === level)
+    return { counts, maxStock, shownDocs }
+  }, [data, level])
 
   async function load() {
     setLoading(true)
@@ -633,8 +668,8 @@ function StockAvailabilityTab() {
   }, [])
 
   const table = useReactTable({
-    data: data?.docs || [],
-    columns: getStockColumns(t),
+    data: shownDocs,
+    columns: getStockColumns(t, maxStock),
     state: { sorting, globalFilter },
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
@@ -711,6 +746,13 @@ function StockAvailabilityTab() {
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
+            <div className="dd-levels">
+              {[['all', t('all')], ['ok', t('stockOk')], ['low', t('stockLow')], ['zero', t('stockOut')]].map(([k, label]) => (
+                <button key={k} type="button" className={`dd-level dd-level-${k} ${level === k ? 'active' : ''}`} onClick={() => { setLevel(k); table.setPageIndex(0) }}>
+                  {label} <b>{counts[k]}</b>
+                </button>
+              ))}
+            </div>
             <div className="director-toolbar-right">
               {lastLoaded && <span className="director-last-updated">{t('updated', { when: timeAgo(lastLoaded, t) })}</span>}
               <button type="button" className="btn-gray btn-sm director-export-btn" onClick={() => downloadCSV('stock-availability.csv', data.docs)}>
@@ -725,7 +767,7 @@ function StockAvailabilityTab() {
                 {table.getHeaderGroups().map((hg) => (
                   <tr key={hg.id}>
                     {hg.headers.map((header) => (
-                      <th key={header.id} onClick={header.column.getToggleSortingHandler()} className="director-th-sortable">
+                      <th key={header.id} onClick={header.column.getToggleSortingHandler()} className={`director-th-sortable${header.column.columnDef.meta?.num ? ' dd-num' : ''}`}>
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         <span className="director-sort-indicator">{{ asc: ' ▲', desc: ' ▼' }[header.column.getIsSorted()] ?? ''}</span>
                       </th>
@@ -737,7 +779,7 @@ function StockAvailabilityTab() {
                 {table.getRowModel().rows.map((row) => (
                   <tr key={row.id}>
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                      <td key={cell.id} className={cell.column.columnDef.meta?.num ? 'dd-num' : undefined}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
                     ))}
                   </tr>
                 ))}
