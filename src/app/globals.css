@@ -2058,3 +2058,17 @@ html:not([lang="ka"]) .sidebar .sidebar-group-items a,
 html:not([lang="ka"]) .sidebar .sidebar-group-items a span {
   text-transform: capitalize !important;
 }
+
+/* form-topline-v2 */
+.resource-form::before,
+.dashboard-shell .resource-form::before {
+  inset: 0 !important;
+  height: auto !important;
+  border-radius: inherit !important;
+  background: none !important;
+  border-top: 3px solid #3f74d6;
+  pointer-events: none;
+}
+.dashboard-shell .resource-form::before { border-top: 2px solid rgba(255, 255, 255, 0.45); }
+.resource-form.is-editing::before,
+.dashboard-shell .resource-form.is-editing::before { border-top: 3px solid #f59e0b; }

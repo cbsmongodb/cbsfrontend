@@ -30,7 +30,7 @@ export default function Page() {
           optionsLabel: "name",
           required: false,
         },
-        { name: "note", label: t('fields.note') },
+        { name: "note", label: t('fields.note'), required: false },
         { name: "isActive", label: t('fields.isActive'), type: "checkbox" },
         {
           name: "members",

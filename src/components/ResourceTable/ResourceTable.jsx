@@ -534,7 +534,7 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
         onChange={(e) =>
           handleChange(f.name, f.type === 'number' ? e.target.valueAsNumber : e.target.value)
         }
-        required={f.required !== undefined ? f.required : f.type !== 'checkbox'}
+        required={f.required !== undefined ? f.required : f.name === 'note' ? false : f.type !== 'checkbox'}
       />
     )
   }
