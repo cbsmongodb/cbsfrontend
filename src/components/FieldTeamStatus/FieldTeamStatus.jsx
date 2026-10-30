@@ -1,18 +1,14 @@
 'use client'
 
+// team-status-v5
 import { useEffect, useMemo, useState } from 'react'
 import { io } from 'socket.io-client'
 import { apiFetch } from '@/lib/api'
 import './FieldTeamStatus.css'
 import { useTranslations } from 'next-intl'
+import { useParams } from 'next/navigation'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-const STEPS = [
-  { key: 'planned', label: 'k127' },
-  { key: 'i_went', label: 'k128' },
-  { key: 'i_left', label: 'k129' },
-]
 
 function stepIndexForStatus(status) {
   if (status === 'planned') return 0
@@ -29,12 +25,50 @@ function placeName(plan) {
   return plan.hospital?.name || plan.pharmacy?.pharmacyName || '—'
 }
 
+function initials(name) {
+  const parts = String(name || '').trim().split(/\s+/).filter(Boolean)
+  if (!parts.length || name === '—') return '?'
+  return ((parts[0][0] || '') + (parts[1]?.[0] || '')).toUpperCase()
+}
+
+function statusKey(status) {
+  if (status === 'i_went') return 'onsite'
+  if (status === 'planned') return 'planned'
+  if (status === 'i_left' || status === 'completed') return 'done'
+  if (status === 'canceled') return 'canceled'
+  return 'planned'
+}
+
+const STATUS_LABEL = { planned: 'k127', onsite: 'k128', done: 'k129', canceled: 'k132' }
+
+function planTime(plan) {
+  if (!plan.period) return ''
+  const d = new Date(plan.period)
+  if (Number.isNaN(d.getTime())) return ''
+  const hh = d.getHours()
+  const mm = d.getMinutes()
+  if (hh === 0 && mm === 0) return ''
+  return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`
+}
+
+const SCHEME_ORDER = ['division1', 'division2', 'division3', 'gold', 'office', 'warehouse']
+const SCHEME_NAMES = {
+  ka: { division1: 'დივიზიონი I', division2: 'დივიზიონი II', division3: 'დივიზიონი III', gold: 'მენეჯმენტი', office: 'ოფისი', warehouse: 'საწყობი' },
+  en: { division1: 'Division I', division2: 'Division II', division3: 'Division III', gold: 'Management', office: 'Office', warehouse: 'Warehouse' },
+  ru: { division1: 'Дивизион I', division2: 'Дивизион II', division3: 'Дивизион III', gold: 'Руководство', office: 'Офис', warehouse: 'Склад' },
+}
+
 export default function FieldTeamStatus() {
   const tu = useTranslations('ui')
+  const { locale } = useParams() || {}
+  const dateLocale = locale === 'ka' ? 'ka-GE' : locale === 'ru' ? 'ru-RU' : 'en-GB'
   const [plans, setPlans] = useState([])
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
+  const [loaded, setLoaded] = useState(false)
+  const [schemes, setSchemes] = useState({})
+  const names = SCHEME_NAMES[locale] || SCHEME_NAMES.en
 
   async function loadPlans() {
     try {
@@ -47,9 +81,12 @@ export default function FieldTeamStatus() {
         period_to: endOfDay.toISOString(),
       })
       const data = await apiFetch(`/api/plannings?${params}`)
-      setPlans(data)
+      setPlans(Array.isArray(data) ? data : data?.items || [])
+      setError('')
     } catch (err) {
       setError(err.message)
+    } finally {
+      setLoaded(true)
     }
   }
 
@@ -68,6 +105,23 @@ export default function FieldTeamStatus() {
       if (socket) socket.disconnect()
     }
   }, [])
+
+  // each employee's division colour (same as their own dashboard)
+  useEffect(() => {
+    const missing = [...new Set(plans.map((p) => p.performer?._id).filter(Boolean))].filter((id) => !schemes[id])
+    if (!missing.length) return
+    let off = false
+    apiFetch('/api/employees/me/theme/batch', { method: 'POST', body: JSON.stringify({ ids: missing }) })
+      .then((data) => {
+        if (!off && data && typeof data === 'object') setSchemes((prev) => ({ ...prev, ...data }))
+      })
+      .catch(() => {})
+    return () => {
+      off = true
+    }
+  }, [plans]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const schemeOf = (plan) => schemes[plan.performer?._id]?.scheme || 'office'
 
   const counts = useMemo(() => {
     const c = { total: 0, onSite: 0, planned: 0, done: 0, canceled: 0 }
@@ -88,125 +142,155 @@ export default function FieldTeamStatus() {
     let list = plans
     if (statusFilter === 'notDone') {
       list = list.filter((p) => p.status === 'planned' || p.status === 'i_went')
+    } else if (statusFilter === 'completed') {
+      list = list.filter((p) => p.status === 'completed' || p.status === 'i_left')
     } else if (statusFilter) {
       list = list.filter((p) => p.status === statusFilter)
     } else {
       list = list.filter((p) => p.status !== 'canceled')
     }
     if (search.trim()) {
-      const q = search.trim().toLowerCase()
-      list = list.filter((p) => performerName(p).toLowerCase().includes(q))
+      const words = search.trim().toLowerCase().split(/\s+/)
+      list = list.filter((p) => {
+        const hay = `${performerName(p)} ${placeName(p)}`.toLowerCase()
+        return words.every((w) => hay.includes(w))
+      })
     }
     const order = { i_went: 0, planned: 1, i_left: 2, completed: 2, canceled: 3 }
-    return [...list].sort((a, b) => (order[a.status] ?? 4) - (order[b.status] ?? 4))
+    return [...list].sort(
+      (a, b) =>
+        (order[a.status] ?? 4) - (order[b.status] ?? 4) ||
+        (new Date(a.period).getTime() || 0) - (new Date(b.period).getTime() || 0) ||
+        performerName(a).localeCompare(performerName(b))
+    )
   }, [plans, statusFilter, search])
 
+
+  const chips = [
+    { key: '', label: tu('k092'), n: counts.total, cls: 'all' },
+    { key: 'notDone', label: tu('k134'), n: counts.planned + counts.onSite, cls: 'notdone' },
+    { key: 'i_went', label: tu('k128'), n: counts.onSite, cls: 'onsite' },
+    { key: 'planned', label: tu('k127'), n: counts.planned, cls: 'planned' },
+    { key: 'completed', label: tu('k129'), n: counts.done, cls: 'done' },
+    { key: 'canceled', label: tu('k132'), n: counts.canceled, cls: 'canceled' },
+  ]
+
+  const STEPS = ['k127', 'k128', 'k129']
+
   return (
-    <div className="field-team-status">
-      <h1>{tu('k130')}</h1>
+    <div className="field-team-status ts5">
+      <div className="ts5-top">
+        <div className="ts5-title">
+          <h1>{tu('k130')}</h1>
+          <span className="ts5-date">
+            <span className="ts5-live" aria-hidden="true" />
+            {new Date().toLocaleDateString(dateLocale, { day: 'numeric', month: 'long', weekday: 'long' })}
+          </span>
+        </div>
+        <label className="ts5-search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input type="text" placeholder={tu('k133')} value={search} onChange={(e) => setSearch(e.target.value)} />
+        </label>
+      </div>
+
+      <div className="ts5-chips" role="tablist">
+        {chips.map((c) => (
+          <button
+            key={c.key || 'all'}
+            type="button"
+            role="tab"
+            aria-selected={statusFilter === c.key}
+            className={`ts5-chip ${c.cls} ${statusFilter === c.key ? 'active' : ''}`}
+            onClick={() => setStatusFilter(c.key)}
+          >
+            <i aria-hidden="true" />
+            {c.label}
+            <b>{c.n}</b>
+          </button>
+        ))}
+      </div>
 
       {error && <p className="live-feed-error">{error}</p>}
 
-      <div className="team-status-summary">
-        <div className="team-status-summary-item">
-          <span>{counts.total}</span>
-          <label>{tu('k131')}</label>
-        </div>
-        <div className="team-status-summary-item onsite">
-          <span>{counts.onSite}</span>
-          <label>{tu('k128')}</label>
-        </div>
-        <div className="team-status-summary-item planned">
-          <span>{counts.planned}</span>
-          <label>{tu('k127')}</label>
-        </div>
-        <div className="team-status-summary-item done">
-          <span>{counts.done}</span>
-          <label>{tu('k129')}</label>
-        </div>
-        <div className="team-status-summary-item canceled">
-          <span>{counts.canceled}</span>
-          <label>{tu('k132')}</label>
-        </div>
-      </div>
-
-      <div className="team-status-controls">
-        <input
-          type="text"
-          className="field-input"
-          placeholder={tu('k133')}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
-        <div className="team-status-pills">
-          <button type="button" className={`team-status-pill ${statusFilter === '' ? 'active' : ''}`} onClick={() => setStatusFilter('')}>
-            {tu('k092')}
-          </button>
-          <button type="button" className={`team-status-pill ${statusFilter === 'notDone' ? 'active' : ''}`} onClick={() => setStatusFilter('notDone')}>
-            {tu('k134')}
-          </button>
-          <button type="button" className={`team-status-pill ${statusFilter === 'planned' ? 'active' : ''}`} onClick={() => setStatusFilter('planned')}>
-            {tu('k127')}
-          </button>
-          <button type="button" className={`team-status-pill ${statusFilter === 'i_went' ? 'active' : ''}`} onClick={() => setStatusFilter('i_went')}>
-            {tu('k128')}
-          </button>
-          <button type="button" className={`team-status-pill ${statusFilter === 'completed' ? 'active' : ''}`} onClick={() => setStatusFilter('completed')}>
-            {tu('k129')}
-          </button>
-          <button type="button" className={`team-status-pill ${statusFilter === 'canceled' ? 'active' : ''}`} onClick={() => setStatusFilter('canceled')}>
-            {tu('k132')}
-          </button>
-        </div>
-      </div>
-
-      <div className="tracker-list">
+      <div className="ts5-list">
         {visiblePlans.map((plan) => {
-          const currentIndex = stepIndexForStatus(plan.status)
-          const isCanceled = plan.status === 'canceled'
+          const sk = statusKey(plan.status)
+          const idx = stepIndexForStatus(plan.status)
+          const sc = schemeOf(plan)
+          const name = performerName(plan)
+          const place = placeName(plan)
+          const time = planTime(plan)
+          const isPharmacy = plan.pharmacy && !plan.hospital
+          const docs = (plan.doctors || []).map((d) => `${d.firstName || ''} ${d.lastName || ''}`.trim()).filter(Boolean)
+          const fill = idx <= 0 ? 0 : idx === 1 ? 50 : 100
           return (
-            <div key={plan._id} className={`tracker-card ${isCanceled ? 'canceled' : ''}`}>
-              <div className="tracker-card-header">
-                <span className="tracker-name">{performerName(plan)}</span>
-              </div>
-              <div className="tracker-where">
-                <span className="tracker-where-place">
-                  <span aria-hidden="true">{plan.pharmacy && !plan.hospital ? '💊' : '🏥'}</span>
-                  {placeName(plan) === '—' ? tu('noPlace') : placeName(plan)}
-                </span>
-                {plan.doctors?.length > 0 && (
-                  <span className="tracker-where-doctors">
-                    <span aria-hidden="true">👨‍⚕️</span>
-                    {plan.doctors.slice(0, 3).map((d) => `${d.firstName || ''} ${d.lastName || ''}`.trim()).join(', ')}
-                    {plan.doctors.length > 3 && ` +${plan.doctors.length - 3}`}
+            <article key={plan._id} className={`ts5-row sc-${sc} ${sk}`}>
+              <div className="ts5-avatar" aria-hidden="true">{initials(name)}</div>
+
+              <div className="ts5-info">
+                <div className="ts5-line1">
+                  <span className="ts5-name">{name}</span>
+                  <span className="ts5-tag">{names[sc]}</span>
+                  {time && <span className="ts5-time">{time}</span>}
+                </div>
+                <div className="ts5-line2">
+                  <span className={`ts5-place ${place === '—' ? 'empty' : ''}`}>
+                    {isPharmacy ? (
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" /><path d="m8.5 8.5 7 7" /></svg>
+                    ) : (
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 21h18" /><path d="M5 21V7l7-4 7 4v14" /><path d="M10 11h4M12 9v4" /></svg>
+                    )}
+                    <span>{place === '—' ? tu('noPlace') : place}</span>
                   </span>
-                )}
+                  {docs.length > 0 && (
+                    <span className="ts5-docs" title={docs.join(', ')}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="4" /><path d="M5.5 21a6.5 6.5 0 0 1 13 0" /></svg>
+                      <span>
+                        {docs.slice(0, 2).join(', ')}
+                        {docs.length > 2 && <b> +{docs.length - 2}</b>}
+                      </span>
+                    </span>
+                  )}
+                </div>
               </div>
-              {isCanceled ? (
-                <div className="tracker-canceled-label">{tu('k132')}</div>
+
+              {sk === 'canceled' ? (
+                <div className="ts5-canceled">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m15 9-6 6M9 9l6 6" /></svg>
+                  {tu('k132')}
+                </div>
               ) : (
-                <div className="tracker">
-                  {STEPS.map((step, i) => (
-                    <div key={step.key} className="tracker-step-wrap">
-                      <div className={`tracker-step ${i <= currentIndex ? 'done' : ''} ${i === currentIndex ? 'current' : ''}`}>
-                        <div className="tracker-circle">{i < currentIndex ? '✓' : i + 1}</div>
-                        <div className="tracker-label">{tu(step.label)}</div>
-                      </div>
-                      {i < STEPS.length - 1 && (
-                        <div className={`tracker-line ${i < currentIndex ? 'filled' : ''}`} />
-                      )}
-                    </div>
-                  ))}
+                <div className="ts5-track" style={{ '--fill': `${fill}%` }}>
+                  <div className="ts5-rail"><span /></div>
+                  <ol>
+                    {STEPS.map((label, i) => {
+                      const state = i < idx || (i === idx && idx === 2) ? 'done' : i === idx ? 'current' : 'todo'
+                      return (
+                        <li key={label} className={state}>
+                          <span className="ts5-node">
+                            {state === 'done' ? (
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+                            ) : (
+                              <i />
+                            )}
+                          </span>
+                          <span className="ts5-step-label">{tu(label)}</span>
+                        </li>
+                      )
+                    })}
+                  </ol>
                 </div>
               )}
-            </div>
+            </article>
           )
         })}
-        {visiblePlans.length === 0 && (
-          <p style={{ color: '#94a3b8', fontSize: 13 }}>{tu('k135')}</p>
-        )}
       </div>
+
+      {loaded && visiblePlans.length === 0 && <div className="ts5-empty">{tu('k135')}</div>}
+      {!loaded && <div className="ts5-empty">…</div>}
     </div>
   )
 }
