@@ -134,6 +134,8 @@ export default function LiveFeed() {
   const [error, setError] = useState('')
   const [focus, setFocus] = useState(null)
   const [planPins, setPlanPins] = useState([])
+  // who has at least one visit planned today (only they get "Planned")
+  const [planEmployeeIds, setPlanEmployeeIds] = useState(() => new Set())
   const [onlyFar, setOnlyFar] = useState(false)
   const [search, setSearch] = useState('')
   const [lastUpdated, setLastUpdated] = useState(null)
@@ -155,7 +157,32 @@ export default function LiveFeed() {
     return m > 0 ? t('duration.hoursMinutes', { h, m }) : t('duration.hoursOnly', { h })
   }
 
+  async function loadPlanEmployees() {
+    try {
+      const from = new Date()
+      from.setHours(0, 0, 0, 0)
+      const to = new Date()
+      to.setHours(23, 59, 59, 999)
+      const qs = new URLSearchParams({
+        period_from: from.toISOString(),
+        period_to: to.toISOString(),
+      })
+      const data = await apiFetch(`/api/plannings?${qs}`)
+      const list = Array.isArray(data) ? data : data?.items || []
+      const ids = new Set()
+      list.forEach((p) => {
+        if (p.status === 'canceled') return
+        const id = p.performer?._id || p.performer
+        if (id) ids.add(String(id))
+      })
+      setPlanEmployeeIds(ids)
+    } catch {
+      // keep the previous list
+    }
+  }
+
   async function load() {
+    loadPlanEmployees()
     try {
       const items = await apiFetch('/api/attendance/live-feed')
       setEvents(annotate(flattenToEvents(items)))
@@ -375,7 +402,7 @@ export default function LiveFeed() {
                               {t('wholeDay')}
                             </button>
                           )}
-                          {showDayLink && (
+                          {showDayLink && planEmployeeIds.has(empKey) && (
                             <button
                               type="button"
                               onClick={(e) => {
