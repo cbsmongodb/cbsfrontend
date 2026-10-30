@@ -1451,3 +1451,13 @@
 .dd-level.active b { background: rgba(255, 255, 255, .2); color: #fff; }
 .dd-level-ok b { color: #047857; } .dd-level-low b { color: #b45309; } .dd-level-zero b { color: #dc2626; }
 @media (max-width: 640px) { .dd-bar { width: 70px; } .dd-withbar { min-width: 70px; } }
+
+/* change password (director header) */
+.director-pass-link {
+  display: inline-flex; align-items: center; gap: 6px; margin-left: 12px; padding: 8px 16px;
+  border-radius: 999px; border: 1px solid #dde3ec; background: #fff; color: #475569;
+  font-size: 12.5px; font-weight: 600; text-decoration: none; white-space: nowrap;
+  transition: background-color .15s, border-color .15s, color .15s;
+}
+.director-pass-link:hover { background: #eef4fd; border-color: #c7d7ef; color: #1d4ed8; }
+@media (max-width: 640px) { .director-pass-link { margin-left: 0; margin-top: 8px; } }
