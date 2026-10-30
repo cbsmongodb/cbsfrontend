@@ -242,3 +242,12 @@
 .budgets-list-new-btn {
   text-decoration: none;
 }
+
+/* cells don't overlap — long hospital / doctor names wrap inside their column */
+.budgets-list-table td.budgets-list-hospitals {
+  white-space: normal; min-width: 240px; max-width: 320px; line-height: 1.35;
+}
+.budgets-list-table td:nth-child(2), .budgets-list-table td:nth-child(3) {
+  white-space: normal; min-width: 150px; max-width: 220px; line-height: 1.35;
+}
+.budgets-list-table td { vertical-align: middle; }
