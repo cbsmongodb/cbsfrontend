@@ -48,6 +48,8 @@ function planTime(plan) {
   const hh = d.getHours()
   const mm = d.getMinutes()
   if (hh === 0 && mm === 0) return ''
+  // date-only plans are stored at UTC midnight (04:00 here)
+  if (d.getUTCHours() === 0 && d.getUTCMinutes() === 0) return ''
   return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`
 }
 

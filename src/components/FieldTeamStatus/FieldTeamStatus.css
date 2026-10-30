@@ -382,3 +382,21 @@
 @media (prefers-reduced-motion: reduce) {
   .ts5 *, .ts5 *::before, .ts5 *::after { animation: none !important; transition: none !important; }
 }
+
+/* ts5-search-fix */
+/* the site-wide search style draws the box + icon on the input
+   itself, so the wrapper stays invisible (no double box) */
+.ts5 .ts5-search {
+  width: 320px;
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.ts5 .ts5-search:focus-within { box-shadow: none; }
+.ts5 .ts5-search > svg { display: none; }
+.ts5 .ts5-search input { width: 100%; height: auto; }
+@media (max-width: 760px) {
+  .ts5 .ts5-search { width: 100%; }
+}
