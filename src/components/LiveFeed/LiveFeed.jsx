@@ -24,7 +24,10 @@ function flattenToEvents(items) {
         groupKey: item.groupKey,
         employeeId: item.employeeId,
         employeeName: item.employeeName || '',
-        hospitalName: item.hospitalName || '—',
+        // office check-in (sidebar Check In, no visit) -> Global CBS
+        hospitalName:
+          item.hospitalName ||
+          (item.source === 'daily' ? 'Global CBS' : '—'),
         hospitalLat: item.hospitalLat ?? null,
         hospitalLng: item.hospitalLng ?? null,
         type: addr.addressType === 'performer_i_went_location' ? 'checkin' : 'checkout',
