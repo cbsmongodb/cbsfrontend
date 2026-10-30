@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
+import PasswordInput from '@/components/PasswordInput/PasswordInput'
 import './ChangePassword.css'
 
 export default function ChangePassword() {
@@ -58,8 +59,7 @@ export default function ChangePassword() {
       <form className="change-password-form" onSubmit={handleSubmit}>
         <div className="change-password-field">
           <label>{t('current')}</label>
-          <input
-            type="password"
+          <PasswordInput
             className="field-input"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
@@ -69,8 +69,7 @@ export default function ChangePassword() {
 
         <div className="change-password-field">
           <label>{t('new')}</label>
-          <input
-            type="password"
+          <PasswordInput
             className="field-input"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
@@ -81,8 +80,7 @@ export default function ChangePassword() {
 
         <div className="change-password-field">
           <label>{t('repeat')}</label>
-          <input
-            type="password"
+          <PasswordInput
             className="field-input"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}

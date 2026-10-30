@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
+import PasswordInput from '@/components/PasswordInput/PasswordInput'
 import LocationPickerModal from './LocationPickerModal'
 import MultiSelectSearch from './MultiSelectSearch'
 import SearchableSelect from './SearchableSelect'
@@ -497,6 +498,20 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
             <span>{f.label}</span>
           </label>
         </div>
+      )
+    }
+
+    if (f.type === 'password') { /* pw-eye */
+      return (
+        <PasswordInput
+          key={f.name}
+          className="field-input"
+          placeholder={f.label}
+          autoComplete="new-password"
+          value={form[f.name] ?? ''}
+          onChange={(e) => handleChange(f.name, e.target.value)}
+          required={f.required !== undefined ? f.required : true}
+        />
       )
     }
 

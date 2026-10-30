@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter, useParams, usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
+import PasswordInput from '@/components/PasswordInput/PasswordInput'
 import './Login.css'
 
 export default function Login() {
@@ -87,9 +88,8 @@ export default function Login() {
 
           <div className="login-field">
             <label htmlFor="password">{t('password')}</label>
-            <input
+            <PasswordInput
               id="password"
-              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
