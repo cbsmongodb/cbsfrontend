@@ -125,7 +125,8 @@
       }
     },
     "attendanceStatus": "Статус посещаемости",
-    "leaveRequests": "Запрос отпуска"
+    "leaveRequests": "Запрос отпуска",
+    "changePassword": "Сменить пароль"
   },
   "checkin": {
     "checkin": "Отметить приход",

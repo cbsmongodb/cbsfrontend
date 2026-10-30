@@ -128,7 +128,8 @@
       }
     },
     "attendanceStatus": "დასწრების სტატუსი",
-    "leaveRequests": "შვებულების მოთხოვნა"
+    "leaveRequests": "შვებულების მოთხოვნა",
+    "changePassword": "პაროლის შეცვლა"
   },
   "checkin": {
     "checkin": "ჩექინი",

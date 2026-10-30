@@ -125,7 +125,8 @@
       }
     },
     "attendanceStatus": "Attendance Status",
-    "leaveRequests": "Leave request"
+    "leaveRequests": "Leave request",
+    "changePassword": "Change password"
   },
   "checkin": {
     "checkin": "Check In",

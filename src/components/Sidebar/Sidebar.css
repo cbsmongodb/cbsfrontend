@@ -852,3 +852,8 @@
 .sidebar.theme-gold .sidebar-logout {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
+
+/* change password link above "log out" */
+.sidebar-pass { text-decoration: none; }
+.sidebar-pass:hover { background-color: #eef4fd !important; border-color: #c7d7ef !important; color: #1d4ed8 !important; }
+.sidebar-pass + .sidebar-logout { margin-top: 6px; }
