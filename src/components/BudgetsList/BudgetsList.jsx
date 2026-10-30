@@ -156,7 +156,9 @@ export default function BudgetsList() {
               options={doctors}
               value={doctorId}
               onChange={setDoctorId}
-              getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
+              getLabel={(o) =>
+                `${o.name || `${o.firstName} ${o.lastName}`}${o.uniqueNumber ? ` · ${o.uniqueNumber}` : ''}`
+              }
               placeholder={tu('k092')}
             />
           </div>

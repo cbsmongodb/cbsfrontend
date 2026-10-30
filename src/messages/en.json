@@ -355,6 +355,7 @@
     "loading": "Loading..."
   },
   "resourceTable": {
+    "deleteForbidden": "You don't have permission to delete this. Ask an administrator.",
     "save": "Save",
     "add": "Add",
     "cancel": "Cancel",

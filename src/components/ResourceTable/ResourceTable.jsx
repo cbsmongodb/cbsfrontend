@@ -81,6 +81,22 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
   // logged-in role's privileges from localStorage on the client
   const [perms, setPerms] = useState(NONE_ALLOWED)
   useEffect(() => { setPerms(readPermissions(endpoint)) }, [endpoint])
+  // the role may have changed since login -> re-read it, so a Delete / Edit
+  // button is only shown when the server will really allow it
+  useEffect(() => {
+    let off = false
+    apiFetch('/api/auth/me')
+      .then((fresh) => {
+        if (off || !fresh?.role) return
+        try {
+          const base = JSON.parse(localStorage.getItem('employee') || '{}') || {}
+          localStorage.setItem('employee', JSON.stringify({ ...base, role: fresh.role }))
+        } catch { /* ignore */ }
+        setPerms(readPermissions(endpoint))
+      })
+      .catch(() => {})
+    return () => { off = true }
+  }, [endpoint])
 
   async function load() {
     setLoading(true)
@@ -268,7 +284,10 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
       await apiFetch(`${endpoint}/${id}`, { method: 'DELETE' })
       load()
     } catch (err) {
-      setError(err.message)
+      // shown as a popup: the small error line is easy to miss far up the page
+      const msg = err.status === 403 ? t('deleteForbidden') : err.message
+      setError(msg)
+      window.alert(msg)
     }
   }
 
