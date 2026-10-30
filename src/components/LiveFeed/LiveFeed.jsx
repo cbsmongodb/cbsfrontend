@@ -133,6 +133,7 @@ export default function LiveFeed() {
   const [events, setEvents] = useState([])
   const [error, setError] = useState('')
   const [focus, setFocus] = useState(null)
+  const [planPins, setPlanPins] = useState([])
   const [onlyFar, setOnlyFar] = useState(false)
   const [search, setSearch] = useState('')
   const [lastUpdated, setLastUpdated] = useState(null)
@@ -189,6 +190,52 @@ export default function LiveFeed() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastUpdated])
 
+  // "Planned" button: today's plans of one employee, visited vs not
+  useEffect(() => {
+    if (focus?.type !== 'plan') {
+      setPlanPins([])
+      return
+    }
+    let off = false
+    const from = new Date()
+    from.setHours(0, 0, 0, 0)
+    const to = new Date()
+    to.setHours(23, 59, 59, 999)
+    const qs = new URLSearchParams({
+      performer: String(focus.employeeId),
+      period_from: from.toISOString(),
+      period_to: to.toISOString(),
+    })
+    apiFetch(`/api/plannings?${qs}`)
+      .then((data) => {
+        if (off) return
+        const list = Array.isArray(data) ? data : data?.items || []
+        const DONE = ['i_went', 'i_left', 'completed']
+        const pins = list
+          .filter((p) => p.status !== 'canceled')
+          .map((p) => {
+            const place = p.hospital || p.pharmacy
+            return {
+              id: p._id,
+              name: p.hospital?.name || p.pharmacy?.pharmacyName || '—',
+              lat: place?.lat,
+              lng: place?.lng,
+              visited: DONE.includes(p.status),
+              onSite: p.status === 'i_went',
+              time: p.period,
+            }
+          })
+          .filter((p) => p.lat != null && p.lng != null)
+          .sort((a, b) => new Date(a.time) - new Date(b.time))
+          .map((p, i) => ({ ...p, n: i + 1 }))
+        setPlanPins(pins)
+      })
+      .catch(() => !off && setPlanPins([]))
+    return () => {
+      off = true
+    }
+  }, [focus])
+
   const visits = useMemo(() => buildVisits(events), [events])
 
   const visibleVisits = useMemo(() => {
@@ -206,7 +253,9 @@ export default function LiveFeed() {
     ? events.filter((e) => e.groupKey === focus.groupKey)
     : events.filter((e) => String(e.employeeId) === String(focus.employeeId))
 
-  const focusKey = focus ? `${focus.type}-${focus.groupKey || focus.employeeId}` : null
+  const focusKey = focus
+    ? `${focus.type}-${focus.groupKey || focus.employeeId}-${planPins.length}`
+    : null
 
   return (
     <div className="live-feed">
@@ -222,7 +271,12 @@ export default function LiveFeed() {
 
       {error && <p className="live-feed-error">{error}</p>}
 
-      <LiveFeedMap events={mapEvents} focusKey={focusKey} />
+      <LiveFeedMap
+        events={mapEvents}
+        focusKey={focusKey}
+        plans={focus?.type === 'plan' ? planPins : []}
+        planMode={focus?.type === 'plan'}
+      />
 
       <div className="live-feed-controls">
         <form className="live-search" onSubmit={(e) => e.preventDefault()}>
@@ -279,7 +333,8 @@ export default function LiveFeed() {
               const isSelected =
                 focus &&
                 ((focus.type === 'pair' && focus.groupKey === visit.groupKey) ||
-                  (focus.type === 'day' && String(focus.employeeId) === String(visit.employeeId)))
+                  ((focus.type === 'day' || focus.type === 'plan') &&
+                    String(focus.employeeId) === String(visit.employeeId)))
 
               const empKey = String(visit.employeeId)
               const showDayLink = visit.employeeId && !seenEmployeeForDayLink.has(empKey)
@@ -318,6 +373,23 @@ export default function LiveFeed() {
                               className="day-link"
                             >
                               {t('wholeDay')}
+                            </button>
+                          )}
+                          {showDayLink && (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setFocus({ type: 'plan', employeeId: visit.employeeId })
+                              }}
+                              className={`day-link plan-link${
+                                focus?.type === 'plan' &&
+                                String(focus.employeeId) === String(visit.employeeId)
+                                  ? ' active'
+                                  : ''
+                              }`}
+                            >
+                              {t('planned')}
                             </button>
                           )}
                         </span>

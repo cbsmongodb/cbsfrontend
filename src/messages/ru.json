@@ -181,6 +181,10 @@
     },
     "shortVisit": "Очень короткий визит",
     "wholeDay": "Весь день",
+    "planned": "План",
+    "visited": "Посещено",
+    "notVisited": "Не посещено",
+    "noPlans": "Сегодня нет плановых визитов",
     "currentlyThere": "Сейчас там",
     "empty": {
       "noSearchResults": "Сотрудник не найден",

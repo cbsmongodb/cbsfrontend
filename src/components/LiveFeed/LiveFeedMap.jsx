@@ -116,16 +116,52 @@ function officeIcon() {
   })
 }
 
-function FitBounds({ events, focusKey }) {
+function planIcon(visited, n, onSite) {
+  const g = visited
+    ? (onSite ? ['#4ade80', '#16a34a'] : ['#a78bfa', '#6d28d9'])
+    : ['#e2e8f0', '#94a3b8']
+  const inner = visited
+    ? '<path d="M14 21l4.5 4.5L27 16" fill="none" stroke="#fff" stroke-width="3.4" ' +
+      'stroke-linecap="round" stroke-linejoin="round" />'
+    : `<text x="20.5" y="25.5" text-anchor="middle" font-size="13" font-weight="800" ` +
+      `fill="#64748b" font-family="Arial, sans-serif">${n}</text>`
+  const id = `pg${visited ? 'v' : 'n'}${onSite ? 'o' : ''}`
+  const svg = `
+    <svg width="41" height="54" viewBox="0 0 41 54" xmlns="http://www.w3.org/2000/svg"
+      style="opacity:${visited ? 1 : 0.92}">
+      <defs>
+        <linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="${g[0]}" />
+          <stop offset="100%" stop-color="${g[1]}" />
+        </linearGradient>
+      </defs>
+      <path d="M20.5 2C10.3 2 2 10.3 2 20.5 2 34 20.5 51 20.5 51S39 34 39 20.5C39 10.3 30.7 2 20.5 2z"
+        fill="url(#${id})" stroke="#fff" stroke-width="2.5" />
+      ${visited ? '' : '<circle cx="20.5" cy="20.5" r="11" fill="#fff" />'}
+      ${inner}
+    </svg>`
+  return L.divIcon({
+    html: svg,
+    className: `gmaps-style-pin plan-pin ${visited ? 'is-visited' : 'is-missed'}`,
+    iconSize: [41, 54],
+    iconAnchor: [20.5, 52],
+    popupAnchor: [0, -46],
+  })
+}
+
+function FitBounds({ events, focusKey, plans = [] }) {
   const map = useMap()
   const eventsRef = useRef(events)
   eventsRef.current = events
+  const plansRef = useRef(plans)
+  plansRef.current = plans
 
   useEffect(() => {
-    const current = eventsRef.current
-    if (!current || current.length === 0) return
+    const current = eventsRef.current || []
+    const planPts = plansRef.current || []
+    if (current.length === 0 && planPts.length === 0) return
 
-    const points = []
+    const points = planPts.map((p) => [p.lat, p.lng])
     current.forEach((e) => {
       points.push([e.lat, e.lng])
       if (e.hospitalLat != null && e.hospitalLng != null) {
@@ -146,7 +182,10 @@ function FitBounds({ events, focusKey }) {
   return null
 }
 
-export default function LiveFeedMap({ events = [], focusKey }) {
+export default function LiveFeedMap({ events = [], focusKey, plans = [], planMode = false }) {
+  const tl = useTranslations('liveFeed')
+  const planKeys = new Set(plans.map((p) => `${p.lat},${p.lng}`))
+  const visitedCount = plans.filter((p) => p.visited).length
   const darkMap = useDarkTheme()
   const tu = useTranslations('ui')
   const center = events[0] ? [events[0].lat, events[0].lng] : TBILISI
@@ -170,6 +209,7 @@ export default function LiveFeedMap({ events = [], focusKey }) {
   for (const e of events) {
     if (e.hospitalLat == null || e.hospitalLng == null) continue
     if (e.isOffice) continue // the office has its own CBS pin
+    if (planKeys.has(`${e.hospitalLat},${e.hospitalLng}`)) continue // plan pin is there
     const key = `${e.hospitalLat},${e.hospitalLng}`
     if (hospitalIndexByKey.has(key)) {
       if (e.isFar) hospitalMarkers[hospitalIndexByKey.get(key)].isFar = true
@@ -188,7 +228,28 @@ export default function LiveFeedMap({ events = [], focusKey }) {
   }
 
   return (
-    <div className="map-gradient-border">
+    <div className="map-gradient-border map-has-legend">
+      {planMode && (
+        <div className="plan-legend">
+          {plans.length === 0 ? (
+            <span>{tl('noPlans')}</span>
+          ) : (
+            <>
+              <span className="plan-legend-item visited">
+                <i />
+                {tl('visited')} <b>{visitedCount}</b>
+              </span>
+              <span className="plan-legend-item missed">
+                <i />
+                {tl('notVisited')} <b>{plans.length - visitedCount}</b>
+              </span>
+              <span className="plan-legend-bar">
+                <span style={{ width: `${Math.round((visitedCount / plans.length) * 100)}%` }} />
+              </span>
+            </>
+          )}
+        </div>
+      )}
       <MapContainer
         center={center}
         zoom={events.length > 0 ? 17 : 11}
@@ -199,7 +260,22 @@ export default function LiveFeedMap({ events = [], focusKey }) {
         {(darkMap ? MAP_TILES.darkLabels : MAP_TILES.lightLabels) && (
           <TileLayer key={darkMap ? 'dark-labels' : 'light-labels'} url={darkMap ? MAP_TILES.darkLabels : MAP_TILES.lightLabels} maxZoom={MAP_TILES.maxZoom} />
         )}
-        <FitBounds events={events} focusKey={focusKey} />
+        <FitBounds events={events} focusKey={focusKey} plans={plans} />
+
+        {plans.map((p) => (
+          <Marker
+            key={`plan-${p.id}`}
+            position={[p.lat, p.lng]}
+            icon={planIcon(p.visited, p.n, p.onSite)}
+            zIndexOffset={p.visited ? 300 : 200}
+          >
+            <Popup>
+              <strong>{p.n}. {p.name}</strong>
+              <br />
+              {p.visited ? tl('visited') : tl('notVisited')}
+            </Popup>
+          </Marker>
+        ))}
 
         {routePoints.length > 1 && (
           <Polyline

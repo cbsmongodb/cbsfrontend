@@ -181,6 +181,10 @@
     },
     "shortVisit": "Very short visit",
     "wholeDay": "Whole day",
+    "planned": "Planned",
+    "visited": "Visited",
+    "notVisited": "Not visited",
+    "noPlans": "No visits planned today",
     "currentlyThere": "Currently there",
     "empty": {
       "noSearchResults": "No matching employee found",
