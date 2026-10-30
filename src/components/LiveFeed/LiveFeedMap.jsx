@@ -1,7 +1,7 @@
 'use client'
 
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Tooltip, useMap } from 'react-leaflet'
-import { useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useDarkTheme, MAP_TILES } from '@/lib/useDarkTheme'
@@ -20,6 +20,13 @@ function distanceInMeters(lat1, lng1, lat2, lng2) {
     Math.sin(dLat / 2) ** 2 +
     Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2
   return Math.round(2 * R * Math.asin(Math.sqrt(a)))
+}
+
+// same look -> same icon object, so Leaflet never redraws a pin needlessly
+const ICON_CACHE = new Map()
+function cachedIcon(key, make) {
+  if (!ICON_CACHE.has(key)) ICON_CACHE.set(key, make())
+  return ICON_CACHE.get(key)
 }
 
 function pinIcon(color, number, isFar) {
@@ -182,7 +189,7 @@ function FitBounds({ events, focusKey, plans = [] }) {
   return null
 }
 
-export default function LiveFeedMap({ events = [], focusKey, plans = [], planMode = false }) {
+function LiveFeedMap({ events = [], focusKey, plans = [], planMode = false }) {
   const tl = useTranslations('liveFeed')
   const planKeys = new Set(plans.map((p) => `${p.lat},${p.lng}`))
   const visitedCount = plans.filter((p) => p.visited).length
@@ -266,7 +273,7 @@ export default function LiveFeedMap({ events = [], focusKey, plans = [], planMod
           <Marker
             key={`plan-${p.id}`}
             position={[p.lat, p.lng]}
-            icon={planIcon(p.visited, p.n, p.onSite)}
+            icon={cachedIcon(`plan|${p.visited}|${p.n}|${p.onSite}`, () => planIcon(p.visited, p.n, p.onSite))}
             zIndexOffset={p.visited ? 300 : 200}
           >
             <Popup>
@@ -315,7 +322,7 @@ export default function LiveFeedMap({ events = [], focusKey, plans = [], planMod
           )
         })}
 
-        <Marker position={OFFICE} icon={officeIcon()} zIndexOffset={500}>
+        <Marker position={OFFICE} icon={cachedIcon('office', officeIcon)} zIndexOffset={500}>
           <Popup>
             <strong>Global CBS</strong>
             <br />
@@ -324,7 +331,7 @@ export default function LiveFeedMap({ events = [], focusKey, plans = [], planMod
         </Marker>
 
         {hospitalMarkers.map((h, i) => (
-          <Marker key={`hospital-${i}`} position={[h.lat, h.lng]} icon={hospitalIcon(h.isFar)}>
+          <Marker key={`hospital-${i}`} position={[h.lat, h.lng]} icon={cachedIcon(`hosp|${h.isFar}`, () => hospitalIcon(h.isFar))}>
             <Popup>
               <strong>{h.name}</strong>
             </Popup>
@@ -337,7 +344,8 @@ export default function LiveFeedMap({ events = [], focusKey, plans = [], planMod
             <Marker
               key={i}
               position={displayPos(event, i)}
-              icon={pinIcon(color, event.visitNumber, event.isFar)}
+              icon={cachedIcon(`pin|${color}|${event.visitNumber}|${event.isFar}`, () =>
+                pinIcon(color, event.visitNumber, event.isFar))}
             >
               <Popup>
                 <strong>{event.employeeName}</strong>
@@ -359,3 +367,6 @@ export default function LiveFeedMap({ events = [], focusKey, plans = [], planMod
     </div>
   )
 }
+
+// skip re-rendering while the page clock ticks
+export default memo(LiveFeedMap)

@@ -11,6 +11,7 @@ import './LiveFeed.css'
 const LiveFeedMap = dynamic(() => import('./LiveFeedMap'), { ssr: false })
 
 const FAR_THRESHOLD_METERS = 300
+const NO_PLANS = []
 
 // Global CBS office — Guramishvili Ave 62, Office 3
 const OFFICE_POS = { lat: 41.7676718, lng: 44.7910395 }
@@ -274,11 +275,15 @@ export default function LiveFeed() {
     return list
   }, [visits, onlyFar, search])
 
-  const mapEvents = !focus
-    ? []
-    : focus.type === 'pair'
-    ? events.filter((e) => e.groupKey === focus.groupKey)
-    : events.filter((e) => String(e.employeeId) === String(focus.employeeId))
+  const mapEvents = useMemo(
+    () =>
+      !focus
+        ? NO_PLANS
+        : focus.type === 'pair'
+        ? events.filter((e) => e.groupKey === focus.groupKey)
+        : events.filter((e) => String(e.employeeId) === String(focus.employeeId)),
+    [events, focus]
+  )
 
   const focusKey = focus
     ? `${focus.type}-${focus.groupKey || focus.employeeId}-${planPins.length}`
@@ -301,7 +306,7 @@ export default function LiveFeed() {
       <LiveFeedMap
         events={mapEvents}
         focusKey={focusKey}
-        plans={focus?.type === 'plan' ? planPins : []}
+        plans={focus?.type === 'plan' ? planPins : NO_PLANS}
         planMode={focus?.type === 'plan'}
       />
 
