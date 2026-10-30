@@ -2048,3 +2048,13 @@ html body .dashboard-shell:has(.sidebar) .doctor-entries-header.doctor-entries-h
 .resource-form { overflow: visible !important; }
 .resource-form::before { border-radius: 16px 16px 0 0; }
 .resource-form .searchable-select-dropdown { z-index: 80 !important; max-height: 300px; }
+
+/* sidebar-capitalize-en-ru */
+html:not([lang="ka"]) .sidebar .nav-label,
+html:not([lang="ka"]) .sidebar .sidebar-group-header,
+html:not([lang="ka"]) .sidebar .sidebar-group-header span,
+html:not([lang="ka"]) .sidebar .sidebar-group-header .nav-label,
+html:not([lang="ka"]) .sidebar .sidebar-group-items a,
+html:not([lang="ka"]) .sidebar .sidebar-group-items a span {
+  text-transform: capitalize !important;
+}
