@@ -11,6 +11,19 @@ import './LiveFeed.css'
 const LiveFeedMap = dynamic(() => import('./LiveFeedMap'), { ssr: false })
 
 const FAR_THRESHOLD_METERS = 300
+
+// Global CBS office — Guramishvili Ave 62, Office 3
+const OFFICE_POS = { lat: 41.7676718, lng: 44.7910395 }
+
+function metersBetween(lat1, lng1, lat2, lng2) {
+  const toRad = (x) => (x * Math.PI) / 180
+  const dLat = toRad(lat2 - lat1)
+  const dLng = toRad(lng2 - lng1)
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2
+  return Math.round(2 * 6371000 * Math.asin(Math.sqrt(h)))
+}
 const SHORT_VISIT_MINUTES = 1
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 const DATE_LOCALES = { ka: 'ka-GE', en: 'en-US', ru: 'ru-RU' }
@@ -18,9 +31,16 @@ const DATE_LOCALES = { ka: 'ka-GE', en: 'en-US', ru: 'ru-RU' }
 function flattenToEvents(items) {
   const events = []
   for (const item of items) {
+    const isOffice = item.source === 'daily'
     for (const addr of item.addresses) {
       if (addr.lat == null || addr.lng == null) continue
+      const dist =
+        addr.distanceFromHospital ??
+        (isOffice
+          ? metersBetween(addr.lat, addr.lng, OFFICE_POS.lat, OFFICE_POS.lng)
+          : null)
       events.push({
+        isOffice,
         groupKey: item.groupKey,
         employeeId: item.employeeId,
         employeeName: item.employeeName || '',
@@ -28,15 +48,15 @@ function flattenToEvents(items) {
         hospitalName:
           item.hospitalName ||
           (item.source === 'daily' ? 'Global CBS' : '—'),
-        hospitalLat: item.hospitalLat ?? null,
-        hospitalLng: item.hospitalLng ?? null,
+        hospitalLat: item.hospitalLat ?? (isOffice ? OFFICE_POS.lat : null),
+        hospitalLng: item.hospitalLng ?? (isOffice ? OFFICE_POS.lng : null),
         type: addr.addressType === 'performer_i_went_location' ? 'checkin' : 'checkout',
         lat: addr.lat,
         lng: addr.lng,
         time: addr.time,
         address: addr.cleanAddress,
-        distanceFromHospital: addr.distanceFromHospital,
-        isFar: addr.distanceFromHospital != null && addr.distanceFromHospital > FAR_THRESHOLD_METERS,
+        distanceFromHospital: dist,
+        isFar: dist != null && dist > FAR_THRESHOLD_METERS,
       })
     }
   }

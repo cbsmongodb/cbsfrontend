@@ -75,6 +75,47 @@ function hospitalIcon(isFar) {
   })
 }
 
+const OFFICE = [41.7676718, 44.7910395]
+
+function officeIcon() {
+  const svg = `
+    <svg width="58" height="74" viewBox="0 0 58 74" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="cbsPinGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#c084fc" />
+          <stop offset="55%" stop-color="#8b5cf6" />
+          <stop offset="100%" stop-color="#5b21b6" />
+        </linearGradient>
+        <linearGradient id="cbsPinShine" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.45" />
+          <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+        </linearGradient>
+        <filter id="cbsPinShadow" x="-30%" y="-20%" width="160%" height="150%">
+          <feDropShadow dx="0" dy="4" stdDeviation="3.5"
+            flood-color="#4c1d95" flood-opacity="0.45" />
+        </filter>
+      </defs>
+      <ellipse cx="29" cy="70" rx="9" ry="2.6" fill="#4c1d95" opacity="0.25" />
+      <path filter="url(#cbsPinShadow)"
+        d="M29 3C15.2 3 4 14.2 4 28c0 18.6 25 40 25 40s25-21.4 25-40C54 14.2 42.8 3 29 3z"
+        fill="url(#cbsPinGrad)" stroke="#ffffff" stroke-width="2.5" />
+      <path d="M29 6C16.9 6 7 15.9 7 28c0 3 .6 5.8 1.6 8.4C12 22 20 14 29 14s17 8 20.4 22.4c1-2.6 1.6-5.4 1.6-8.4C51 15.9 41.1 6 29 6z"
+        fill="url(#cbsPinShine)" />
+      <circle cx="29" cy="28" r="16" fill="#ffffff" />
+      <text x="29" y="33" text-anchor="middle" font-size="13" font-weight="900"
+        letter-spacing="0.5" fill="#6d28d9"
+        font-family="Montserrat, Arial, sans-serif">CBS</text>
+    </svg>
+  `
+  return L.divIcon({
+    html: svg,
+    className: 'gmaps-style-pin cbs-office-pin',
+    iconSize: [58, 74],
+    iconAnchor: [29, 71],
+    popupAnchor: [0, -64],
+  })
+}
+
 function FitBounds({ events, focusKey }) {
   const map = useMap()
   const eventsRef = useRef(events)
@@ -128,6 +169,7 @@ export default function LiveFeedMap({ events = [], focusKey }) {
   const hospitalIndexByKey = new Map()
   for (const e of events) {
     if (e.hospitalLat == null || e.hospitalLng == null) continue
+    if (e.isOffice) continue // the office has its own CBS pin
     const key = `${e.hospitalLat},${e.hospitalLng}`
     if (hospitalIndexByKey.has(key)) {
       if (e.isFar) hospitalMarkers[hospitalIndexByKey.get(key)].isFar = true
@@ -196,6 +238,14 @@ export default function LiveFeedMap({ events = [], focusKey }) {
             </Polyline>
           )
         })}
+
+        <Marker position={OFFICE} icon={officeIcon()} zIndexOffset={500}>
+          <Popup>
+            <strong>Global CBS</strong>
+            <br />
+            Guramishvili Ave 62, Office 3
+          </Popup>
+        </Marker>
 
         {hospitalMarkers.map((h, i) => (
           <Marker key={`hospital-${i}`} position={[h.lat, h.lng]} icon={hospitalIcon(h.isFar)}>
