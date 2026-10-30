@@ -9,6 +9,7 @@ export default function MultiSelectSearch({ options, selected, optionsLabel, pla
   const t = useTranslations('resourceTable')
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
+  const [pinned, setPinned] = useState(() => new Set()) // selected-first
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -24,10 +25,14 @@ export default function MultiSelectSearch({ options, selected, optionsLabel, pla
   const selectedItems = options.filter((o) => selectedSet.has(o._id))
 
   const filteredOptions = useMemo(() => {
-    if (!query.trim()) return options
     const q = query.trim().toLowerCase()
-    return options.filter((o) => (o[labelKey] || '').toLowerCase().includes(q))
-  }, [options, query, labelKey])
+    const list = q
+      ? options.filter((o) => (o[labelKey] || '').toLowerCase().includes(q))
+      : options
+    // items that were selected when the window opened go first
+    if (!pinned.size) return list
+    return [...list.filter((o) => pinned.has(o._id)), ...list.filter((o) => !pinned.has(o._id))]
+  }, [options, query, labelKey, pinned])
 
   const allFilteredSelected =
     filteredOptions.length > 0 && filteredOptions.every((o) => selectedSet.has(o._id))
@@ -56,7 +61,7 @@ export default function MultiSelectSearch({ options, selected, optionsLabel, pla
 
   return (
     <div className="mss-root">
-      <button type="button" className="mss-trigger" onClick={() => setOpen(true)}>
+      <button type="button" className="mss-trigger" onClick={() => { setPinned(new Set(selectedList)); setOpen(true) }}>
         <span className="mss-trigger-text">
           {selectedItems.length > 0 ? tu('k002', { p0: selectedItems.length }) : placeholder}
         </span>
