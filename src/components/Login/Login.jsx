@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter, useParams, usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
@@ -17,6 +17,23 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  // already logged in (token not expired) -> straight to the dashboard
+  useEffect(() => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) return
+      const part = token.split('.')[1] || ''
+      const json = atob(part.replace(/-/g, '+').replace(/_/g, '/'))
+      const exp = JSON.parse(json).exp
+      if (exp && exp * 1000 < Date.now()) {
+        localStorage.removeItem('token')
+        return
+      }
+      router.replace(`/${locale}/dashboard`)
+    } catch { /* bad token -> stay on login */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function switchLocale(newLocale) {
     const segments = pathname.split('/')
