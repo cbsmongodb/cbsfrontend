@@ -64,6 +64,9 @@ export default function EnteredPrescriptions() {
   const [editId, setEditId] = useState(null)
   const [draft, setDraft] = useState({ quota: 0, prescription: 0 })
   const [busyId, setBusyId] = useState(null)
+  // moveMonthUI: "change month" of one doctor's lines
+  const [moveKey, setMoveKey] = useState(null)
+  const [moveTo, setMoveTo] = useState('')
   const [confirmKey, setConfirmKey] = useState(null) // "item:<id>" | "doc:<id>"
 
   useEffect(() => {
@@ -183,6 +186,32 @@ export default function EnteredPrescriptions() {
     }
   }
 
+  async function moveDoctor(g) {
+    if (!moveTo || moveTo === month) return
+    setBusyId(`move:${g.key}`)
+    setError('')
+    try {
+      const emp = isAll ? g.employeeId : employeeId
+      const r = await apiFetch('/api/my-entries/move', {
+        method: 'POST',
+        body: JSON.stringify({
+          employee: emp,
+          doctor: g.doctorId,
+          from: toPeriod(month),
+          to: toPeriod(moveTo),
+        }),
+      })
+      await load()
+      setMoveKey(null)
+      if (r?.clashes) setError(t('moveClash', { n: r.clashes }))
+      setNotice(t('moved', { n: r?.moved || 0 }))
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setBusyId(null)
+    }
+  }
+
   async function deleteDoctor(g) {
     setBusyId(`doc:${g.key}`)
     setError('')
@@ -274,7 +303,23 @@ export default function EnteredPrescriptions() {
                     {g.hospital && <div className="erx-doc-hosp">{g.hospital}</div>}
                   </div>
                 </div>
-                {g.doctorId && (confirmKey === docKey ? (
+                <div className="erx-head-actions">
+                {g.doctorId && (moveKey === docKey ? (
+                  <div className="erx-move">
+                    <span>{t('moveTo')}</span>
+                    <MonthSelect value={moveTo} onChange={setMoveTo} />
+                    <button type="button" className="erx-btn erx-btn-primary"
+                      disabled={busyId === `move:${g.key}` || !moveTo || moveTo === month}
+                      onClick={() => moveDoctor(g)}>{t('moveOk')}</button>
+                    <button type="button" className="erx-btn" onClick={() => setMoveKey(null)}>{t('cancel')}</button>
+                  </div>
+                ) : (
+                  <button type="button" className="erx-btn"
+                    onClick={() => { setConfirmKey(null); setMoveTo(month); setMoveKey(docKey) }}>
+                    📅 {t('moveMonth')}
+                  </button>
+                ))}
+                {g.doctorId && moveKey !== docKey && (confirmKey === docKey ? (
                   <div className="erx-confirm">
                     <span>{t('confirmDoctor', { n: g.rows.length })}</span>
                     <button type="button" className="erx-btn erx-btn-danger" disabled={busyId === docKey} onClick={() => deleteDoctor(g)}>{t('yesDelete')}</button>
@@ -285,6 +330,7 @@ export default function EnteredPrescriptions() {
                     <IconTrash /> {t('deleteDoctor')}
                   </button>
                 ))}
+                </div>
               </header>
 
               <div className="erx-rows">

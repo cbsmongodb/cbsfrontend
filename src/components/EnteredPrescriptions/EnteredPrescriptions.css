@@ -96,3 +96,9 @@
 /* pages */
 .erx-pager { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 18px 0 8px; flex-wrap: wrap; }
 .erx-pager-info { font-size: 13px; font-weight: 600; color: #475569; }
+
+.erx-move { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; font-weight: 600; color: #334155; }
+.erx-move select { height: 32px; padding: 0 8px; width: auto; min-width: 150px; }
+.erx-head-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.erx-btn-primary { background: #2955a3; border-color: #2955a3; color: #fff; }
+.erx-btn-primary:disabled { opacity: .5; cursor: default; }

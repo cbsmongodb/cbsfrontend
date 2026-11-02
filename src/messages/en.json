@@ -1354,7 +1354,12 @@
     "employeesCount": "employees",
     "prev": "Previous",
     "next": "Next",
-    "pageOf": "Page {page} of {pages}"
+    "pageOf": "Page {page} of {pages}",
+    "moveMonth": "Change month",
+    "moveTo": "Move to:",
+    "moveOk": "Move",
+    "moved": "Moved ({n} lines)",
+    "moveClash": "{n} lines were not moved - that month already has this drug for this doctor"
   },
   "geo": {
     "button": "Turn on location",
