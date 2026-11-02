@@ -10,6 +10,7 @@ import { useTranslations } from 'next-intl'
 
 export default function BudgetNew() {
   const tu = useTranslations('ui')
+  const tm = useTranslations('enteredRx')
   const { locale } = useParams()
   const router = useRouter()
 
@@ -17,7 +18,13 @@ export default function BudgetNew() {
   const [doctors, setDoctors] = useState([])
   const [employeeId, setEmployeeId] = useState('')
   const [doctorId, setDoctorId] = useState('')
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
+  // budgetMonthOnly: a budget is for a MONTH -> saved as the 1st of that month
+  const [date, setDate] = useState(() => {
+    const n = new Date()
+    return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}-01`
+  })
+  // an existing budget keeps its exact old date unless the month is changed
+  const [origDate, setOrigDate] = useState('')
   const [isActive, setIsActive] = useState(true)
 
   const [paidAmount, setPaidAmount] = useState('0')
@@ -45,7 +52,9 @@ export default function BudgetNew() {
         if (b.date) {
           const d = new Date(new Date(b.date).getTime() + 12 * 3600e3)
           const p = (x) => String(x).padStart(2, '0')
-          setDate(`${d.getUTCFullYear()}-${p(d.getUTCMonth() + 1)}-${p(d.getUTCDate())}`)
+          const full = `${d.getUTCFullYear()}-${p(d.getUTCMonth() + 1)}-${p(d.getUTCDate())}`
+          setDate(full)
+          setOrigDate(full)
         }
         setIsActive(b.isActive !== false)
         setPaidAmount(String(b.paidAmount ?? 0))
@@ -127,8 +136,17 @@ export default function BudgetNew() {
 
         <div className="prescedit-fields">
           <div className="prescedit-field budgetnew-input-field">
-            <label>{tu('k176')}</label>
-            <input type="date" className="field-input" value={date} onChange={(e) => setDate(e.target.value)} />
+            <label>{tm('month')}</label>
+            <input
+              type="month"
+              className="field-input"
+              value={date.slice(0, 7)}
+              onChange={(e) => {
+                const v = e.target.value
+                if (!v) return
+                setDate(origDate && origDate.slice(0, 7) === v ? origDate : `${v}-01`)
+              }}
+            />
           </div>
           <div className="prescedit-field budgetnew-input-field">
             <label>{tu('k108')}</label>
