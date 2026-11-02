@@ -14,6 +14,8 @@ export async function generateViewport() {
   return {
     width: "device-width",
     initialScale: 1,
+    // no auto zoom-in when tapping an input on phones (login too)
+    maximumScale: 1,
     viewportFit: "cover",
     themeColor: dark ? "#17181b" : "#f8fafc",
   };
