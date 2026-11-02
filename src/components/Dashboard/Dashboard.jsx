@@ -197,7 +197,11 @@ export default function Dashboard() {
   // so "today's visits / refresh location" is not for them
   const isOfficeOnly = OFFICE_ONLY_ROLES.has((employee?.role?.name || '').toLowerCase().trim())
   const isFinance = FINANCE_ROLES.has((employee?.role?.name || '').toLowerCase().trim())
-  const isTeamManager = TEAM_MANAGER_ROLES.has((employee?.role?.name || '').toLowerCase().trim())
+  // "Group Manager - Tamuna Gotciridze" (personal copy) is still a team manager
+  const roleLower = (employee?.role?.name || '').toLowerCase().trim()
+  const isTeamManager = [...TEAM_MANAGER_ROLES].some(
+    (r) => roleLower === r || roleLower.startsWith(r + ' ')
+  )
 
   useEffect(() => {
     const stored = localStorage.getItem('employee')
