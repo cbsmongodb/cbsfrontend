@@ -2113,3 +2113,11 @@ html body .dashboard-shell .resource-form.is-editing::before {
 .budgets-list-table-wrap::-webkit-scrollbar-thumb:hover { background: #64748b; }
 .budgets-list-table td.budgets-list-actions { white-space: nowrap; }
 .budgets-list-table td.budgets-list-actions > * + * { margin-left: 6px; }
+
+/* no-number-arrows: no up / down arrows in number boxes */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] { -moz-appearance: textfield; appearance: textfield; }

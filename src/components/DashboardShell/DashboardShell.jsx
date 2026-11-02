@@ -11,6 +11,19 @@ export default function DashboardShell({ children }) {
   const router = useRouter()
   const [checked, setChecked] = useState(false)
 
+  // noWheelNumbers: scrolling the mouse over a number box must NOT change it
+  // (100 -> 99) - the box loses focus and the page scrolls instead
+  useEffect(() => {
+    function onWheel(e) {
+      const el = e.target
+      if (el instanceof HTMLInputElement && el.type === 'number' && el === document.activeElement) {
+        el.blur()
+      }
+    }
+    document.addEventListener('wheel', onWheel, { passive: true, capture: true })
+    return () => document.removeEventListener('wheel', onWheel, { capture: true })
+  }, [])
+
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (!token) {
