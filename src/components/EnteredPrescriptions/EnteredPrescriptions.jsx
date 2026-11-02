@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import MonthSelect from '@/components/MonthSelect/MonthSelect'
 import './EnteredPrescriptions.css'
 
 function currentMonth() {
@@ -233,7 +234,7 @@ export default function EnteredPrescriptions() {
         )}
         <div className="erx-field">
           <label>{t('month')}</label>
-          <input type="month" className="field-input field-date" value={month} onChange={(e) => e.target.value && setMonth(e.target.value)} />
+          <MonthSelect value={month} onChange={(v) => v && setMonth(v)} />
         </div>
         <div className="erx-field erx-search">
           <label>{t('search')}</label>

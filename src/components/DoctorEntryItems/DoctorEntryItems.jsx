@@ -7,6 +7,7 @@ import DrugPickerModal from './DrugPickerModal'
 import './DoctorEntryItems.css'
 import { useTranslations } from 'next-intl'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import MonthSelect from '@/components/MonthSelect/MonthSelect'
 
 const BANKS = ['BOG', 'TBC', 'Liberty', 'Cash', 'Pharmacy']
 
@@ -440,12 +441,7 @@ export default function DoctorEntryItems() {
 
         <div className="doctor-entries-field">
           <label>{tu('k046')}</label>
-          <input
-            type="month"
-            className="field-date"
-            value={monthValue}
-            onChange={(e) => setMonthValue(e.target.value)}
-          />
+          <MonthSelect value={monthValue} onChange={setMonthValue} />
         </div>
 
 
