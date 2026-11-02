@@ -2088,3 +2088,16 @@ html body .resource-form.is-editing::before,
 html body .dashboard-shell .resource-form.is-editing::before {
   border-top: 3px solid #f59e0b !important;
 }
+
+/* budgets-sticky-head: the table scrolls inside its box, headers stay on top */
+.budgets-list-table-wrap {
+  max-height: calc(100vh - 140px);
+  max-height: calc(100dvh - 140px);
+  overflow: auto;
+}
+.budgets-list-table-wrap thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  box-shadow: inset 0 -2px 0 #d5dce6;
+}
