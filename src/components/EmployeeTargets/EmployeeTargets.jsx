@@ -8,6 +8,20 @@ import EmployeeTargetModal from './EmployeeTargetModal'
 import { useTranslations } from 'next-intl'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
+// add / edit / delete buttons only when the role really allows it
+function readPerms() {
+  try {
+    const emp = JSON.parse(localStorage.getItem('employee') || 'null')
+    if (emp?.role?.name?.toLowerCase() === 'admin') {
+      return { add: true, update: true, delete: true }
+    }
+    const p = emp?.role?.privileges?.employee_targets || {}
+    return { add: p.add === 1, update: p.update === 1, delete: p.delete === 1 }
+  } catch {
+    return { add: false, update: false, delete: false }
+  }
+}
+
 export default function EmployeeTargets() {
   const tu = useTranslations('ui')
   const tp = useTranslations('plannings')
@@ -24,6 +38,21 @@ export default function EmployeeTargets() {
   const [error, setError] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [editId, setEditId] = useState(null)
+
+  const [perms, setPerms] = useState({ add: false, update: false, delete: false })
+  useEffect(() => {
+    setPerms(readPerms())
+    apiFetch('/api/auth/me')
+      .then((fresh) => {
+        if (!fresh?.role) return
+        try {
+          const base = JSON.parse(localStorage.getItem('employee') || '{}') || {}
+          localStorage.setItem('employee', JSON.stringify({ ...base, role: fresh.role }))
+        } catch { /* ignore */ }
+        setPerms(readPerms())
+      })
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     apiFetch('/api/employees?lite=1').then(setEmployees).catch((err) => setError(err.message))
@@ -70,7 +99,7 @@ export default function EmployeeTargets() {
     <div className="employee-targets-page">
       {loading && <ReportLoader variant="page" />}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}><h1>{tu('k137')}</h1>
-        <button className="btn" onClick={() => { setEditId(null); setShowModal(true) }}><span>{tu('k138')}</span></button>
+        {perms.add && <button className="btn" onClick={() => { setEditId(null); setShowModal(true) }}><span>{tu('k138')}</span></button>}
       </div>
 
       <div className="employee-targets-filters">
@@ -127,10 +156,16 @@ export default function EmployeeTargets() {
                 <td data-label={tu('k044')}>{row.employeeName}</td>
                 <td data-label={tu('k140')}>{row.targetAmount}</td>
                 <td data-label="">
-                  <button className="btn-gray btn-sm" onClick={() => { setEditId(row._id); setShowModal(true) }}><span>{tu('k101')}</span></button>
-                  <button type="button" className="btn-gray btn-sm" onClick={() => handleDelete(row._id)}>
-                    <span>{tu('k069')}</span>
-                  </button>
+                  {perms.update && (
+                    <button className="btn-gray btn-sm" onClick={() => { setEditId(row._id); setShowModal(true) }}>
+                      <span>{tu('k101')}</span>
+                    </button>
+                  )}
+                  {perms.delete && (
+                    <button type="button" className="btn-gray btn-sm" onClick={() => handleDelete(row._id)}>
+                      <span>{tu('k069')}</span>
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
