@@ -397,6 +397,8 @@ export default function DoctorEntryItems() {
       // fields immediately, without needing a separate "load"
       setSuccess(tu('k041'))
       setTimeout(() => setSuccess(''), 3000)
+      // rxSavedPopup: a clear "added" window after saving
+      setPopup({ message: tu('rxAdded'), kind: 'ok' })
       // clear the form for the next employee — keep the period, since a
       // whole batch of employees is usually entered for the same month
       // the same person stays selected and their saved entries reload
@@ -454,7 +456,9 @@ export default function DoctorEntryItems() {
       {popup && (
         <div className="dei-popup-backdrop" onClick={closePopup}>
           <div className="dei-popup" role="alertdialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
-            <div className="dei-popup-icon" aria-hidden="true">!</div>
+            <div className={`dei-popup-icon${popup.kind === 'ok' ? ' is-ok' : ''}`} aria-hidden="true">
+              {popup.kind === 'ok' ? '✓' : '!'}
+            </div>
             <p className="dei-popup-text">{popup.message}</p>
             <button type="button" className="dei-popup-ok" onClick={closePopup} autoFocus>
               {tu('popupOk')}

@@ -1044,6 +1044,7 @@
     "k056": "Select a bank...",
     "bankRequired": "Please select a bank for the doctor: {doctor}",
     "popupOk": "OK",
+    "rxAdded": "Prescription added",
     "k057": "Planned Budget",
     "k058": "Difference",
     "k059": "Previous month analysis",

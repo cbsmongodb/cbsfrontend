@@ -362,3 +362,4 @@
   25% { transform: translateX(-5px); }
   75% { transform: translateX(5px); }
 }
+.dei-popup-icon.is-ok { background: #dcfce7; color: #16a34a; }
