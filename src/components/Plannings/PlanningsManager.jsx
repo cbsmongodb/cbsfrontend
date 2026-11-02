@@ -109,19 +109,13 @@ export default function PlanningsManager() {
     }
     loadOptions()
     // repToday: a representative first sees only today's visits (dates can be changed / cleared)
-    let isRep = false
-    try {
-      const me = JSON.parse(localStorage.getItem('employee') || 'null')
-      isRep = (me?.role?.name || '').toLowerCase().trim() === 'representative'
-    } catch { /* ignore */ }
-    if (isRep) {
+    // todayForAll: everyone first sees only today's visits
+    {
       const d = new Date()
       const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
       setFilterFrom(today)
       setFilterTo(today)
       loadPlans(1, { from: today, to: today })
-    } else {
-      loadPlans()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
