@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import './CheckInButton.css'
+import GeoHelp from '@/components/GeoHelp/GeoHelp'
+import { geoErrorKind, getGeoPosition, watchGeoPermission } from '@/lib/geo'
 
 const timeFmt = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'Asia/Tbilisi',
@@ -17,6 +19,31 @@ function fmtTime(value) {
 
 export default function CheckInButton() {
   const t = useTranslations('checkin')
+  const tg = useTranslations('geo')
+  const [geoKind, setGeoKind] = useState(null)
+  const [geoPerm, setGeoPerm] = useState('unknown')
+  const [asking, setAsking] = useState(false)
+
+  useEffect(() => {
+    let stop = () => {}
+    watchGeoPermission(setGeoPerm).then((fn) => { stop = fn })
+    return () => stop()
+  }, [])
+
+  // "Turn on location": the browser asks (if it still may), else show the steps
+  async function enableLocation() {
+    if (asking) return
+    setAsking(true)
+    try {
+      await getGeoPosition()
+      setGeoKind(null)
+      setGeoPerm('granted')
+    } catch (err) {
+      setGeoKind(geoErrorKind(err))
+    } finally {
+      setAsking(false)
+    }
+  }
   const [status, setStatus] = useState('checkin')
   const [checkinTime, setCheckinTime] = useState(null)
   const [checkoutTime, setCheckoutTime] = useState(null)
@@ -66,20 +93,16 @@ export default function CheckInButton() {
   }
 
   function getPosition() {
-    return new Promise((resolve, reject) => {
-      if (!navigator.geolocation) {
-        reject(new Error(t('gpsUnsupported')))
-        return
-      }
-      navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true })
-    })
+    return getGeoPosition()
   }
 
   async function submit() {
     setLoading(true)
     setError('')
+    setGeoKind(null)
     try {
       const position = await getPosition()
+      setGeoPerm('granted')
       const { latitude: lat, longitude: lng } = position.coords
       await apiFetch('/api/attendance/current-location', {
         method: 'POST',
@@ -101,7 +124,9 @@ export default function CheckInButton() {
       window.dispatchEvent(new Event('cbs:attendance-changed'))
     } catch (err) {
       const msg = err.message
-      if (msg === 'already_checked_in') setError(t('alreadyIn'))
+      if (err?.code >= 1 && err?.code <= 3) setGeoKind(geoErrorKind(err))
+      else if (err?.kind === 'unsupported') setGeoKind('unsupported')
+      else if (msg === 'already_checked_in') setError(t('alreadyIn'))
       else if (msg === 'not_checked_in') setError(t('notIn'))
       else setError(msg || t('genericError'))
       // re-read the real state from the server
@@ -178,6 +203,28 @@ export default function CheckInButton() {
       )}
 
       {error && <p className="checkin-error">{error}</p>}
+
+      <GeoHelp
+        kind={geoKind}
+        onRetry={() => { setGeoKind(null); submit() }}
+        onClose={() => setGeoKind(null)}
+      />
+
+      {ready && geoPerm !== 'unknown' && (
+        geoPerm === 'granted' ? (
+          <div className="ci-geo ci-geo--on" role="status">
+            <span aria-hidden="true">✓</span> {tg('shared')}
+          </div>
+        ) : (
+          <button type="button" className="ci-geo ci-geo--off" onClick={enableLocation} disabled={asking}>
+            <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
+              <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
+              <circle cx="12" cy="10" r="2.4" fill="currentColor" />
+            </svg>
+            {asking ? '…' : tg('button')}
+          </button>
+        )
+      )}
     </div>
   )
 }

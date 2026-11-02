@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import './TodayVisits.css'
+import GeoHelp from '@/components/GeoHelp/GeoHelp'
+import { geoErrorKind, watchGeoPermission } from '@/lib/geo'
 
 const FAR_THRESHOLD_METERS = 300
 
@@ -24,6 +26,9 @@ function doctorLabel(doc) {
 export default function TodayVisits() {
   const tu = useTranslations('ui')
   const t = useTranslations('todayVisits')
+  const tg = useTranslations('geo')
+  const [geoKind, setGeoKind] = useState(null)
+  const [geoPerm, setGeoPerm] = useState('unknown')
   const [me, setMe] = useState(null)
   const [plans, setPlans] = useState([])
   const [position, setPosition] = useState(null)
@@ -65,16 +70,18 @@ export default function TodayVisits() {
   function refreshLocation() {
     setLocError('')
     if (!navigator.geolocation) {
-      setLocError(t('gpsUnsupported'))
+      setGeoKind('unsupported')
       return
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
+        setGeoKind(null)
+        setGeoPerm('granted')
         setPosition({ lat: pos.coords.latitude, lng: pos.coords.longitude })
         setLocationUpdated(true)
         setTimeout(() => setLocationUpdated(false), 2500)
       },
-      (err) => setLocError(err.message || t('locationFailed')),
+      (err) => setGeoKind(geoErrorKind(err)),
       { enableHighAccuracy: true }
     )
   }
@@ -89,7 +96,10 @@ export default function TodayVisits() {
           setPosition(p)
           resolve(p)
         },
-        () => resolve(position),
+        (err) => {
+          if (err?.code === 1) setGeoKind('denied')
+          resolve(position)
+        },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       )
     })
@@ -100,6 +110,9 @@ export default function TodayVisits() {
       .then((employee) => loadPlans(employee._id))
       .catch((err) => setError(err.message))
     refreshLocation()
+    let stop = () => {}
+    watchGeoPermission(setGeoPerm).then((fn) => { stop = fn })
+    return () => stop()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -228,16 +241,26 @@ export default function TodayVisits() {
         <h2>{t('title')}</h2>
         <button
           type="button"
-          className={`today-visits-locbtn ${locationUpdated ? 'is-updated' : ''}`}
+          className={`today-visits-locbtn ${locationUpdated ? 'is-updated' : ''} ${
+            geoPerm === 'granted' && position ? 'is-shared' : ''
+          }`}
           onClick={refreshLocation}
         >
           <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
             <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
             <circle cx="12" cy="10" r="2.4" fill="currentColor" />
           </svg>
-          <span>{locationUpdated ? tu('k036') : t('refreshLocation')}</span>
+          <span>
+            {locationUpdated
+              ? tu('k036')
+              : geoPerm === 'granted' && position
+              ? `✓ ${tg('shared')}`
+              : tg('button')}
+          </span>
         </button>
       </div>
+
+      <GeoHelp kind={geoKind} onRetry={refreshLocation} onClose={() => setGeoKind(null)} />
 
       {locError && <p className="today-visits-warning">{locError}</p>}
       {error && <p className="resource-error">{error}</p>}

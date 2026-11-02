@@ -1354,5 +1354,42 @@
     "prev": "Previous",
     "next": "Next",
     "pageOf": "Page {page} of {pages}"
+  },
+  "geo": {
+    "button": "Turn on location",
+    "shared": "Location shared",
+    "retry": "Try again",
+    "title": {
+      "denied": "Location is blocked",
+      "unavailable": "Location not found",
+      "timeout": "Getting the location took too long",
+      "unsupported": "This browser can't share location"
+    },
+    "text": {
+      "denied": "Location is turned off for this site. The browser won't ask again, so turn it on yourself and then press \"Try again\":",
+      "unavailable": "Turn on location (GPS) on the phone and try again.",
+      "timeout": "Step outside or check the internet connection and try again.",
+      "unsupported": "Open the site in Chrome or Safari."
+    },
+    "steps": {
+      "ios": [
+        "Safari: tap \"aA\" in the address bar → Website Settings → Location → Allow.",
+        "If that doesn't help: Settings → Privacy & Security → Location Services → on, then Safari Websites → While Using the App.",
+        "In Chrome: Settings → Chrome → Location → While Using the App."
+      ],
+      "android": [
+        "Tap the lock or ⚙ icon in the address bar → Permissions → Location → Allow.",
+        "Turn on the phone's location: swipe down from the top and tap Location.",
+        "Reload the page."
+      ],
+      "desktop": [
+        "Click the lock or ⚙ icon at the left of the address bar.",
+        "Location → Allow.",
+        "Reload the page."
+      ]
+    },
+    "on": "Location is on",
+    "blockedHow": "Location is blocked — how to turn it on?",
+    "why": "Location is needed to check in at visits"
   }
 }

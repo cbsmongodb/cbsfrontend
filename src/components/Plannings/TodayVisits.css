@@ -276,3 +276,9 @@
 .today-visits .today-visits-locbtn:hover { transform: translateY(-1px); filter: brightness(1.08); box-shadow: 0 12px 24px -8px var(--dir-a, #0c3557); }
 .today-visits .today-visits-locbtn:active { transform: translateY(0); }
 .today-visits .today-visits-locbtn.is-updated { background: linear-gradient(120deg, #15803d, #22c55e); box-shadow: 0 8px 20px -8px #15803d; }
+
+/* location already shared */
+.today-visits .today-visits-locbtn.is-shared {
+  background: linear-gradient(120deg, #15803d, #22c55e);
+  box-shadow: 0 8px 20px -8px #15803d;
+}

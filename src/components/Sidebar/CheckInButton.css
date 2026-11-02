@@ -183,3 +183,33 @@
 @media (prefers-reduced-motion: reduce) {
   .ci-status, .ci-dot::after, .ci-confirming { animation: none; }
 }
+
+/* location chip under the Check In button */
+.ci-geo {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.ci-geo--on {
+  background: rgba(34, 197, 94, 0.14);
+  border: 1px solid rgba(34, 197, 94, 0.45);
+  color: #15803d;
+}
+.ci-geo--off {
+  border: 1px dashed #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+  color: #b45309;
+  cursor: pointer;
+}
+.ci-geo--off:hover { background: rgba(245, 158, 11, 0.18); }
+.sidebar .ci-geo--on { color: #dcfce7; background: rgba(34, 197, 94, 0.22); border-color: rgba(134, 239, 172, 0.6); }
+.sidebar .ci-geo--off { color: #fef3c7; background: rgba(245, 158, 11, 0.2); border-color: rgba(253, 224, 71, 0.7); }

@@ -1,0 +1,59 @@
+.loc-card { margin: -8px 0 20px; }
+.loc-btn {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: 16px;
+  border: 1.5px solid transparent;
+  font-size: 14.5px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.loc-btn:hover { transform: translateY(-1px); }
+.loc-btn:disabled { opacity: 0.75; cursor: wait; }
+.loc-btn-icon {
+  width: 34px; height: 34px; flex-shrink: 0;
+  border-radius: 11px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.loc-btn-text { display: flex; flex-direction: column; gap: 2px; flex: 1; line-height: 1.25; }
+.loc-btn-text small { font-size: 11.5px; font-weight: 600; opacity: 0.8; }
+
+.loc-btn.is-off {
+  background: #fff7ed;
+  border-color: #fdba74;
+  border-style: dashed;
+  color: #9a3412;
+}
+.loc-btn.is-off .loc-btn-icon { background: #f97316; color: #fff; }
+
+.loc-btn.is-blocked {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+.loc-btn.is-blocked .loc-btn-icon { background: #dc2626; color: #fff; }
+
+.loc-btn.is-on {
+  background: linear-gradient(120deg, #ecfdf5, #f0fdf4);
+  border-color: #86efac;
+  color: #166534;
+  cursor: default;
+}
+.loc-btn.is-on:hover { transform: none; }
+.loc-btn.is-on .loc-btn-icon { background: linear-gradient(135deg, #22c55e, #15803d); color: #fff; }
+.loc-live {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #22c55e;
+  animation: loc-ping 1.8s infinite;
+}
+@keyframes loc-ping {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); }
+  70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}

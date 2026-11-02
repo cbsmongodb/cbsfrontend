@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import TodayVisits from '@/components/Plannings/TodayVisits'
+import LocationCard from '@/components/LocationCard/LocationCard'
 import FinanceSummaryCard from '@/components/FinanceSummaryCard/FinanceSummaryCard'
 
 // finance people see money, not visit statistics
@@ -312,6 +313,9 @@ export default function Dashboard() {
           <CheckInButton />
         </div>
       ))}
+
+      {/* location on / off, under "Plan a visit" */}
+      {employee && !isFinance && canPlan && <LocationCard />}
 
       {/* my planned visits for today — right under "plan a visit", for everyone who plans visits */}
       {employee && canPlan && !isFinance && !isOfficeOnly && (
