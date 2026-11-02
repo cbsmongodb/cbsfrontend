@@ -202,6 +202,19 @@ export default function Dashboard() {
   useEffect(() => {
     const stored = localStorage.getItem('employee')
     if (stored) setEmployee(JSON.parse(stored))
+    // role / permissions may have changed since login -> use the fresh ones
+    // (e.g. "Plan a visit" vs check-in button), without logging out
+    apiFetch('/api/auth/me')
+      .then((fresh) => {
+        if (!fresh?.role) return
+        let base = {}
+        try { base = JSON.parse(localStorage.getItem('employee') || '{}') || {} } catch { /* ignore */ }
+        if (JSON.stringify(base.role) === JSON.stringify(fresh.role)) return
+        const next = { ...base, role: fresh.role }
+        try { localStorage.setItem('employee', JSON.stringify(next)) } catch { /* ignore */ }
+        setEmployee(next)
+      })
+      .catch(() => {})
   }, [])
 
   useEffect(() => {

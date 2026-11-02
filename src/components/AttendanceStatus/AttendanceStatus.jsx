@@ -31,12 +31,14 @@ export default function AttendanceStatus() {
 
   async function loadAll() {
     try {
-      const [emps, feed, leaves, config] = await Promise.all([
+      const [emps, feed, leaves, config, daily] = await Promise.all([
         apiFetch('/api/employees'),
         apiFetch('/api/attendance/live-feed'),
         // optional extras: if one of them fails, the page still shows check-ins
         apiFetch(`/api/leaves?to=${new Date().toISOString()}`).catch(() => []),
         apiFetch('/api/config/plan').catch(() => null),
+        // every check-in made today (office OR visit), whatever the visit's date
+        apiFetch('/api/attendance/daily-status').catch(() => null),
       ])
 
       setEmployees(emps.filter((e) => e.isActive))
@@ -48,6 +50,9 @@ export default function AttendanceStatus() {
             checkedInIds.add(String(item.employeeId))
           }
         })
+      })
+      ;(daily?.status || []).forEach((s) => {
+        if (s.checkedIn && s.employee?._id) checkedInIds.add(String(s.employee._id))
       })
       setAttendedIds(checkedInIds)
 
