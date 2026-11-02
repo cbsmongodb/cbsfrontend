@@ -26,6 +26,15 @@ const IconTrash = () => (
   <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M8 6V4h8v2" /><path d="M19 6l-1 14H6L5 6" /></svg>
 )
 
+function isAdminUser() {
+  try {
+    const me = JSON.parse(localStorage.getItem('employee') || 'null')
+    return (me?.role?.name || '').toLowerCase().trim() === 'admin'
+  } catch {
+    return false
+  }
+}
+
 export default function EnteredPrescriptions() {
   const t = useTranslations('enteredRx')
 
@@ -65,8 +74,8 @@ export default function EnteredPrescriptions() {
       .then((list) => {
         const act = Array.isArray(list) ? list.filter((e) => e.isActive !== false) : []
         setEmployees(act)
-        // allByDefault: admin / managers (see more than themselves) start with everyone
-        if (act.length > 1) setEmployeeId(ALL_ID)
+        // adminAllDefault: only the admin starts with everyone's prescriptions
+        if (isAdminUser()) setEmployeeId(ALL_ID)
       })
       .catch(() => setEmployees([]))
   }, [])
@@ -216,7 +225,7 @@ export default function EnteredPrescriptions() {
             <SearchableSelect
               options={pickerOptions}
               value={employeeId}
-              onChange={(v) => setEmployeeId(v || ALL_ID)}
+              onChange={(v) => setEmployeeId(v || (isAdminUser() ? ALL_ID : (me?._id ?? '')))}
               getLabel={(e) => personName(e)}
               placeholder={t('employee')}
             />

@@ -246,6 +246,13 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
       }
 
       fields.filter((f) => f.type === 'hospital-doctors').forEach((f) => { delete body[f.name] })
+      // number fields are typed as text -> send real numbers
+      fields.filter((f) => f.type === 'number').forEach((f) => {
+        const v = body[f.name]
+        if (typeof v !== 'string') return
+        if (v === '' || v === '-' || v === '.') delete body[f.name]
+        else body[f.name] = Number(v)
+      })
 
       let savedId = editingId
       if (editingId) {
@@ -540,19 +547,23 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
         className={f.type === 'date' ? 'field-date' : 'field-input'}
         type={
           f.type === 'number'
-            ? 'number'
+            ? 'text'
             : f.type === 'date'
             ? 'date'
             : f.type === 'password'
             ? 'password'
             : 'text'
         }
-        step={f.type === 'number' ? 'any' : undefined}
+        // numberAsText: type freely (20.56 or 20,56), a tap selects the old value
+        inputMode={f.type === 'number' ? 'decimal' : undefined}
+        onFocus={f.type === 'number' ? (e) => e.target.select() : undefined}
         placeholder={f.label}
         value={form[f.name] ?? ''}
-        onChange={(e) =>
-          handleChange(f.name, f.type === 'number' ? e.target.valueAsNumber : e.target.value)
-        }
+        onChange={(e) => {
+          if (f.type !== 'number') return handleChange(f.name, e.target.value)
+          const v = e.target.value.replace(',', '.').replace(/\s/g, '')
+          if (/^-?\d*\.?\d*$/.test(v)) handleChange(f.name, v)
+        }}
         required={f.required !== undefined ? f.required : f.name === 'note' ? false : f.type !== 'checkbox'}
       />
     )
