@@ -62,7 +62,12 @@ export default function EnteredPrescriptions() {
       if (stored?._id) { setMe(stored); setEmployeeId(stored._id) }
     } catch { /* ignore */ }
     apiFetch('/api/employees?lite=1')
-      .then((list) => setEmployees(Array.isArray(list) ? list.filter((e) => e.isActive !== false) : []))
+      .then((list) => {
+        const act = Array.isArray(list) ? list.filter((e) => e.isActive !== false) : []
+        setEmployees(act)
+        // allByDefault: admin / managers (see more than themselves) start with everyone
+        if (act.length > 1) setEmployeeId(ALL_ID)
+      })
       .catch(() => setEmployees([]))
   }, [])
 
@@ -211,7 +216,7 @@ export default function EnteredPrescriptions() {
             <SearchableSelect
               options={pickerOptions}
               value={employeeId}
-              onChange={(v) => setEmployeeId(v || (me?._id ?? ''))}
+              onChange={(v) => setEmployeeId(v || ALL_ID)}
               getLabel={(e) => personName(e)}
               placeholder={t('employee')}
             />
