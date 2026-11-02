@@ -31,6 +31,27 @@ export default function BudgetNew() {
   const [computing, setComputing] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  // budgetEditMode: /budgets/new?id=<budget> edits that budget
+  const [editId, setEditId] = useState('')
+
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get('id')
+    if (!id) return
+    setEditId(id)
+    apiFetch(`/api/budgets/${id}`)
+      .then((b) => {
+        setEmployeeId(String(b.employee?._id || b.employee || ''))
+        setDoctorId(String(b.doctor?._id || b.doctor || ''))
+        if (b.date) {
+          const d = new Date(new Date(b.date).getTime() + 12 * 3600e3)
+          const p = (x) => String(x).padStart(2, '0')
+          setDate(`${d.getUTCFullYear()}-${p(d.getUTCMonth() + 1)}-${p(d.getUTCDate())}`)
+        }
+        setIsActive(b.isActive !== false)
+        setPaidAmount(String(b.paidAmount ?? 0))
+      })
+      .catch((err) => setError(err.message))
+  }, [])
 
   useEffect(() => {
     Promise.all([apiFetch('/api/employees?lite=1'), apiFetch('/api/doctors?lite=1')])
@@ -65,8 +86,8 @@ export default function BudgetNew() {
     setSaving(true)
     setError('')
     try {
-      await apiFetch('/api/budgets', {
-        method: 'POST',
+      await apiFetch(editId ? `/api/budgets/${editId}` : '/api/budgets', {
+        method: editId ? 'PUT' : 'POST',
         body: JSON.stringify({
           employee: employeeId,
           doctor: doctorId,
@@ -91,7 +112,7 @@ export default function BudgetNew() {
     <div className="prescedit-page">
       <div className="prescedit-card">
         <div className="prescedit-card-header">
-          <h1>{tu('k175')}</h1>
+          <h1>{editId ? tu('k101') : tu('k175')}</h1>
           <div className="prescedit-header-actions">
             <button type="button" className="btn" onClick={handleCreate} disabled={saving}>
               <span>{saving ? <span className="btn-spinner" aria-hidden="true" /> : 'Save'}</span>

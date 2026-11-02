@@ -237,7 +237,10 @@ export default function BudgetsList() {
                     <span />
                   </button>
                 </td>
-                <td data-label="">
+                <td data-label="" className="budgets-list-actions">
+                  <Link href={`/${locale}/dashboard/budgets/new?id=${row._id}`} className="btn-gray btn-sm">
+                    <span>{tu('k101')}</span>
+                  </Link>
                   <button type="button" className="btn-gray btn-sm" onClick={() => handleDelete(row._id)}>
                     <span>{tu('k069')}</span>
                   </button>
