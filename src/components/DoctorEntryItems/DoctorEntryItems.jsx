@@ -116,6 +116,25 @@ export default function DoctorEntryItems() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  // errors pop up in the middle of the screen; OK scrolls to the field to fix
+  const [popup, setPopup] = useState(null)
+  function showError(message, targetId = null) {
+    setError(message)
+    setPopup({ message, targetId })
+  }
+  function closePopup() {
+    const id = popup?.targetId
+    setPopup(null)
+    if (!id) return
+    setTimeout(() => {
+      const el = document.getElementById(id)
+      if (!el) return
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.classList.add('field-missing')
+      setTimeout(() => el.focus({ preventScroll: true }), 350)
+      setTimeout(() => el.classList.remove('field-missing'), 4000)
+    }, 50)
+  }
   const [pickerDoctorIndex, setPickerDoctorIndex] = useState(null)
   const [pharmacySales, setPharmacySales] = useState({})
   const [savedByDoctor, setSavedByDoctor] = useState({})
@@ -338,7 +357,7 @@ export default function DoctorEntryItems() {
 
   async function handleSave() {
     if (!employeeId) {
-      setError(tu('k038'))
+      showError(tu('k038'))
       return
     }
     const cleanEntries = doctorEntries
@@ -350,7 +369,17 @@ export default function DoctorEntryItems() {
       .filter((e) => e.drugs.length > 0)
 
     if (cleanEntries.length === 0) {
-      setError(tu('k040'))
+      showError(tu('k040'))
+      return
+    }
+
+    // every doctor with drugs needs a bank
+    const missingBank = doctorEntries.findIndex(
+      (e) => e.doctorId && e.drugs.some((d) => d.drugId) && !e.bank
+    )
+    if (missingBank >= 0) {
+      const doc = selectedDoctor(doctorEntries[missingBank].doctorId)
+      showError(tu('bankRequired', { doctor: doc ? doctorLabel(doc) : '' }), `bank-${missingBank}`)
       return
     }
 
@@ -373,7 +402,7 @@ export default function DoctorEntryItems() {
       // the same person stays selected and their saved entries reload
       handleLoad()
     } catch (err) {
-      setError(err.message)
+      showError(/bank/i.test(err.message || '') ? tu('bankRequired', { doctor: '' }) : err.message)
     } finally {
       setSaving(false)
     }
@@ -421,6 +450,18 @@ export default function DoctorEntryItems() {
       </div>
 
       {error && <p className="resource-error">{error}</p>}
+
+      {popup && (
+        <div className="dei-popup-backdrop" onClick={closePopup}>
+          <div className="dei-popup" role="alertdialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+            <div className="dei-popup-icon" aria-hidden="true">!</div>
+            <p className="dei-popup-text">{popup.message}</p>
+            <button type="button" className="dei-popup-ok" onClick={closePopup} autoFocus>
+              {tu('popupOk')}
+            </button>
+          </div>
+        </div>
+      )}
       {employeeId && Object.keys(savedByDoctor).length > 0 && (
         <p className="doctor-entries-info">{tu('savedThisMonth', { count: Object.keys(savedByDoctor).length })}</p>
       )}
@@ -510,6 +551,7 @@ export default function DoctorEntryItems() {
               <div className="doctor-entries-field">
                 <label>{tu('k055')}</label>
                 <select
+                  id={`bank-${doctorIndex}`}
                   className="field-select"
                   value={entry.bank}
                   onChange={(e) => updateDoctorField(doctorIndex, 'bank', e.target.value)}
