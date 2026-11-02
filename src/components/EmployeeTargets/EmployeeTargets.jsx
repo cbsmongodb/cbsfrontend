@@ -25,6 +25,12 @@ function readPerms() {
 export default function EmployeeTargets() {
   const tu = useTranslations('ui')
   const tp = useTranslations('plannings')
+  const tm = useTranslations('enteredRx')
+  // oneMonthFilter: pick one month instead of from / to dates
+  const nowD = new Date()
+  const [month, setMonth] = useState(
+    `${nowD.getFullYear()}-${String(nowD.getMonth() + 1).padStart(2, '0')}`
+  )
   const [employees, setEmployees] = useState([])
   const [search, setSearch] = useState('')
   const [employeeId, setEmployeeId] = useState('')
@@ -67,8 +73,7 @@ export default function EmployeeTargets() {
       params.set('limit', size)
       if (search.trim()) params.set('search', search.trim())
       if (employeeId) params.set('employee', employeeId)
-      if (fromDate) params.set('fromDate', fromDate)
-      if (toDate) params.set('toDate', toDate)
+      if (month) params.set('month', month)
 
       const result = await apiFetch(`/api/employee-targets?${params}`)
       setData(result)
@@ -105,12 +110,8 @@ export default function EmployeeTargets() {
       <div className="employee-targets-filters">
         <div className="employee-targets-filters-grid">
           <div className="employee-targets-field">
-            <label>{tu('k090')}</label>
-            <input type="date" className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
-          </div>
-          <div className="employee-targets-field">
-            <label>{tu('k091')}</label>
-            <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+            <label>{tm('month')}</label>
+            <input type="month" className="field-input" value={month} onChange={(e) => setMonth(e.target.value)} />
           </div>
           <div className="employee-targets-field">
             <label>{tu('k044')}</label>
