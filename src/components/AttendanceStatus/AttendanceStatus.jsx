@@ -31,7 +31,15 @@ export default function AttendanceStatus() {
 
   async function loadAll() {
     try {
-      const [emps, feed, leaves, config, daily] = await Promise.all([
+      const dFrom = new Date()
+      dFrom.setHours(0, 0, 0, 0)
+      const dTo = new Date()
+      dTo.setHours(23, 59, 59, 999)
+      const planQs = new URLSearchParams({
+        period_from: dFrom.toISOString(),
+        period_to: dTo.toISOString(),
+      })
+      const [emps, feed, leaves, config, daily, todayPlans] = await Promise.all([
         apiFetch('/api/employees'),
         apiFetch('/api/attendance/live-feed'),
         // optional extras: if one of them fails, the page still shows check-ins
@@ -39,6 +47,8 @@ export default function AttendanceStatus() {
         apiFetch('/api/config/plan').catch(() => null),
         // every check-in made today (office OR visit), whatever the visit's date
         apiFetch('/api/attendance/daily-status').catch(() => null),
+        // today's visits: on site / done = attended
+        apiFetch(`/api/plannings?${planQs}`).catch(() => []),
       ])
 
       setEmployees(emps.filter((e) => e.isActive))
@@ -53,6 +63,17 @@ export default function AttendanceStatus() {
       })
       ;(daily?.status || []).forEach((s) => {
         if (s.checkedIn && s.employee?._id) checkedInIds.add(String(s.employee._id))
+      })
+      const ON_SITE = ['i_went', 'i_left', 'completed']
+      const planList = Array.isArray(todayPlans) ? todayPlans : todayPlans?.items || []
+      planList.forEach((p) => {
+        const pid = p.performer?._id || p.performer
+        if (pid && ON_SITE.includes(p.status)) checkedInIds.add(String(pid))
+      })
+      feed.forEach((item) => {
+        if (item.source === 'plan' && item.employeeId && ON_SITE.includes(item.status)) {
+          checkedInIds.add(String(item.employeeId))
+        }
       })
       setAttendedIds(checkedInIds)
 
