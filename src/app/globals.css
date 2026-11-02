@@ -2072,3 +2072,19 @@ html:not([lang="ka"]) .sidebar .sidebar-group-items a span {
 .dashboard-shell .resource-form::before { border-top: 2px solid rgba(255, 255, 255, 0.45); }
 .resource-form.is-editing::before,
 .dashboard-shell .resource-form.is-editing::before { border-top: 3px solid #f59e0b; }
+
+/* form-topline-v3 */
+/* the coloured top line is a border now - older "editing" rules painted the
+   whole layer orange on top of the fields; keep it transparent */
+html body .resource-form::before,
+html body .dashboard-shell .resource-form::before,
+html body .resource-form.is-editing::before,
+html body .dashboard-shell .resource-form.is-editing::before {
+  background: none !important;
+  height: auto !important;
+  inset: 0 !important;
+}
+html body .resource-form.is-editing::before,
+html body .dashboard-shell .resource-form.is-editing::before {
+  border-top: 3px solid #f59e0b !important;
+}
