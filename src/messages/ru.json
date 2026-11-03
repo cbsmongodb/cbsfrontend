@@ -195,7 +195,8 @@
       "hoursMinutes": "{h}ч {m}мин",
       "hoursOnly": "{h}ч",
       "minutesOnly": "{m}мин"
-    }
+    },
+    "noLocation": "Геолокация не передана"
   },
   "teamStatus": {
     "title": "Статус полевой команды",

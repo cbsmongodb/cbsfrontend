@@ -33,9 +33,18 @@ function flattenToEvents(items) {
   const events = []
   for (const item of items) {
     const isOffice = item.source === 'daily'
-    for (const addr of item.addresses) {
-      if (addr.lat == null || addr.lng == null) continue
-      const dist =
+    // noLocationVisits: a check-in whose phone gave no location still counts
+    const addrs = [...(item.addresses || [])]
+    const has = (type) => addrs.some((a) => a.addressType === type)
+    if (item.iWentAt && !has('performer_i_went_location')) {
+      addrs.push({ addressType: 'performer_i_went_location', time: item.iWentAt })
+    }
+    if (item.iLeftAt && !has('performer_i_left_location')) {
+      addrs.push({ addressType: 'performer_i_left_location', time: item.iLeftAt })
+    }
+    for (const addr of addrs) {
+      const noLoc = addr.lat == null || addr.lng == null
+      const dist = noLoc ? null :
         addr.distanceFromHospital ??
         (isOffice
           ? metersBetween(addr.lat, addr.lng, OFFICE_POS.lat, OFFICE_POS.lng)
@@ -52,8 +61,9 @@ function flattenToEvents(items) {
         hospitalLat: item.hospitalLat ?? (isOffice ? OFFICE_POS.lat : null),
         hospitalLng: item.hospitalLng ?? (isOffice ? OFFICE_POS.lng : null),
         type: addr.addressType === 'performer_i_went_location' ? 'checkin' : 'checkout',
-        lat: addr.lat,
-        lng: addr.lng,
+        lat: noLoc ? null : addr.lat,
+        lng: noLoc ? null : addr.lng,
+        noLocation: noLoc,
         time: addr.time,
         address: addr.cleanAddress,
         distanceFromHospital: dist,
@@ -117,6 +127,7 @@ function buildVisits(events) {
       isShort: minutes != null && minutes >= 0 && minutes < SHORT_VISIT_MINUTES,
       durationMinutes: minutes != null ? Math.round(minutes) : null,
       address: checkin?.address || checkout?.address || '',
+      noLocation: !!(checkin?.noLocation && (!checkout || checkout.noLocation)),
       sortTime: anchor.time,
       isOpen: !!checkin && !checkout,
     })
@@ -280,8 +291,8 @@ export default function LiveFeed() {
       !focus
         ? NO_PLANS
         : focus.type === 'pair'
-        ? events.filter((e) => e.groupKey === focus.groupKey)
-        : events.filter((e) => String(e.employeeId) === String(focus.employeeId)),
+        ? events.filter((e) => e.groupKey === focus.groupKey && !e.noLocation)
+        : events.filter((e) => String(e.employeeId) === String(focus.employeeId) && !e.noLocation),
     [events, focus]
   )
 
@@ -450,7 +461,10 @@ export default function LiveFeed() {
                     )}
                   </td>
                   <td data-label={t('headers.duration')}>{formatDuration(visit.durationMinutes)}</td>
-                  <td data-label={t('headers.distance')}>{distance != null ? tu('k037', { p0: distance }) : '—'}</td>
+                  <td data-label={t('headers.distance')}>
+                    {distance != null ? tu('k037', { p0: distance })
+                      : visit.noLocation ? <span className="lf-noloc">📍 {t('noLocation')}</span> : '—'}
+                  </td>
                 </tr>
               )
             })}

@@ -741,3 +741,4 @@
   flex-shrink: 0;
 }
 .live-feed-employee-tags .day-link + .day-link { margin-left: 0 !important; }
+.lf-noloc { color: #b45309; font-weight: 600; white-space: nowrap; }

@@ -198,7 +198,8 @@
       "hoursMinutes": "{h} სთ {m} წთ",
       "hoursOnly": "{h} სთ",
       "minutesOnly": "{m} წთ"
-    }
+    },
+    "noLocation": "ლოკაცია არ გაზიარდა"
   },
   "teamStatus": {
     "title": "საველე გუნდის სტატუსი",

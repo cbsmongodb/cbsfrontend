@@ -195,7 +195,8 @@
       "hoursMinutes": "{h}h {m}min",
       "hoursOnly": "{h}h",
       "minutesOnly": "{m}min"
-    }
+    },
+    "noLocation": "Location not shared"
   },
   "teamStatus": {
     "title": "Field Team Status",
