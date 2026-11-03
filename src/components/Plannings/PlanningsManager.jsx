@@ -31,6 +31,14 @@ export default function PlanningsManager() {
 
   const PLAN_TYPES = PLAN_TYPE_IDS.map((id) => ({ _id: id, name: t(`planTypes.${id === 'double visit' ? 'doubleVisit' : id}`) }))
   const STATUSES = STATUS_IDS.map((id) => ({ _id: id, name: t(`statuses.${id}`) }))
+  // repStatusLock: reps mark "on site / done" only with the check-in buttons
+  const [isRepUser, setIsRepUser] = useState(false)
+  useEffect(() => {
+    try {
+      const me = JSON.parse(localStorage.getItem('employee') || 'null')
+      setIsRepUser((me?.role?.name || '').toLowerCase().trim() === 'representative')
+    } catch { /* ignore */ }
+  }, [])
 
   function statusLabel(id) {
     return STATUSES.find((s) => s._id === id)?.name || id
@@ -391,7 +399,9 @@ export default function PlanningsManager() {
           <div className="planning-field">
             <label>{t('fields.status')}</label>
             <SearchableSelect
-              options={STATUSES}
+              options={isRepUser
+                ? STATUSES.filter((s) => ['planned', 'canceled', form.status].includes(s._id))
+                : STATUSES}
               value={form.status}
               onChange={(v) => updateField('status', v)}
               getLabel={(o) => o.name}
