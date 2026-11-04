@@ -31,7 +31,8 @@ export default function LocationPickerModal({ initialLat, initialLng, initialQue
         justifyContent: 'center',
         zIndex: 1000,
       }}
-      onClick={onClose}
+      // mapStaysOpen: clicking / dragging outside does NOT close it -
+      // only the X, "use this location" or "cancel"
     >
       <div
         style={{
