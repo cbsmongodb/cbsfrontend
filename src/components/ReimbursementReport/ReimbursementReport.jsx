@@ -86,6 +86,20 @@ export default function ReimbursementReport() {
     }
   }
 
+  // yearly travel-expenses workbook (Expenses_YYYY.xlsx layout, one sheet per year)
+  const [yearlyBusy, setYearlyBusy] = useState(false)
+  async function downloadYearly() {
+    setYearlyBusy(true)
+    setError('')
+    try {
+      await apiDownload('/api/reports/reimbursement/expenses')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setYearlyBusy(false)
+    }
+  }
+
   async function handleExport() {
     setExporting(true)
     setError('')
@@ -166,6 +180,17 @@ export default function ReimbursementReport() {
         <div className="report-title-row report-title-row-spread">
           <h1>{t('reimbursement.title')}</h1>
           <ExcelExportButton title={t('reimbursement.title')} tableSelector=".reimbursement-table" pages={pageCount} currentPage={safePage + 1} goToPage={(n) => setPage(n - 1)} />
+          <span className="excel-export">
+            <button type="button" className="excel-export-btn" onClick={downloadYearly} disabled={yearlyBusy} title={t('reimbursement.yearlyHint')}>
+              {yearlyBusy ? <span className="btn-spinner" aria-hidden="true" /> : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="4" fill="#1D7A45" />
+                  <path d="M8 8l8 8M16 8l-8 8" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" />
+                </svg>
+              )}
+              <span>{t('reimbursement.yearlyExcel')}</span>
+            </button>
+          </span>
           {loading && <ReportLoader />}
         </div>
       </div>

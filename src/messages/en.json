@@ -802,7 +802,9 @@
       "regions": "Regions",
       "days": "Days",
       "fromTo": "Period",
-      "totalToPay": "Total to pay"
+      "totalToPay": "Total to pay",
+      "yearlyExcel": "Travel expenses — yearly Excel",
+      "yearlyHint": "Expenses workbook: one sheet per year, finished months are filled automatically"
     },
     "attendance": {
       "title": "Attendance Report",
