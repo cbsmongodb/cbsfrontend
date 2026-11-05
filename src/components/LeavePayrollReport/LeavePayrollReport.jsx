@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
-import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
+import { exportLeavePayrollXlsx } from '@/lib/leavePayrollExcel'
 import '@/components/ExcelExportButton/ExcelExportButton.css'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
 import '@/components/ReimbursementReport/ReimbursementReport.css'
@@ -15,9 +15,6 @@ function currentMonth() {
   const d = new Date()
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
 }
-
-// "2026-10-14" -> "14"  (all dates in the list are of the chosen month)
-const dayOnly = (k) => String(Number(k.slice(8, 10)))
 
 export default function LeavePayrollReport() {
   const t = useTranslations('reports')
@@ -80,15 +77,34 @@ export default function LeavePayrollReport() {
     pending: s.pending + d.rows.filter((r) => r.pending.length).length,
   }), { people: 0, paid: 0, unpaid: 0, sick: 0, pending: 0 }), [shown])
 
-  const title = `${t('leavePayroll.title')} — ${monthLabel}`
-
-  function buildExcel() {
-    const headers = [t('common.division'), t('common.employee'), t('leavePayroll.paid'), t('leavePayroll.unpaid'), t('leavePayroll.sick'), t('leavePayroll.total'), t('leavePayroll.unpaidDates'), t('leavePayroll.sickDates'), t('leavePayroll.paidDates')]
-    const rows = shown.flatMap((d) => d.rows.map((r) => [
-      divisionName(d), r.employeeName, r.paid, r.unpaid, r.sick, r.paid + r.unpaid + r.sick,
-      r.unpaidDates.map(dayOnly).join(', '), r.sickDates.map(dayOnly).join(', '), r.paidDates.map(dayOnly).join(', '),
-    ]))
-    return { headers, rows }
+  const [exporting, setExporting] = useState(false)
+  const [exportMsg, setExportMsg] = useState('')
+  async function downloadExcel() {
+    if (!data || !shown.length) { setExportMsg(t('common.exportNothing')); return }
+    setExporting(true); setExportMsg('')
+    try {
+      const lp = (k) => t(`leavePayroll.${k}`)
+      await exportLeavePayrollXlsx({
+        divisions: shown,
+        month: data.month,
+        locale,
+        fileName: lp('title'),
+        L: {
+          title: lp('title'), employee: t('common.employee'), exportedAt: t('common.exportedAt'),
+          paid: lp('paid'), unpaid: lp('unpaid'), sick: lp('sick'), total: lp('total'),
+          paidDates: lp('paidDates'), unpaidDates: lp('unpaidDates'), sickDates: lp('sickDates'),
+          paidDays: lp('paidDays'), unpaidDays: lp('unpaidDays'), sickDays: lp('sickDays'),
+          people: lp('people'), peopleShort: lp('peopleShort'), noDivision: lp('noDivision'),
+          inactive: lp('inactive'), weekend: lp('weekend'), pendingShort: lp('pendingShort'),
+          approvedOnly: lp('approvedOnly'), grandTotal: lp('grandTotal'),
+          sheetSummary: lp('sheetSummary'), sheetCalendar: lp('sheetCalendar'),
+        },
+      })
+    } catch (e) {
+      console.error(e); setExportMsg(t('common.exportFailed'))
+    } finally {
+      setExporting(false)
+    }
   }
 
   // the month as a row of days: 1 … 28/30/31, weekends marked
@@ -134,7 +150,18 @@ export default function LeavePayrollReport() {
       <div className="reimbursement-header">
         <div className="report-title-row report-title-row-spread">
           <h1>{t('leavePayroll.title')}</h1>
-          <ExcelExportButton title={title} fileName={`${t('leavePayroll.title')} ${data?.month || month}`} build={buildExcel} />
+          <span className="excel-export">
+            <button type="button" className="excel-export-btn" onClick={downloadExcel} disabled={exporting || loading}>
+              {exporting ? <span className="btn-spinner" aria-hidden="true" /> : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="4" fill="#1D7A45" />
+                  <path d="M8 8l8 8M16 8l-8 8" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" />
+                </svg>
+              )}
+              <span>{t('common.exportExcel')}</span>
+            </button>
+            {exportMsg && <em className="excel-export-msg">{exportMsg}</em>}
+          </span>
           {loading && <ReportLoader />}
         </div>
         <p className="lp-subtitle">{t('leavePayroll.subtitle')}</p>

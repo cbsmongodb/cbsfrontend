@@ -908,7 +908,11 @@
       "empty": "ამ თვეში შვებულება არავის ჰქონია",
       "weekend": "შაბათ-კვირა",
       "peopleShort": "თანამშრომელი",
-      "daysCount": "დღეები"
+      "daysCount": "დღეები",
+      "approvedOnly": "მხოლოდ დადასტურებული",
+      "grandTotal": "საერთო ჯამი",
+      "sheetSummary": "ხელფასისთვის",
+      "sheetCalendar": "კალენდარი"
     },
     "timesheet": {
       "title": "ტაბელი",

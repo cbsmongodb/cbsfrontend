@@ -905,7 +905,11 @@
       "empty": "Nobody had leave in this month",
       "weekend": "Weekend",
       "peopleShort": "employees",
-      "daysCount": "Days"
+      "daysCount": "Days",
+      "approvedOnly": "approved only",
+      "grandTotal": "Grand total",
+      "sheetSummary": "Payroll",
+      "sheetCalendar": "Calendar"
     },
     "timesheet": {
       "title": "Timesheet",

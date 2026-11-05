@@ -905,7 +905,11 @@
       "empty": "В этом месяце отпусков не было",
       "weekend": "Выходные",
       "peopleShort": "сотрудников",
-      "daysCount": "Дни"
+      "daysCount": "Дни",
+      "approvedOnly": "только одобренные",
+      "grandTotal": "Итого",
+      "sheetSummary": "Для зарплаты",
+      "sheetCalendar": "Календарь"
     },
     "timesheet": {
       "title": "Табель",
