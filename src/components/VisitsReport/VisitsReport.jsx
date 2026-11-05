@@ -153,8 +153,7 @@ export default function VisitsReport() {
                   <span className="vr-emp-name">
                     <span className="vr-row-date">{ddmmyyyy(d.key)} · {(() => { const [y, m, dd] = d.key.split('-').map(Number); return new Date(y, m - 1, dd).toLocaleDateString(tag, { weekday: 'long' }) })()}</span>
                     <strong>{e.name}</strong>
-                    {e.division && <em>{e.division}</em>}
-                    <span className="vr-emp-meta"><span className="vr-pill">{e.visits.length} {v('visitsShort')}</span></span>
+                    <em>{e.division ? `${e.division} · ` : ''}{e.visits.length} {v('visitsShort')}</em>
                   </span>
                 </div>
                 <ol className="vr-strip">
@@ -168,7 +167,7 @@ export default function VisitsReport() {
                         </div>
                         <div className="vr-place">
                           <span className={`vr-place-icon ${x.placeType}`} aria-hidden="true">{x.placeType === 'pharmacy' ? '℞' : '✚'}</span>
-                          <strong>{x.place || '—'}</strong>
+                          <strong title={x.place}>{x.place || '—'}</strong>
                         </div>
                       </li>
                     )
