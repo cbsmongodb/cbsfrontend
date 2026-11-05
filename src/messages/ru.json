@@ -87,7 +87,8 @@
         "salesListing": "Список продаж",
         "employeeSales": "Продажи из аптек",
         "employeeTargets": "Планы сотрудников",
-        "budgetAllotment": "Распределение бюджета"
+        "budgetAllotment": "Распределение бюджета",
+        "visitsReport": "Список визитов"
       },
       "reports": {
         "label": "Отчёты",
@@ -442,7 +443,8 @@
       "attendance_report": "Отчёт о посещаемости",
       "prescriptions_report": "Отчёт по рецептам",
       "leave_payroll_report": "Отпуска для зарплаты (отчёт)",
-      "timesheet_report": "Табель (отчёт)"
+      "timesheet_report": "Табель (отчёт)",
+      "visits_report": "Список визитов (отчёт)"
     },
     "actions": {
       "read": "Просмотр",
@@ -963,6 +965,39 @@
       "addPerson": "Добавить сотрудника",
       "crmOptional": "Выберите (необязательно)",
       "add": "Добавить"
+    },
+    "visits": {
+      "title": "Список визитов",
+      "subtitle": "Кто, в какой больнице или аптеке, у каких врачей и с какого по какое время был",
+      "mode_day": "День",
+      "mode_month": "Месяц",
+      "mode_range": "Период",
+      "badRange": "Выберите корректные даты",
+      "searchPlaceholder": "Поиск: больница, врач, сотрудник...",
+      "statusCol": "Статус",
+      "filter_done": "Выполненные",
+      "filter_planned": "Запланированные",
+      "filter_canceled": "Отменённые",
+      "status_completed": "Выполнен",
+      "status_i_left": "Выполнен",
+      "status_i_went": "На визите",
+      "status_planned": "Запланирован",
+      "status_canceled": "Отменён",
+      "kpiVisits": "Визиты",
+      "kpiDone": "Выполнено",
+      "kpiPeople": "Сотрудники",
+      "kpiDoctors": "Врачи",
+      "kpiPlaces": "Объекты",
+      "visitsShort": "визитов",
+      "peopleShort": "сотрудников",
+      "min": "мин",
+      "went": "Пришёл",
+      "left": "Ушёл",
+      "duration": "Длительность",
+      "place": "Объект",
+      "doctors": "Врачи",
+      "comment": "Комментарий",
+      "empty": "В этом периоде визитов нет"
     }
   },
   "attendanceStatus": {

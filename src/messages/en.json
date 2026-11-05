@@ -87,7 +87,8 @@
         "salesListing": "Sales Listing",
         "employeeSales": "Pharmacy Sales",
         "employeeTargets": "Employee Plans",
-        "budgetAllotment": "Budget Allotment"
+        "budgetAllotment": "Budget Allotment",
+        "visitsReport": "Visits list"
       },
       "reports": {
         "label": "Reports",
@@ -442,7 +443,8 @@
       "attendance_report": "Attendance Report",
       "prescriptions_report": "Prescriptions Report",
       "leave_payroll_report": "Leave for payroll (report)",
-      "timesheet_report": "Timesheet (report)"
+      "timesheet_report": "Timesheet (report)",
+      "visits_report": "Visits list (report)"
     },
     "actions": {
       "read": "View",
@@ -963,6 +965,39 @@
       "addPerson": "Add an employee",
       "crmOptional": "Choose (optional)",
       "add": "Add"
+    },
+    "visits": {
+      "title": "Visits list",
+      "subtitle": "Who visited which hospital or pharmacy, which doctors, and from when to when",
+      "mode_day": "Day",
+      "mode_month": "Month",
+      "mode_range": "Period",
+      "badRange": "Choose valid dates",
+      "searchPlaceholder": "Search: hospital, doctor, employee...",
+      "statusCol": "Status",
+      "filter_done": "Done",
+      "filter_planned": "Planned",
+      "filter_canceled": "Canceled",
+      "status_completed": "Done",
+      "status_i_left": "Done",
+      "status_i_went": "On visit",
+      "status_planned": "Planned",
+      "status_canceled": "Canceled",
+      "kpiVisits": "Visits",
+      "kpiDone": "Done",
+      "kpiPeople": "Employees",
+      "kpiDoctors": "Doctors",
+      "kpiPlaces": "Places",
+      "visitsShort": "visits",
+      "peopleShort": "employees",
+      "min": "min",
+      "went": "Arrived",
+      "left": "Left",
+      "duration": "Duration",
+      "place": "Place",
+      "doctors": "Doctors",
+      "comment": "Comment",
+      "empty": "No visits in this period"
     }
   },
   "attendanceStatus": {

@@ -90,7 +90,8 @@
         "salesListing": "გაყიდვების სია",
         "employeeSales": "გაყიდვები აფთიაქებიდან",
         "employeeTargets": "თანამშრომლების გეგმები",
-        "budgetAllotment": "ბიუჯეტის განაწილება"
+        "budgetAllotment": "ბიუჯეტის განაწილება",
+        "visitsReport": "ვიზიტების სია"
       },
       "reports": {
         "label": "რეპორტები",
@@ -445,7 +446,8 @@
       "attendance_report": "დასწრების რეპორტი",
       "prescriptions_report": "რეცეპტების რეპორტი",
       "leave_payroll_report": "შვებულებები ხელფასისთვის (რეპორტი)",
-      "timesheet_report": "ტაბელი (რეპორტი)"
+      "timesheet_report": "ტაბელი (რეპორტი)",
+      "visits_report": "ვიზიტების სია (რეპორტი)"
     },
     "actions": {
       "read": "ნახვა",
@@ -966,6 +968,39 @@
       "addPerson": "თანამშრომლის დამატება",
       "crmOptional": "აირჩიე (არასავალდებულო)",
       "add": "დამატება"
+    },
+    "visits": {
+      "title": "ვიზიტების სია",
+      "subtitle": "ვინ, რომელ საავადმყოფოში ან აფთიაქში, რომელ ექიმთან და რა დროს იყო",
+      "mode_day": "დღე",
+      "mode_month": "თვე",
+      "mode_range": "პერიოდი",
+      "badRange": "აირჩიე სწორი თარიღები",
+      "searchPlaceholder": "ძიება: საავადმყოფო, ექიმი, თანამშრომელი...",
+      "statusCol": "სტატუსი",
+      "filter_done": "შესრულებული",
+      "filter_planned": "დაგეგმილი",
+      "filter_canceled": "გაუქმებული",
+      "status_completed": "შესრულდა",
+      "status_i_left": "შესრულდა",
+      "status_i_went": "ვიზიტზეა",
+      "status_planned": "დაგეგმილი",
+      "status_canceled": "გაუქმდა",
+      "kpiVisits": "ვიზიტი",
+      "kpiDone": "შესრულებული",
+      "kpiPeople": "თანამშრომელი",
+      "kpiDoctors": "ექიმი",
+      "kpiPlaces": "ობიექტი",
+      "visitsShort": "ვიზიტი",
+      "peopleShort": "თანამშრომელი",
+      "min": "წთ",
+      "went": "მივიდა",
+      "left": "წავიდა",
+      "duration": "ხანგრძლივობა",
+      "place": "ობიექტი",
+      "doctors": "ექიმები",
+      "comment": "კომენტარი",
+      "empty": "ამ პერიოდში ვიზიტები არ არის"
     }
   },
   "attendanceStatus": {
