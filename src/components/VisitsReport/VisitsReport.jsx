@@ -29,6 +29,7 @@ export default function VisitsReport() {
   const [divisionId, setDivisionId] = useState('')
   const [divisions, setDivisions] = useState([])
   const [data, setData] = useState(null)
+  const PAGE = 30
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -38,15 +39,23 @@ export default function VisitsReport() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const query = (r) => {
+    const p = new URLSearchParams({ from: r.from, to: r.to })
+    if (r.divisionId) p.set('division', r.divisionId)
+    return p
+  }
+
   async function load(over = {}) {
-    const r = { from, to, divisionId, ...over }
+    const r = { from, to, divisionId, page: 1, ...over }
     if (!r.from || !r.to || r.from > r.to) { setError(v('badRange')); return }
     setLoading(true)
     setError('')
     try {
-      const p = new URLSearchParams({ from: r.from, to: r.to })
-      if (r.divisionId) p.set('division', r.divisionId)
+      const p = query(r)
+      p.set('page', r.page)
+      p.set('limit', PAGE)
       setData(await apiFetch(`/api/reports/visits?${p}`))
+      if (over.page) window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (err) {
       setError(err.message)
     } finally {
@@ -54,27 +63,18 @@ export default function VisitsReport() {
     }
   }
 
-  // day -> employee -> visits (newest day first, visits by time)
-  const days = useMemo(() => {
-    const byDay = new Map()
-    for (const x of data?.visits || []) {
-      const k = dayKey(new Date(x.iWentAt || x.date))
-      if (!byDay.has(k)) byDay.set(k, new Map())
-      const emps = byDay.get(k)
-      const ek = String(x.employeeId)
-      if (!emps.has(ek)) emps.set(ek, { id: ek, name: x.employeeName, division: x.divisionName, visits: [] })
-      emps.get(ek).visits.push(x)
+  // the page's rows (one employee on one day, already sorted by the server) grouped by day
+  const toDays = (rows) => {
+    const out = []
+    for (const r of rows || []) {
+      let d = out[out.length - 1]
+      if (!d || d.key !== r.day) { d = { key: r.day, employees: [], count: 0 }; out.push(d) }
+      d.employees.push({ id: String(r.employeeId), name: r.employeeName, division: r.divisionName, visits: r.visits })
+      d.count += r.visits.length
     }
-    return [...byDay.entries()]
-      .sort((a, b) => b[0].localeCompare(a[0]))
-      .map(([k, emps]) => ({
-        key: k,
-        employees: [...emps.values()]
-          .map((e) => ({ ...e, visits: e.visits.sort((a, b) => new Date(a.iWentAt || a.date) - new Date(b.iWentAt || b.date)) }))
-          .sort((a, b) => a.name.localeCompare(b.name)),
-        count: [...emps.values()].reduce((s, e) => s + e.visits.length, 0),
-      }))
-  }, [data])
+    return out
+  }
+  const days = useMemo(() => toDays(data?.rows), [data])
 
   const dayTitle = (k) => {
     const [y, m, d] = k.split('-').map(Number)
@@ -83,9 +83,13 @@ export default function VisitsReport() {
   }
   const ddmmyyyy = (k) => k.split('-').reverse().join('.')
 
-  function buildExcel() {
+  async function buildExcel() {
+    const p = query({ from, to, divisionId })
+    p.set('all', '1')
+    const full = await apiFetch(`/api/reports/visits?${p}`)
+    const allDays = toDays(full.rows)
     const headers = [t('common.date'), t('common.employee'), t('common.division'), v('place'), v('went'), v('left'), v('duration')]
-    const rows = days.flatMap((d) => d.employees.flatMap((e) => e.visits.map((x) => {
+    const rows = allDays.flatMap((d) => d.employees.flatMap((e) => e.visits.map((x) => {
       const mins = minutesBetween(x.iWentAt, x.iLeftAt)
       return [ddmmyyyy(d.key), e.name, e.division, x.place, hhmm(x.iWentAt), hhmm(x.iLeftAt), mins != null ? `${mins} ${v('min')}` : '']
     })))
@@ -178,6 +182,16 @@ export default function VisitsReport() {
           </div>
         </section>
       ))}
+
+      {data && data.pages > 1 && (
+        <div className="reimb-pagination">
+          <button type="button" onClick={() => load({ page: 1 })} disabled={loading || data.page <= 1}>«</button>
+          <button type="button" onClick={() => load({ page: data.page - 1 })} disabled={loading || data.page <= 1}>‹</button>
+          <span>{(data.page - 1) * data.limit + 1}–{Math.min(data.page * data.limit, data.total)} / {data.total}</span>
+          <button type="button" onClick={() => load({ page: data.page + 1 })} disabled={loading || data.page >= data.pages}>›</button>
+          <button type="button" onClick={() => load({ page: data.pages })} disabled={loading || data.page >= data.pages}>»</button>
+        </div>
+      )}
     </div>
   )
 }

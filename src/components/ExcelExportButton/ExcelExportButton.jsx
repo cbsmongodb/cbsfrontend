@@ -16,7 +16,7 @@ export default function ExcelExportButton({ title, fileName, tableSelector, buil
     setBusy(true); setMsg('')
     try {
       let data
-      if (build) data = build()
+      if (build) data = await build() // may be async (fetches all pages)
       else {
         const table = document.querySelector(tableSelector)
         data = table ? readTable(table) : { headers: [], rows: [] }
