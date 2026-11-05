@@ -5,7 +5,6 @@ import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch, apiDownload } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './ReimbursementReport.css'
-import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 import '@/components/ExcelExportButton/ExcelExportButton.css'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
 
@@ -188,16 +187,15 @@ export default function ReimbursementReport() {
       <div className="reimbursement-header">
         <div className="report-title-row report-title-row-spread">
           <h1>{t('reimbursement.title')}</h1>
-          <ExcelExportButton title={t('reimbursement.title')} tableSelector=".reimbursement-table" pages={pageCount} currentPage={safePage + 1} goToPage={(n) => setPage(n - 1)} />
           <span className="excel-export">
-            <button type="button" className="excel-export-btn" onClick={downloadYearly} disabled={yearlyBusy} title={t('reimbursement.yearlyHint')}>
+            <button type="button" className="excel-export-btn" onClick={downloadYearly} disabled={yearlyBusy || loading} title={t('reimbursement.yearlyHint')}>
               {yearlyBusy ? <span className="btn-spinner" aria-hidden="true" /> : (
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <rect x="3" y="3" width="18" height="18" rx="4" fill="#1D7A45" />
                   <path d="M8 8l8 8M16 8l-8 8" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" />
                 </svg>
               )}
-              <span>{t('reimbursement.yearlyExcel')}</span>
+              <span>{t('common.exportExcel')}</span>
             </button>
           </span>
           {loading && <ReportLoader />}
