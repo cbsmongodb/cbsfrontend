@@ -806,8 +806,8 @@
       "days": "დღე",
       "fromTo": "პერიოდი",
       "totalToPay": "სულ გადასახდელი",
-      "yearlyExcel": "გზის ხარჯები — თვის Excel",
-      "yearlyHint": "არჩეული თვის გზის ხარჯები Expenses ფაილის ფორმატში"
+      "yearlyExcel": "გზის ხარჯები — Excel",
+      "yearlyHint": "არჩეული თარიღების გზის ხარჯები Expenses ფაილის ფორმატში"
     },
     "attendance": {
       "title": "დასწრების რეპორტი",

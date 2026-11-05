@@ -803,8 +803,8 @@
       "days": "Days",
       "fromTo": "Period",
       "totalToPay": "Total to pay",
-      "yearlyExcel": "Travel expenses — month Excel",
-      "yearlyHint": "The chosen month's travel expenses in the Expenses workbook format"
+      "yearlyExcel": "Travel expenses — Excel",
+      "yearlyHint": "Travel expenses for the chosen dates in the Expenses workbook format"
     },
     "attendance": {
       "title": "Attendance Report",

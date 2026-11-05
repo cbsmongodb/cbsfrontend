@@ -86,19 +86,22 @@ export default function ReimbursementReport() {
     }
   }
 
-  // travel expenses of one month (Expenses_YYYY.xlsx look); default = last finished month
-  const [expMonth, setExpMonth] = useState(() => {
-    const d = new Date()
-    d.setDate(1)
-    d.setMonth(d.getMonth() - 1)
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-  })
+  // travel expenses in the Expenses_YYYY.xlsx look, for the dates / filters chosen below
   const [yearlyBusy, setYearlyBusy] = useState(false)
   async function downloadYearly() {
     setYearlyBusy(true)
     setError('')
     try {
-      await apiDownload(`/api/reports/reimbursement/expenses?month=${expMonth}`)
+      const params = new URLSearchParams()
+      const f = from || defaultFrom()
+      const tt = to || defaultTo()
+      if (!from) setFrom(f)
+      if (!to) setTo(tt)
+      params.set('from', f)
+      params.set('to', tt)
+      if (employeeId) params.set('employee', employeeId)
+      if (divisionId) params.set('division', divisionId)
+      await apiDownload(`/api/reports/reimbursement/expenses?${params}`)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -187,7 +190,6 @@ export default function ReimbursementReport() {
           <h1>{t('reimbursement.title')}</h1>
           <ExcelExportButton title={t('reimbursement.title')} tableSelector=".reimbursement-table" pages={pageCount} currentPage={safePage + 1} goToPage={(n) => setPage(n - 1)} />
           <span className="excel-export">
-            <input type="month" className="field-input" value={expMonth} onChange={(e) => setExpMonth(e.target.value)} aria-label={t('reimbursement.yearlyExcel')} style={{ width: 'auto', marginRight: 8 }} />
             <button type="button" className="excel-export-btn" onClick={downloadYearly} disabled={yearlyBusy} title={t('reimbursement.yearlyHint')}>
               {yearlyBusy ? <span className="btn-spinner" aria-hidden="true" /> : (
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
