@@ -997,7 +997,8 @@
       "place": "Place",
       "doctors": "Doctors",
       "comment": "Comment",
-      "empty": "No visits in this period"
+      "empty": "No visits in this period",
+      "hour": "h"
     }
   },
   "attendanceStatus": {

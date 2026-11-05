@@ -82,6 +82,12 @@ export default function VisitsReport() {
     return s.charAt(0).toUpperCase() + s.slice(1)
   }
   const ddmmyyyy = (k) => k.split('-').reverse().join('.')
+  // 108 -> "1 სთ 48 წთ", 37 -> "37 წთ", 120 -> "2 სთ"
+  const dur = (m) => {
+    const h = Math.floor(m / 60), r = m % 60
+    if (!h) return `${r} ${v('min')}`
+    return r ? `${h} ${v('hour')} ${r} ${v('min')}` : `${h} ${v('hour')}`
+  }
 
   async function buildExcel() {
     const p = query({ from, to, divisionId })
@@ -91,7 +97,7 @@ export default function VisitsReport() {
     const headers = [t('common.date'), t('common.employee'), t('common.division'), v('place'), v('went'), v('left'), v('duration')]
     const rows = allDays.flatMap((d) => d.employees.flatMap((e) => e.visits.map((x) => {
       const mins = minutesBetween(x.iWentAt, x.iLeftAt)
-      return [ddmmyyyy(d.key), e.name, e.division, x.place, hhmm(x.iWentAt), hhmm(x.iLeftAt), mins != null ? `${mins} ${v('min')}` : '']
+      return [ddmmyyyy(d.key), e.name, e.division, x.place, hhmm(x.iWentAt), hhmm(x.iLeftAt), mins != null ? dur(mins) : '']
     })))
     return { headers, rows }
   }
@@ -163,7 +169,7 @@ export default function VisitsReport() {
                       <li key={x._id} className="vr-tile">
                         <div className="vr-tile-top">
                           <span className="vr-tile-time"><b>{hhmm(x.iWentAt) || '—'}</b> – {hhmm(x.iLeftAt) || '…'}</span>
-                          {mins != null && <i>{mins} {v('min')}</i>}
+                          {mins != null && <i>{dur(mins)}</i>}
                         </div>
                         <div className="vr-place">
                           <span className={`vr-place-icon ${x.placeType}`} aria-hidden="true">{x.placeType === 'pharmacy' ? '℞' : '✚'}</span>
