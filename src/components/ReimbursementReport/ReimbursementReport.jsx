@@ -16,14 +16,16 @@ function toInputDate(d) {
   return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`
 }
 
-function defaultFrom() {
-  const d = new Date()
-  d.setDate(d.getDate() - 6)
-  return toInputDate(d)
+// the report works by whole months: "2026-10" -> 2026-10-01 … 2026-10-31
+function monthRange(ym) {
+  const [y, m] = ym.split('-').map(Number)
+  return { from: `${ym}-01`, to: `${ym}-${pad2(new Date(y, m, 0).getDate())}` }
 }
-
+function defaultFrom() {
+  return monthRange(toInputDate(new Date()).slice(0, 7)).from
+}
 function defaultTo() {
-  return toInputDate(new Date())
+  return monthRange(toInputDate(new Date()).slice(0, 7)).to
 }
 
 export default function ReimbursementReport() {
@@ -205,12 +207,18 @@ export default function ReimbursementReport() {
       <div className="reimbursement-filters-card">
         <div className="reimbursement-filters-grid">
           <div className="reimbursement-field">
-            <label>{t('common.startDate')}</label>
-            <input type="date" className="field-input" value={from} onChange={(e) => setFrom(e.target.value)} />
-          </div>
-          <div className="reimbursement-field">
-            <label>{t('common.endDate')}</label>
-            <input type="date" className="field-input" value={to} onChange={(e) => setTo(e.target.value)} />
+            <label>{t('common.month')}</label>
+            <input
+              type="month"
+              className="field-input"
+              value={(from || defaultFrom()).slice(0, 7)}
+              onChange={(e) => {
+                if (!e.target.value) return
+                const r = monthRange(e.target.value)
+                setFrom(r.from)
+                setTo(r.to)
+              }}
+            />
           </div>
           <div className="reimbursement-field">
             <label>{t('common.employee')}</label>
