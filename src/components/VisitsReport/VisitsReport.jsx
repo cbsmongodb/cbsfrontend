@@ -145,10 +145,6 @@ export default function VisitsReport() {
 
       {days.map((d) => (
         <section className="vr-day" key={d.key}>
-          <header className="vr-day-head">
-            <h3>{dayTitle(d.key)}</h3>
-            <span className="vr-day-count">{d.count} {v('visitsShort')} · {d.employees.length} {v('peopleShort')}</span>
-          </header>
           <div className="vr-emps">
             {d.employees.map((e) => (
               <article className="vr-row" key={`${d.key}_${e.id}`}>

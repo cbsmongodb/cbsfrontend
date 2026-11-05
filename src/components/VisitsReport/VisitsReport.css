@@ -45,7 +45,7 @@
 .visits-report .vr-empty { text-align: center; color: #64748b; padding: 40px 0; font-weight: 600; }
 
 /* a day */
-.visits-report .vr-day { margin-bottom: 22px; }
+.visits-report .vr-day { margin-bottom: 12px; }
 .visits-report .vr-day-head {
   position: sticky; top: 0; z-index: 2; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;
   padding: 10px 4px; background: linear-gradient(#f6f8fb 70%, rgba(246, 248, 251, 0));
