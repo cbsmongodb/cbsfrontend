@@ -155,6 +155,7 @@ export default function VisitsReport() {
                 <div className="vr-row-who">
                   <span className="vr-avatar" aria-hidden="true">{(e.name || '?').split(' ').map((s) => s[0]).slice(0, 2).join('').toUpperCase()}</span>
                   <span className="vr-emp-name">
+                    <span className="vr-row-date">{ddmmyyyy(d.key)} · {(() => { const [y, m, dd] = d.key.split('-').map(Number); return new Date(y, m - 1, dd).toLocaleDateString(tag, { weekday: 'long' }) })()}</span>
                     <strong>{e.name}</strong>
                     {e.division && <em>{e.division}</em>}
                     <span className="vr-emp-meta"><span className="vr-pill">{e.visits.length} {v('visitsShort')}</span></span>

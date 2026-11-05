@@ -112,3 +112,9 @@
   .visits-report .vr-row { grid-template-columns: 1fr; }
   .visits-report .vr-row-who { position: static; border-right: 0; border-bottom: 1px solid #eef2f7; }
 }
+
+/* the visit's date on every row */
+.visits-report .vr-row-date {
+  align-self: flex-start; margin-bottom: 3px; padding: 2px 9px; border-radius: 6px;
+  background: #0c3557; color: #fff; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums;
+}
