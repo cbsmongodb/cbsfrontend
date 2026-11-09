@@ -50,7 +50,8 @@ function readPermissions(endpoint) {
   }
 }
 
-export default function ResourceTable({ title, endpoint, fields, paginated = false, pageSize = 50 }) {
+export default function ResourceTable({ title, endpoint, fields: rawFields, paginated = false, pageSize = 50 }) {
+  const fields = rawFields.map((f) => (!f.type && /^is[A-Z]/.test(f.name) ? { ...f, type: 'checkbox' } : f))
   const t = useTranslations('resourceTable')
   const WEEKDAYS = [
     { value: 1, label: t('weekdaysShort.mon') },
@@ -506,24 +507,22 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
     }
 
     if (f.type === 'checkbox') {
+      const on = !!form[f.name]
       return (
-        <div key={f.name} className="checkbox-wrapper-46">
+        <label key={f.name} className={`rt-switch ${on ? 'is-on' : ''}`}>
           <input
             type="checkbox"
-            id={`field-${f.name}`}
-            className="inp-cbx"
-            checked={!!form[f.name]}
+            role="switch"
+            aria-checked={on}
+            checked={on}
             onChange={(e) => handleChange(f.name, e.target.checked)}
           />
-          <label htmlFor={`field-${f.name}`} className="cbx">
-            <span>
-              <svg viewBox="0 0 12 10" height="10px" width="12px">
-                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-              </svg>
-            </span>
-            <span>{f.label}</span>
-          </label>
-        </div>
+          <span className="rt-switch-track" aria-hidden="true"><span className="rt-switch-thumb" /></span>
+          <span className="rt-switch-text">
+            {f.label}
+            <em>{on ? t('statusOn') : t('statusOff')}</em>
+          </span>
+        </label>
       )
     }
 
@@ -601,6 +600,10 @@ export default function ResourceTable({ title, endpoint, fields, paginated = fal
 
   // what is SHOWN in a cell (renderCell stays plain text: it is also used for search)
   function displayCell(f, item) {
+    if (f.type === 'checkbox') {
+      const on = !!item[f.name]
+      return <span className={`rt-status ${on ? 'is-on' : 'is-off'}`}>{on ? t('statusOn') : t('statusOff')}</span>
+    }
     if (f.type === 'multiselect' || f.type === 'multiselect-search') {
       const value = item[f.name]
       if (!Array.isArray(value) || value.length === 0) return '—'

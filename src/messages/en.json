@@ -390,7 +390,9 @@
     },
     "formNewTitle": "New record",
     "formEditTitle": "Editing",
-    "formHint": "Fill in the fields and press Add"
+    "formHint": "Fill in the fields and press Add",
+    "statusOn": "Active",
+    "statusOff": "Inactive"
   },
   "roles": {
     "createTitle": "Add New Role",
