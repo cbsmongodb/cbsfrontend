@@ -1549,6 +1549,9 @@
     "editDoctors": "ექიმები",
     "addDoctorsBtn": "+ ექიმები",
     "year": "წელი",
-    "change": "შეცვლა"
+    "change": "შეცვლა",
+    "prevYear": "წინა წელი",
+    "nextYear": "შემდეგი წელი",
+    "thisMonthBtn": "მიმდინარე თვე"
   }
 }

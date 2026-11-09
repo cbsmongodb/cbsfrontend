@@ -1546,6 +1546,9 @@
     "editDoctors": "Doctors",
     "addDoctorsBtn": "+ Doctors",
     "year": "Year",
-    "change": "Change"
+    "change": "Change",
+    "prevYear": "Previous year",
+    "nextYear": "Next year",
+    "thisMonthBtn": "This month"
   }
 }

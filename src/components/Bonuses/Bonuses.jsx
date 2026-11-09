@@ -32,6 +32,75 @@ const clean = (s) => String(s ?? '').trim().replace(',', '.')
 const valid = (s) => clean(s) === '' || /^\d+(\.\d+)?$/.test(clean(s))
 const asText = (v) => (v == null ? '' : String(v))
 
+// month picker: one button, a panel with the year and a 3×4 grid of months
+const SHORT = {
+  ka: ['იან', 'თებ', 'მარ', 'აპრ', 'მაი', 'ივნ', 'ივლ', 'აგვ', 'სექ', 'ოქტ', 'ნოე', 'დეკ'],
+  en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  ru: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+}
+function MonthPicker({ value, onChange, locale, t }) {
+  const [open, setOpen] = useState(false)
+  const [year, setYear] = useState(value.y)
+  const ref = useRef(null)
+  const now = thisMonth()
+  useEffect(() => { if (open) setYear(value.y) }, [open, value.y])
+  useEffect(() => {
+    if (!open) return
+    const out = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
+    const esc = (e) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('mousedown', out)
+    document.addEventListener('keydown', esc)
+    return () => { document.removeEventListener('mousedown', out); document.removeEventListener('keydown', esc) }
+  }, [open])
+  const names = SHORT[locale] || SHORT.ka
+
+  return (
+    <div className="mp" ref={ref}>
+      <button type="button" className={`mp-btn ${open ? 'is-open' : ''}`} onClick={() => setOpen((o) => !o)} aria-haspopup="dialog" aria-expanded={open}>
+        <span className="mp-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" strokeWidth="1.9" /><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" /></svg>
+        </span>
+        <span className="mp-text">
+          <small>{t('month')}</small>
+          <strong>{monthName(locale, value)}</strong>
+        </span>
+        <span className="mp-caret" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </span>
+      </button>
+      {open && (
+        <div className="mp-panel" role="dialog" aria-label={t('month')}>
+          <div className="mp-year">
+            <button type="button" onClick={() => setYear((y) => y - 1)} aria-label={t('prevYear')}>‹</button>
+            <strong>{year}</strong>
+            <button type="button" onClick={() => setYear((y) => y + 1)} aria-label={t('nextYear')}>›</button>
+          </div>
+          <div className="mp-grid">
+            {names.map((n, i) => {
+              const sel = value.y === year && value.m === i
+              const cur = now.y === year && now.m === i
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  className={`mp-month ${sel ? 'is-selected' : ''} ${cur ? 'is-current' : ''}`}
+                  onClick={() => { onChange({ y: year, m: i }); setOpen(false) }}
+                  title={monthName(locale, { y: year, m: i })}
+                >
+                  {n}
+                </button>
+              )
+            })}
+          </div>
+          <button type="button" className="mp-today" onClick={() => { onChange(now); setOpen(false) }}>
+            {t('thisMonthBtn')}
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // a doctor shown as: initials · name, and "profile · #ID" under it
 function DoctorTag({ d }) {
   const name = `${d.firstName || ''} ${d.lastName || ''}`.trim() || d.name || '—'
@@ -509,20 +578,7 @@ export default function Bonuses() {
           <h1>{t('title')}</h1>
           <p className="bonuses-sub">{t('subtitle')}</p>
         </div>
-        <div className="bonuses-month-pick" role="group" aria-label={t('month')}>
-          <label className="bonuses-select">
-            <span className="bonuses-select-label">{t('month')}</span>
-            <select value={month.m} onChange={(e) => setMonth((mo) => ({ ...mo, m: Number(e.target.value) }))}>
-              {(MONTHS[locale] || MONTHS.ka).map((name, i) => <option key={i} value={i}>{name}</option>)}
-            </select>
-          </label>
-          <label className="bonuses-select">
-            <span className="bonuses-select-label">{t('year')}</span>
-            <select value={month.y} onChange={(e) => setMonth((mo) => ({ ...mo, y: Number(e.target.value) }))}>
-              {Array.from({ length: Math.max(thisMonth().y + 1, month.y) - 2024 + 1 }, (_, i) => 2024 + i).map((y) => <option key={y} value={y}>{y}</option>)}
-            </select>
-          </label>
-        </div>
+        <MonthPicker value={month} onChange={setMonth} locale={locale} t={t} />
       </div>
 
       <div className="bonuses-toolbar">

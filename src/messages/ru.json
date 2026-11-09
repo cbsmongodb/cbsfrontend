@@ -1546,6 +1546,9 @@
     "editDoctors": "Врачи",
     "addDoctorsBtn": "+ Врачи",
     "year": "Год",
-    "change": "Изменить"
+    "change": "Изменить",
+    "prevYear": "Предыдущий год",
+    "nextYear": "Следующий год",
+    "thisMonthBtn": "Текущий месяц"
   }
 }
