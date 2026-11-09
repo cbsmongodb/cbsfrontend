@@ -118,8 +118,32 @@ export default function HospitalImport() {
   const [missingLoading, setMissingLoading] = useState(false)
   const [missingError, setMissingError] = useState('')
   const [pinTarget, setPinTarget] = useState(null)
+  const [savingId, setSavingId] = useState(null)
 
   const preview = parseRows(text)
+
+  // show the list right away — no need to click the button first
+  useEffect(() => {
+    loadMissing()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  async function applyRepLocation(h) {
+    if (!h.suggested) return
+    setSavingId(h._id)
+    setMissingError('')
+    try {
+      await apiFetch(`/api/hospitals/${h._id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ lat: h.suggested.lat, lng: h.suggested.lng }),
+      })
+      handlePinSaved(h._id)
+    } catch (err) {
+      setMissingError(err.message)
+    } finally {
+      setSavingId(null)
+    }
+  }
 
   useEffect(() => {
     if (!API_URL) return
@@ -286,11 +310,44 @@ export default function HospitalImport() {
             >
               <div style={{ fontSize: 13 }}>
                 <strong>{h.name}</strong>
-                <div style={{ color: '#64748b', fontSize: 12 }}>{h.address}</div>
+                <div style={{ color: '#64748b', fontSize: 12 }}>
+                  {[h.region, h.address].filter(Boolean).join(' · ')}
+                </div>
+                {h.visits != null && (
+                  <div style={{ color: h.visits > 0 ? '#b45309' : '#94a3b8', fontSize: 12, marginTop: 2 }}>
+                    {h.visits > 0
+                      ? `${t('visitsCount', { count: h.visits })} · ${t('lastVisit', {
+                          date: new Date(h.lastVisit).toLocaleDateString('ka-GE'),
+                        })}`
+                      : t('noVisitsYet')}
+                  </div>
+                )}
               </div>
-              <button type="button" className="btn-gray btn-sm" onClick={() => setPinTarget(h)}>
-                <span>{t('pinButton')}</span>
-              </button>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+                {h.suggested && (
+                  <>
+                    <a
+                      href={`https://www.google.com/maps?q=${h.suggested.lat},${h.suggested.lng}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ fontSize: 12, color: '#2563eb' }}
+                    >
+                      {t('viewOnMap')}
+                    </a>
+                    <button
+                      type="button"
+                      className="btn btn-sm"
+                      disabled={savingId === h._id}
+                      onClick={() => applyRepLocation(h)}
+                    >
+                      <span>{savingId === h._id ? '...' : t('useRepLocation', { count: h.suggested.points })}</span>
+                    </button>
+                  </>
+                )}
+                <button type="button" className="btn-gray btn-sm" onClick={() => setPinTarget(h)}>
+                  <span>{t('pinButton')}</span>
+                </button>
+              </div>
             </div>
           ))}
         </div>

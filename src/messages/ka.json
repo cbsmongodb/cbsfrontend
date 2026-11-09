@@ -267,7 +267,11 @@
     "progressText": "{processed} / {total} დამუშავებულია ({percent}%)",
     "geocodeSummary": "✅ სულ: {total} | ნაპოვნია: {geocoded} | ვერ მოიძებნა: {failed}",
     "missingHeading": "რუკაზე არ არის დამატებული ({count})",
-    "pinButton": "📍 რუკაზე მონიშვნა"
+    "pinButton": "📍 რუკაზე მონიშვნა",
+    "lastVisit": "ბოლო: {date}",
+    "noVisitsYet": "ვიზიტი ჯერ არ ყოფილა",
+    "viewOnMap": "რუკაზე ნახვა",
+    "useRepLocation": "✓ წარმომადგენლის GPS-ით ({count})"
   },
   "mapPicker": {
     "searchPlaceholder": "მოძებნეთ მისამართი ან ჰოსპიტლის სახელი...",
@@ -334,6 +338,7 @@
     "noVisits": "დღეს დანიშნული ვიზიტები არ არის",
     "distanceFar": "⚠ {distance}მ დაშორებული",
     "distanceNormal": "{distance}მ დაშორებული",
+    "noTargetLocation": "ობიექტის ლოკაცია ჯერ არ არის დამატებული — მანძილი არ ჩანს, ჩექ-ინი/ჩექ-აუთი მაინც შეგიძლიათ",
     "statuses": {
       "planned": "დაგეგმილია",
       "i_went": "დაჩექინდა",

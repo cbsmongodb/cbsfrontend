@@ -264,7 +264,11 @@
     "progressText": "{processed} / {total} processed ({percent}%)",
     "geocodeSummary": "✅ Total: {total} | Found: {geocoded} | Not found: {failed}",
     "missingHeading": "Not yet on the map ({count})",
-    "pinButton": "📍 Pin on map"
+    "pinButton": "📍 Pin on map",
+    "lastVisit": "last: {date}",
+    "noVisitsYet": "No visits yet",
+    "viewOnMap": "View on map",
+    "useRepLocation": "✓ Use reps' GPS ({count})"
   },
   "mapPicker": {
     "searchPlaceholder": "Search address or hospital name...",
@@ -331,6 +335,7 @@
     "noVisits": "No visits planned for today",
     "distanceFar": "⚠ {distance}m away",
     "distanceNormal": "{distance}m away",
+    "noTargetLocation": "This place has no location yet — distance isn't shown, but you can still check in/out",
     "statuses": {
       "planned": "Planned",
       "i_went": "Checked in",

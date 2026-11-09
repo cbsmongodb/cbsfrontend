@@ -144,11 +144,10 @@ export default function TodayVisits() {
 
   // checkout now opens the "which doctors did you see" modal first —
   // the actual checkout call happens in confirmCheckout()
+  // the hospital having no location never blocks checkout — confirmCheckout()
+  // asks the phone for a fresh position itself, so a stale/missing one here is fine
   async function openCheckoutModal(plan) {
-    if (!position) {
-      setLocError(t('locationUnavailable'))
-      return
-    }
+    setLocError('')
     setCheckoutPlan(plan)
     setSelectedDoctorIds([])
     setDoctorSearch('')
@@ -282,6 +281,10 @@ export default function TodayVisits() {
                 <span className="today-visit-name">{name}</span>
                 <span className="today-visit-status">{t(`statuses.${plan.status}`)}</span>
               </div>
+              {(plan.hospital || plan.pharmacy) &&
+                ((plan.hospital || plan.pharmacy).lat == null || (plan.hospital || plan.pharmacy).lng == null) && (
+                <div className="today-visit-distance">{t('noTargetLocation')}</div>
+              )}
               {distance != null && (
                 <div className={`today-visit-distance ${isFar ? 'far' : ''}`}>
                   {isFar ? t('distanceFar', { distance }) : t('distanceNormal', { distance })}

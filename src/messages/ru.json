@@ -264,7 +264,11 @@
     "progressText": "{processed} / {total} обработано ({percent}%)",
     "geocodeSummary": "✅ Всего: {total} | Найдено: {geocoded} | Не найдено: {failed}",
     "missingHeading": "Ещё не на карте ({count})",
-    "pinButton": "📍 Отметить на карте"
+    "pinButton": "📍 Отметить на карте",
+    "lastVisit": "последний: {date}",
+    "noVisitsYet": "Визитов ещё не было",
+    "viewOnMap": "Показать на карте",
+    "useRepLocation": "✓ По GPS представителей ({count})"
   },
   "mapPicker": {
     "searchPlaceholder": "Поиск адреса или названия больницы...",
@@ -331,6 +335,7 @@
     "noVisits": "На сегодня визиты не запланированы",
     "distanceFar": "⚠ {distance}м от места",
     "distanceNormal": "{distance}м от места",
+    "noTargetLocation": "У объекта ещё нет местоположения — расстояние не показано, но чек-ин/чек-аут всё равно доступен",
     "statuses": {
       "planned": "Запланировано",
       "i_went": "Отметился",

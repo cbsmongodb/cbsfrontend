@@ -2121,3 +2121,19 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+
+
+/* table-bottom-space-v1 */
+/* table pages had a FIXED height (100vh - 48px): form + search + table +
+   pagination didn't fit, spilled out of the box and the table ended flush
+   with the bottom of the screen. Let the page grow and keep air under it. */
+body .resource-table,
+body .attendance-status,
+body .sales-listing-page,
+body .role-permissions {
+  height: auto;
+  min-height: calc(100dvh - 48px);
+  padding-bottom: 32px;
+}
+body .resource-table-scroll { flex: none; margin-bottom: 16px; }
+body .resource-pagination { margin-bottom: 24px; }
