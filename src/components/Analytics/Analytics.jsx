@@ -381,6 +381,12 @@ export default function Analytics() {
                       {row.noPrescription && (
                         <span className="analytics-norx-badge">{t('analytics.noPrescriptionYet')}</span>
                       )}
+                      {row.multipleReps && (
+                        <span className="analytics-norx-badge">{t('analytics.multipleReps')}</span>
+                      )}
+                      {row.budgetBy?.length > 0 && (
+                        <span className="analytics-budgetby-badge">{t('analytics.budgetBy', { names: row.budgetBy.join(', ') })}</span>
+                      )}
                     </td>
                     <td data-label={t('common.visits')} className="analytics-num">{row.visits}</td>
                     <td data-label={t('analytics.targetAmount')} className="analytics-num analytics-group-target">{fmtMoney(row.targetAmount)}</td>

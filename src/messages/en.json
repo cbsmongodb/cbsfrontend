@@ -842,7 +842,9 @@
     "analytics": {
       "title": "Analytics",
       "noDrugData": "No drug data in this period",
-      "noPrescriptionYet": "No prescription entered yet",
+      "budgetBy": "Budget: {names}",
+      "multipleReps": "Doctor has several reps",
+      "noPrescriptionYet": "No prescription entered by a rep yet",
       "prescription": "Prescription",
       "sales": "Sales",
       "payable": "Payable",

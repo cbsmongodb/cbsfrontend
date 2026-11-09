@@ -842,7 +842,9 @@
     "analytics": {
       "title": "Аналитика",
       "noDrugData": "Нет данных по препаратам за этот период",
-      "noPrescriptionYet": "Рецепт ещё не введён",
+      "budgetBy": "Бюджет: {names}",
+      "multipleReps": "У врача несколько представителей",
+      "noPrescriptionYet": "Представитель ещё не ввёл рецепт",
       "prescription": "Назначения",
       "sales": "Продажи",
       "payable": "К оплате",

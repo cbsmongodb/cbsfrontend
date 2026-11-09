@@ -363,3 +363,17 @@
   font-weight: 600;
   white-space: nowrap;
 }
+
+/* budget paid by the group manager, shown on the rep's line */
+.analytics-budgetby-badge {
+  display: block;
+  width: fit-content;
+  margin-top: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #e0ecff;
+  color: #1e3a8a;
+  font-size: 10.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
