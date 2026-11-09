@@ -136,6 +136,15 @@ function buildVisits(events) {
   return visits.sort((a, b) => new Date(b.sortTime) - new Date(a.sortTime))
 }
 
+// "Newmed / ნიუმედი" -> two lines: Georgian name on top, the other one smaller below
+function splitPlaceName(name) {
+  const full = String(name || '—').trim()
+  const parts = full.split(/\s*•?\s*\/\s*/).filter(Boolean)
+  if (parts.length !== 2) return [full, null]
+  const isKa = (x) => /[\u10A0-\u10FF]/.test(x)
+  return isKa(parts[1]) && !isKa(parts[0]) ? [parts[1], parts[0]] : parts
+}
+
 export default function LiveFeed() {
   const tu = useTranslations('ui')
   const t = useTranslations('liveFeed')
@@ -439,7 +448,17 @@ export default function LiveFeed() {
                       )}
                     </div>
                   </td>
-                  <td data-label={t('headers.hospital')}>{visit.hospitalName}</td>
+                  <td data-label={t('headers.hospital')} className="lf-hospital-cell" title={visit.hospitalName}>
+                    {(() => {
+                      const [main, sub] = splitPlaceName(visit.hospitalName)
+                      return (
+                        <div className="lf-hospital">
+                          <span className="lf-hospital-main">{main}</span>
+                          {sub && <span className="lf-hospital-sub">{sub}</span>}
+                        </div>
+                      )
+                    })()}
+                  </td>
                   <td data-label={t('headers.checkin')}>
                     {visit.checkinTime
                       ? new Date(visit.checkinTime).toLocaleTimeString(dateLocale, {

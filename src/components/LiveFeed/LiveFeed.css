@@ -742,3 +742,27 @@
 }
 .live-feed-employee-tags .day-link + .day-link { margin-left: 0 !important; }
 .lf-noloc { color: #b45309; font-weight: 600; white-space: nowrap; }
+
+
+/* lf-hospital-2lines-v1 */
+/* long hospital names: max 2 lines instead of one very wide column */
+.live-feed-table td.lf-hospital-cell { white-space: normal; min-width: 170px; max-width: 280px; }
+.lf-hospital { display: flex; flex-direction: column; gap: 2px; line-height: 1.3; min-width: 0; }
+.lf-hospital-main {
+  font-weight: 600;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.lf-hospital-sub {
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 640px) {
+  .live-feed-table td.lf-hospital-cell { max-width: none; }
+  .lf-hospital { align-items: flex-end; text-align: right; max-width: 70%; }
+}
