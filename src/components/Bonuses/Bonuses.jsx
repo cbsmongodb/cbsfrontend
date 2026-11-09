@@ -32,11 +32,11 @@ const clean = (s) => String(s ?? '').trim().replace(',', '.')
 const valid = (s) => clean(s) === '' || /^\d+(\.\d+)?$/.test(clean(s))
 const asText = (v) => (v == null ? '' : String(v))
 
-// search box for "add a doctor"
+// search box for "add doctors": tick several, add them together
 function DoctorPicker({ t, onPick, exclude }) {
   const [q, setQ] = useState('')
   const [list, setList] = useState([])
-  const [open, setOpen] = useState(false)
+  const [picked, setPicked] = useState([]) // doctors ticked, not added yet
   const seq = useRef(0)
 
   useEffect(() => {
@@ -52,7 +52,18 @@ function DoctorPicker({ t, onPick, exclude }) {
     return () => clearTimeout(id)
   }, [q])
 
+  const isPicked = (d) => picked.some((x) => x._id === d._id)
+  const toggle = (d) => setPicked((p) => (isPicked(d) ? p.filter((x) => x._id !== d._id) : [...p, d]))
   const shown = list.filter((d) => !exclude.has(d._id))
+  const allShownPicked = shown.length > 0 && shown.every(isPicked)
+  const addAll = () => {
+    if (!picked.length) return
+    onPick(picked)
+    setPicked([])
+    setQ('')
+    setList([])
+  }
+
   return (
     <div className="bonus-doctor-picker">
       <input
@@ -60,24 +71,37 @@ function DoctorPicker({ t, onPick, exclude }) {
         className="field-input"
         placeholder={t('doctorSearch')}
         value={q}
-        onChange={(e) => { setQ(e.target.value); setOpen(true) }}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        onChange={(e) => setQ(e.target.value)}
+        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addAll() } }}
       />
-      {open && q.trim().length >= 2 && (
+      {q.trim().length >= 2 && (
         <div className="bonus-doctor-results">
           {shown.length === 0 && <div className="bonus-doctor-empty">{t('noDoctorFound')}</div>}
+          {shown.length > 1 && (
+            <label className="bonus-doctor-result is-all">
+              <input
+                type="checkbox"
+                checked={allShownPicked}
+                onChange={() => setPicked((p) => (allShownPicked
+                  ? p.filter((x) => !shown.some((d) => d._id === x._id))
+                  : [...p, ...shown.filter((d) => !p.some((x) => x._id === d._id))]))}
+              />
+              <span>{t('pickAllShown', { n: shown.length })}</span>
+            </label>
+          )}
           {shown.map((d) => (
-            <button
-              key={d._id}
-              type="button"
-              className="bonus-doctor-result"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => { onPick(d); setQ(''); setList([]); setOpen(false) }}
-            >
-              {formatDoctorLabel(d)}
-            </button>
+            <label key={d._id} className={`bonus-doctor-result ${isPicked(d) ? 'is-picked' : ''}`}>
+              <input type="checkbox" checked={isPicked(d)} onChange={() => toggle(d)} />
+              <span>{formatDoctorLabel(d)}</span>
+            </label>
           ))}
+        </div>
+      )}
+      {picked.length > 0 && (
+        <div className="bonus-picked-bar">
+          <span>{t('pickedN', { n: picked.length })}</span>
+          <button type="button" className="btn-gray btn-sm" onClick={() => setPicked([])}><span>{t('clearPicked')}</span></button>
+          <button type="button" className="btn btn-sm" onClick={addAll}><span>{t('addPicked', { n: picked.length })}</span></button>
         </div>
       )}
     </div>
@@ -90,6 +114,7 @@ function EditModal({ t, drug, monthText, onClose, onSave }) {
   const [lines, setLines] = useState(drug.doctors.map((x) => ({ doctor: x.doctor, saved: x.value, text: asText(x.value), remove: false, isNew: false })))
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [bulk, setBulk] = useState('')
   const firstInput = useRef(null)
 
   useEffect(() => { firstInput.current?.focus() }, [])
@@ -160,6 +185,26 @@ function EditModal({ t, drug, monthText, onClose, onSave }) {
           <div className="bonus-modal-section">
             <div className="bonus-modal-section-title">{t('doctorsSection')}</div>
             <p className="bonus-modal-help">{t('doctorsHint', { value: fmt(effective) })}</p>
+            <div className="bonus-bulk">
+              <span className="bonus-bulk-label">{t('bulkLabel')}</span>
+              <input
+                type="text"
+                inputMode="decimal"
+                className={`bonus-input ${bulk && !valid(bulk) ? 'is-bad' : ''}`}
+                value={bulk}
+                placeholder={t('typeValue')}
+                onChange={(e) => setBulk(e.target.value)}
+              />
+              <button
+                type="button"
+                className="btn-gray btn-sm"
+                disabled={!clean(bulk) || !valid(bulk) || !lines.some((l) => !l.remove)}
+                onClick={() => setLines((ls) => ls.map((l) => (l.remove ? l : { ...l, text: clean(bulk) })))}
+              >
+                <span>{t('bulkApply', { n: lines.filter((l) => !l.remove).length })}</span>
+              </button>
+            </div>
+            <p className="bonus-modal-help">{t('bulkHint')}</p>
             {lines.length === 0 && <p className="bonuses-doctors-none">{t('noDoctors')}</p>}
             {lines.map((l) => {
               const lBad = !l.remove && lineChanged(l) && !valid(l.text)
@@ -200,7 +245,11 @@ function EditModal({ t, drug, monthText, onClose, onSave }) {
             <DoctorPicker
               t={t}
               exclude={taken}
-              onPick={(doctor) => setLines((ls) => [...ls, { doctor, saved: null, text: '', remove: false, isNew: true }])}
+              onPick={(doctors) => setLines((ls) => [
+                ...ls,
+                ...doctors.filter((d) => !ls.some((l) => l.doctor._id === d._id))
+                  .map((doctor) => ({ doctor, saved: null, text: bulk && valid(bulk) ? clean(bulk) : '', remove: false, isNew: true })),
+              ])}
             />
           </div>
           {error && <p className="resource-error" style={{ marginTop: 12 }}>{error}</p>}

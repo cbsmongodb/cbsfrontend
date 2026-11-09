@@ -515,3 +515,39 @@
   .bonuses-table th:nth-child(4), .bonuses-table td:nth-child(4) { display: none; }
 }
 .bonuses-table tr.is-set td:nth-child(4) .bonuses-hint { color: var(--ink-faint); font-weight: 400; }
+
+/* ===== v5: add many doctors + one bonus for all ===== */
+.bonus-doctor-results { position: static; margin-top: 6px; max-height: 240px; }
+.bonus-doctor-result { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.bonus-doctor-result input { width: 16px; height: 16px; flex-shrink: 0; accent-color: var(--blue); }
+.bonus-doctor-result.is-picked { background: var(--tint); font-weight: 600; }
+.bonus-doctor-result.is-all { border-bottom: 1px solid var(--line); color: var(--blue); font-weight: 700; }
+.bonus-picked-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e3a8a;
+}
+.bonus-picked-bar > span { flex: 1; }
+.bonus-bulk {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid var(--line);
+}
+.bonus-bulk-label { font-size: 13px; font-weight: 700; color: var(--ink); }
+.bonus-picker-wrap { margin-top: 12px; }
+.bonus-modal .bonus-doctor-picker { max-width: none; }

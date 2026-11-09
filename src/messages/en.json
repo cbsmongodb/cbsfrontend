@@ -1487,7 +1487,7 @@
     "doctorsTitle": "{drug} — a different bonus for specific doctors ({month})",
     "doctorsHint": "Other doctors get {value} this month. The doctors added here get the number written for them.",
     "noDoctors": "No doctors added yet.",
-    "doctorSearch": "+ add a doctor: name, surname or number...",
+    "doctorSearch": "Add doctors: type a name, surname or number and tick as many as you want...",
     "noDoctorFound": "No doctor found",
     "typeValue": "bonus",
     "remove": "Remove",
@@ -1523,6 +1523,13 @@
     "ok": "OK",
     "savedOkTitle": "Saved successfully!",
     "inheritedDrugShort": "medicine's old bonus",
-    "inheritedDefaultShort": "default"
+    "inheritedDefaultShort": "default",
+    "pickAllShown": "Tick all ({n})",
+    "pickedN": "{n} doctors ticked",
+    "clearPicked": "Clear",
+    "addPicked": "+ Add ({n})",
+    "bulkLabel": "One bonus for all doctors:",
+    "bulkApply": "Apply to all ({n})",
+    "bulkHint": "Add the doctors first, then type the bonus and press Apply to all. You can still change single doctors afterwards."
   }
 }
