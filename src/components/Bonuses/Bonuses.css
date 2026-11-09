@@ -787,3 +787,37 @@
 .bonuses-page .bm-money.is-changed { border-color: #f59e0b; background: #fffdf5; }
 .bonuses-page .bm-money.is-bad { border-color: #dc2626; }
 .bonuses-page .bm-link { border: none; background: transparent; color: #3f74d6; font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; text-decoration: underline; }
+/* v9: month + year dropdowns */
+.bonuses-month-pick { display: flex; gap: 10px; align-items: flex-end; }
+.bonuses-select { display: flex; flex-direction: column; gap: 4px; }
+.bonuses-select-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-faint); padding-left: 4px; }
+.bonuses-select select {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 44px;
+  min-width: 150px;
+  padding: 0 40px 0 16px;
+  border: 1.5px solid #d5dce6;
+  border-radius: 12px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233f74d6' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center / 16px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(15, 39, 68, 0.05);
+}
+.bonuses-select select:hover { border-color: #b9c4d3; }
+.bonuses-select select:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 4px rgba(63, 116, 214, 0.14); }
+.bonuses-select:last-child select { min-width: 110px; }
+@media (max-width: 640px) {
+  .bonuses-month-pick { width: 100%; }
+  .bonuses-select { flex: 1; }
+  .bonuses-select select { width: 100%; min-width: 0; }
+}
+/* v10: month bonus closed by default, "Change" opens it */
+.mb-cell .bonuses-value { min-width: 110px; }
+.mb-cell-edit { padding: 6px 12px; font-size: 12.5px; }
+.mb-cell.is-editing { background: #f5f9ff; border-radius: 12px; padding: 6px; margin: -6px; }
+.mb-cell-save:disabled { opacity: 0.45; cursor: not-allowed; }
+.mb-cell .bonuses-value { min-width: 170px; }

@@ -311,11 +311,14 @@ function EditModal({ t, drug, monthText, onClose, onSave }) {
   )
 }
 
-// the month bonus of one medicine, typed right in the table, with its own Save
+// the month bonus of one medicine: shown as text; "Change" opens the field + Save
 function MonthBonusCell({ t, d, canEdit, onSave, sourceText }) {
+  const [editing, setEditing] = useState(false)
   const [text, setText] = useState(asText(d.value))
   const [saving, setSaving] = useState(false)
-  useEffect(() => { setText(asText(d.value)) }, [d.value])
+  const inputRef = useRef(null)
+  useEffect(() => { if (!editing) setText(asText(d.value)) }, [d.value, editing])
+  useEffect(() => { if (editing) inputRef.current?.focus() }, [editing])
   const changed = clean(text) !== clean(asText(d.value))
   const bad = changed && !valid(text)
 
@@ -324,23 +327,33 @@ function MonthBonusCell({ t, d, canEdit, onSave, sourceText }) {
     setSaving(true)
     try {
       await onSave({ drugs: [{ drug: d._id, value: clean(text) === '' ? null : clean(text) }], doctors: [] })
+      setEditing(false)
     } catch { /* the page shows the error */ } finally {
       setSaving(false)
     }
   }
+  const cancel = () => { setText(asText(d.value)); setEditing(false) }
 
-  if (!canEdit) {
+  if (!editing) {
     return (
-      <div className="bonuses-value">
-        <strong className={d.value != null ? '' : 'is-inherited'}>{fmt(d.value ?? d.inherited) || '0'} ₾</strong>
-        <span className="bonuses-hint">{sourceText(d)}</span>
+      <div className="mb-cell">
+        <div className="bonuses-value">
+          <strong className={d.value != null ? '' : 'is-inherited'}>{fmt(d.value ?? d.inherited) || '0'} ₾</strong>
+          <span className="bonuses-hint">{sourceText(d)}</span>
+        </div>
+        {canEdit && (
+          <button type="button" className="btn-gray btn-sm mb-cell-edit" onClick={() => setEditing(true)}>
+            <span>✏️ {t('change')}</span>
+          </button>
+        )}
       </div>
     )
   }
   return (
-    <div className="mb-cell">
+    <div className="mb-cell is-editing">
       <div className={`bm-money is-small ${changed ? 'is-changed' : ''} ${bad ? 'is-bad' : ''}`}>
         <input
+          ref={inputRef}
           type="text"
           inputMode="decimal"
           value={text}
@@ -348,22 +361,16 @@ function MonthBonusCell({ t, d, canEdit, onSave, sourceText }) {
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') save()
-            if (e.key === 'Escape') setText(asText(d.value))
+            if (e.key === 'Escape') cancel()
           }}
           aria-label={`${d.name} — ${t('colBonus')}`}
         />
         <span>₾</span>
       </div>
-      {changed ? (
-        <>
-          <button type="button" className="btn btn-sm mb-cell-save" onClick={save} disabled={bad || saving}>
-            <span>{saving ? <span className="btn-spinner" /> : `💾 ${t('save')}`}</span>
-          </button>
-          <button type="button" className="bm-link" onClick={() => setText(asText(d.value))}>{t('cancel')}</button>
-        </>
-      ) : (
-        <span className="bonuses-hint">{sourceText(d)}</span>
-      )}
+      <button type="button" className="btn btn-sm mb-cell-save" onClick={save} disabled={!changed || bad || saving}>
+        <span>{saving ? <span className="btn-spinner" /> : `💾 ${t('save')}`}</span>
+      </button>
+      <button type="button" className="btn-gray btn-sm" onClick={cancel} disabled={saving}><span>{t('cancel')}</span></button>
       {bad && <span className="bonuses-hint is-bad">{t('badNumber')}</span>}
     </div>
   )
@@ -502,10 +509,19 @@ export default function Bonuses() {
           <h1>{t('title')}</h1>
           <p className="bonuses-sub">{t('subtitle')}</p>
         </div>
-        <div className="bonuses-month" role="group" aria-label={t('month')}>
-          <button type="button" className="bonuses-month-arrow" onClick={() => setMonth((m) => shift(m, -1))} aria-label={t('prevMonth')}>‹</button>
-          <span className="bonuses-month-name">{mName(month)}</span>
-          <button type="button" className="bonuses-month-arrow" onClick={() => setMonth((m) => shift(m, 1))} aria-label={t('nextMonth')}>›</button>
+        <div className="bonuses-month-pick" role="group" aria-label={t('month')}>
+          <label className="bonuses-select">
+            <span className="bonuses-select-label">{t('month')}</span>
+            <select value={month.m} onChange={(e) => setMonth((mo) => ({ ...mo, m: Number(e.target.value) }))}>
+              {(MONTHS[locale] || MONTHS.ka).map((name, i) => <option key={i} value={i}>{name}</option>)}
+            </select>
+          </label>
+          <label className="bonuses-select">
+            <span className="bonuses-select-label">{t('year')}</span>
+            <select value={month.y} onChange={(e) => setMonth((mo) => ({ ...mo, y: Number(e.target.value) }))}>
+              {Array.from({ length: Math.max(thisMonth().y + 1, month.y) - 2024 + 1 }, (_, i) => 2024 + i).map((y) => <option key={y} value={y}>{y}</option>)}
+            </select>
+          </label>
         </div>
       </div>
 

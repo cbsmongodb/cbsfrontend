@@ -1469,7 +1469,7 @@
     "copyDone": "Copied: {drugs} medicines, {doctors} doctor bonuses",
     "copyNothing": "Nothing new to copy from {month}",
     "howTitle": "How it works:",
-    "how": "Type the month bonus next to a medicine and press Save. If a doctor gets a different bonus, press + Doctors. An empty field = the grey default.",
+    "how": "To change the month bonus press ✏️ Change, type the number and press Save. If a doctor gets a different bonus, press + Doctors.",
     "howDefault": "A bonus that is not set anywhere is {value}.",
     "readOnly": "You can only view",
     "loading": "Loading...",
@@ -1544,6 +1544,8 @@
     "howto3": "Type the bonus (or use All at once) and press Save",
     "noneShort": "none",
     "editDoctors": "Doctors",
-    "addDoctorsBtn": "+ Doctors"
+    "addDoctorsBtn": "+ Doctors",
+    "year": "Year",
+    "change": "Change"
   }
 }
