@@ -1469,13 +1469,13 @@
     "copyDone": "Copied: {drugs} medicines, {doctors} doctor bonuses",
     "copyNothing": "Nothing new to copy from {month}",
     "howTitle": "How it works:",
-    "how": "To change a bonus press Edit next to the medicine, type the number and press Save. After saving, this month's prescriptions are recalculated.",
+    "how": "Pick a medicine, press Edit, tick the doctors and type their bonus. Doctors not chosen get the default bonus.",
     "howDefault": "A bonus that is not set anywhere is {value}.",
     "readOnly": "You can only view",
     "loading": "Loading...",
     "colDrug": "Medicine",
     "colPrice": "Price",
-    "colBonus": "Bonus per box",
+    "colBonus": "Default bonus",
     "colDoctors": "Different for doctors",
     "setForMonth": "this month's bonus",
     "inheritedDefault": "default ({value})",
@@ -1535,9 +1535,12 @@
     "step1Title": "Bonus for every doctor",
     "step1Text": "How much a doctor gets per box of this medicine this month.",
     "perBoxEveryone": "This month every doctor gets {value} ₾ per box (except the ones added in step 2).",
-    "step2Title": "A different bonus for some doctors",
-    "step2Text": "If a doctor gets something other than {value} ₾ — search, tick and type their amount.",
+    "step2Title": "Doctors' bonus",
+    "step2Text": "Choose doctors and type their bonus per box. Doctors not listed here get {value} ₾.",
     "noDoctorsYet": "No doctors yet. Search above and tick them — you can add several at once.",
-    "typeForNew": "Type the bonus for the newly added doctors ({n})"
+    "typeForNew": "Type the bonus for the newly added doctors ({n})",
+    "howto1": "Search a doctor by name, surname or number",
+    "howto2": "Tick one or several and press Add",
+    "howto3": "Type the bonus (or use All at once) and press Save"
   }
 }

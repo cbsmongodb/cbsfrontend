@@ -768,3 +768,7 @@
   min-height: 0 !important;
   outline: none !important;
 }
+/* v7: doctors only */
+.bm-step[aria-hidden] { font-size: 16px; background: #eef4fd; }
+.bm-howto { margin: 8px 0 0; padding-left: 18px; font-size: 12.5px; color: var(--ink-soft); line-height: 1.6; }
+.bm-howto li::marker { color: var(--blue); font-weight: 800; }

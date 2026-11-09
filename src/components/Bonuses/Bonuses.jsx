@@ -195,48 +195,21 @@ function EditModal({ t, drug, monthText, onClose, onSave }) {
         </header>
 
         <div className="bm-body">
-          {/* 1 — everyone */}
-          <section className="bm-card">
-            <div className="bm-card-title">
-              <span className="bm-step">1</span>
-              <div>
-                <h3>{t('step1Title')}</h3>
-                <p>{t('step1Text')}</p>
-              </div>
-            </div>
-            <div className="bm-main-row">
-              <div className={`bm-money ${drugChanged ? 'is-changed' : ''} ${drugChanged && !valid(text) ? 'is-bad' : ''}`}>
-                <input
-                  id="bonus-main"
-                  ref={firstInput}
-                  type="text"
-                  inputMode="decimal"
-                  value={text}
-                  placeholder={fmt(drug.inherited)}
-                  onChange={(e) => setText(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') save() }}
-                  aria-label={t('colBonus')}
-                />
-                <span>₾</span>
-              </div>
-              <div className={`bm-main-note ${drugChanged && !valid(text) ? 'is-bad' : ''}`}>
-                {drugChanged && !valid(text) ? t('badNumber')
-                  : clean(text) === '' ? t('emptyMeans', { value: fmt(drug.inherited) })
-                    : t('perBoxEveryone', { value: fmt(clean(text)) })}
-              </div>
-            </div>
-          </section>
-
           {/* 2 — specific doctors */}
           <section className="bm-card">
             <div className="bm-card-title">
-              <span className="bm-step">2</span>
+              <span className="bm-step" aria-hidden="true">👩‍⚕️</span>
               <div>
                 <h3>
                   {t('step2Title')}
                   {active.length > 0 && <span className="bm-count">{active.length}</span>}
                 </h3>
                 <p>{t('step2Text', { value: fmt(effective) })}</p>
+                <ol className="bm-howto">
+                  <li>{t('howto1')}</li>
+                  <li>{t('howto2')}</li>
+                  <li>{t('howto3')}</li>
+                </ol>
               </div>
             </div>
 
