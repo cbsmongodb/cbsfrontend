@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { apiFetch } from '@/lib/api'
@@ -48,7 +48,9 @@ export default function BudgetsList() {
     apiFetch('/api/admin/groups?lite=1').then(setGroups).catch(() => setGroups([]))
   }, [])
 
+  const loadSeq = useRef(0)
   async function load(targetPage = 1, size = pageSize) {
+    const seq = ++loadSeq.current
     setLoading(true)
     setError('')
     try {
@@ -65,12 +67,13 @@ export default function BudgetsList() {
       if (toDate) params.set('toDate', toDate)
 
       const result = await apiFetch(`/api/budgets-list?${params}`)
+      if (seq !== loadSeq.current) return
       setData(result)
       setPage(targetPage)
     } catch (err) {
       setError(err.message)
     } finally {
-      setLoading(false)
+      if (seq === loadSeq.current) setLoading(false)
     }
   }
 
@@ -78,6 +81,15 @@ export default function BudgetsList() {
     load(1)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // typing in the search box searches by itself, 0.4 s after the last key
+  const firstAutoSearch = useRef(true)
+  useEffect(() => {
+    if (firstAutoSearch.current) { firstAutoSearch.current = false; return }
+    const id = setTimeout(() => load(1), 400)
+    return () => clearTimeout(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, showInactive])
 
   async function handleToggleActive(id) {
     try {

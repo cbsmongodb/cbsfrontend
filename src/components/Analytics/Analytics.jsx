@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, Fragment } from 'react'
+import { useEffect, useRef, useState, Fragment } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import { formatDoctorLabel } from '@/lib/doctorLabel'
@@ -168,7 +168,9 @@ export default function Analytics() {
     apiFetch('/api/admin/groups').then(setGroups).catch(() => setGroups([]))
   }, [])
 
+  const loadSeq = useRef(0)
   async function load(targetPage = 1, size = pageSize) {
+    const seq = ++loadSeq.current
     setLoading(true)
     setError('')
     try {
@@ -184,12 +186,13 @@ export default function Analytics() {
       if (toDate) params.set('toDate', toDate)
 
       const result = await apiFetch(`/api/analytics?${params}`)
+      if (seq !== loadSeq.current) return
       setData(result)
       setPage(targetPage)
     } catch (err) {
       setError(err.message)
     } finally {
-      setLoading(false)
+      if (seq === loadSeq.current) setLoading(false)
     }
   }
 
@@ -197,6 +200,15 @@ export default function Analytics() {
     load(1)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // typing in the search box searches by itself, 0.4 s after the last key
+  const firstAutoSearch = useRef(true)
+  useEffect(() => {
+    if (firstAutoSearch.current) { firstAutoSearch.current = false; return }
+    const id = setTimeout(() => load(1), 400)
+    return () => clearTimeout(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search])
 
   // Excel = every row of the current filters (all pages), straight from the data
   async function exportAll() {
