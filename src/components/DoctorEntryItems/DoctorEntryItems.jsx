@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { apiFetch } from '@/lib/api'
+import { formatDoctorLabel } from '@/lib/doctorLabel'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import DrugPickerModal from './DrugPickerModal'
 import './DoctorEntryItems.css'
@@ -248,7 +249,7 @@ export default function DoctorEntryItems() {
   }
 
   function doctorLabel(doc) {
-    return `${doc.firstName || ''} ${doc.lastName || ''}`.trim() || doc.name || '—'
+    return formatDoctorLabel(doc) || '—'
   }
 
   function selectedDoctor(doctorId) {

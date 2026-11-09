@@ -3,6 +3,7 @@
 import { useEffect, useState, Fragment } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
+import { formatDoctorLabel } from '@/lib/doctorLabel'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import {
   BarChart as RBarChart,
@@ -197,11 +198,52 @@ export default function Analytics() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Excel = every row of the current filters (all pages), straight from the data
+  async function exportAll() {
+    const params = new URLSearchParams()
+    if (search.trim()) params.set('search', search.trim())
+    if (doctorId) params.set('doctor', doctorId)
+    if (employeeId) params.set('employee', employeeId)
+    if (sectionId) params.set('section', sectionId)
+    if (groupId) params.set('group', groupId)
+    if (fromDate) params.set('fromDate', fromDate)
+    if (toDate) params.set('toDate', toDate)
+    params.set('limit', 200)
+
+    const all = []
+    for (let p = 1; ; p++) {
+      params.set('page', p)
+      const res = await apiFetch(`/api/analytics?${params}`)
+      all.push(...(res.docs || []))
+      if (p >= (res.pages || 1)) break
+    }
+
+    const money = (n) => ({ value: Math.round((Number(n) || 0) * 100) / 100, kind: 'money' })
+    const num = (n) => ({ value: Number(n) || 0, kind: 'number' })
+    return {
+      headers: [
+        t('common.date'), t('common.employee'), t('common.doctor'), t('common.visits'),
+        t('analytics.targetAmount'), t('analytics.targetBoxes'),
+        t('analytics.prescriptionAmount'), t('analytics.prescriptionBoxes'),
+        t('analytics.salesAmount'), t('analytics.salesBoxes'),
+        t('analytics.payable'), t('analytics.paid'), t('analytics.delta'),
+      ],
+      rows: all.map((r) => [
+        r.date ? { value: new Date(r.date), kind: 'date' } : '',
+        r.employeeName || '', r.doctorName || '', num(r.visits),
+        money(r.targetAmount), num(r.targetBoxes),
+        money(r.prescriptionAmount), num(r.prescriptionBoxes),
+        money(r.salesAmount), num(r.saleBoxes),
+        money(r.payableAmount), money(r.paidAmount), money(r.deltaAmount),
+      ]),
+    }
+  }
+
   return (
     <div className="analytics-page">
       <div className="report-title-row">
         <h1>{t('analytics.title')}</h1>
-        <ExcelExportButton title={t('analytics.title')} tableSelector=".analytics-table" />
+        <ExcelExportButton title={t('analytics.title')} build={exportAll} />
         {loading && <ReportLoader />}
       </div>
 
@@ -255,7 +297,7 @@ export default function Analytics() {
               options={doctors}
               value={doctorId}
               onChange={setDoctorId}
-              getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
+              getLabel={formatDoctorLabel}
               placeholder={t('common.all')}
             />
           </div>

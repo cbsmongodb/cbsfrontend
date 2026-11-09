@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { apiFetch } from '@/lib/api'
+import { formatDoctorLabel } from '@/lib/doctorLabel'
 import DoctorTargetModal from './DoctorTargetModal'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './DoctorTargets.css'
@@ -105,7 +106,7 @@ export default function DoctorTargets() {
               options={doctors}
               value={doctorId}
               onChange={setDoctorId}
-              getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
+              getLabel={formatDoctorLabel}
               placeholder={tu('k092')}
             />
           </div>

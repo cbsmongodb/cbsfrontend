@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
+import { formatDoctorLabel } from '@/lib/doctorLabel'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import '../PrescriptionEdit/PrescriptionEdit.css'
 import './BudgetNew.css'
@@ -164,9 +165,7 @@ export default function BudgetNew() {
               options={doctors}
               value={doctorId}
               onChange={setDoctorId}
-              getLabel={(o) =>
-                `${o.name || `${o.firstName} ${o.lastName}`}${o.uniqueNumber ? ` · ${o.uniqueNumber}` : ''}`
-              }
+              getLabel={formatDoctorLabel}
               placeholder={tu('k109')}
             />
           </div>

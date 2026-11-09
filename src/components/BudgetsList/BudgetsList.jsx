@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { apiFetch } from '@/lib/api'
+import { formatDoctorLabel } from '@/lib/doctorLabel'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './BudgetsList.css'
 import { useTranslations } from 'next-intl'
@@ -156,9 +157,7 @@ export default function BudgetsList() {
               options={doctors}
               value={doctorId}
               onChange={setDoctorId}
-              getLabel={(o) =>
-                `${o.name || `${o.firstName} ${o.lastName}`}${o.uniqueNumber ? ` · ${o.uniqueNumber}` : ''}`
-              }
+              getLabel={formatDoctorLabel}
               placeholder={tu('k092')}
             />
           </div>
