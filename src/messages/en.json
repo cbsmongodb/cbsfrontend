@@ -1469,7 +1469,7 @@
     "copyDone": "Copied: {drugs} medicines, {doctors} doctor bonuses",
     "copyNothing": "Nothing new to copy from {month}",
     "howTitle": "How it works:",
-    "how": "Type a number — a Save button appears next to the field. Press it and the bonus is saved, this month's prescriptions are recalculated. An empty field = the grey value.",
+    "how": "To change a bonus press Edit next to the medicine, type the number and press Save. After saving, this month's prescriptions are recalculated.",
     "howDefault": "A bonus that is not set anywhere is {value}.",
     "readOnly": "You can only view",
     "loading": "Loading...",
@@ -1512,6 +1512,17 @@
     "tagRemove": "will be removed",
     "undo": "Undo",
     "pressSave": "← press Save",
-    "rowSaved": "Saved"
+    "rowSaved": "Saved",
+    "edit": "Edit",
+    "editFor": "Edit bonus — {month}",
+    "cancel": "Cancel",
+    "emptyMeans": "Left empty, the default is used: {value} ₾",
+    "allDoctorsGet": "This month every doctor gets {value} ₾ per box (except those listed below)",
+    "doctorsSection": "A different bonus for specific doctors",
+    "noChanges": "Nothing changed yet",
+    "ok": "OK",
+    "savedOkTitle": "Saved successfully!",
+    "inheritedDrugShort": "medicine's old bonus",
+    "inheritedDefaultShort": "default"
   }
 }

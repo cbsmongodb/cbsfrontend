@@ -407,3 +407,111 @@
   animation: bonuses-pop 0.2s ease-out;
 }
 .bonuses-table tr.is-saved-flash > td { background: #ecfdf5; transition: background 0.6s; }
+
+/* ===== v4: read-only table + "Edit" window ===== */
+.bonuses-value { display: flex; flex-direction: column; gap: 2px; }
+.bonuses-value strong { font-size: 15px; color: var(--ink); }
+.bonuses-value strong.is-inherited { color: var(--ink-faint); font-weight: 600; }
+.bonuses-doc-summary {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--tint);
+  color: var(--blue);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: help;
+}
+.bonuses-actions { text-align: right; white-space: nowrap; }
+.bonuses-edit { padding: 8px 14px; font-size: 13px; }
+.bonuses-row-saved { margin-left: 10px; }
+
+.bonus-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: bonus-fade 0.15s ease-out;
+}
+@keyframes bonus-fade { from { opacity: 0; } to { opacity: 1; } }
+.bonus-modal {
+  width: min(640px, 100%);
+  max-height: calc(100dvh - 32px);
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.35);
+  animation: bonuses-pop 0.2s ease-out;
+}
+.bonus-modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 22px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.bonus-modal-head h2 { margin: 0; font-size: 18px; color: var(--ink); }
+.bonus-modal-month { font-size: 13px; color: var(--blue); font-weight: 600; }
+.bonus-modal-x { border: none; background: #f1f5f9; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 14px; color: var(--ink-soft); }
+.bonus-modal-body { padding: 18px 22px; overflow-y: auto; }
+.bonus-modal-label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; color: var(--ink-soft); margin-bottom: 6px; }
+.bonus-modal-main { display: flex; align-items: center; gap: 8px; }
+.bonus-input.is-large { width: 160px; height: 48px; font-size: 20px; padding-right: 12px; }
+.bonus-modal-cur { font-size: 18px; font-weight: 700; color: var(--ink-soft); }
+.bonus-modal-help { margin: 6px 0 0; font-size: 12.5px; color: var(--ink-soft); }
+.bonus-modal-help.is-bad { color: #dc2626; font-weight: 600; }
+.bonus-modal-section { margin-top: 20px; padding-top: 16px; border-top: 1px dashed #d5dce6; }
+.bonus-modal-section-title { font-weight: 700; color: var(--ink); }
+.bonus-modal-section .bonuses-doctor-line { max-width: none; }
+.bonus-modal-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-top: 1px solid var(--line);
+  background: #f8fafc;
+  border-radius: 0 0 18px 18px;
+}
+.bonus-modal-foot-info { flex: 1; font-size: 12.5px; color: var(--ink-soft); }
+
+.bonus-done {
+  width: min(400px, 100%);
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 24px 22px;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.35);
+  animation: bonuses-pop 0.2s ease-out;
+}
+.bonus-done-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  background: #10b981;
+  box-shadow: 0 0 0 8px #d1fae5;
+}
+.bonus-done.is-info .bonus-done-icon { background: #3f74d6; box-shadow: 0 0 0 8px #dbeafe; }
+.bonus-done h2 { margin: 0 0 8px; font-size: 19px; color: var(--ink); }
+.bonus-done p { margin: 0 0 18px; font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+.bonus-done .btn { min-width: 120px; }
+
+@media (max-width: 640px) {
+  .bonus-modal-foot { flex-wrap: wrap; }
+  .bonus-modal-foot-info { flex-basis: 100%; }
+  .bonus-modal-foot > button { flex: 1; }
+  .bonuses-table th:nth-child(4), .bonuses-table td:nth-child(4) { display: none; }
+}
+.bonuses-table tr.is-set td:nth-child(4) .bonuses-hint { color: var(--ink-faint); font-weight: 400; }
