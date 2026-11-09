@@ -32,22 +32,42 @@ const clean = (s) => String(s ?? '').trim().replace(',', '.')
 const valid = (s) => clean(s) === '' || /^\d+(\.\d+)?$/.test(clean(s))
 const asText = (v) => (v == null ? '' : String(v))
 
+// a doctor shown as: initials · name, and "profile · #ID" under it
+function DoctorTag({ d }) {
+  const name = `${d.firstName || ''} ${d.lastName || ''}`.trim() || d.name || '—'
+  const initials = name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase()
+  const profile = d.profile && typeof d.profile === 'object' ? d.profile.name : ''
+  return (
+    <span className="bm-doc">
+      <span className="bm-avatar" aria-hidden="true">{initials}</span>
+      <span className="bm-doc-text">
+        <span className="bm-doc-name">{name}</span>
+        <span className="bm-doc-meta">{[profile, d.uniqueNumber ? `#${d.uniqueNumber}` : ''].filter(Boolean).join(' · ')}</span>
+      </span>
+    </span>
+  )
+}
+
 // search box for "add doctors": tick several, add them together
 function DoctorPicker({ t, onPick, exclude }) {
   const [q, setQ] = useState('')
   const [list, setList] = useState([])
-  const [picked, setPicked] = useState([]) // doctors ticked, not added yet
+  const [picked, setPicked] = useState([]) // ticked, not added yet
+  const [searching, setSearching] = useState(false)
   const seq = useRef(0)
 
   useEffect(() => {
     const query = q.trim()
-    if (query.length < 2) { setList([]); return }
+    if (query.length < 2) { setList([]); setSearching(false); return }
+    setSearching(true)
     const id = setTimeout(async () => {
       const mine = ++seq.current
       try {
         const res = await apiFetch(`/api/bonuses/doctor-search?q=${encodeURIComponent(query)}`)
         if (mine === seq.current) setList(res || [])
-      } catch { /* ignore */ }
+      } catch { /* ignore */ } finally {
+        if (mine === seq.current) setSearching(false)
+      }
     }, 250)
     return () => clearTimeout(id)
   }, [q])
@@ -65,20 +85,27 @@ function DoctorPicker({ t, onPick, exclude }) {
   }
 
   return (
-    <div className="bonus-doctor-picker">
-      <input
-        type="text"
-        className="field-input"
-        placeholder={t('doctorSearch')}
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addAll() } }}
-      />
-      {q.trim().length >= 2 && (
-        <div className="bonus-doctor-results">
-          {shown.length === 0 && <div className="bonus-doctor-empty">{t('noDoctorFound')}</div>}
+    <div className="bm-picker">
+      <div className="bm-search">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" /><path d="m20 20-3.6-3.6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+        <input
+          type="text"
+          className="et-modal-search"
+          value={q}
+          placeholder={t('doctorSearch')}
+          onChange={(e) => setQ(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addAll() } }}
+          aria-label={t('doctorSearch')}
+        />
+        {searching && <span className="btn-spinner" />}
+        {q && !searching && <button type="button" className="bm-search-clear" onClick={() => { setQ(''); setList([]) }} aria-label="✕">✕</button>}
+      </div>
+
+      {q.trim().length >= 2 && !searching && (
+        <div className="bm-results">
+          {shown.length === 0 && <div className="bm-results-empty">{t('noDoctorFound')}</div>}
           {shown.length > 1 && (
-            <label className="bonus-doctor-result is-all">
+            <label className="bm-result is-all">
               <input
                 type="checkbox"
                 checked={allShownPicked}
@@ -90,17 +117,18 @@ function DoctorPicker({ t, onPick, exclude }) {
             </label>
           )}
           {shown.map((d) => (
-            <label key={d._id} className={`bonus-doctor-result ${isPicked(d) ? 'is-picked' : ''}`}>
+            <label key={d._id} className={`bm-result ${isPicked(d) ? 'is-picked' : ''}`}>
               <input type="checkbox" checked={isPicked(d)} onChange={() => toggle(d)} />
-              <span>{formatDoctorLabel(d)}</span>
+              <DoctorTag d={d} />
             </label>
           ))}
         </div>
       )}
+
       {picked.length > 0 && (
-        <div className="bonus-picked-bar">
+        <div className="bm-picked">
           <span>{t('pickedN', { n: picked.length })}</span>
-          <button type="button" className="btn-gray btn-sm" onClick={() => setPicked([])}><span>{t('clearPicked')}</span></button>
+          <button type="button" className="bm-link" onClick={() => setPicked([])}>{t('clearPicked')}</button>
           <button type="button" className="btn btn-sm" onClick={addAll}><span>{t('addPicked', { n: picked.length })}</span></button>
         </div>
       )}
@@ -129,7 +157,9 @@ function EditModal({ t, drug, monthText, onClose, onSave }) {
   const changedLines = lines.filter(lineChanged)
   const changes = (drugChanged ? 1 : 0) + changedLines.length
   const bad = (drugChanged && !valid(text)) || changedLines.some((l) => !l.remove && !valid(l.text))
+  const waiting = lines.filter((l) => l.isNew && clean(l.text) === '').length // added, no number yet
   const effective = clean(text) !== '' && valid(text) ? clean(text) : drug.inherited
+  const active = lines.filter((l) => !l.remove)
   const taken = new Set(lines.map((l) => l.doctor._id))
 
   async function save() {
@@ -151,97 +181,65 @@ function EditModal({ t, drug, monthText, onClose, onSave }) {
 
   return (
     <div className="bonus-modal-overlay" onMouseDown={(e) => { if (e.target === e.currentTarget && !saving) onClose() }}>
-      <div className="bonus-modal" role="dialog" aria-modal="true" aria-labelledby="bonus-modal-title">
-        <div className="bonus-modal-head">
-          <div>
-            <h2 id="bonus-modal-title">{drug.name}</h2>
-            <span className="bonus-modal-month">{t('editFor', { month: monthText })}</span>
+      <div className="bm" role="dialog" aria-modal="true" aria-labelledby="bm-title">
+        <header className="bm-head">
+          <div className="bm-head-icon" aria-hidden="true">💊</div>
+          <div className="bm-head-text">
+            <h2 id="bm-title">{drug.name}</h2>
+            <span className="bm-head-sub">
+              <span className="bm-pill">{monthText}</span>
+              {drug.price ? <span className="bm-head-price">{t('priceLabel', { value: fmt(drug.price) })}</span> : null}
+            </span>
           </div>
-          <button type="button" className="bonus-modal-x" onClick={onClose} disabled={saving} aria-label={t('cancel')}>✕</button>
-        </div>
+          <button type="button" className="bm-x" onClick={onClose} disabled={saving} aria-label={t('cancel')}>✕</button>
+        </header>
 
-        <div className="bonus-modal-body">
-          <label className="bonus-modal-label" htmlFor="bonus-main">{t('colBonus')}</label>
-          <div className="bonus-modal-main">
-            <input
-              id="bonus-main"
-              ref={firstInput}
-              type="text"
-              inputMode="decimal"
-              className={`bonus-input is-large ${drugChanged ? 'is-changed' : ''} ${drugChanged && !valid(text) ? 'is-bad' : ''}`}
-              value={text}
-              placeholder={fmt(drug.inherited)}
-              onChange={(e) => setText(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') save() }}
-            />
-            <span className="bonus-modal-cur">₾</span>
-          </div>
-          <p className={`bonus-modal-help ${drugChanged && !valid(text) ? 'is-bad' : ''}`}>
-            {drugChanged && !valid(text) ? t('badNumber')
-              : clean(text) === '' ? t('emptyMeans', { value: fmt(drug.inherited) })
-                : t('allDoctorsGet', { value: fmt(clean(text)) })}
-          </p>
-
-          <div className="bonus-modal-section">
-            <div className="bonus-modal-section-title">{t('doctorsSection')}</div>
-            <p className="bonus-modal-help">{t('doctorsHint', { value: fmt(effective) })}</p>
-            <div className="bonus-bulk">
-              <span className="bonus-bulk-label">{t('bulkLabel')}</span>
-              <input
-                type="text"
-                inputMode="decimal"
-                className={`bonus-input ${bulk && !valid(bulk) ? 'is-bad' : ''}`}
-                value={bulk}
-                placeholder={t('typeValue')}
-                onChange={(e) => setBulk(e.target.value)}
-              />
-              <button
-                type="button"
-                className="btn-gray btn-sm"
-                disabled={!clean(bulk) || !valid(bulk) || !lines.some((l) => !l.remove)}
-                onClick={() => setLines((ls) => ls.map((l) => (l.remove ? l : { ...l, text: clean(bulk) })))}
-              >
-                <span>{t('bulkApply', { n: lines.filter((l) => !l.remove).length })}</span>
-              </button>
+        <div className="bm-body">
+          {/* 1 — everyone */}
+          <section className="bm-card">
+            <div className="bm-card-title">
+              <span className="bm-step">1</span>
+              <div>
+                <h3>{t('step1Title')}</h3>
+                <p>{t('step1Text')}</p>
+              </div>
             </div>
-            <p className="bonus-modal-help">{t('bulkHint')}</p>
-            {lines.length === 0 && <p className="bonuses-doctors-none">{t('noDoctors')}</p>}
-            {lines.map((l) => {
-              const lBad = !l.remove && lineChanged(l) && !valid(l.text)
-              return (
-                <div key={l.doctor._id} className={`bonuses-doctor-line ${l.remove ? 'is-removed' : ''} ${lineChanged(l) ? 'is-changed' : ''}`}>
-                  <span className="bonuses-doctor-name">
-                    {formatDoctorLabel(l.doctor)}
-                    {l.isNew && <em className="bonuses-tag">{t('tagNew')}</em>}
-                    {l.remove && <em className="bonuses-tag is-red">{t('tagRemove')}</em>}
-                  </span>
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    className={`bonus-input ${lineChanged(l) && !l.remove ? 'is-changed' : ''} ${lBad ? 'is-bad' : ''}`}
-                    value={l.text}
-                    placeholder={t('typeValue')}
-                    disabled={l.remove}
-                    onChange={(e) => setLine(l.doctor._id, { text: e.target.value })}
-                    onKeyDown={(e) => { if (e.key === 'Enter') save() }}
-                    aria-label={`${formatDoctorLabel(l.doctor)} — ${t('colBonus')}`}
-                  />
-                  {l.remove ? (
-                    <button type="button" className="bonuses-undo" onClick={() => setLine(l.doctor._id, { remove: false })}>{t('undo')}</button>
-                  ) : (
-                    <button
-                      type="button"
-                      className="bonuses-remove"
-                      title={t('remove')}
-                      aria-label={t('remove')}
-                      onClick={() => (l.isNew ? setLines((ls) => ls.filter((x) => x.doctor._id !== l.doctor._id)) : setLine(l.doctor._id, { remove: true }))}
-                    >
-                      ✕
-                    </button>
-                  )}
-                </div>
-              )
-            })}
+            <div className="bm-main-row">
+              <div className={`bm-money ${drugChanged ? 'is-changed' : ''} ${drugChanged && !valid(text) ? 'is-bad' : ''}`}>
+                <input
+                  id="bonus-main"
+                  ref={firstInput}
+                  type="text"
+                  inputMode="decimal"
+                  value={text}
+                  placeholder={fmt(drug.inherited)}
+                  onChange={(e) => setText(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') save() }}
+                  aria-label={t('colBonus')}
+                />
+                <span>₾</span>
+              </div>
+              <div className={`bm-main-note ${drugChanged && !valid(text) ? 'is-bad' : ''}`}>
+                {drugChanged && !valid(text) ? t('badNumber')
+                  : clean(text) === '' ? t('emptyMeans', { value: fmt(drug.inherited) })
+                    : t('perBoxEveryone', { value: fmt(clean(text)) })}
+              </div>
+            </div>
+          </section>
+
+          {/* 2 — specific doctors */}
+          <section className="bm-card">
+            <div className="bm-card-title">
+              <span className="bm-step">2</span>
+              <div>
+                <h3>
+                  {t('step2Title')}
+                  {active.length > 0 && <span className="bm-count">{active.length}</span>}
+                </h3>
+                <p>{t('step2Text', { value: fmt(effective) })}</p>
+              </div>
+            </div>
+
             <DoctorPicker
               t={t}
               exclude={taken}
@@ -251,19 +249,90 @@ function EditModal({ t, drug, monthText, onClose, onSave }) {
                   .map((doctor) => ({ doctor, saved: null, text: bulk && valid(bulk) ? clean(bulk) : '', remove: false, isNew: true })),
               ])}
             />
-          </div>
+
+            {active.length > 1 && (
+              <div className="bm-bulk">
+                <span>{t('bulkLabel')}</span>
+                <div className={`bm-money is-small ${bulk && !valid(bulk) ? 'is-bad' : ''}`}>
+                  <input type="text" inputMode="decimal" value={bulk} placeholder="0" onChange={(e) => setBulk(e.target.value)} aria-label={t('bulkLabel')} />
+                  <span>₾</span>
+                </div>
+                <button
+                  type="button"
+                  className="btn-gray btn-sm"
+                  disabled={!clean(bulk) || !valid(bulk)}
+                  onClick={() => setLines((ls) => ls.map((l) => (l.remove ? l : { ...l, text: clean(bulk) })))}
+                >
+                  <span>{t('bulkApply', { n: active.length })}</span>
+                </button>
+              </div>
+            )}
+
+            {lines.length === 0 ? (
+              <div className="bm-empty">
+                <span aria-hidden="true">👩‍⚕️</span>
+                <p>{t('noDoctorsYet')}</p>
+              </div>
+            ) : (
+              <ul className="bm-list">
+                {lines.map((l) => {
+                  const ch = lineChanged(l)
+                  const lBad = !l.remove && ch && !valid(l.text)
+                  const empty = l.isNew && clean(l.text) === ''
+                  return (
+                    <li key={l.doctor._id} className={`bm-line ${l.remove ? 'is-removed' : ''} ${ch ? 'is-changed' : ''} ${empty ? 'is-waiting' : ''}`}>
+                      <DoctorTag d={l.doctor} />
+                      <span className="bm-line-tags">
+                        {l.isNew && <em className="bm-tag is-new">{t('tagNew')}</em>}
+                        {l.remove && <em className="bm-tag is-red">{t('tagRemove')}</em>}
+                      </span>
+                      <div className={`bm-money is-small ${ch && !l.remove ? 'is-changed' : ''} ${lBad ? 'is-bad' : ''}`}>
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          value={l.text}
+                          placeholder={t('typeValue')}
+                          disabled={l.remove}
+                          onChange={(e) => setLine(l.doctor._id, { text: e.target.value })}
+                          onKeyDown={(e) => { if (e.key === 'Enter') save() }}
+                          aria-label={`${l.doctor.firstName || ''} ${l.doctor.lastName || ''} — ${t('colBonus')}`}
+                        />
+                        <span>₾</span>
+                      </div>
+                      {l.remove ? (
+                        <button type="button" className="bm-link" onClick={() => setLine(l.doctor._id, { remove: false })}>{t('undo')}</button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="bm-del"
+                          title={t('remove')}
+                          aria-label={t('remove')}
+                          onClick={() => (l.isNew ? setLines((ls) => ls.filter((x) => x.doctor._id !== l.doctor._id)) : setLine(l.doctor._id, { remove: true }))}
+                        >
+                          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                        </button>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+          </section>
           {error && <p className="resource-error" style={{ marginTop: 12 }}>{error}</p>}
         </div>
 
-        <div className="bonus-modal-foot">
-          <span className="bonus-modal-foot-info">
-            {bad ? t('fixFirst') : changes ? t('pending', { n: changes }) : t('noChanges')}
+        <footer className="bm-foot">
+          <span className={`bm-foot-info ${bad ? 'is-bad' : changes ? 'is-pending' : ''}`}>
+            {bad ? t('fixFirst')
+              : changes ? t('pending', { n: changes })
+                : waiting ? t('typeForNew', { n: waiting })
+                  : t('noChanges')}
           </span>
           <button type="button" className="btn-gray" onClick={onClose} disabled={saving}><span>{t('cancel')}</span></button>
-          <button type="button" className="btn bonuses-save is-big" onClick={save} disabled={!changes || bad || saving}>
+          <button type="button" className="btn bm-save" onClick={save} disabled={!changes || bad || saving}>
             <span>{saving ? <><span className="btn-spinner" /> {t('saving')}</> : `💾 ${t('save')}`}</span>
           </button>
-        </div>
+        </footer>
       </div>
     </div>
   )
