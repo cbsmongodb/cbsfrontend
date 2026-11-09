@@ -1,8 +1,9 @@
 'use client'
 
 // Bonuses page: bonus per box for every drug, month by month, and a different
-// bonus for specific doctors. Every change is saved on its own (no Save button)
-// and the month's prescription lines are recalculated by the server.
+// bonus for specific doctors. Changes are collected (marked "not saved") and
+// written with the Save button; the server then recalculates the month's
+// prescription lines and the page shows a clear success message.
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
@@ -10,7 +11,12 @@ import { formatDoctorLabel } from '@/lib/doctorLabel'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
 import './Bonuses.css'
 
-const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
+const MONTHS = {
+  ka: ['იანვარი', 'თებერვალი', 'მარტი', 'აპრილი', 'მაისი', 'ივნისი', 'ივლისი', 'აგვისტო', 'სექტემბერი', 'ოქტომბერი', 'ნოემბერი', 'დეკემბერი'],
+  en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+  ru: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+}
+const monthName = (locale, { y, m }) => `${(MONTHS[locale] || MONTHS.ka)[m]} ${y}`
 
 const thisMonth = () => {
   const d = new Date()
@@ -23,71 +29,8 @@ const shift = ({ y, m }, by) => {
 const key = ({ y, m }) => `${y}-${String(m + 1).padStart(2, '0')}`
 const fmt = (n) => (n == null || n === '' ? '' : Number(n).toLocaleString('en-US', { maximumFractionDigits: 2 }))
 const clean = (s) => String(s ?? '').trim().replace(',', '.')
-
-function useMonthName(locale) {
-  return (mo) =>
-    new Date(Date.UTC(mo.y, mo.m, 1)).toLocaleDateString(LOCALE_TAG[locale] || 'ka-GE', {
-      month: 'long',
-      year: 'numeric',
-      timeZone: 'UTC',
-    })
-}
-
-// one number field that saves itself on Enter / leaving the field
-function BonusInput({ value, placeholder, disabled, onSave, ariaLabel }) {
-  const [text, setText] = useState(value == null ? '' : String(value))
-  const [state, setState] = useState('idle') // idle | saving | saved | error
-  const last = useRef(value == null ? '' : String(value))
-
-  useEffect(() => {
-    const v = value == null ? '' : String(value)
-    last.current = v
-    setText(v)
-  }, [value])
-
-  async function commit() {
-    const v = clean(text)
-    if (v === clean(last.current)) return
-    if (v !== '' && (!/^\d+(\.\d+)?$/.test(v))) {
-      setState('error')
-      return
-    }
-    setState('saving')
-    try {
-      await onSave(v === '' ? null : Number(v))
-      last.current = v
-      setState('saved')
-      setTimeout(() => setState((s) => (s === 'saved' ? 'idle' : s)), 1800)
-    } catch {
-      setState('error')
-    }
-  }
-
-  return (
-    <span className={`bonus-input-wrap is-${state}`}>
-      <input
-        type="text"
-        inputMode="decimal"
-        className="bonus-input"
-        value={text}
-        placeholder={placeholder}
-        disabled={disabled}
-        aria-label={ariaLabel}
-        onChange={(e) => { setText(e.target.value); if (state === 'error') setState('idle') }}
-        onBlur={commit}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') e.currentTarget.blur()
-          if (e.key === 'Escape') { setText(last.current); setState('idle'); e.currentTarget.blur() }
-        }}
-      />
-      <span className="bonus-input-state" aria-hidden="true">
-        {state === 'saving' && <span className="btn-spinner" />}
-        {state === 'saved' && '✓'}
-        {state === 'error' && '!'}
-      </span>
-    </span>
-  )
-}
+const valid = (s) => clean(s) === '' || /^\d+(\.\d+)?$/.test(clean(s))
+const asText = (v) => (v == null ? '' : String(v))
 
 // search box for the "add a doctor" row
 function DoctorPicker({ t, onPick, exclude }) {
@@ -144,19 +87,26 @@ function DoctorPicker({ t, onPick, exclude }) {
 export default function Bonuses() {
   const t = useTranslations('bonusesPage')
   const locale = useLocale()
-  const monthName = useMonthName(locale)
+  const mName = (mo) => monthName(locale, mo)
 
   const [month, setMonth] = useState(thisMonth)
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [notice, setNotice] = useState('')
+  const [result, setResult] = useState(null) // { kind: 'success' | 'error' | 'info', text }
   const [search, setSearch] = useState('')
-  const [show, setShow] = useState('all') // all | set | doctors
+  const [show, setShow] = useState('all') // all | set | doctors | changed
   const [openDrug, setOpenDrug] = useState(null)
-  const [pending, setPending] = useState([]) // doctors just picked, waiting for a value
   const [canEdit, setCanEdit] = useState(false)
+  const [saving, setSaving] = useState(false)
   const [copying, setCopying] = useState(false)
+  const [blockedMove, setBlockedMove] = useState(false)
+  const [savingRow, setSavingRow] = useState(null) // drug id being saved from its own button
+  const [savedRow, setSavedRow] = useState(null) // drug id just saved -> "✓ შენახულია" next to it
+
+  // not saved yet:  drugEdits: drugId -> text   docEdits: "drug|doctor" -> { drug, doctor, text, remove }
+  const [drugEdits, setDrugEdits] = useState({})
+  const [docEdits, setDocEdits] = useState({})
   const loadSeq = useRef(0)
 
   useEffect(() => {
@@ -185,67 +135,130 @@ export default function Bonuses() {
 
   useEffect(() => {
     setOpenDrug(null)
-    setPending([])
+    setDrugEdits({})
+    setDocEdits({})
     load(month)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month])
 
-  function flash(msg) {
-    setNotice(msg)
-    setTimeout(() => setNotice((n) => (n === msg ? '' : n)), 3500)
+  const drugs = data?.drugs || []
+  const byId = useMemo(() => new Map(drugs.map((d) => [d._id, d])), [drugs])
+
+  // only real changes count (typing the same value back is not a change)
+  const changedDrugs = Object.entries(drugEdits).filter(([id, text]) => {
+    const d = byId.get(id)
+    return d && clean(text) !== clean(asText(d.value))
+  })
+  const changedDocs = Object.values(docEdits).filter((e) => {
+    const d = byId.get(e.drug)
+    const saved = d?.doctors.find((x) => x.doctor._id === e.doctor._id)
+    if (e.remove) return !!saved
+    if (!saved) return clean(e.text) !== ''
+    return clean(e.text) !== clean(asText(saved.value))
+  })
+  const changes = changedDrugs.length + changedDocs.length
+  const invalid = changedDrugs.some(([, text]) => !valid(text)) || changedDocs.some((e) => !e.remove && !valid(e.text))
+  const dirty = changes > 0
+
+  // closing the tab with unsaved changes asks first
+  useEffect(() => {
+    if (!dirty) return
+    const h = (e) => { e.preventDefault(); e.returnValue = '' }
+    window.addEventListener('beforeunload', h)
+    return () => window.removeEventListener('beforeunload', h)
+  }, [dirty])
+
+  function goMonth(by) {
+    if (dirty) { setBlockedMove(true); return }
+    setBlockedMove(false)
+    setResult(null)
+    setMonth((m) => shift(m, by))
   }
 
-  async function saveDrug(drug, value) {
-    const res = await apiFetch('/api/bonuses/drug', {
-      method: 'PUT',
-      body: JSON.stringify({ month: key(month), drug: drug._id, value }),
-    })
-    setData((d) => ({ ...d, drugs: d.drugs.map((x) => (x._id === drug._id ? { ...x, value } : x)) }))
-    flash(res.recalculated ? t('savedRecalc', { n: res.recalculated }) : t('saved'))
+  function discard() {
+    setDrugEdits({})
+    setDocEdits({})
+    setBlockedMove(false)
+    setResult({ kind: 'info', text: t('discarded') })
   }
 
-  async function saveDoctor(drug, doctor, value) {
-    const res = await apiFetch('/api/bonuses/doctor', {
-      method: 'PUT',
-      body: JSON.stringify({ month: key(month), drug: drug._id, doctor: doctor._id, value }),
-    })
-    setPending((p) => p.filter((x) => !(x.drug === drug._id && x.doctor._id === doctor._id)))
-    await load(month, true)
-    flash(res.recalculated ? t('savedRecalc', { n: res.recalculated }) : t('saved'))
+  // onlyDrug: the row's own "Save" button saves just that medicine (and its doctors)
+  async function save(onlyDrug) {
+    const dRows = changedDrugs.filter(([id]) => !onlyDrug || id === onlyDrug)
+    const cRows = changedDocs.filter((e) => !onlyDrug || e.drug === onlyDrug)
+    const bad = dRows.some(([, text]) => !valid(text)) || cRows.some((e) => !e.remove && !valid(e.text))
+    if (!dRows.length && !cRows.length) return
+    if (bad || saving || savingRow) return
+    if (onlyDrug) setSavingRow(onlyDrug)
+    else setSaving(true)
+    setResult(null)
+    try {
+      const res = await apiFetch('/api/bonuses/batch', {
+        method: 'PUT',
+        body: JSON.stringify({
+          month: key(month),
+          drugs: dRows.map(([drug, text]) => ({ drug, value: clean(text) === '' ? null : clean(text) })),
+          doctors: cRows.map((e) => ({ drug: e.drug, doctor: e.doctor._id, value: e.remove || clean(e.text) === '' ? null : clean(e.text) })),
+        }),
+      })
+      await load(month, true)
+      if (onlyDrug) {
+        setDrugEdits((p) => { const n = { ...p }; delete n[onlyDrug]; return n })
+        setDocEdits((p) => Object.fromEntries(Object.entries(p).filter(([, e]) => e.drug !== onlyDrug)))
+        setSavedRow(onlyDrug)
+        setTimeout(() => setSavedRow((r) => (r === onlyDrug ? null : r)), 4000)
+      } else {
+        setDrugEdits({})
+        setDocEdits({})
+      }
+      setBlockedMove(false)
+      setResult({
+        kind: 'success',
+        text: t('savedOk', { n: res.saved, month: mName(month) }),
+        sub: res.recalculated ? t('savedRecalc', { n: res.recalculated }) : t('savedNoRecalc'),
+      })
+    } catch (err) {
+      setResult({ kind: 'error', text: t('saveFailed'), sub: err.message })
+    } finally {
+      setSaving(false)
+      setSavingRow(null)
+    }
   }
 
   async function copyFromPrevious() {
+    if (dirty) { setBlockedMove(true); return }
     const from = shift(month, -1)
     setCopying(true)
-    setError('')
+    setResult(null)
     try {
       const res = await apiFetch('/api/bonuses/copy', {
         method: 'POST',
         body: JSON.stringify({ from: key(from), to: key(month) }),
       })
       await load(month, true)
-      flash(
+      setResult(
         res.copiedDrugs || res.copiedDoctors
-          ? t('copyDone', { drugs: res.copiedDrugs, doctors: res.copiedDoctors })
-          : t('copyNothing', { month: monthName(from) })
+          ? { kind: 'success', text: t('copyDone', { drugs: res.copiedDrugs, doctors: res.copiedDoctors }), sub: res.recalculated ? t('savedRecalc', { n: res.recalculated }) : '' }
+          : { kind: 'info', text: t('copyNothing', { month: mName(from) }) }
       )
     } catch (err) {
-      setError(err.message)
+      setResult({ kind: 'error', text: t('saveFailed'), sub: err.message })
     } finally {
       setCopying(false)
     }
   }
 
-  const drugs = data?.drugs || []
   const stats = useMemo(() => ({
     set: drugs.filter((d) => d.value != null).length,
     doctors: drugs.reduce((s, d) => s + d.doctors.length, 0),
   }), [drugs])
 
+  const changedIds = new Set([...changedDrugs.map(([id]) => id), ...changedDocs.map((e) => e.drug)])
   const visible = drugs.filter((d) => {
     if (search.trim() && !d.name.toLowerCase().includes(search.trim().toLowerCase())) return false
     if (show === 'set') return d.value != null
     if (show === 'doctors') return d.doctors.length > 0
+    if (show === 'changed') return changedIds.has(d._id)
     return true
   })
 
@@ -254,6 +267,19 @@ export default function Bonuses() {
       : d.inheritedFrom === 'default' ? t('inheritedDefault', { value: fmt(d.inherited) })
         : t('inheritedNone')
 
+  const SaveButton = ({ big }) => (
+    <button
+      type="button"
+      className={`btn bonuses-save ${big ? 'is-big' : ''}`}
+      onClick={() => save()}
+      disabled={!dirty || invalid || saving || !!savingRow || !canEdit}
+    >
+      <span>
+        {saving ? <><span className="btn-spinner" /> {t('saving')}</> : <>💾 {dirty ? t('saveN', { n: changes }) : t('save')}</>}
+      </span>
+    </button>
+  )
+
   return (
     <div className="bonuses-page">
       <div className="bonuses-head">
@@ -261,12 +287,37 @@ export default function Bonuses() {
           <h1>{t('title')}</h1>
           <p className="bonuses-sub">{t('subtitle')}</p>
         </div>
-        <div className="bonuses-month" role="group" aria-label={t('month')}>
-          <button type="button" className="bonuses-month-arrow" onClick={() => setMonth((m) => shift(m, -1))} aria-label={t('prevMonth')}>‹</button>
-          <span className="bonuses-month-name">{monthName(month)}</span>
-          <button type="button" className="bonuses-month-arrow" onClick={() => setMonth((m) => shift(m, 1))} aria-label={t('nextMonth')}>›</button>
+        <div className="bonuses-head-right">
+          <div className="bonuses-month" role="group" aria-label={t('month')}>
+            <button type="button" className="bonuses-month-arrow" onClick={() => goMonth(-1)} aria-label={t('prevMonth')}>‹</button>
+            <span className="bonuses-month-name">{mName(month)}</span>
+            <button type="button" className="bonuses-month-arrow" onClick={() => goMonth(1)} aria-label={t('nextMonth')}>›</button>
+          </div>
         </div>
       </div>
+
+      {result && (
+        <div className={`bonuses-result is-${result.kind}`} role="status">
+          <span className="bonuses-result-icon" aria-hidden="true">
+            {result.kind === 'success' ? '✓' : result.kind === 'error' ? '!' : 'i'}
+          </span>
+          <div className="bonuses-result-text">
+            <strong>{result.text}</strong>
+            {result.sub && <span>{result.sub}</span>}
+          </div>
+          <button type="button" className="bonuses-result-close" onClick={() => setResult(null)} aria-label="✕">✕</button>
+        </div>
+      )}
+
+      {blockedMove && dirty && (
+        <div className="bonuses-result is-warn" role="alert">
+          <span className="bonuses-result-icon" aria-hidden="true">!</span>
+          <div className="bonuses-result-text">
+            <strong>{t('unsavedTitle', { n: changes })}</strong>
+            <span>{t('unsavedText')}</span>
+          </div>
+        </div>
+      )}
 
       <div className="bonuses-toolbar">
         <input
@@ -277,17 +328,18 @@ export default function Bonuses() {
           onChange={(e) => setSearch(e.target.value)}
         />
         <div className="bonuses-chips">
-          {['all', 'set', 'doctors'].map((k) => (
-            <button key={k} type="button" className={`bonuses-chip ${show === k ? 'is-on' : ''}`} onClick={() => setShow(k)}>
+          {['all', 'set', 'doctors', ...(dirty ? ['changed'] : [])].map((k) => (
+            <button key={k} type="button" className={`bonuses-chip ${show === k ? 'is-on' : ''} ${k === 'changed' ? 'is-changed' : ''}`} onClick={() => setShow(k)}>
               {t(`show.${k}`)}
               {k === 'set' && <em>{stats.set}</em>}
               {k === 'doctors' && <em>{stats.doctors}</em>}
+              {k === 'changed' && <em>{changes}</em>}
             </button>
           ))}
         </div>
         {canEdit && (
-          <button type="button" className="btn-gray bonuses-copy" onClick={copyFromPrevious} disabled={copying || loading}>
-            <span>{copying ? <span className="btn-spinner" /> : t('copyFrom', { month: monthName(shift(month, -1)) })}</span>
+          <button type="button" className="btn-gray bonuses-copy" onClick={copyFromPrevious} disabled={copying || loading || saving}>
+            <span>{copying ? <span className="btn-spinner" /> : t('copyFrom', { month: mName(shift(month, -1)) })}</span>
           </button>
         )}
       </div>
@@ -298,7 +350,6 @@ export default function Bonuses() {
         {!canEdit && <span className="bonuses-readonly">{t('readOnly')}</span>}
       </div>
 
-      {notice && <div className="bonuses-notice">{notice}</div>}
       {error && <p className="resource-error">{error}</p>}
 
       {loading && !data ? (
@@ -320,35 +371,83 @@ export default function Bonuses() {
               )}
               {visible.map((d) => {
                 const isOpen = openDrug === d._id
-                const waiting = pending.filter((p) => p.drug === d._id)
-                const taken = new Set([...d.doctors.map((x) => x.doctor._id), ...waiting.map((p) => p.doctor._id)])
+                const text = drugEdits[d._id] ?? asText(d.value)
+                const drugChanged = clean(text) !== clean(asText(d.value))
+                const bad = drugChanged && !valid(text)
+
+                // saved doctors + the ones added / changed / removed on the page
+                const lines = d.doctors.map((x) => {
+                  const e = docEdits[`${d._id}|${x.doctor._id}`]
+                  return { doctor: x.doctor, saved: x.value, text: e ? e.text : asText(x.value), remove: !!e?.remove, isNew: false }
+                })
+                Object.values(docEdits)
+                  .filter((e) => e.drug === d._id && !d.doctors.some((x) => x.doctor._id === e.doctor._id))
+                  .forEach((e) => lines.push({ doctor: e.doctor, saved: null, text: e.text, remove: false, isNew: true }))
+                const taken = new Set(lines.map((l) => l.doctor._id))
+                const rowChanged = changedIds.has(d._id)
+                const rowBad = bad || lines.some((l) => !l.remove && (l.isNew || clean(l.text) !== clean(asText(l.saved))) && !valid(l.text))
+                const shownDoctors = lines.filter((l) => !l.remove).length
+
+                const setDoc = (doctor, patch) =>
+                  setDocEdits((p) => {
+                    const k = `${d._id}|${doctor._id}`
+                    const prev = p[k] || { drug: d._id, doctor, text: asText(d.doctors.find((x) => x.doctor._id === doctor._id)?.value), remove: false }
+                    return { ...p, [k]: { ...prev, ...patch } }
+                  })
+                const dropDoc = (doctor) =>
+                  setDocEdits((p) => {
+                    const n = { ...p }
+                    delete n[`${d._id}|${doctor._id}`]
+                    return n
+                  })
+
                 return (
                   <Fragment key={d._id}>
-                    <tr className={`${d.value != null ? 'is-set' : ''} ${isOpen ? 'is-open' : ''}`}>
-                      <td className="bonuses-drug">{d.name}</td>
+                    <tr className={`${d.value != null ? 'is-set' : ''} ${isOpen ? 'is-open' : ''} ${rowChanged ? 'is-changed' : ''} ${savedRow === d._id && !rowChanged ? 'is-saved-flash' : ''}`}>
+                      <td className="bonuses-drug">
+                        {d.name}
+                        {rowChanged && <span className="bonuses-unsaved">{t('notSaved')}</span>}
+                      </td>
                       <td className="num">{fmt(d.price)} ₾</td>
                       <td>
                         <div className="bonuses-cell">
-                          <BonusInput
-                            value={d.value}
+                          <input
+                            type="text"
+                            inputMode="decimal"
+                            className={`bonus-input ${drugChanged ? 'is-changed' : ''} ${bad ? 'is-bad' : ''}`}
+                            value={text}
                             placeholder={fmt(d.inherited)}
                             disabled={!canEdit}
-                            ariaLabel={`${d.name} — ${t('colBonus')}`}
-                            onSave={(v) => saveDrug(d, v)}
+                            aria-label={`${d.name} — ${t('colBonus')}`}
+                            onChange={(e) => setDrugEdits((p) => ({ ...p, [d._id]: e.target.value }))}
+                            onKeyDown={(e) => { if (e.key === 'Enter') save(d._id) }}
                           />
-                          <span className="bonuses-hint">
-                            {d.value != null ? t('setForMonth') : inheritedText(d)}
+                          {canEdit && rowChanged && (
+                            <button
+                              type="button"
+                              className="btn bonuses-row-save"
+                              onClick={() => save(d._id)}
+                              disabled={rowBad || !!savingRow || saving}
+                            >
+                              <span>{savingRow === d._id ? <span className="btn-spinner" /> : `💾 ${t('save')}`}</span>
+                            </button>
+                          )}
+                          {savedRow === d._id && !rowChanged && <span className="bonuses-row-saved">✓ {t('rowSaved')}</span>}
+                          <span className={`bonuses-hint ${bad ? 'is-bad' : ''}`}>
+                            {bad ? t('badNumber')
+                              : drugChanged ? (clean(text) === '' ? t('willInherit', { value: fmt(d.inherited) }) : t('pressSave'))
+                                : d.value != null ? t('setForMonth') : inheritedText(d)}
                           </span>
                         </div>
                       </td>
                       <td>
                         <button
                           type="button"
-                          className={`bonuses-doctors-btn ${d.doctors.length ? 'has' : ''}`}
+                          className={`bonuses-doctors-btn ${shownDoctors ? 'has' : ''}`}
                           onClick={() => setOpenDrug(isOpen ? null : d._id)}
                           aria-expanded={isOpen}
                         >
-                          {d.doctors.length ? t('doctorsCount', { n: d.doctors.length }) : canEdit ? t('addDoctors') : '—'}
+                          {shownDoctors ? t('doctorsCount', { n: shownDoctors }) : canEdit ? t('addDoctors') : '—'}
                           <span className="bonuses-caret">{isOpen ? '▴' : '▾'}</span>
                         </button>
                       </td>
@@ -357,41 +456,65 @@ export default function Bonuses() {
                       <tr className="bonuses-doctors-row">
                         <td colSpan={4}>
                           <div className="bonuses-doctors-panel">
-                            <div className="bonuses-doctors-title">{t('doctorsTitle', { drug: d.name, month: monthName(month) })}</div>
+                            <div className="bonuses-doctors-title">{t('doctorsTitle', { drug: d.name, month: mName(month) })}</div>
                             <p className="bonuses-doctors-hint">
-                              {t('doctorsHint', { value: fmt(d.value ?? d.inherited) })}
+                              {t('doctorsHint', { value: fmt(clean(text) !== '' && valid(text) ? clean(text) : d.inherited) })}
                             </p>
-                            {d.doctors.length === 0 && waiting.length === 0 && (
-                              <p className="bonuses-doctors-none">{t('noDoctors')}</p>
-                            )}
-                            {[...d.doctors.map((x) => ({ doctor: x.doctor, value: x.value, saved: true })), ...waiting.map((p) => ({ doctor: p.doctor, value: null, saved: false }))].map((x) => (
-                              <div key={x.doctor._id} className={`bonuses-doctor-line ${x.saved ? '' : 'is-new'}`}>
-                                <span className="bonuses-doctor-name">{formatDoctorLabel(x.doctor)}</span>
-                                <BonusInput
-                                  value={x.value}
-                                  placeholder={x.saved ? '' : t('typeValue')}
-                                  disabled={!canEdit}
-                                  ariaLabel={`${formatDoctorLabel(x.doctor)} — ${t('colBonus')}`}
-                                  onSave={(v) => (v == null && !x.saved ? Promise.resolve() : saveDoctor(d, x.doctor, v))}
-                                />
-                                {canEdit && (
-                                  <button
-                                    type="button"
-                                    className="bonuses-remove"
-                                    onClick={() => (x.saved ? saveDoctor(d, x.doctor, null) : setPending((p) => p.filter((y) => !(y.drug === d._id && y.doctor._id === x.doctor._id))))}
-                                    aria-label={t('remove')}
-                                    title={t('remove')}
-                                  >
-                                    ✕
-                                  </button>
-                                )}
-                              </div>
-                            ))}
+                            {lines.length === 0 && <p className="bonuses-doctors-none">{t('noDoctors')}</p>}
+                            {lines.map((l) => {
+                              const lChanged = l.remove || l.isNew || clean(l.text) !== clean(asText(l.saved))
+                              const lBad = !l.remove && lChanged && !valid(l.text)
+                              return (
+                                <div key={l.doctor._id} className={`bonuses-doctor-line ${l.remove ? 'is-removed' : ''} ${lChanged ? 'is-changed' : ''}`}>
+                                  <span className="bonuses-doctor-name">
+                                    {formatDoctorLabel(l.doctor)}
+                                    {l.isNew && <em className="bonuses-tag">{t('tagNew')}</em>}
+                                    {l.remove && <em className="bonuses-tag is-red">{t('tagRemove')}</em>}
+                                  </span>
+                                  <input
+                                    type="text"
+                                    inputMode="decimal"
+                                    className={`bonus-input ${lChanged && !l.remove ? 'is-changed' : ''} ${lBad ? 'is-bad' : ''}`}
+                                    value={l.text}
+                                    placeholder={t('typeValue')}
+                                    disabled={!canEdit || l.remove}
+                                    aria-label={`${formatDoctorLabel(l.doctor)} — ${t('colBonus')}`}
+                                    onChange={(e) => setDoc(l.doctor, { text: e.target.value })}
+                                    onKeyDown={(e) => { if (e.key === 'Enter') save(d._id) }}
+                                  />
+                                  {canEdit && lChanged && (
+                                    <button
+                                      type="button"
+                                      className="btn bonuses-row-save"
+                                      onClick={() => save(d._id)}
+                                      disabled={rowBad || !!savingRow || saving}
+                                    >
+                                      <span>{savingRow === d._id ? <span className="btn-spinner" /> : `💾 ${t('save')}`}</span>
+                                    </button>
+                                  )}
+                                  {canEdit && (
+                                    l.remove ? (
+                                      <button type="button" className="bonuses-undo" onClick={() => dropDoc(l.doctor)}>{t('undo')}</button>
+                                    ) : (
+                                      <button
+                                        type="button"
+                                        className="bonuses-remove"
+                                        onClick={() => (l.isNew ? dropDoc(l.doctor) : setDoc(l.doctor, { remove: true }))}
+                                        aria-label={t('remove')}
+                                        title={t('remove')}
+                                      >
+                                        ✕
+                                      </button>
+                                    )
+                                  )}
+                                </div>
+                              )
+                            })}
                             {canEdit && (
                               <DoctorPicker
                                 t={t}
                                 exclude={taken}
-                                onPick={(doctor) => setPending((p) => [...p, { drug: d._id, doctor }])}
+                                onPick={(doctor) => setDocEdits((p) => ({ ...p, [`${d._id}|${doctor._id}`]: { drug: d._id, doctor, text: '', remove: false } }))}
                               />
                             )}
                           </div>
@@ -403,6 +526,19 @@ export default function Bonuses() {
               })}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {canEdit && dirty && (
+        <div className="bonuses-savebar" role="region" aria-label={t('save')}>
+          <span className="bonuses-savebar-text">
+            <span className="bonuses-savebar-dot" />
+            {invalid ? t('fixFirst') : t('pending', { n: changes })}
+          </span>
+          <div className="bonuses-savebar-actions">
+            <button type="button" className="btn-gray" onClick={discard} disabled={saving}><span>{t('discard')}</span></button>
+            <SaveButton big />
+          </div>
         </div>
       )}
     </div>

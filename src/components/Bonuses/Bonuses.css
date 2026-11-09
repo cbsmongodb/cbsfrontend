@@ -278,3 +278,132 @@
   .bonuses-doctors-panel { padding-left: 16px; }
   .bonuses-doctor-line { flex-wrap: wrap; }
 }
+
+/* ===== save flow (v2) ===== */
+.bonuses-head-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.bonuses-save { white-space: nowrap; }
+.bonuses-save:disabled { opacity: 0.55; cursor: not-allowed; }
+.bonuses-save.is-big { padding: 12px 22px; font-size: 14.5px; }
+
+/* big result message after saving */
+.bonuses-result {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+  border: 1px solid;
+  animation: bonuses-pop 0.25s ease-out;
+}
+@keyframes bonuses-pop { from { transform: translateY(-6px); opacity: 0; } to { transform: none; opacity: 1; } }
+.bonuses-result-icon {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 17px;
+  color: #fff;
+}
+.bonuses-result-text { display: flex; flex-direction: column; gap: 2px; flex: 1; font-size: 13px; }
+.bonuses-result-text strong { font-size: 15px; }
+.bonuses-result-close { border: none; background: transparent; cursor: pointer; font-size: 14px; color: inherit; opacity: 0.6; }
+.bonuses-result.is-success { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+.bonuses-result.is-success .bonuses-result-icon { background: #10b981; }
+.bonuses-result.is-error { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+.bonuses-result.is-error .bonuses-result-icon { background: #dc2626; }
+.bonuses-result.is-info { background: #eff6ff; border-color: #bfdbfe; color: #1e3a8a; }
+.bonuses-result.is-info .bonuses-result-icon { background: #3f74d6; }
+.bonuses-result.is-warn { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+.bonuses-result.is-warn .bonuses-result-icon { background: #f59e0b; }
+
+/* changed, not saved yet */
+.bonuses-table tr.is-changed > td { background: #fffbeb; }
+.bonuses-unsaved {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #fde68a;
+  color: #92400e;
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.bonus-input.is-changed { border-color: #f59e0b; background: #fffdf5; }
+.bonus-input.is-bad { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12); }
+.bonuses-hint.is-bad { color: #dc2626; font-weight: 600; }
+.bonuses-tr-changed .bonuses-hint { color: #b45309; }
+.bonuses-chip.is-changed { border-color: #f59e0b; color: #92400e; }
+.bonuses-chip.is-changed em { background: #fde68a; color: #92400e; }
+
+.bonuses-tag {
+  margin-left: 8px;
+  font-style: normal;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1e40af;
+}
+.bonuses-tag.is-red { background: #fee2e2; color: #991b1b; }
+.bonuses-doctor-line.is-changed { background: #fffbeb; }
+.bonuses-doctor-line.is-removed .bonuses-doctor-name { text-decoration: line-through; color: var(--ink-faint); }
+.bonuses-undo {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--blue);
+}
+
+/* sticky save bar at the bottom while something is not saved */
+.bonuses-savebar {
+  position: sticky;
+  bottom: 12px;
+  z-index: 6;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  background: #0f2744;
+  color: #fff;
+  border-radius: 14px;
+  box-shadow: 0 14px 36px rgba(15, 39, 68, 0.3);
+  animation: bonuses-pop 0.2s ease-out;
+}
+.bonuses-savebar-text { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px; }
+.bonuses-savebar-dot { width: 10px; height: 10px; border-radius: 50%; background: #fbbf24; box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.25); }
+.bonuses-savebar-actions { display: flex; gap: 8px; }
+@media (max-width: 640px) {
+  .bonuses-savebar-actions { width: 100%; }
+  .bonuses-savebar-actions > * { flex: 1; }
+  .bonuses-head-right { width: 100%; }
+}
+
+/* save button right next to the field (v3) */
+.bonuses-row-save { padding: 8px 14px; font-size: 13px; white-space: nowrap; animation: bonuses-pop 0.15s ease-out; }
+.bonuses-row-save:disabled { opacity: 0.5; cursor: not-allowed; }
+.bonuses-row-saved {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #d1fae5;
+  color: #065f46;
+  font-weight: 700;
+  font-size: 13px;
+  animation: bonuses-pop 0.2s ease-out;
+}
+.bonuses-table tr.is-saved-flash > td { background: #ecfdf5; transition: background 0.6s; }
