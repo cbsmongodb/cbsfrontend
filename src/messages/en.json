@@ -842,6 +842,7 @@
     "analytics": {
       "title": "Analytics",
       "noDrugData": "No drug data in this period",
+      "noPrescriptionYet": "No prescription entered yet",
       "prescription": "Prescription",
       "sales": "Sales",
       "payable": "Payable",

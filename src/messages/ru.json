@@ -842,6 +842,7 @@
     "analytics": {
       "title": "Аналитика",
       "noDrugData": "Нет данных по препаратам за этот период",
+      "noPrescriptionYet": "Рецепт ещё не введён",
       "prescription": "Назначения",
       "sales": "Продажи",
       "payable": "К оплате",

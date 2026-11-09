@@ -348,3 +348,18 @@
   background: rgba(211, 58, 58, 0.1);
   color: #b91c1c;
 }
+
+
+/* budget with no prescription entry yet */
+.analytics-norx-badge {
+  display: block;
+  width: fit-content;
+  margin-top: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 10.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}

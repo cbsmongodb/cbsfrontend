@@ -378,6 +378,9 @@ export default function Analytics() {
                     <td data-label={t('common.employee')}>{row.employeeName}</td>
                     <td data-label={t('common.doctor')} className={row.doctorIsBudgeted ? 'analytics-doctor-budgeted' : ''}>
                       {row.doctorName}
+                      {row.noPrescription && (
+                        <span className="analytics-norx-badge">{t('analytics.noPrescriptionYet')}</span>
+                      )}
                     </td>
                     <td data-label={t('common.visits')} className="analytics-num">{row.visits}</td>
                     <td data-label={t('analytics.targetAmount')} className="analytics-num analytics-group-target">{fmtMoney(row.targetAmount)}</td>

@@ -845,6 +845,7 @@
     "analytics": {
       "title": "ანალიტიკა",
       "noDrugData": "ამ პერიოდში წამლის მონაცემი არ არის",
+      "noPrescriptionYet": "რეცეპტი ჯერ არ არის შეყვანილი",
       "prescription": "დანიშნულება",
       "sales": "გაყიდვა",
       "payable": "გადასახდელი",
