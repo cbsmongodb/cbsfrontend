@@ -596,3 +596,6 @@ tbody tr:hover {
 .rt-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .rt-status.is-on { background: #dcfce7; color: #15803d; }
 .rt-status.is-off { background: #f1f5f9; color: #64748b; }
+
+/* the switch sits on the same line as the inputs (not up by the field labels) */
+.resource-form .rt-switch { align-self: end; min-height: 40px; }
