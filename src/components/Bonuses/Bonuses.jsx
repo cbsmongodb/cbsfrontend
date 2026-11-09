@@ -311,6 +311,64 @@ function EditModal({ t, drug, monthText, onClose, onSave }) {
   )
 }
 
+// the month bonus of one medicine, typed right in the table, with its own Save
+function MonthBonusCell({ t, d, canEdit, onSave, sourceText }) {
+  const [text, setText] = useState(asText(d.value))
+  const [saving, setSaving] = useState(false)
+  useEffect(() => { setText(asText(d.value)) }, [d.value])
+  const changed = clean(text) !== clean(asText(d.value))
+  const bad = changed && !valid(text)
+
+  async function save() {
+    if (!changed || bad || saving) return
+    setSaving(true)
+    try {
+      await onSave({ drugs: [{ drug: d._id, value: clean(text) === '' ? null : clean(text) }], doctors: [] })
+    } catch { /* the page shows the error */ } finally {
+      setSaving(false)
+    }
+  }
+
+  if (!canEdit) {
+    return (
+      <div className="bonuses-value">
+        <strong className={d.value != null ? '' : 'is-inherited'}>{fmt(d.value ?? d.inherited) || '0'} ₾</strong>
+        <span className="bonuses-hint">{sourceText(d)}</span>
+      </div>
+    )
+  }
+  return (
+    <div className="mb-cell">
+      <div className={`bm-money is-small ${changed ? 'is-changed' : ''} ${bad ? 'is-bad' : ''}`}>
+        <input
+          type="text"
+          inputMode="decimal"
+          value={text}
+          placeholder={fmt(d.inherited)}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') save()
+            if (e.key === 'Escape') setText(asText(d.value))
+          }}
+          aria-label={`${d.name} — ${t('colBonus')}`}
+        />
+        <span>₾</span>
+      </div>
+      {changed ? (
+        <>
+          <button type="button" className="btn btn-sm mb-cell-save" onClick={save} disabled={bad || saving}>
+            <span>{saving ? <span className="btn-spinner" /> : `💾 ${t('save')}`}</span>
+          </button>
+          <button type="button" className="bm-link" onClick={() => setText(asText(d.value))}>{t('cancel')}</button>
+        </>
+      ) : (
+        <span className="bonuses-hint">{sourceText(d)}</span>
+      )}
+      {bad && <span className="bonuses-hint is-bad">{t('badNumber')}</span>}
+    </div>
+  )
+}
+
 // "saved successfully" window
 function DoneModal({ t, done, onClose }) {
   const btn = useRef(null)
@@ -494,12 +552,11 @@ export default function Bonuses() {
                 <th className="num">{t('colPrice')}</th>
                 <th>{t('colBonus')}</th>
                 <th>{t('colDoctors')}</th>
-                <th aria-label={t('edit')} />
               </tr>
             </thead>
             <tbody>
               {visible.length === 0 && (
-                <tr><td colSpan={5} className="bonuses-empty">{t('noDrugs')}</td></tr>
+                <tr><td colSpan={4} className="bonuses-empty">{t('noDrugs')}</td></tr>
               )}
               {visible.map((d) => (
                 <tr key={d._id} className={`${d.value != null ? 'is-set' : ''} ${justSaved === d._id ? 'is-saved-flash' : ''}`}>
@@ -509,26 +566,23 @@ export default function Bonuses() {
                   </td>
                   <td className="num">{fmt(d.price)} ₾</td>
                   <td>
-                    <div className="bonuses-value">
-                      <strong className={d.value != null ? '' : 'is-inherited'}>{fmt(d.value ?? d.inherited) || '0'} ₾</strong>
-                      <span className="bonuses-hint">{sourceText(d)}</span>
-                    </div>
+                    <MonthBonusCell t={t} d={d} canEdit={canEdit} sourceText={sourceText} onSave={(body) => saveDrug(d, body)} />
                   </td>
                   <td>
-                    {d.doctors.length ? (
-                      <span className="bonuses-doc-summary" title={d.doctors.map((x) => `${formatDoctorLabel(x.doctor)}: ${fmt(x.value)} ₾`).join('\n')}>
-                        {t('doctorsCount', { n: d.doctors.length })}
-                      </span>
-                    ) : (
-                      <span className="bonuses-hint">—</span>
-                    )}
-                  </td>
-                  <td className="bonuses-actions">
-                    {canEdit && (
-                      <button type="button" className="btn-gray bonuses-edit" onClick={() => setEditing(d)}>
-                        <span>✏️ {t('edit')}</span>
-                      </button>
-                    )}
+                    <div className="mb-docs">
+                      {d.doctors.length ? (
+                        <span className="bonuses-doc-summary" title={d.doctors.map((x) => `${formatDoctorLabel(x.doctor)}: ${fmt(x.value)} ₾`).join('\n')}>
+                          {t('doctorsCount', { n: d.doctors.length })}
+                        </span>
+                      ) : (
+                        <span className="bonuses-hint">{t('noneShort')}</span>
+                      )}
+                      {canEdit && (
+                        <button type="button" className="btn-gray bonuses-edit" onClick={() => setEditing(d)}>
+                          <span>👩‍⚕️ {d.doctors.length ? t('editDoctors') : t('addDoctorsBtn')}</span>
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

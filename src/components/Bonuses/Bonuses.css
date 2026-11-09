@@ -772,3 +772,18 @@
 .bm-step[aria-hidden] { font-size: 16px; background: #eef4fd; }
 .bm-howto { margin: 8px 0 0; padding-left: 18px; font-size: 12.5px; color: var(--ink-soft); line-height: 1.6; }
 .bm-howto li::marker { color: var(--blue); font-weight: 800; }
+/* v8: month bonus right in the table */
+.mb-cell { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.mb-cell .bm-money { background: #fff; }
+.mb-cell .bm-money:focus-within { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(63, 116, 214, 0.14); }
+.mb-cell .bm-money input { font-weight: 800; }
+.mb-cell-save { padding: 8px 14px; font-size: 13px; background: linear-gradient(120deg, #0f8a5f, #10b981) !important; }
+.mb-docs { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.bonuses-page .bm-money { --ink: #0f2744; --ink-faint: #93a1b4; --blue: #3f74d6; }
+.bonuses-page .bm-money.is-small { display: inline-flex; align-items: center; height: 40px; padding: 0 10px; border: 1.5px solid #d5dce6; border-radius: 10px; }
+.bonuses-page .bm-money.is-small input { width: 70px; border: none; outline: none; background: transparent; font: inherit; font-size: 15px; color: #0f2744; }
+.bonuses-page .bm-money.is-small input::placeholder { color: #9aa7ba; font-weight: 600; }
+.bonuses-page .bm-money.is-small > span { font-size: 14px; font-weight: 700; color: #93a1b4; margin-left: 4px; }
+.bonuses-page .bm-money.is-changed { border-color: #f59e0b; background: #fffdf5; }
+.bonuses-page .bm-money.is-bad { border-color: #dc2626; }
+.bonuses-page .bm-link { border: none; background: transparent; color: #3f74d6; font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; text-decoration: underline; }
