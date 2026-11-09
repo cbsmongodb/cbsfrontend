@@ -32,7 +32,6 @@ export default function Page() {
         },
         { name: "price", label: t('fields.price'), type: "number" },
         { name: "isActive", label: t('fields.isActive'), type: "checkbox" },
-        { name: "monthlyBonuses", label: tu('k021'), type: "drug-bonuses", hideInTable: true },
       ]}
     />
   );

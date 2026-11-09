@@ -141,6 +141,7 @@ export default function DoctorEntryItems() {
   const [pharmacySales, setPharmacySales] = useState({})
   const [savedByDoctor, setSavedByDoctor] = useState({})
   const [monthBonuses, setMonthBonuses] = useState({})
+  const [doctorMonthBonuses, setDoctorMonthBonuses] = useState({})
   const [visitCounts, setVisitCounts] = useState({})
   const [budgetSums, setBudgetSums] = useState({})
 
@@ -232,7 +233,9 @@ export default function DoctorEntryItems() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [employeeId, monthValue])
 
-  function bonusFor(row) {
+  function bonusFor(row, doctorId) {
+    const own = doctorMonthBonuses[`${doctorId}|${row.drugId}`]
+    if (own != null) return own
     if (monthBonuses[row.drugId] != null) return monthBonuses[row.drugId]
     const d = drugs.find((x) => x._id === row.drugId)
     return d?.bonus || row.budget || 0
@@ -270,6 +273,7 @@ export default function DoctorEntryItems() {
       const loaded = groupItemsIntoDoctorEntries(data.items || [])
       setPharmacySales(data.pharmacySales || {})
       setMonthBonuses(data.bonuses || {})
+      setDoctorMonthBonuses(data.doctorBonuses || {})
       setSavedByDoctor(Object.fromEntries(loaded.map((e) => [e.doctorId, e])))
       setDoctorEntries([emptyDoctorEntry()])
     } catch (err) {
@@ -624,14 +628,14 @@ export default function DoctorEntryItems() {
                       </div>
                       <div className="doctor-entry-drug-number doctor-entry-bonus">
                         <label>{tu('bonusAuto')}</label>
-                        <div className="doctor-entry-bonus-value">{fmt(bonusFor(row))} ₾</div>
+                        <div className="doctor-entry-bonus-value">{fmt(bonusFor(row, entry.doctorId))} ₾</div>
                       </div>
 
                       {(() => {
 
                         const rx = Number(row.prescription) || 0
 
-                        const bonus = Number(bonusFor(row)) || 0
+                        const bonus = Number(bonusFor(row, entry.doctorId)) || 0
 
                         const sum = rxTotal(row.drugId)
 
