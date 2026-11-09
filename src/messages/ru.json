@@ -265,6 +265,7 @@
     "geocodeSummary": "✅ Всего: {total} | Найдено: {geocoded} | Не найдено: {failed}",
     "missingHeading": "Ещё не на карте ({count})",
     "pinButton": "📍 Отметить на карте",
+    "visitsCount": "Визиты: {count}",
     "lastVisit": "последний: {date}",
     "noVisitsYet": "Визитов ещё не было",
     "viewOnMap": "Показать на карте",

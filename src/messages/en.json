@@ -265,6 +265,7 @@
     "geocodeSummary": "✅ Total: {total} | Found: {geocoded} | Not found: {failed}",
     "missingHeading": "Not yet on the map ({count})",
     "pinButton": "📍 Pin on map",
+    "visitsCount": "Visits: {count}",
     "lastVisit": "last: {date}",
     "noVisitsYet": "No visits yet",
     "viewOnMap": "View on map",

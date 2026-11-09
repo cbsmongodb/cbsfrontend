@@ -2137,3 +2137,12 @@ body .role-permissions {
 }
 body .resource-table-scroll { flex: none; margin-bottom: 16px; }
 body .resource-pagination { margin-bottom: 24px; }
+
+
+/* dark-sidebar-v1 */
+/* dark mode: the sidebar keeps its own colours but gets darker.
+   An inset shadow paints OVER the background and UNDER the content,
+   so text, icons and buttons stay exactly as they are. */
+html[data-theme="dark"]:has(.dashboard-shell) .sidebar {
+  box-shadow: inset 0 0 0 100vmax rgba(3, 10, 24, 0.5) !important;
+}
