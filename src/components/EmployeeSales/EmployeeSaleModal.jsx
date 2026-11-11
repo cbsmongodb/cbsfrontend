@@ -17,6 +17,8 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
   // month names in the chosen language (the Georgian list above is only a fallback)
   const MONTHS = useMonthNames()
   const [month, setMonth] = useState(new Date().getUTCMonth())
+  const [year, setYear] = useState(CURRENT_YEAR)
+  const [pinned, setPinned] = useState({})
   const [employeeId, setEmployeeId] = useState("")
   const [drugs, setDrugs] = useState([])
   const [checked, setChecked] = useState({}) // { drugId: true }
@@ -36,21 +38,24 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
     if (!editId) return
     apiFetch(`/api/employee-sales/${editId}`)
       .then((t) => {
-        if (t.date) setMonth(new Date(t.date).getUTCMonth())
+        if (t.date) { setMonth(new Date(t.date).getUTCMonth()); setYear(new Date(t.date).getUTCFullYear()) }
         setEmployeeId(t.employee || "")
         const chk = {}
         const bx = {}
         ;(t.items || []).forEach((it) => { chk[it.drug] = true; bx[it.drug] = it.totalNoOfBoxes })
         setChecked(chk)
         setBoxes(bx)
+        setPinned(chk)
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoadingEdit(false))
   }, [editId])
 
-  const filtered = drugs.filter((d) =>
-    !search.trim() ? true : d.name.toLowerCase().includes(search.trim().toLowerCase())
-  )
+  const filtered = drugs
+    .filter((d) => (!search.trim() ? true : d.name.toLowerCase().includes(search.trim().toLowerCase())))
+    .map((d, i) => ({ d, i }))
+    .sort((a, b) => (pinned[b.d._id] ? 1 : 0) - (pinned[a.d._id] ? 1 : 0) || a.i - b.i)
+    .map((x) => x.d)
 
   function toggle(drugId) {
     setChecked((prev) => {
@@ -78,7 +83,7 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
 
     setSaving(true)
     try {
-      const date = new Date(Date.UTC(CURRENT_YEAR, month, 1)).toISOString()
+      const date = new Date(Date.UTC(year, month, 1)).toISOString()
       const body = JSON.stringify({ employee: employeeId, date, items })
       if (editId) {
         await apiFetch(`/api/employee-sales/${editId}`, { method: "PUT", body })
@@ -105,7 +110,7 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
           <div className="et-modal-field">
             <label>{tu('k145')}</label>
             <select className="field-select" value={month} onChange={(e) => setMonth(Number(e.target.value))}>
-              {MONTHS.map((m, i) => <option key={i} value={i}>{m} {CURRENT_YEAR}</option>)}
+              {MONTHS.map((m, i) => <option key={i} value={i}>{m} {year}</option>)}
             </select>
           </div>
           <div className="et-modal-field">
@@ -152,8 +157,9 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
                     className="et-modal-boxinput"
                     type="number"
                     min="0"
+                    step="any"
                     placeholder={tu('k116')}
-                    autoFocus
+                    autoFocus={!pinned[d._id]}
                     value={boxes[d._id] ?? ""}
                     onChange={(e) => setBox(d._id, e.target.value)}
                   />
