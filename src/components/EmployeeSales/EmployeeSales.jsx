@@ -7,6 +7,19 @@ import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './EmployeeSales.css'
 import { useTranslations, useLocale } from 'next-intl'
 
+const thIcon = { display: 'inline-flex', alignItems: 'center', gap: 7, whiteSpace: 'nowrap' }
+const IconBox = () => (
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#13608f" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M21 8 12 3 3 8l9 5 9-5Z" /><path d="M3 8v8l9 5 9-5V8" /><path d="M12 13v8" /><path d="m7.5 5.5 9 5" />
+  </svg>
+)
+const IconMoney = () => (
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2f9e6e" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9.5" />
+    <text x="12" y="16.4" textAnchor="middle" fontSize="12.5" fontWeight="700" fill="#2f9e6e" stroke="none">₾</text>
+  </svg>
+)
+
 const BOXES_HEAD = { ka: 'გაყიდული ყუთები', en: 'Boxes sold', ru: 'Продано упаковок' }
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
 import MonthPicker from '@/components/MonthPicker/MonthPicker'
@@ -115,8 +128,8 @@ export default function EmployeeSales() {
             <tr>
               <th>{tu('k096')}</th>
               <th>{tu('k044')}</th>
-              <th>{tu('k150')}</th>
-              <th>{BOXES_HEAD[locale] || BOXES_HEAD.ka}</th>
+              <th><span style={thIcon}><IconMoney />{tu('k150')}</span></th>
+              <th><span style={thIcon}><IconBox />{BOXES_HEAD[locale] || BOXES_HEAD.ka}</span></th>
               <th></th>
             </tr>
           </thead>
