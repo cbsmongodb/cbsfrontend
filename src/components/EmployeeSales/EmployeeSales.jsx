@@ -5,7 +5,9 @@ import { apiFetch } from '@/lib/api'
 import EmployeeSaleModal from './EmployeeSaleModal'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './EmployeeSales.css'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
+
+const BOXES_HEAD = { ka: 'გაყიდული ყუთები', en: 'Boxes sold', ru: 'Продано упаковок' }
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
 import MonthPicker from '@/components/MonthPicker/MonthPicker'
 
@@ -13,6 +15,7 @@ export default function EmployeeSales() {
   const tu = useTranslations('ui')
   const tp = useTranslations('plannings')
   const tb = useTranslations('bonusesPage')
+  const locale = useLocale()
   const [employees, setEmployees] = useState([])
   const [search, setSearch] = useState('')
   const [employeeId, setEmployeeId] = useState('')
@@ -113,6 +116,7 @@ export default function EmployeeSales() {
               <th>{tu('k096')}</th>
               <th>{tu('k044')}</th>
               <th>{tu('k150')}</th>
+              <th>{BOXES_HEAD[locale] || BOXES_HEAD.ka}</th>
               <th></th>
             </tr>
           </thead>
@@ -122,6 +126,7 @@ export default function EmployeeSales() {
                 <td data-label={tu('k096')}>{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
                 <td data-label={tu('k044')}>{row.employeeName}</td>
                 <td data-label={tu('k150')}>{row.saleAmount}</td>
+                <td data-label={BOXES_HEAD[locale] || BOXES_HEAD.ka}>{(row.saleBoxes || 0).toLocaleString('en-US')}</td>
                 <td data-label="">
                   <button className="btn-gray btn-sm" onClick={() => { setEditId(row._id); setShowModal(true) }}><span>{tu('k101')}</span></button>
                   <button type="button" className="btn-gray btn-sm" onClick={() => handleDelete(row._id)}>
@@ -132,7 +137,7 @@ export default function EmployeeSales() {
             ))}
             {data && data.docs.length === 0 && (
               <tr>
-                <td colSpan={4}>{tu('k102')}</td>
+                <td colSpan={5}>{tu('k102')}</td>
               </tr>
             )}
           </tbody>
