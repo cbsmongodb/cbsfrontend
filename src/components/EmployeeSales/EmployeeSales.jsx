@@ -138,7 +138,7 @@ export default function EmployeeSales() {
               <tr key={row._id}>
                 <td data-label={tu('k096')}>{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
                 <td data-label={tu('k044')}>{row.employeeName}</td>
-                <td data-label={tu('k150')}>{row.saleAmount}</td>
+                <td data-label={tu('k150')}>{(Number(row.saleAmount) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 <td data-label={BOXES_HEAD[locale] || BOXES_HEAD.ka}>{(row.saleBoxes || 0).toLocaleString('en-US')}</td>
                 <td data-label="">
                   <button className="btn-gray btn-sm" onClick={() => { setEditId(row._id); setShowModal(true) }}><span>{tu('k101')}</span></button>
