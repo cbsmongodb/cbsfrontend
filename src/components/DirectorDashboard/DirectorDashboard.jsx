@@ -454,9 +454,9 @@ const getSaleColumns = (t, maxBoxes = 0) => [
 
 const PS_COLORS = ['#13608f', '#2f9e6e', '#8e4f9a', '#e0a37a', '#d4a017', '#c0506a']
 const PS_L = {
-  ka: { prescriptions: 'რეცეპტები', share: 'დივიზიონების წილი', total: 'სულ', plan: 'თვიური გეგმა', prev: 'წინა თვე', next: 'შემდეგი თვე', source: 'გაყიდვები აფთიაქებიდან · აქტიური წამლები და თანამშრომლები', noDiv: 'დივიზიონის გარეშე' },
-  en: { prescriptions: 'Prescriptions', share: 'Division share', total: 'Total', plan: 'Monthly plan', prev: 'Previous month', next: 'Next month', source: 'Sales from pharmacies · active drugs and employees', noDiv: 'No division' },
-  ru: { prescriptions: 'Рецепты', share: 'Доли дивизионов', total: 'Всего', plan: 'План на месяц', prev: 'Прошлый месяц', next: 'Следующий месяц', source: 'Продажи из аптек · активные препараты и сотрудники', noDiv: 'Без дивизиона' },
+  ka: { prescriptions: 'რეცეპტები', share: 'დივიზიონების წილი', total: 'სულ', plan: 'თვიური გეგმა', prev: 'წინა თვე', next: 'შემდეგი თვე', source: 'გაყიდვები აფთიაქებიდან · აქტიური წამლები და თანამშრომლები', noDiv: 'დივიზიონის გარეშე', noData: 'ამ თვეზე გაყიდვები ჯერ არ არის შეყვანილი (გაყიდვები აფთიაქებიდან)', rxChart: 'რეცეპტები პროდუქტების მიხედვით' },
+  en: { prescriptions: 'Prescriptions', share: 'Division share', total: 'Total', plan: 'Monthly plan', prev: 'Previous month', next: 'Next month', source: 'Sales from pharmacies · active drugs and employees', noDiv: 'No division', noData: 'No sales entered for this month yet', rxChart: 'Prescriptions by product' },
+  ru: { prescriptions: 'Рецепты', share: 'Доли дивизионов', total: 'Всего', plan: 'План на месяц', prev: 'Прошлый месяц', next: 'Следующий месяц', source: 'Продажи из аптек · активные препараты и сотрудники', noDiv: 'Без дивизиона', noData: 'Продажи за этот месяц ещё не внесены', rxChart: 'Рецепты по препаратам' },
 }
 
 // MonthPicker: pick a whole month directly (no start / end dates)
@@ -465,7 +465,8 @@ function MonthPicker({ value, onChange, locale }) {
   const [y, m] = value.split('-').map(Number)
   const nowD = new Date()
   const maxY = nowD.getFullYear()
-  const monthName = (i) => new Date(2024, i, 1).toLocaleDateString(localeTag(locale), { month: 'short' })
+  const KA_SHORT = ['იან', 'თებ', 'მარ', 'აპრ', 'მაი', 'ივნ', 'ივლ', 'აგვ', 'სექ', 'ოქტ', 'ნოე', 'დეკ']
+  const monthName = (i) => (locale === 'ka' ? KA_SHORT[i] : new Date(2024, i, 1).toLocaleDateString(localeTag(locale), { month: 'short' }))
   const set = (yy, mm) => onChange(`${yy}-${String(mm + 1).padStart(2, '0')}`)
   return (
     <div className="ps-picker">
@@ -518,6 +519,7 @@ function ProductSaleTab() {
   const maxBoxes = rows.reduce((m, r) => Math.max(m, Number(r.saleBoxes) || 0), 0)
   const topProduct = rows.find((r) => r.saleBoxes > 0) || null
   const chartRows = rows.filter((r) => r.saleBoxes > 0 || r.monthlyTarget > 0).slice(0, 15)
+  const rxRowsTop = [...rows].filter((r) => r.prescriptions > 0).sort((a, b) => b.prescriptions - a.prescriptions).slice(0, 15)
 
   const columns = useMemo(() => {
     const base = getSaleColumns(t, maxBoxes)
@@ -562,9 +564,10 @@ function ProductSaleTab() {
         </div>
       )}
 
-      {data && divisions.length > 0 && (
+      {data && (
         <div className="director-chart-card ps-div-card">
           <h3>{L.share}</h3>
+          {divisions.length === 0 ? <p className="ps-empty">{L.noData}</p> : (
           <div className="ps-div">
             <div className="ps-donut">
               <ResponsiveContainer width="100%" height={220}>
@@ -592,14 +595,23 @@ function ProductSaleTab() {
               })}
             </ul>
           </div>
+          )}
         </div>
       )}
 
-      {data && chartRows.length > 0 && (
+      {data && (
         <>
           <div className="director-chart-card">
             <h3>{t('chart.targetVsSold')}</h3>
-            <DualBarChart data={chartRows} labelKey="drugName" targetKey="monthlyTarget" soldKey="saleBoxes" />
+            {chartRows.length ? <DualBarChart data={chartRows} labelKey="drugName" targetKey="monthlyTarget" soldKey="saleBoxes" /> : <p className="ps-empty">{L.noData}</p>}
+          </div>
+          <div className="director-chart-card">
+            <h3>{t('chart.productSale')}</h3>
+            {chartRows.some((r) => r.saleBoxes > 0) ? <BarChart data={chartRows.filter((r) => r.saleBoxes > 0)} valueKey="saleBoxes" labelKey="drugName" /> : <p className="ps-empty">{L.noData}</p>}
+          </div>
+          <div className="director-chart-card">
+            <h3>{L.rxChart}</h3>
+            {rxRowsTop.length ? <BarChart data={rxRowsTop} valueKey="prescriptions" labelKey="drugName" seriesName={L.prescriptions} /> : <p className="ps-empty">—</p>}
           </div>
         </>
       )}
