@@ -171,7 +171,7 @@ function BarChart({ data, valueKey, labelKey, seriesName }) {
   const height = Math.max(data.length * 42, 200)
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <RBarChart data={data} layout="vertical" margin={{ top: 4, right: 24, bottom: 4, left: 4 }} barCategoryGap="28%">
+      <RBarChart data={data} layout="vertical" margin={{ top: 4, right: 60, bottom: 4, left: 4 }} barCategoryGap="28%">
         <defs>
           <linearGradient id="salesBarGradient" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#0c3557" /><stop offset="55%" stopColor="#13608f" /><stop offset="100%" stopColor="#2a93c4" />
@@ -195,7 +195,7 @@ function DualBarChart({ data, labelKey, targetKey, soldKey }) {
   const height = Math.max(data.length * 42, 200)
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <RBarChart data={data} layout="vertical" margin={{ top: 4, right: 24, bottom: 4, left: 4 }} barCategoryGap="28%" barGap={4}>
+      <RBarChart data={data} layout="vertical" margin={{ top: 4, right: 60, bottom: 4, left: 4 }} barCategoryGap="28%" barGap={4}>
         <defs>
           <linearGradient id="soldBarGradient" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#0c3557" /><stop offset="55%" stopColor="#13608f" /><stop offset="100%" stopColor="#2a93c4" />
@@ -452,10 +452,46 @@ const getSaleColumns = (t, maxBoxes = 0) => [
   },
 ]
 
+const PS_COLORS = ['#13608f', '#2f9e6e', '#8e4f9a', '#e0a37a', '#d4a017', '#c0506a']
+const PS_L = {
+  ka: { prescriptions: 'რეცეპტები', share: 'დივიზიონების წილი', total: 'სულ', plan: 'თვიური გეგმა', prev: 'წინა თვე', next: 'შემდეგი თვე', source: 'გაყიდვები აფთიაქებიდან · აქტიური წამლები და თანამშრომლები', noDiv: 'დივიზიონის გარეშე' },
+  en: { prescriptions: 'Prescriptions', share: 'Division share', total: 'Total', plan: 'Monthly plan', prev: 'Previous month', next: 'Next month', source: 'Sales from pharmacies · active drugs and employees', noDiv: 'No division' },
+  ru: { prescriptions: 'Рецепты', share: 'Доли дивизионов', total: 'Всего', plan: 'План на месяц', prev: 'Прошлый месяц', next: 'Следующий месяц', source: 'Продажи из аптек · активные препараты и сотрудники', noDiv: 'Без дивизиона' },
+}
+
+// MonthPicker: pick a whole month directly (no start / end dates)
+function MonthPicker({ value, onChange, locale }) {
+  const L = PS_L[locale] || PS_L.ka
+  const [y, m] = value.split('-').map(Number)
+  const nowD = new Date()
+  const maxY = nowD.getFullYear()
+  const monthName = (i) => new Date(2024, i, 1).toLocaleDateString(localeTag(locale), { month: 'short' })
+  const set = (yy, mm) => onChange(`${yy}-${String(mm + 1).padStart(2, '0')}`)
+  return (
+    <div className="ps-picker">
+      <div className="ps-year">
+        <button type="button" aria-label={L.prev} onClick={() => set(y - 1, m - 1)}>‹</button>
+        <strong>{y}</strong>
+        <button type="button" aria-label={L.next} disabled={y >= maxY} onClick={() => set(y + 1, m - 1)}>›</button>
+      </div>
+      <div className="ps-months">
+        {Array.from({ length: 12 }, (_, i) => {
+          const future = y > maxY || (y === maxY && i > nowD.getMonth())
+          return (
+            <button key={i} type="button" disabled={future} className={i === m - 1 ? 'active' : ''} onClick={() => set(y, i)}>{monthName(i)}</button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 function ProductSaleTab() {
   const t = useTranslations('director')
-  const [fromDate, setFromDate] = useState('')
-  const [toDate, setToDate] = useState('')
+  const locale = useLocale()
+  const L = PS_L[locale] || PS_L.ka
+  const cur = new Date()
+  const [month, setMonth] = useState(`${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, '0')}`)
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -463,45 +499,39 @@ function ProductSaleTab() {
   const [sorting, setSorting] = useState([])
   const [globalFilter, setGlobalFilter] = useState('')
 
-  async function load(fd = fromDate, td = toDate) {
+  useEffect(() => {
+    let alive = true
     setLoading(true)
     setError('')
-    try {
-      const params = new URLSearchParams()
-      params.set('page', 1)
-      params.set('limit', 500)
-      if (fd) params.set('fromDate', fd)
-      if (td) params.set('toDate', td)
-      const result = await apiFetch(`/api/director-dashboard/product-sale?${params}`)
-      setData(result)
-      setLastLoaded(new Date())
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    load()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  function pickRange(fd, td) {
-    setFromDate(fd)
-    setToDate(td)
-    load(fd, td)
-  }
+    apiFetch(`/api/director-dashboard/product-sale?month=${month}`)
+      .then((r) => { if (alive) { setData(r); setLastLoaded(new Date()) } })
+      .catch((e) => { if (alive) setError(e.message) })
+      .finally(() => { if (alive) setLoading(false) })
+    return () => { alive = false }
+  }, [month])
 
   const rows = data?.docs || []
+  const totals = data?.totals || {}
+  const divisions = (data?.divisions || []).map((d) => ({ ...d, name: d.name === '—' ? L.noDiv : d.name }))
+  const divTotal = divisions.reduce((s, d) => s + d.amount, 0)
+  const byBoxes = !(totals.amount > 0)
   const maxBoxes = rows.reduce((m, r) => Math.max(m, Number(r.saleBoxes) || 0), 0)
-  const totalAmount = rows.reduce((s, r) => s + (r.totalSaleAmount || 0), 0)
-  const totalBoxes = rows.reduce((s, r) => s + (r.saleBoxes || 0), 0)
-  const topProduct = rows.length ? [...rows].sort((a, b) => b.saleBoxes - a.saleBoxes)[0] : null
+  const topProduct = rows.find((r) => r.saleBoxes > 0) || null
+  const chartRows = rows.filter((r) => r.saleBoxes > 0 || r.monthlyTarget > 0).slice(0, 15)
+
+  const columns = useMemo(() => {
+    const base = getSaleColumns(t, maxBoxes)
+    const rx = {
+      accessorKey: 'prescriptions', header: L.prescriptions, meta: { num: true },
+      cell: (info) => { const v = Number(info.getValue()) || 0; return v ? ddNum(v) : <span className="dd-dash">—</span> },
+    }
+    const i = base.findIndex((c) => c.accessorKey === 'saleBoxes')
+    return i < 0 ? base : [...base.slice(0, i + 1), rx, ...base.slice(i + 1)]
+  }, [t, maxBoxes, L.prescriptions])
 
   const table = useReactTable({
     data: rows,
-    columns: getSaleColumns(t, maxBoxes),
+    columns,
     state: { sorting, globalFilter },
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
@@ -514,51 +544,62 @@ function ProductSaleTab() {
 
   return (
     <div className="director-tab-panel">
-      <div className="director-filters">
-        <div className="director-field">
-          <label>{t('startDate')}</label>
-          <input type="date" className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
-        </div>
-        <div className="director-field">
-          <label>{t('endDate')}</label>
-          <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
-        </div>
-        <button type="button" className={`btn director-submit-btn${loading ? ' is-loading' : ''}`} onClick={() => load()} disabled={loading}>
-          <span>{t('submit')}</span>
-        </button>
-        <QuickDateButtons onPick={pickRange} />
+      <div className="ps-bar">
+        <MonthPicker value={month} onChange={setMonth} locale={locale} />
+        <span className="ps-source">{L.source}</span>
       </div>
 
       {error && <p className="resource-error">{error}</p>}
 
       {loading && (data ? <ReportLoader variant="page" /> : <Skeleton />)}
 
-      {data && rows.length > 0 && (
-        <div className="director-kpi-row">
-          <div className="director-kpi-card">
-            <span className="director-kpi-label">{t('kpi.totalSales')}</span>
-            <span className="director-kpi-value">{fmtMoney(totalAmount)} ₾</span>
-          </div>
-          <div className="director-kpi-card">
-            <span className="director-kpi-label">{t('kpi.boxesSold')}</span>
-            <span className="director-kpi-value">{totalBoxes.toLocaleString()}</span>
-          </div>
-          <div className="director-kpi-card">
-            <span className="director-kpi-label">{t('kpi.topProduct')}</span>
-            <span className="director-kpi-value director-kpi-value-text">{topProduct?.drugName || '—'}</span>
+      {data && (
+        <div className="ps-kpis">
+          <div className="ps-kpi ps-kpi-blue"><span>{t('kpi.totalSales')}</span><strong>{fmtMoney(totals.amount)} ₾</strong></div>
+          <div className="ps-kpi ps-kpi-green"><span>{t('kpi.boxesSold')}</span><strong>{(totals.boxes || 0).toLocaleString('en-US')}</strong><em>{L.plan}: {(totals.target || 0).toLocaleString('en-US')}</em></div>
+          <div className="ps-kpi ps-kpi-purple"><span>{L.prescriptions}</span><strong>{(totals.prescriptions || 0).toLocaleString('en-US')}</strong></div>
+          <div className="ps-kpi ps-kpi-amber"><span>{t('kpi.topProduct')}</span><strong className="ps-kpi-text">{topProduct ? ddName(topProduct.drugName) : '—'}</strong></div>
+        </div>
+      )}
+
+      {data && divisions.length > 0 && (
+        <div className="director-chart-card ps-div-card">
+          <h3>{L.share}</h3>
+          <div className="ps-div">
+            <div className="ps-donut">
+              <ResponsiveContainer width="100%" height={220}>
+                <PieChart>
+                  <Pie data={divisions} dataKey={byBoxes ? 'boxes' : 'amount'} nameKey="name" innerRadius={62} outerRadius={96} paddingAngle={3} stroke="#fff" strokeWidth={2} cornerRadius={6}>
+                    {divisions.map((d, i) => <Cell key={i} fill={PS_COLORS[i % PS_COLORS.length]} />)}
+                  </Pie>
+                  <Tooltip formatter={(v) => (byBoxes ? Number(v).toLocaleString('en-US') : `${fmtMoney(v)} ₾`)} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="ps-donut-center"><strong>{byBoxes ? (totals.boxes || 0).toLocaleString('en-US') : `${fmtMoney(divTotal)} ₾`}</strong><span>{L.total}</span></div>
+            </div>
+            <ul className="ps-legend">
+              {divisions.map((d, i) => {
+                const base = byBoxes ? d.boxes : d.amount
+                const sum = byBoxes ? (totals.boxes || 0) : divTotal
+                return (
+                  <li key={d.name}>
+                    <i style={{ background: PS_COLORS[i % PS_COLORS.length] }} />
+                    <span>{d.name}</span>
+                    <b>{byBoxes ? `${(d.boxes || 0).toLocaleString('en-US')}` : `${fmtMoney(d.amount)} ₾`}</b>
+                    <em>{sum ? Math.round((base / sum) * 100) : 0}%</em>
+                  </li>
+                )
+              })}
+            </ul>
           </div>
         </div>
       )}
 
-      {data && rows.length > 0 && (
+      {data && chartRows.length > 0 && (
         <>
           <div className="director-chart-card">
             <h3>{t('chart.targetVsSold')}</h3>
-            <DualBarChart data={rows.slice(0, 15)} labelKey="drugName" targetKey="monthlyTarget" soldKey="saleBoxes" />
-          </div>
-          <div className="director-chart-card">
-            <h3>{t('chart.productSale')}</h3>
-            <BarChart data={rows.slice(0, 15)} valueKey="saleBoxes" labelKey="drugName" />
+            <DualBarChart data={chartRows} labelKey="drugName" targetKey="monthlyTarget" soldKey="saleBoxes" />
           </div>
         </>
       )}
@@ -577,7 +618,7 @@ function ProductSaleTab() {
             />
             <div className="director-toolbar-right">
               {lastLoaded && <span className="director-last-updated">{t('updated', { when: timeAgo(lastLoaded, t) })}</span>}
-              <button type="button" className="btn-gray btn-sm director-export-btn" onClick={() => downloadCSV('monthly-product-sales.csv', rows)}>
+              <button type="button" className="btn-gray btn-sm director-export-btn" onClick={() => downloadCSV(`product-sales-${month}.csv`, rows)}>
                 <span>⬇ CSV</span>
               </button>
             </div>
