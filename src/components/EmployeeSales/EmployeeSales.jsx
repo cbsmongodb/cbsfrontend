@@ -7,15 +7,16 @@ import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './EmployeeSales.css'
 import { useTranslations } from 'next-intl'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import MonthPicker from '@/components/MonthPicker/MonthPicker'
 
 export default function EmployeeSales() {
   const tu = useTranslations('ui')
   const tp = useTranslations('plannings')
+  const tb = useTranslations('bonusesPage')
   const [employees, setEmployees] = useState([])
   const [search, setSearch] = useState('')
   const [employeeId, setEmployeeId] = useState('')
-  const [fromDate, setFromDate] = useState('')
-  const [toDate, setToDate] = useState('')
+  const [month, setMonth] = useState('') // "YYYY-MM" or "" = all months
 
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(50)
@@ -26,10 +27,10 @@ export default function EmployeeSales() {
   const [editId, setEditId] = useState(null)
 
   useEffect(() => {
-    apiFetch('/api/employees?lite=1').then(setEmployees).catch((err) => setError(err.message))
+    apiFetch('/api/employee-sales/employees').then(setEmployees).catch((err) => setError(err.message))
   }, [])
 
-  async function load(targetPage = 1, size = pageSize) {
+  async function load(targetPage = 1, size = pageSize, m = month) {
     setLoading(true)
     setError('')
     try {
@@ -38,8 +39,7 @@ export default function EmployeeSales() {
       params.set('limit', size)
       if (search.trim()) params.set('search', search.trim())
       if (employeeId) params.set('employee', employeeId)
-      if (fromDate) params.set('fromDate', fromDate)
-      if (toDate) params.set('toDate', toDate)
+      if (m) params.set('month', m)
 
       const result = await apiFetch(`/api/employee-sales?${params}`)
       setData(result)
@@ -76,12 +76,8 @@ export default function EmployeeSales() {
       <div className="employee-sales-filters">
         <div className="employee-sales-filters-grid">
           <div className="employee-sales-field">
-            <label>{tu('k090')}</label>
-            <input type="date" className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
-          </div>
-          <div className="employee-sales-field">
-            <label>{tu('k091')}</label>
-            <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+            <label>{tb('month')}</label>
+            <MonthPicker value={month} onChange={(m) => { setMonth(m); load(1, pageSize, m) }} />
           </div>
           <div className="employee-sales-field">
             <label>{tu('k044')}</label>
