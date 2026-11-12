@@ -22,7 +22,7 @@ export default function Page() {
         { name: "phoneNumber", label: t('fields.phoneNumber'), required: false },
         { name: "email", label: t('fields.email'), required: false },
         { name: "location", label: t('fields.location'), type: "location", latField: "lat", lngField: "lng" },
-        { name: "isActive", label: t('fields.isActive'), type: "checkbox" },
+        { name: "isActive", label: t('fields.isActive'), type: "checkbox", defaultValue: true },
         { name: "doctors", label: tu('k014'), type: "hospital-doctors", hideInTable: true },
       ]}
     />

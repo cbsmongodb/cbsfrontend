@@ -68,7 +68,13 @@ export default function ResourceTable({ title, endpoint, fields: rawFields, pagi
   }
 
   const [items, setItems] = useState([])
-  const [form, setForm] = useState({})
+  // a field may carry `defaultValue` (e.g. isActive: true) used for NEW records
+  const blankForm = () => {
+    const o = {}
+    fields.forEach((f) => { if (f.defaultValue !== undefined) o[f.name] = f.defaultValue })
+    return o
+  }
+  const [form, setForm] = useState(blankForm)
   const [editingId, setEditingId] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
@@ -210,7 +216,7 @@ export default function ResourceTable({ title, endpoint, fields: rawFields, pagi
 
   function cancelEdit() {
     setEditingId(null)
-    setForm({})
+    setForm(blankForm())
   }
 
   async function saveAndKeepEditing() {
