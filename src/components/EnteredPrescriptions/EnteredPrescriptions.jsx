@@ -8,6 +8,7 @@ import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
 import MonthSelect from '@/components/MonthSelect/MonthSelect'
+import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 import './EnteredPrescriptions.css'
 
 function currentMonth() {
@@ -38,6 +39,7 @@ function isAdminUser() {
 
 export default function EnteredPrescriptions() {
   const t = useTranslations('enteredRx')
+  const tAll = useTranslations()
 
   const [me, setMe] = useState(null)
   const [employees, setEmployees] = useState([])
@@ -237,6 +239,32 @@ export default function EnteredPrescriptions() {
     [employees, t]
   )
 
+
+  // Excel: every entry of the chosen month (all pages), not just the visible page
+  const buildExcel = async () => {
+    const own = me && employeeId === me._id
+    const base = `period=${encodeURIComponent(toPeriod(month))}${own ? '' : `&employee=${employeeId}`}`
+      + `${q ? `&search=${encodeURIComponent(q)}` : ''}`
+    let all = [], pg = 1, last = 1
+    do {
+      const data = await apiFetch(`/api/my-entries?${base}&page=${pg}&limit=500`)
+      if (Array.isArray(data)) { all = data; break }
+      all = all.concat(data.items || [])
+      last = data.pages || 1
+      pg++
+    } while (pg <= last)
+    const rows = all.map((it) => [
+      personName(it.employee) || '',
+      personName(it.doctor) || t('deletedDoctor'),
+      it.hospital?.name || '',
+      it.drug?.name || t('deletedDrug'),
+      Number(it.quota) || 0,
+      Number(it.prescription) || 0,
+    ]).sort((a, b) => a[0].localeCompare(b[0], 'ka') || a[1].localeCompare(b[1], 'ka') || a[3].localeCompare(b[3]))
+    const headers = [tAll('common.employee'), tAll('common.doctor'), tAll('common.hospital'), t('drug'), t('quota'), t('prescriptions')]
+    return isAll ? { headers, rows } : { headers: headers.slice(1), rows: rows.map((r) => r.slice(1)) }
+  }
+
   return (
     <div className="erx-page">
       {loading && <ReportLoader variant="page" />}
@@ -246,6 +274,7 @@ export default function EnteredPrescriptions() {
           <h1>{t('title')}</h1>
           <p className="erx-sub">{t('subtitle')}</p>
         </div>
+        <ExcelExportButton title={`${t('title')} — ${toPeriod(month)}`} fileName={`${t('title')} ${toPeriod(month)}`} build={buildExcel} />
       </div>
 
       <div className="sales-listing-filters erx-filters">
