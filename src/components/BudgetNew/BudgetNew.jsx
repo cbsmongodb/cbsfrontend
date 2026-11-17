@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import { formatDoctorLabel } from '@/lib/doctorLabel'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
+import MonthSelect from '@/components/MonthSelect/MonthSelect'
 import '../PrescriptionEdit/PrescriptionEdit.css'
 import './BudgetNew.css'
 import { useTranslations } from 'next-intl'
@@ -138,12 +139,9 @@ export default function BudgetNew() {
         <div className="prescedit-fields">
           <div className="prescedit-field budgetnew-input-field">
             <label>{tm('month')}</label>
-            <input
-              type="month"
-              className="field-input"
+            <MonthSelect
               value={date.slice(0, 7)}
-              onChange={(e) => {
-                const v = e.target.value
+              onChange={(v) => {
                 if (!v) return
                 setDate(origDate && origDate.slice(0, 7) === v ? origDate : `${v}-01`)
               }}
