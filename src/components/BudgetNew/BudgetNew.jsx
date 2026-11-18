@@ -8,9 +8,10 @@ import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import MonthSelect from '@/components/MonthSelect/MonthSelect'
 import '../PrescriptionEdit/PrescriptionEdit.css'
 import './BudgetNew.css'
+import BudgetBulk from './BudgetBulk'
 import { useTranslations } from 'next-intl'
 
-export default function BudgetNew() {
+function BudgetSingle() {
   const tu = useTranslations('ui')
   const tm = useTranslations('enteredRx')
   const { locale } = useParams()
@@ -233,4 +234,15 @@ export default function BudgetNew() {
       </div>
     </div>
   )
+}
+
+// /budgets/new        -> many budgets at once (BudgetBulk)
+// /budgets/new?id=... -> edit one budget (the old single form)
+export default function BudgetNew() {
+  const [mode, setMode] = useState(null)
+  useEffect(() => {
+    setMode(new URLSearchParams(window.location.search).get('id') ? 'edit' : 'bulk')
+  }, [])
+  if (!mode) return null
+  return mode === 'edit' ? <BudgetSingle /> : <BudgetBulk />
 }
