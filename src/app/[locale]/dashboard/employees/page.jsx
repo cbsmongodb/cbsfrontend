@@ -1,8 +1,14 @@
 'use client'
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import ResourceTable from "@/components/ResourceTable/ResourceTable";
 export default function Page() {
   const t = useTranslations();
+  // bonus area: which bonus the rep gets on the Bonuses page
+  const AREA = {
+    ka: { title: 'ბონუსის ზონა', tbilisi: 'თბილისი', region: 'რეგიონი' },
+    en: { title: 'Bonus area', tbilisi: 'Tbilisi', region: 'Region' },
+    ru: { title: 'Зона бонуса', tbilisi: 'Тбилиси', region: 'Регион' },
+  }[useLocale()] || { title: 'ბონუსის ზონა', tbilisi: 'თბილისი', region: 'რეგიონი' };
   return (
     <ResourceTable
       title={t('pages.employees')}
@@ -28,6 +34,14 @@ export default function Page() {
           type: "enum",
           options: ["field", "office"],
           optionLabels: { field: t('fields.employeeTypeField'), office: t('fields.employeeTypeOffice') },
+        },
+        {
+          name: "area",
+          label: AREA.title,
+          type: "enum",
+          options: ["tbilisi", "region"],
+          optionLabels: { tbilisi: AREA.tbilisi, region: AREA.region },
+          required: false,
         },
         {
           name: "role",
