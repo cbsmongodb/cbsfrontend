@@ -3,7 +3,7 @@
 // "შეყვანილი რეცეპტები" — every rep sees the prescriptions they entered for
 // a month, grouped by doctor, and can fix a number or delete a line / doctor.
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
@@ -40,6 +40,8 @@ function isAdminUser() {
 export default function EnteredPrescriptions() {
   const t = useTranslations('enteredRx')
   const tAll = useTranslations()
+  const SL = SUM_TXT[useLocale()] || SUM_TXT.en
+  const [sumFor, setSumFor] = useState(null) // { id, name } -> drug totals window
 
   const [me, setMe] = useState(null)
   const [employees, setEmployees] = useState([])
@@ -302,6 +304,7 @@ export default function EnteredPrescriptions() {
 
       {error && <p className="resource-error">{error}</p>}
       {notice && <div className="erx-notice">✓ {notice}</div>}
+      {sumFor && <DrugTotalsModal emp={sumFor} period={toPeriod(month)} me={me} L={SL} onClose={() => setSumFor(null)} />}
 
       {!loading && items.length > 0 && (
         <div className="erx-stats">
@@ -309,6 +312,12 @@ export default function EnteredPrescriptions() {
           <div className="erx-stat"><b>{totals.doctors}</b><span>{t('doctors')}</span></div>
           <div className="erx-stat"><b>{totals.lines}</b><span>{t('lines')}</span></div>
           <div className="erx-stat"><b>{num(totals.rx)}</b><span>{t('prescriptions')}</span></div>
+          {!isAll && (
+            <button type="button" className="erx-stat erx-stat-btn"
+              onClick={() => setSumFor({ id: employeeId, name: personName((pickerOptions || []).find((e) => e._id === employeeId) || (me && me._id === employeeId ? me : null)) || '' })}>
+              <b aria-hidden="true">📊</b><span>{SL.btn}</span>
+            </button>
+          )}
         </div>
       )}
 
@@ -327,7 +336,10 @@ export default function EnteredPrescriptions() {
                 <div className="erx-doc">
                   <span className="erx-avatar" aria-hidden="true">{g.doctor.charAt(0)}</span>
                   <div>
-                    {isAll && g.employeeName && <div className="erx-emp">{g.employeeName}</div>}
+                    {isAll && g.employeeName && (
+                      <button type="button" className="erx-emp erx-emp-link" title={SL.btn}
+                        onClick={() => setSumFor({ id: g.employeeId, name: g.employeeName })}>{g.employeeName} <span aria-hidden="true">📊</span></button>
+                    )}
                     <div className="erx-doc-name">{g.doctor}</div>
                     {g.hospital && <div className="erx-doc-hosp">{g.hospital}</div>}
                   </div>
@@ -426,6 +438,93 @@ export default function EnteredPrescriptions() {
           <button type="button" className="erx-btn" disabled={page >= pages || loading} onClick={() => { setPage((p) => p + 1); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>{t('next')} ›</button>
         </div>
       )}
+    </div>
+  )
+}
+
+
+const SUM_TXT = {
+  ka: { btn: 'წამლების ჯამი', title: 'წამლების ჯამი', drug: 'წამალი', doctors: 'ექიმები', plan: 'გეგმა', rx: 'რეცეპტები', total: 'ჯამი', close: 'დახურვა', loading: 'იტვირთება…', empty: 'ამ თვეში ჩანაწერი არ არის' },
+  en: { btn: 'Drug totals', title: 'Drug totals', drug: 'Drug', doctors: 'Doctors', plan: 'Plan', rx: 'Prescriptions', total: 'Total', close: 'Close', loading: 'Loading…', empty: 'No entries this month' },
+  ru: { btn: 'Итого по препаратам', title: 'Итого по препаратам', drug: 'Препарат', doctors: 'Врачи', plan: 'План', rx: 'Рецепты', total: 'Итого', close: 'Закрыть', loading: 'Загрузка…', empty: 'Нет записей за этот месяц' },
+}
+
+// one employee's month: every drug with its total plan / prescriptions (all pages, all doctors)
+function DrugTotalsModal({ emp, period, me, L, onClose }) {
+  const [rows, setRows] = useState(null)
+  const [err, setErr] = useState('')
+
+  useEffect(() => {
+    let off = false
+    ;(async () => {
+      try {
+        const own = me && emp.id === me._id
+        const base = `period=${encodeURIComponent(period)}${own ? '' : `&employee=${emp.id}`}`
+        let all = [], pg = 1, last = 1
+        do {
+          const data = await apiFetch(`/api/my-entries?${base}&page=${pg}&limit=500`)
+          if (Array.isArray(data)) { all = data; break }
+          all = all.concat(data.items || [])
+          last = data.pages || 1
+          pg++
+        } while (pg <= last)
+        const m = new Map()
+        for (const it of all) {
+          const k = it.drug?.name || '—'
+          const r = m.get(k) || { drug: k, plan: 0, rx: 0, docs: new Set() }
+          r.plan += Number(it.quota) || 0
+          r.rx += Number(it.prescription) || 0
+          if (it.doctor?._id) r.docs.add(it.doctor._id)
+          m.set(k, r)
+        }
+        if (!off) setRows([...m.values()].map((r) => ({ ...r, docs: r.docs.size })).sort((a, b) => b.rx - a.rx || a.drug.localeCompare(b.drug)))
+      } catch (e) { if (!off) setErr(e.message) }
+    })()
+    return () => { off = true }
+  }, [emp.id, period, me])
+
+  useEffect(() => {
+    const k = (e) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', k)
+    return () => window.removeEventListener('keydown', k)
+  }, [onClose])
+
+  const tot = (rows || []).reduce((a, r) => ({ plan: a.plan + r.plan, rx: a.rx + r.rx }), { plan: 0, rx: 0 })
+  const f = (n) => Number(n).toLocaleString('en-US')
+
+  return (
+    <div className="erx-modal-bg" onClick={onClose}>
+      <div className="erx-modal" role="dialog" aria-modal="true" aria-label={L.title} onClick={(e) => e.stopPropagation()}>
+        <header className="erx-modal-head">
+          <div>
+            <h3>{L.title}</h3>
+            <p>{emp.name}{emp.name ? ' · ' : ''}{period}</p>
+          </div>
+          <button type="button" className="erx-modal-x" aria-label={L.close} onClick={onClose}>✕</button>
+        </header>
+        {err && <p className="resource-error">{err}</p>}
+        {!rows && !err && <p className="erx-modal-msg">{L.loading}</p>}
+        {rows && rows.length === 0 && <p className="erx-modal-msg">{L.empty}</p>}
+        {rows && rows.length > 0 && (
+          <>
+            <div className="erx-modal-tools">
+              <ExcelExportButton title={`${L.title} — ${emp.name} — ${period}`} fileName={`${L.title} ${emp.name} ${period}`}
+                build={() => ({ headers: [L.drug, L.doctors, L.plan, L.rx], rows: rows.map((r) => [r.drug, r.docs, r.plan, r.rx]) })} />
+            </div>
+            <div className="erx-modal-body">
+              <table className="erx-sum-table">
+                <thead><tr><th>{L.drug}</th><th>{L.doctors}</th><th>{L.plan}</th><th>{L.rx}</th></tr></thead>
+                <tbody>
+                  {rows.map((r) => (
+                    <tr key={r.drug}><td>{r.drug}</td><td>{r.docs}</td><td>{f(r.plan)}</td><td><b>{f(r.rx)}</b></td></tr>
+                  ))}
+                </tbody>
+                <tfoot><tr><td>{L.total}</td><td /><td>{f(tot.plan)}</td><td>{f(tot.rx)}</td></tr></tfoot>
+              </table>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   )
 }
