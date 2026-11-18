@@ -84,3 +84,14 @@
 .bb-footer-btns .btn-gray:hover { background: rgba(255, 255, 255, .1) !important; }
 .bb-footer-btns .btn span, .bb-footer-btns .btn-gray span { color: inherit !important; }
 .bb-footer-btns .btn .btn-spinner { border-color: rgba(27, 42, 68, .25); border-top-color: #1b2a44; }
+
+/* footer: light glass that blends with the blue card */
+.bb-footer {
+  background: linear-gradient(135deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, .10)) !important;
+  border: 1px solid rgba(255, 255, 255, .32) !important;
+  box-shadow: 0 8px 28px rgba(20, 45, 80, .22), inset 0 1px 0 rgba(255, 255, 255, .25) !important;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+.bb-footer .bb-summary { opacity: 1; font-weight: 600; }
+.bb-footer-btns .btn-gray { border-color: rgba(255, 255, 255, .6) !important; }
