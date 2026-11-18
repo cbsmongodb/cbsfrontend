@@ -158,17 +158,6 @@ export default function BudgetBulk() {
       <div className="prescedit-card">
         <div className="prescedit-card-header">
           <h1>{tu('k175')}</h1>
-          <div className="prescedit-header-actions">
-            {pending.length > 0 && (
-              <span className="bb-summary">{pending.length} {L.budgets} · {L.total} {Math.round(totalPaid * 100) / 100}</span>
-            )}
-            <button type="button" className="btn" onClick={saveAll} disabled={saving}>
-              <span>{saving ? <span className="btn-spinner" aria-hidden="true" /> : `Save${pending.length ? ` (${pending.length})` : ''}`}</span>
-            </button>
-            <button type="button" className="btn-gray" onClick={goBack}>
-              <span>{tu('k106')}</span>
-            </button>
-          </div>
         </div>
 
         {error && <p className="resource-error">{error}</p>}
@@ -258,6 +247,24 @@ export default function BudgetBulk() {
         ))}
 
         <button type="button" className="bb-add bb-add-emp" onClick={addBlock}>{L.addEmployee}</button>
+
+        {/* Save / Cancel at the bottom, stays visible while scrolling a long list */}
+        <div className="bb-footer">
+          <div className="bb-footer-info">
+            {error && <p className="resource-error bb-footer-err">{error}</p>}
+            {pending.length > 0 && (
+              <span className="bb-summary">{pending.length} {L.budgets} · {L.total} {Math.round(totalPaid * 100) / 100}</span>
+            )}
+          </div>
+          <div className="bb-footer-btns">
+            <button type="button" className="btn-gray" onClick={goBack}>
+              <span>{tu('k106')}</span>
+            </button>
+            <button type="button" className="btn" onClick={saveAll} disabled={saving}>
+              <span>{saving ? <span className="btn-spinner" aria-hidden="true" /> : `Save${pending.length ? ` (${pending.length})` : ''}`}</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )

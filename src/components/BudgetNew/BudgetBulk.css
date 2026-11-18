@@ -62,3 +62,14 @@
   .prescedit-header-actions { flex-wrap: wrap; }
   .bb-summary { width: 100%; }
 }
+
+/* bottom action bar */
+.bb-footer { position: sticky; bottom: 12px; z-index: 20; margin-top: 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 16px; border-radius: 16px; background: rgba(22, 34, 56, .88); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0, 0, 0, .28); border: 1px solid rgba(255, 255, 255, .12); }
+.bb-footer-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.bb-footer-err { margin: 0 !important; }
+.bb-footer-btns { display: flex; gap: 10px; margin-left: auto; }
+@media (max-width: 640px) {
+  .bb-footer { bottom: 8px; }
+  .bb-footer-btns { width: 100%; }
+  .bb-footer-btns > * { flex: 1; }
+}
