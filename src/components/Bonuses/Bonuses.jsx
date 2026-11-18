@@ -32,6 +32,13 @@ const clean = (s) => String(s ?? '').trim().replace(',', '.')
 const valid = (s) => clean(s) === '' || /^\d+(\.\d+)?$/.test(clean(s))
 const asText = (v) => (v == null ? '' : String(v))
 
+// Tbilisi / region bonus texts
+const AREA_TXT = {
+  ka: { tbilisi: 'თბილისი', region: 'რეგიონი', same: 'როგორც თბილისი', regionSet: 'რეგიონის ბონუსი', help: 'რეგიონის ბონუსი თუ ცარიელია, რეგიონის წარმომადგენლებს თბილისის ბონუსი ერიცხებათ.' },
+  en: { tbilisi: 'Tbilisi', region: 'Regions', same: 'same as Tbilisi', regionSet: 'region bonus', help: 'If the region bonus is empty, region reps get the Tbilisi bonus.' },
+  ru: { tbilisi: 'Тбилиси', region: 'Регионы', same: 'как в Тбилиси', regionSet: 'бонус регионов', help: 'Если бонус регионов пуст, региональные представители получают бонус Тбилиси.' },
+}
+
 // month picker: one button, a panel with the year and a 3×4 grid of months
 const SHORT = {
   ka: ['იან', 'თებ', 'მარ', 'აპრ', 'მაი', 'ივნ', 'ივლ', 'აგვ', 'სექ', 'ოქტ', 'ნოე', 'დეკ'],
@@ -381,34 +388,37 @@ function EditModal({ t, drug, monthText, onClose, onSave }) {
 }
 
 // the month bonus of one medicine: shown as text; "Change" opens the field + Save
-function MonthBonusCell({ t, d, canEdit, onSave, sourceText }) {
+function MonthBonusCell({ t, d, canEdit, onSave, sourceText, field = 'value', L }) {
+  const own = d[field]
+  // what applies when this field is empty: Tbilisi -> inherited, region -> the Tbilisi bonus
+  const base = field === 'regionValue' ? (d.value ?? d.inherited) : d.inherited
   const [editing, setEditing] = useState(false)
-  const [text, setText] = useState(asText(d.value))
+  const [text, setText] = useState(asText(own))
   const [saving, setSaving] = useState(false)
   const inputRef = useRef(null)
-  useEffect(() => { if (!editing) setText(asText(d.value)) }, [d.value, editing])
+  useEffect(() => { if (!editing) setText(asText(own)) }, [own, editing])
   useEffect(() => { if (editing) inputRef.current?.focus() }, [editing])
-  const changed = clean(text) !== clean(asText(d.value))
+  const changed = clean(text) !== clean(asText(own))
   const bad = changed && !valid(text)
 
   async function save() {
     if (!changed || bad || saving) return
     setSaving(true)
     try {
-      await onSave({ drugs: [{ drug: d._id, value: clean(text) === '' ? null : clean(text) }], doctors: [] })
+      await onSave({ drugs: [{ drug: d._id, [field]: clean(text) === '' ? null : clean(text) }], doctors: [] })
       setEditing(false)
     } catch { /* the page shows the error */ } finally {
       setSaving(false)
     }
   }
-  const cancel = () => { setText(asText(d.value)); setEditing(false) }
+  const cancel = () => { setText(asText(own)); setEditing(false) }
 
   if (!editing) {
     return (
       <div className="mb-cell">
         <div className="bonuses-value">
-          <strong className={d.value != null ? '' : 'is-inherited'}>{fmt(d.value ?? d.inherited) || '0'} ₾</strong>
-          <span className="bonuses-hint">{sourceText(d)}</span>
+          <strong className={own != null ? '' : 'is-inherited'}>{fmt(own ?? base) || '0'} ₾</strong>
+          <span className="bonuses-hint">{field === 'regionValue' ? (own != null ? L.regionSet : L.same) : sourceText(d)}</span>
         </div>
         {canEdit && (
           <button type="button" className="btn-gray btn-sm mb-cell-edit" onClick={() => setEditing(true)}>
@@ -426,7 +436,7 @@ function MonthBonusCell({ t, d, canEdit, onSave, sourceText }) {
           type="text"
           inputMode="decimal"
           value={text}
-          placeholder={fmt(d.inherited)}
+          placeholder={fmt(base)}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') save()
@@ -470,6 +480,7 @@ function DoneModal({ t, done, onClose }) {
 export default function Bonuses() {
   const t = useTranslations('bonusesPage')
   const locale = useLocale()
+  const L = AREA_TXT[locale] || AREA_TXT.ka
   const mName = (mo) => monthName(locale, mo)
 
   const [month, setMonth] = useState(thisMonth)
@@ -608,6 +619,7 @@ export default function Bonuses() {
       <div className="bonuses-help">
         <strong>{t('howTitle')}</strong> {t('how')}
         {data?.defaultBonus != null && <> {t('howDefault', { value: data.defaultBonus })}</>}
+        <> {L.help}</>
         {!canEdit && <span className="bonuses-readonly">{t('readOnly')}</span>}
       </div>
 
@@ -622,13 +634,14 @@ export default function Bonuses() {
               <tr>
                 <th>{t('colDrug')}</th>
                 <th className="num">{t('colPrice')}</th>
-                <th>{t('colBonus')}</th>
+                <th>{t('colBonus')} · {L.tbilisi}</th>
+                <th>{t('colBonus')} · {L.region}</th>
                 <th>{t('colDoctors')}</th>
               </tr>
             </thead>
             <tbody>
               {visible.length === 0 && (
-                <tr><td colSpan={4} className="bonuses-empty">{t('noDrugs')}</td></tr>
+                <tr><td colSpan={5} className="bonuses-empty">{t('noDrugs')}</td></tr>
               )}
               {visible.map((d) => (
                 <tr key={d._id} className={`${d.value != null ? 'is-set' : ''} ${justSaved === d._id ? 'is-saved-flash' : ''}`}>
@@ -638,7 +651,10 @@ export default function Bonuses() {
                   </td>
                   <td className="num">{fmt(d.price)} ₾</td>
                   <td>
-                    <MonthBonusCell t={t} d={d} canEdit={canEdit} sourceText={sourceText} onSave={(body) => saveDrug(d, body)} />
+                    <MonthBonusCell t={t} d={d} L={L} field="value" canEdit={canEdit} sourceText={sourceText} onSave={(body) => saveDrug(d, body)} />
+                  </td>
+                  <td>
+                    <MonthBonusCell t={t} d={d} L={L} field="regionValue" canEdit={canEdit} sourceText={sourceText} onSave={(body) => saveDrug(d, body)} />
                   </td>
                   <td>
                     <div className="mb-docs">
