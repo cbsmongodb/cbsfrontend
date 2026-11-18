@@ -9,6 +9,7 @@ import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './BudgetsList.css'
 import { useTranslations } from 'next-intl'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 
 function fmtMoney(n) {
   const num = Number(n) || 0
@@ -91,6 +92,41 @@ export default function BudgetsList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, showInactive])
 
+  // Excel: every budget that matches the current filters (all pages, not just the visible one)
+  async function buildExcel() {
+    const params = new URLSearchParams()
+    params.set('isActive', showInactive ? 'false' : 'true')
+    if (search.trim()) params.set('search', search.trim())
+    if (doctorId) params.set('doctor', doctorId)
+    if (employeeId) params.set('employee', employeeId)
+    if (sectionId) params.set('section', sectionId)
+    if (groupId) params.set('group', groupId)
+    if (fromDate) params.set('fromDate', fromDate)
+    if (toDate) params.set('toDate', toDate)
+    let all = [], pg = 1, last = 1
+    do {
+      params.set('page', pg)
+      params.set('limit', 500)
+      const r = await apiFetch(`/api/budgets-list?${params}`)
+      all = all.concat(r.docs || [])
+      last = r.pages || 1
+      pg++
+    } while (pg <= last)
+    const n = (v) => Math.round((Number(v) || 0) * 100) / 100
+    return {
+      headers: [tu('k096'), tu('k049'), tu('k166'), tu('k167'), tu('k077'), tu('k044'), tu('k163'), tu('k164'), tu('k168'),
+        tu('k169'), tu('k170'), tu('k171'), tu('k172'), tu('k173'), tu('k174'), tu('k098')],
+      rows: all.map((row) => [
+        row.date ? new Date(row.date) : '',
+        row.doctorName || '', row.profileName || '', row.uniqueNumber || '', row.hospitals || '',
+        row.employeeName || '', row.sectionName || '', row.groupName || '', row.regionName || '',
+        n(row.payableAmt), n(row.paidAmount), n(row.advanceAmount), n(row.targetAmount), n(row.prescriptionAmt), n(row.salesAmount),
+        row.isActive ? '✓' : '✗',
+      ]),
+    }
+  }
+  const excelPeriod = fromDate || toDate ? ` — ${fromDate || '…'} – ${toDate || '…'}` : ''
+
   async function handleToggleActive(id) {
     try {
       await apiFetch(`/api/budgets-list/${id}/toggle-active`, { method: 'PUT' })
@@ -115,9 +151,12 @@ export default function BudgetsList() {
       {loading && <ReportLoader variant="page" />}
       <div className="budgets-list-page-header">
         <h1>{tu('k161')}</h1>
-        <Link href={`/${locale}/dashboard/budgets/new`} className="btn budgets-list-new-btn">
-          <span>{tu('k162')}</span>
-        </Link>
+        <div className="budgets-list-header-actions">
+          <ExcelExportButton title={`${tu('k161')}${excelPeriod}`} fileName={`${tu('k161')}${excelPeriod}`} build={buildExcel} />
+          <Link href={`/${locale}/dashboard/budgets/new`} className="btn budgets-list-new-btn">
+            <span>{tu('k162')}</span>
+          </Link>
+        </div>
       </div>
 
       <div className="budgets-list-filters">
