@@ -1,44 +1,64 @@
 /* bulk budget entry (BudgetBulk.jsx) — sits on the same card as the single form */
 .bb-summary { align-self: center; font-size: 14px; opacity: .85; white-space: nowrap; }
-.bb-month { margin-bottom: 8px; }
+.bb-month { margin-bottom: 4px; }
 .bb-month .prescedit-field { max-width: 360px; }
 
-.bb-block { margin-top: 18px; padding: 16px 18px 18px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 16px; background: rgba(255, 255, 255, .05); }
-.bb-block-head { display: flex; align-items: flex-end; gap: 12px; margin-bottom: 6px; }
-.bb-block-no { width: 30px; height: 30px; flex: none; margin-bottom: 14px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 14px; background: rgba(255, 255, 255, .15); }
-.bb-emp { flex: 1; max-width: 520px; }
+/* one employee */
+.bb-block { margin-top: 18px; padding: 18px; border: 1px solid rgba(255, 255, 255, .16); border-radius: 18px; background: rgba(255, 255, 255, .04); }
+.bb-block-head { display: flex; align-items: flex-end; gap: 12px; }
+.bb-block-no { width: 32px; height: 32px; flex: none; margin-bottom: 7px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 14px; background: rgba(255, 255, 255, .16); }
+.bb-emp { flex: 1; max-width: 520px; margin: 0 !important; }
+.bb-block-head .bb-x { margin-left: auto; margin-bottom: 5px; }
 
-.bb-row { position: relative; display: grid; grid-template-columns: minmax(220px, 2.2fr) minmax(110px, 1.1fr) repeat(5, minmax(84px, 1fr)) auto; gap: 10px; align-items: end; padding: 12px 0; border-top: 1px dashed rgba(255, 255, 255, .15); }
+/* one doctor line: [doctor][paid][status ✕]  /  [5 calculated amounts] */
+.bb-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 230px) auto;
+  grid-template-areas: "doc paid end" "stats stats stats" "note note note";
+  gap: 12px 14px; align-items: end;
+  margin-top: 14px; padding: 14px 16px 16px;
+  border-radius: 14px; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .1);
+}
+.bb-doc { grid-area: doc; }
+.bb-paid { grid-area: paid; }
+.bb-row-end { grid-area: end; display: flex; align-items: center; gap: 8px; height: 46px; }
+.bb-stats { grid-area: stats; }
+.bb-note { grid-area: note; }
 .bb-row .prescedit-field { margin: 0; min-width: 0; }
-.bb-row .prescedit-field label { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bb-row .budgetnew-amount-readonly,
-.bb-row .budgetnew-paid-input { min-height: 46px; height: 46px; padding-top: 0; padding-bottom: 0; font-size: 15px; }
+.bb-row .prescedit-field label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bb-row .budgetnew-amount-input,
+.bb-row .budgetnew-paid-input { width: 100% !important; max-width: 100% !important; min-width: 0 !important; box-sizing: border-box; }
+
+.bb-stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.bb-stat { min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 8px 12px; border-radius: 10px; background: rgba(0, 0, 0, .16); }
+.bb-stat-label { font-size: 11px; opacity: .7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bb-stat-val { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.bb-stat .budgetnew-lock { opacity: .45; flex: none; }
+
 .bb-row.is-saved { opacity: .55; }
-.bb-row.is-bad .budgetnew-paid-input { outline: 2px solid #ff6b6b; }
-.bb-row-end { display: flex; align-items: center; gap: 10px; height: 46px; }
+.bb-row.is-bad { border-color: rgba(255, 107, 107, .7); }
 .bb-status { margin: 0 !important; }
 .bb-status-label { display: none; }
-.bb-note { grid-column: 1 / -1; margin: 2px 0 0; font-size: 13px; color: #ffd38a; }
+.bb-note { margin: 0; font-size: 13px; color: #ffd38a; }
 .bb-row.is-bad .bb-note { color: #ff9b9b; }
 .bb-ok { font-size: 13px; color: #8be3a8; white-space: nowrap; }
 
-.bb-x { border: 0; background: transparent; color: inherit; font-size: 16px; cursor: pointer; padding: 6px 9px; border-radius: 8px; opacity: .75; }
+.bb-x { border: 0; background: transparent; color: inherit; font-size: 16px; line-height: 1; cursor: pointer; padding: 8px 10px; border-radius: 8px; opacity: .7; }
 .bb-x:hover { opacity: 1; background: rgba(255, 255, 255, .12); }
-.bb-block-head .bb-x { margin-left: auto; margin-bottom: 10px; }
 
-.bb-add { margin-top: 10px; border: 1px dashed rgba(255, 255, 255, .45); background: transparent; color: inherit; font: inherit; font-weight: 600; padding: 10px 16px; border-radius: 12px; cursor: pointer; }
+.bb-add { margin-top: 14px; border: 1px dashed rgba(255, 255, 255, .4); background: transparent; color: inherit; font: inherit; font-weight: 600; padding: 10px 16px; border-radius: 12px; cursor: pointer; }
 .bb-add:hover { background: rgba(255, 255, 255, .08); }
 .bb-add-emp { display: block; width: 100%; margin-top: 18px; padding: 14px; }
 
-@media (max-width: 1200px) {
-  .bb-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .bb-doc { grid-column: 1 / -1; }
-  .bb-row-end { grid-column: 1 / -1; justify-content: space-between; height: auto; }
+@media (max-width: 900px) {
+  .bb-row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "doc doc" "paid end" "stats stats" "note note"; }
+  .bb-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bb-stat:last-child { grid-column: 1 / -1; }
   .bb-status-label { display: inline; }
 }
 @media (max-width: 640px) {
-  .bb-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bb-block { padding: 12px; }
+  .bb-row { padding: 12px; }
   .prescedit-header-actions { flex-wrap: wrap; }
   .bb-summary { width: 100%; }
 }

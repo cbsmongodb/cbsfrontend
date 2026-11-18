@@ -201,12 +201,6 @@ export default function BudgetBulk() {
               const dup = isDup(b, r)
               const has = hasBudget(b, r)
               const c = r.computed || {}
-              const ro = (v) => (
-                <div className="budgetnew-amount-readonly">
-                  {r.computing ? <span className="btn-spinner" aria-hidden="true" /> : fmt(v)}
-                  <Lock />
-                </div>
-              )
               return (
                 <div key={r.key} className={`bb-row ${r.saved ? 'is-saved' : ''} ${r.err || dup ? 'is-bad' : ''}`}>
                   <div className="prescedit-field budgetnew-input-field bb-doc">
@@ -219,7 +213,7 @@ export default function BudgetBulk() {
                       placeholder={tu('k109')}
                     />
                   </div>
-                  <div className="prescedit-field budgetnew-input-field">
+                  <div className="prescedit-field budgetnew-input-field bb-paid">
                     <label>{tu('k177')}</label>
                     <div className="budgetnew-amount-input">
                       <input
@@ -234,11 +228,14 @@ export default function BudgetBulk() {
                       />
                     </div>
                   </div>
-                  <div className="prescedit-field budgetnew-auto-field"><label>{tu('k178')}</label>{ro(c.advanceAmount)}</div>
-                  <div className="prescedit-field budgetnew-auto-field"><label>{tu('k179')}</label>{ro(c.salesAmount)}</div>
-                  <div className="prescedit-field budgetnew-auto-field"><label>{tu('k180')}</label>{ro(c.targetAmount)}</div>
-                  <div className="prescedit-field budgetnew-auto-field"><label>{tu('k181')}</label>{ro(c.prescriptionAmt)}</div>
-                  <div className="prescedit-field budgetnew-auto-field"><label>{tu('k182')}</label>{ro(c.payableAmt)}</div>
+                  <div className="bb-stats">
+                    {[['k178', c.advanceAmount], ['k179', c.salesAmount], ['k180', c.targetAmount], ['k181', c.prescriptionAmt], ['k182', c.payableAmt]].map(([k, v]) => (
+                      <div key={k} className="bb-stat">
+                        <span className="bb-stat-label">{tu(k)}</span>
+                        <span className="bb-stat-val">{r.computing ? <span className="btn-spinner" aria-hidden="true" /> : fmt(v)}<Lock /></span>
+                      </div>
+                    ))}
+                  </div>
                   <div className="bb-row-end">
                     <label className="prescedit-status-toggle bb-status" title={tu('k111')}>
                       <input type="checkbox" checked={r.isActive} disabled={r.saved} onChange={(e) => patchRow(b.key, r.key, { isActive: e.target.checked })} />
