@@ -73,3 +73,14 @@
   .bb-footer-btns { width: 100%; }
   .bb-footer-btns > * { flex: 1; }
 }
+
+/* footer buttons: same look as the card header (white Save, outlined Cancel) */
+.bb-footer-btns .btn,
+.bb-footer-btns .btn-gray { min-width: 130px; height: 48px; padding: 0 26px; border-radius: 999px; font: inherit; font-weight: 700; font-size: 16px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: transform .15s, background .15s, opacity .15s; }
+.bb-footer-btns .btn { background: #fff !important; color: #1b2a44 !important; border: 0 !important; box-shadow: 0 6px 18px rgba(0, 0, 0, .25) !important; }
+.bb-footer-btns .btn:hover:not(:disabled) { transform: translateY(-1px); }
+.bb-footer-btns .btn:disabled { opacity: .6; cursor: default; }
+.bb-footer-btns .btn-gray { background: transparent !important; color: #fff !important; border: 1px solid rgba(255, 255, 255, .45) !important; box-shadow: none !important; }
+.bb-footer-btns .btn-gray:hover { background: rgba(255, 255, 255, .1) !important; }
+.bb-footer-btns .btn span, .bb-footer-btns .btn-gray span { color: inherit !important; }
+.bb-footer-btns .btn .btn-spinner { border-color: rgba(27, 42, 68, .25); border-top-color: #1b2a44; }
