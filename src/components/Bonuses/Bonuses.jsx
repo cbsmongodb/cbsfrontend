@@ -34,9 +34,9 @@ const asText = (v) => (v == null ? '' : String(v))
 
 // Tbilisi / region bonus texts
 const AREA_TXT = {
-  ka: { tbilisi: 'თბილისი', region: 'რეგიონი', same: 'როგორც თბილისი', regionSet: 'რეგიონის ბონუსი', help: 'რეგიონის ბონუსი თუ ცარიელია, რეგიონის წარმომადგენლებს თბილისის ბონუსი ერიცხებათ.' },
-  en: { tbilisi: 'Tbilisi', region: 'Regions', same: 'same as Tbilisi', regionSet: 'region bonus', help: 'If the region bonus is empty, region reps get the Tbilisi bonus.' },
-  ru: { tbilisi: 'Тбилиси', region: 'Регионы', same: 'как в Тбилиси', regionSet: 'бонус регионов', help: 'Если бонус регионов пуст, региональные представители получают бонус Тбилиси.' },
+  ka: { tbilisi: 'თბილისი', region: 'რეგიონი', same: 'როგორც თბილისი', regionSet: 'რეგიონის ბონუსი', help: 'ნაცრისფერი თანხა ჯერ არავის ჩაუწერია: თბილისის სვეტში ეს 1 ₾-ია, რეგიონის სვეტში — იგივე, რაც თბილისში. თბილისის წარმომადგენლებს თბილისის ბონუსი ერიცხებათ, რეგიონისას — რეგიონის.' },
+  en: { tbilisi: 'Tbilisi', region: 'Regions', same: 'same as Tbilisi', regionSet: 'region bonus', help: 'A grey amount has not been set yet: in Tbilisi it is 1 ₾, in Regions the same as Tbilisi. Tbilisi reps get the Tbilisi bonus, region reps the region bonus.' },
+  ru: { tbilisi: 'Тбилиси', region: 'Регионы', same: 'как в Тбилиси', regionSet: 'бонус регионов', help: 'Серая сумма ещё не задана: в Тбилиси это 1 ₾, в регионах — как в Тбилиси. Тбилисские представители получают бонус Тбилиси, региональные — бонус регионов.' },
 }
 
 // month picker: one button, a panel with the year and a 3×4 grid of months
@@ -418,7 +418,6 @@ function MonthBonusCell({ t, d, canEdit, onSave, sourceText, field = 'value', L 
       <div className="mb-cell">
         <div className="bonuses-value">
           <strong className={own != null ? '' : 'is-inherited'}>{fmt(own ?? base) || '0'} ₾</strong>
-          <span className="bonuses-hint">{field === 'regionValue' ? (own != null ? L.regionSet : L.same) : sourceText(d)}</span>
         </div>
         {canEdit && (
           <button type="button" className="btn-gray btn-sm mb-cell-edit" onClick={() => setEditing(true)}>
