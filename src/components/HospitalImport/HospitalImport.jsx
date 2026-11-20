@@ -5,6 +5,7 @@ import { io } from 'socket.io-client'
 import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import HospitalPinModal from './HospitalPinModal'
+import HospitalRepFix from './HospitalRepFix'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -255,6 +256,8 @@ export default function HospitalImport() {
 
       <h2 style={{ fontSize: 15, marginBottom: 8 }}>{t('coordinatesHeading')}</h2>
       <p style={{ fontSize: 13, color: '#64748b', marginBottom: 12 }}>{t('coordinatesDescription')}</p>
+
+      <HospitalRepFix onApplied={loadMissing} />
 
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <button type="button" className="btn-gray" onClick={handleGeocode} disabled={geocoding}>
