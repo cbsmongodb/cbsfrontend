@@ -89,8 +89,7 @@
         "employeeSales": "Продажи из аптек",
         "employeeTargets": "Планы сотрудников",
         "budgetAllotment": "Распределение бюджета",
-        "visitsReport": "Список визитов",
-        "zonalSales": "Зональные продажи"
+        "visitsReport": "Список визитов"
       },
       "reports": {
         "label": "Отчёты",
@@ -104,7 +103,8 @@
         "directorDashboard": "Панель директора",
         "prescriptionsReport": "Отчёт по рецептам",
         "leavePayroll": "Отпуска для зарплаты",
-        "timesheet": "Табель"
+        "timesheet": "Табель",
+        "zonalSales": "Зональные продажи"
       },
       "administration": {
         "label": "Администрирование",

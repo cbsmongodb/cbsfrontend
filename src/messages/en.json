@@ -89,8 +89,7 @@
         "employeeSales": "Pharmacy Sales",
         "employeeTargets": "Employee Plans",
         "budgetAllotment": "Budget Allotment",
-        "visitsReport": "Visits list",
-        "zonalSales": "Zonal sales"
+        "visitsReport": "Visits list"
       },
       "reports": {
         "label": "Reports",
@@ -104,7 +103,8 @@
         "directorDashboard": "Director Dashboard",
         "prescriptionsReport": "Prescriptions Report",
         "leavePayroll": "Leave for payroll",
-        "timesheet": "Timesheet"
+        "timesheet": "Timesheet",
+        "zonalSales": "Zonal sales"
       },
       "administration": {
         "label": "Administration",

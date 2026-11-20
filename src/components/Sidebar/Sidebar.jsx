@@ -194,7 +194,6 @@ const NAV = [
     items: [
       { href: 'dashboard/plannings', key: 'plannings' },
       { href: 'dashboard/visits-report', key: 'visitsReport' },
-      { href: 'dashboard/zonal-sales', key: 'zonalSales' },
       { href: 'dashboard/doctor-entry-items', key: 'doctorEntryItems' },
       { href: 'dashboard/entered-prescriptions', key: 'enteredPrescriptions' },
       { href: 'dashboard/bonuses', key: 'bonuses' },
@@ -218,6 +217,7 @@ const NAV = [
       { href: 'dashboard/budgets/allotment', key: 'budgetAllotment' },
       { href: 'dashboard/reports/leave-payroll', key: 'leavePayroll' },
       { href: 'dashboard/reports/timesheet', key: 'timesheet' },
+      { href: 'dashboard/zonal-sales', key: 'zonalSales' },
     ],
   },
   {

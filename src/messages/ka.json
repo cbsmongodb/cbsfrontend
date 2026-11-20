@@ -92,8 +92,7 @@
         "employeeSales": "გაყიდვები აფთიაქებიდან",
         "employeeTargets": "თანამშრომლების გეგმები",
         "budgetAllotment": "ბიუჯეტის განაწილება",
-        "visitsReport": "ვიზიტების სია",
-        "zonalSales": "ზონალური გაყიდვები"
+        "visitsReport": "ვიზიტების სია"
       },
       "reports": {
         "label": "რეპორტები",
@@ -107,7 +106,8 @@
         "directorDashboard": "დირექტორის დაფა",
         "prescriptionsReport": "რეცეპტების რეპორტი",
         "leavePayroll": "შვებულებები ხელფასისთვის",
-        "timesheet": "ტაბელი"
+        "timesheet": "ტაბელი",
+        "zonalSales": "ზონალური გაყიდვები"
       },
       "administration": {
         "label": "ადმინისტრაცია",
