@@ -30,6 +30,7 @@ const RESOURCE_KEY = {
   'dashboard/profiles': 'profiles',
   'dashboard/plannings': 'plannings',
   'dashboard/visits-report': 'visits_report',
+  'dashboard/zonal-sales': 'zonal_sales',
   'dashboard/doctor-entry-items': 'sales',
   'dashboard/bonuses': 'drug_bonuses',
   'dashboard/entered-prescriptions': 'sales',
@@ -193,6 +194,7 @@ const NAV = [
     items: [
       { href: 'dashboard/plannings', key: 'plannings' },
       { href: 'dashboard/visits-report', key: 'visitsReport' },
+      { href: 'dashboard/zonal-sales', key: 'zonalSales' },
       { href: 'dashboard/doctor-entry-items', key: 'doctorEntryItems' },
       { href: 'dashboard/entered-prescriptions', key: 'enteredPrescriptions' },
       { href: 'dashboard/bonuses', key: 'bonuses' },

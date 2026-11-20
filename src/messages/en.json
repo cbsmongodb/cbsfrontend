@@ -89,7 +89,8 @@
         "employeeSales": "Pharmacy Sales",
         "employeeTargets": "Employee Plans",
         "budgetAllotment": "Budget Allotment",
-        "visitsReport": "Visits list"
+        "visitsReport": "Visits list",
+        "zonalSales": "Zonal sales"
       },
       "reports": {
         "label": "Reports",
@@ -454,7 +455,8 @@
       "prescriptions_report": "Prescriptions Report",
       "leave_payroll_report": "Leave for payroll (report)",
       "timesheet_report": "Timesheet (report)",
-      "visits_report": "Visits list (report)"
+      "visits_report": "Visits list (report)",
+      "zonal_sales": "Zonal sales (report)"
     },
     "actions": {
       "read": "View",
@@ -1552,5 +1554,46 @@
     "prevYear": "Previous year",
     "nextYear": "Next year",
     "thisMonthBtn": "This month"
+  },
+  "zonalSales": {
+    "title": "Zonal sales",
+    "subtitleAll": "Sales of all divisions",
+    "subtitleOwn": "{division} — your division's sales",
+    "month": "Month",
+    "noMonths": "None yet",
+    "division": "Division",
+    "all": "All",
+    "zone": "Zone",
+    "total": "Total",
+    "emptyTitle": "No data uploaded yet",
+    "emptyText": "Zonal sales are uploaded from Excel. Once uploaded, a map of Georgia appears here — how much each zone sells and which product leads.",
+    "pcs": "pcs",
+    "measure": "Measure",
+    "amount": "Amount",
+    "qty": "Quantity",
+    "share": "Share",
+    "leader": "Leading product",
+    "kpiTotal": "Total sales",
+    "kpiZones": "{count} zones",
+    "kpiBest": "Strongest zone",
+    "kpiWorst": "Weakest zone",
+    "kpiProduct": "#1 product",
+    "mapTitle": "Sales on the map",
+    "mapHint": "Bigger circle = more sales · click a zone for details",
+    "legendTop": "Leader",
+    "legendMid": "Average",
+    "legendLow": "Weakest",
+    "offMap": "Not on the map: {zones} — shown in the list",
+    "rankTitle": "Zone ranking",
+    "rankHint": "From most to least",
+    "ofTotal": "of total",
+    "allZones": "All zones",
+    "wholeCountry": "All of Georgia",
+    "pickZone": "Pick a zone on the map or in the ranking",
+    "productsTitle": "Products",
+    "chainsTitle": "Pharmacy chains",
+    "noData": "No data",
+    "heatTitle": "Which product leads in which zone",
+    "heatHint": "Darker cell = sells more in that zone · 🏆 = the zone's leading product"
   }
 }
