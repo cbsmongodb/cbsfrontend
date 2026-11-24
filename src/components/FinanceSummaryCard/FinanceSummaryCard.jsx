@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import { useMonthNames } from '@/lib/months'
 import './FinanceSummaryCard.css'
+import FinDetails from './FinDetails'
 
 const money = (n) => `₾${Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 2 })}`
 const ym = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
@@ -33,6 +34,16 @@ export default function FinanceSummaryCard() {
   const s = data?.sales, b = data?.budget
   const trend = s && s.previousAmount > 0 ? ((s.amount - s.previousAmount) / s.previousAmount) * 100 : null
   const paidPct = b && b.planned > 0 ? Math.min(100, (b.issued / b.planned) * 100) : 0
+  // click a card -> the rows behind it open underneath (FinDetails)
+  const [open, setOpen] = useState(null)
+  const cards = data ? [
+    ['sales', t('sales'), s.amount, <>{s.boxes.toLocaleString('en-US')} {t('boxes')}{trend !== null && s.amount > 0 && <b className={trend >= 0 ? 'up' : 'down'}> {trend >= 0 ? '▲' : '▼'} {Math.abs(trend).toFixed(1)}%</b>}</>],
+    ['planned', t('planned'), b.planned, <>{b.doctors} {t('doctors')}</>],
+    ['issued', t('issued'), b.issued, <>{paidPct.toFixed(0)}% {t('ofPlanned')}</>],
+    ['owed', t('owed'), b.owed, <>{b.unpaidDoctors} {t('unpaidDoctors')}</>],
+    ['payments', t('payments'), data.payments.amount, <>{data.payments.count} {t('records')}</>],
+  ] : []
+  const openCard = cards.find((c) => c[0] === open)
 
   return (
     <div className="fin">
@@ -51,35 +62,19 @@ export default function FinanceSummaryCard() {
       {data && (
         <>
           <div className="fin-cards">
-            <div className="fin-card sales">
-              <span>{t('sales')}</span>
-              <strong>{money(s.amount)}</strong>
-              <em>
-                {s.boxes.toLocaleString('en-US')} {t('boxes')}
-                {trend !== null && <b className={trend >= 0 ? 'up' : 'down'}> {trend >= 0 ? '▲' : '▼'} {Math.abs(trend).toFixed(1)}%</b>}
-              </em>
-            </div>
-            <div className="fin-card planned">
-              <span>{t('planned')}</span>
-              <strong>{money(b.planned)}</strong>
-              <em>{b.doctors} {t('doctors')}</em>
-            </div>
-            <div className="fin-card issued">
-              <span>{t('issued')}</span>
-              <strong>{money(b.issued)}</strong>
-              <em>{paidPct.toFixed(0)}% {t('ofPlanned')}</em>
-            </div>
-            <div className="fin-card owed">
-              <span>{t('owed')}</span>
-              <strong>{money(b.owed)}</strong>
-              <em>{b.unpaidDoctors} {t('unpaidDoctors')}</em>
-            </div>
-            <div className="fin-card payments">
-              <span>{t('payments')}</span>
-              <strong>{money(data.payments.amount)}</strong>
-              <em>{data.payments.count} {t('records')}</em>
-            </div>
+            {cards.map(([key, label, value, sub]) => (
+              <button key={key} type="button" className={`fin-card ${key}${open === key ? ' open' : ''}`} onClick={() => setOpen(open === key ? null : key)} aria-expanded={open === key}>
+                <span>{label}</span>
+                <strong>{money(value)}</strong>
+                <em>{sub}</em>
+                <i className="fin-card-more" aria-hidden="true">{open === key ? '▲' : '▼'}</i>
+              </button>
+            ))}
           </div>
+
+          {openCard && (
+            <FinDetails month={month} card={openCard[0]} title={openCard[1]} cardTotal={openCard[2]} onClose={() => setOpen(null)} />
+          )}
 
           <div className="fin-progress">
             <div className="fin-progress-label">
