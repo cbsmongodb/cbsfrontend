@@ -13,9 +13,9 @@ const ALL = 'all'
 const SIZES = [50, 100, 200, 500]
 
 const TXT = {
-  ka: { all: 'ყველა', division: 'დივიზიონი', group: 'ჯგუფი', allGroups: 'ყველა ჯგუფი', allEmployees: 'ყველა თანამშრომელი', employee: 'თანამშრომელი', drug: 'წამალი', allDrugs: 'ყველა წამალი', whoTitle: 'ვინ რამდენი შეიყვანა', whoHint: 'დააჭირე სახელს — ცხრილში მხოლოდ მისი ჩანაწერები დარჩება', sum: 'ჯამი', quota: 'გეგმა', rx: 'რეცეპტი', showAll: 'ყველას ჩვენება', search: 'ძებნა', searchPh: 'ექიმი, ID, წამალი ან თანამშრომელი…', reset: 'გასუფთავება', rows: 'ჩანაწერი', doctors: 'ექიმი', reps: 'თანამშრომელი', total: 'სულ ბიუჯეტი', issued: 'გაცემული', planned: 'დაგეგმილი', diff: 'სხვაობა', perPage: 'გვერდზე', prev: 'წინა', next: 'შემდეგი', formulas: 'როგორ ითვლება?', scrollHint: 'ცხრილი გვერდზე სქროლდება →' },
-  en: { all: 'All', division: 'Division', group: 'Group', allGroups: 'All groups', allEmployees: 'All employees', employee: 'Employee', drug: 'Drug', allDrugs: 'All drugs', whoTitle: 'Who entered how much', whoHint: 'Click a name to see only their rows', sum: 'Total', quota: 'Plan', rx: 'Prescriptions', showAll: 'Show everyone', search: 'Search', searchPh: 'Doctor, ID, drug or employee…', reset: 'Reset', rows: 'rows', doctors: 'doctors', reps: 'employees', total: 'Total budget', issued: 'Issued', planned: 'Planned', diff: 'Difference', perPage: 'per page', prev: 'Previous', next: 'Next', formulas: 'How is it calculated?', scrollHint: 'Scroll the table sideways →' },
-  ru: { all: 'Все', division: 'Дивизион', group: 'Группа', allGroups: 'Все группы', allEmployees: 'Все сотрудники', employee: 'Сотрудник', drug: 'Препарат', allDrugs: 'Все препараты', whoTitle: 'Кто сколько внёс', whoHint: 'Нажмите на имя — останутся только его записи', sum: 'Итого', quota: 'План', rx: 'Рецепты', showAll: 'Показать всех', search: 'Поиск', searchPh: 'Врач, ID, препарат или сотрудник…', reset: 'Сбросить', rows: 'записей', doctors: 'врачей', reps: 'сотрудников', total: 'Итого бюджет', issued: 'Выдано', planned: 'Запланировано', diff: 'Разница', perPage: 'на странице', prev: 'Назад', next: 'Вперёд', formulas: 'Как считается?', scrollHint: 'Таблицу можно листать вбок →' },
+  ka: { all: 'ყველა', division: 'დივიზიონი', group: 'ჯგუფი', allGroups: 'ყველა ჯგუფი', allEmployees: 'ყველა თანამშრომელი', employee: 'თანამშრომელი', drug: 'წამალი', allDrugs: 'ყველა წამალი', whoTitle: 'ვინ რამდენი გაყიდა (აფთიაქებიდან)', whoHint: 'დააჭირე სახელს — ცხრილში მხოლოდ მისი ჩანაწერები დარჩება', soldBoxes: 'გაყიდული კოლოფი', soldAmount: 'თანხა', noSales: 'ამ თვეში ამ წამალზე აფთიაქის გაყიდვები არ არის შეყვანილი', sum: 'ჯამი', quota: 'გეგმა', rx: 'რეცეპტი', showAll: 'ყველას ჩვენება', search: 'ძებნა', searchPh: 'ექიმი, ID, წამალი ან თანამშრომელი…', reset: 'გასუფთავება', rows: 'ჩანაწერი', doctors: 'ექიმი', reps: 'თანამშრომელი', total: 'სულ ბიუჯეტი', issued: 'გაცემული', planned: 'დაგეგმილი', diff: 'სხვაობა', perPage: 'გვერდზე', prev: 'წინა', next: 'შემდეგი', formulas: 'როგორ ითვლება?', scrollHint: 'ცხრილი გვერდზე სქროლდება →' },
+  en: { all: 'All', division: 'Division', group: 'Group', allGroups: 'All groups', allEmployees: 'All employees', employee: 'Employee', drug: 'Drug', allDrugs: 'All drugs', whoTitle: 'Who sold how much (pharmacies)', whoHint: 'Click a name to see only their rows', soldBoxes: 'Boxes sold', soldAmount: 'Amount', noSales: 'No pharmacy sales of this drug entered for this month', sum: 'Total', quota: 'Plan', rx: 'Prescriptions', showAll: 'Show everyone', search: 'Search', searchPh: 'Doctor, ID, drug or employee…', reset: 'Reset', rows: 'rows', doctors: 'doctors', reps: 'employees', total: 'Total budget', issued: 'Issued', planned: 'Planned', diff: 'Difference', perPage: 'per page', prev: 'Previous', next: 'Next', formulas: 'How is it calculated?', scrollHint: 'Scroll the table sideways →' },
+  ru: { all: 'Все', division: 'Дивизион', group: 'Группа', allGroups: 'Все группы', allEmployees: 'Все сотрудники', employee: 'Сотрудник', drug: 'Препарат', allDrugs: 'Все препараты', whoTitle: 'Кто сколько продал (аптеки)', whoHint: 'Нажмите на имя — останутся только его записи', soldBoxes: 'Продано упаковок', soldAmount: 'Сумма', noSales: 'Продажи аптек по этому препарату за месяц не внесены', sum: 'Итого', quota: 'План', rx: 'Рецепты', showAll: 'Показать всех', search: 'Поиск', searchPh: 'Врач, ID, препарат или сотрудник…', reset: 'Сбросить', rows: 'записей', doctors: 'врачей', reps: 'сотрудников', total: 'Итого бюджет', issued: 'Выдано', planned: 'Запланировано', diff: 'Разница', perPage: 'на странице', prev: 'Назад', next: 'Вперёд', formulas: 'Как считается?', scrollHint: 'Таблицу можно листать вбок →' },
 }
 
 function currentPeriodValue() {
@@ -280,32 +280,29 @@ export default function SalesListing() {
               : <small>{L.whoHint}</small>}
           </div>
           {data.byEmployee.length === 0 ? (
-            <p className="sl-who-empty">{tu('k086')}</p>
+            <p className="sl-who-empty">{L.noSales}</p>
           ) : (
             <div className="sl-who-scroll">
               <table className="sl-who-table">
                 <thead>
                   <tr>
-                    <th className="n">#</th><th>{L.employee}</th><th className="n">{L.doctors}</th>
-                    <th className="n">{L.quota}</th><th className="sl-who-rx">{L.rx}</th>
-                    <th className="n">{L.total}</th><th className="n">{L.issued}</th>
+                    <th className="n">#</th><th>{L.employee}</th>
+                    <th className="sl-who-rx">{L.soldBoxes}</th>
+                    <th className="n">{L.soldAmount}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {(() => {
-                    const max = Math.max(1, ...data.byEmployee.map((r) => r.prescription || 0))
+                    const max = Math.max(1, ...data.byEmployee.map((r) => r.boxes || 0))
                     return data.byEmployee.map((r, i) => (
                       <tr key={r.employee} className={employeeId === r.employee ? 'active' : ''} onClick={() => !onlySelf && setEmployeeId(r.employee)}>
                         <td className="n sl-who-i">{i + 1}</td>
                         <td className="sl-who-name">{r.name || '—'}</td>
-                        <td className="n">{fmt(r.doctors)}</td>
-                        <td className="n">{fmt(r.quota)}</td>
                         <td className="sl-who-rx">
-                          <div className="sl-who-bar"><i style={{ width: `${((r.prescription || 0) / max) * 100}%` }} /></div>
-                          <b>{fmt(r.prescription)}</b>
+                          <div className="sl-who-bar"><i style={{ width: `${(Math.max(0, r.boxes || 0) / max) * 100}%` }} /></div>
+                          <b>{fmt(r.boxes)}</b>
                         </td>
-                        <td className="n">₾{fmt(r.totalBudget)}</td>
-                        <td className="n">₾{fmt(r.issuedBudget)}</td>
+                        <td className="n">₾{fmt(r.amount)}</td>
                       </tr>
                     ))
                   })()}
@@ -314,11 +311,8 @@ export default function SalesListing() {
                   <tfoot>
                     <tr>
                       <td /><td>{L.sum}</td>
-                      <td className="n">{fmt(tot.doctors)}</td>
-                      <td className="n">{fmt(data.byEmployee.reduce((s, r) => s + (r.quota || 0), 0))}</td>
-                      <td className="sl-who-rx"><b>{fmt(tot.prescription)}</b></td>
-                      <td className="n">₾{fmt(tot.totalBudget)}</td>
-                      <td className="n">₾{fmt(tot.issuedBudget)}</td>
+                      <td className="sl-who-rx"><b>{fmt(data.byEmployee.reduce((s, r) => s + (r.boxes || 0), 0))}</b></td>
+                      <td className="n">₾{fmt(data.byEmployee.reduce((s, r) => s + (r.amount || 0), 0))}</td>
                     </tr>
                   </tfoot>
                 )}
@@ -367,7 +361,12 @@ export default function SalesListing() {
                       </td>
                       {showRep && <td className="sl-muted">{personName(item.employee)}</td>}
                       <td>{item.drug?.name || '—'}</td>
-                      <td className="sl-muted">{item.hospital?.name || '—'}</td>
+                      <td className="sl-muted sl-hosp">{(() => {
+                        const n = item.hospital?.name
+                        if (!n) return '—'
+                        const [a, ...b] = n.split(' / ')
+                        return <span title={n}>{a}{b.length > 0 && <small>{b.join(' / ')}</small>}</span>
+                      })()}</td>
                       <td>{item.bank ? <span className="sl-bank">{item.bank}</span> : '—'}</td>
                       <td className="n">{fmt(item.quota)}</td>
                       <td className="n">{fmt(item.prescription)}</td>
