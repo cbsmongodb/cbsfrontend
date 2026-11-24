@@ -11,6 +11,7 @@ import './BudgetNew.css'
 import BudgetBulk from './BudgetBulk'
 import { useTranslations } from 'next-intl'
 import { BTXT, doctorBalance, balanceState } from './budgetBalance'
+import EntryInfo from './EntryInfo'
 
 function BudgetSingle() {
   const tu = useTranslations('ui')
@@ -171,6 +172,7 @@ function BudgetSingle() {
               getLabel={formatDoctorLabel}
               placeholder={tu('k109')}
             />
+            {employeeId && doctorId && <EntryInfo computed={computed} computing={computing} />}
           </div>
         </div>
 

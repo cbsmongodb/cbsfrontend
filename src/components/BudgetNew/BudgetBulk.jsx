@@ -14,6 +14,7 @@ import '../PrescriptionEdit/PrescriptionEdit.css'
 import './BudgetNew.css'
 import './BudgetBulk.css'
 import { BTXT, doctorBalance, balanceState } from './budgetBalance'
+import EntryInfo from './EntryInfo'
 
 const TXT = {
   ka: { addDoctor: '+ ექიმის დამატება', addEmployee: '+ თანამშრომლის დამატება', removeLine: 'ხაზის წაშლა', removeBlock: 'თანამშრომლის მოშორება', exists: 'ამ ექიმს ამ თვეში ბიუჯეტი უკვე აქვს', dup: 'ეს ექიმი ამ თანამშრომელზე ორჯერ არის არჩეული', saved: 'შენახულია', budgets: 'ბიუჯეტი', total: 'ჯამი', nothing: 'აირჩიე თანამშრომელი და ექიმი', partial: 'ზოგი ვერ შეინახა — წითლად მონიშნულს გადახედე', waiting: 'თანხები ჯერ ითვლება…', fixDup: 'ჯერ გაასწორე დუბლიკატი ექიმები' },
@@ -204,6 +205,7 @@ export default function BudgetBulk() {
                       getLabel={formatDoctorLabel}
                       placeholder={tu('k109')}
                     />
+                    <EntryInfo computed={r.computed} computing={r.computing} />
                   </div>
                   <div className="prescedit-field budgetnew-input-field bb-paid">
                     <label>{B.paid}</label>
