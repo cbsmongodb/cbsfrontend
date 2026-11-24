@@ -1,38 +1,63 @@
 'use client'
 
 // "where does this number come from" — opens under the finance cards:
-// the source, the formula, automatic checks and every row behind the number.
-import { useEffect, useMemo, useState } from 'react'
+// the source, the formula, automatic checks and the rows behind the number.
+// Rows come from the server in pages: first 50, then +500 per click.
+import { useEffect, useRef, useState } from 'react'
 import { useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 
 const TXT = {
-  ka: { source: 'საიდან მოდის', formula: 'როგორ ითვლება', checks: 'შემოწმება', ok: 'საეჭვო არაფერი ჩანს', total: 'ჯამი ცხრილში', card: 'ბარათზე', match: '✓ ემთხვევა ბარათს', nomatch: '⚠ არ ემთხვევა ბარათს', search: 'ძებნა…', showAll: 'ყველას ჩვენება', close: 'დახურვა', empty: 'ჩანაწერი არ არის' },
-  en: { source: 'Where it comes from', formula: 'How it is calculated', checks: 'Checks', ok: 'Nothing suspicious found', total: 'Table total', card: 'On the card', match: '✓ matches the card', nomatch: '⚠ does not match the card', search: 'Search…', showAll: 'Show all', close: 'Close', empty: 'No records' },
-  ru: { source: 'Откуда берётся', formula: 'Как считается', checks: 'Проверка', ok: 'Ничего подозрительного', total: 'Итого в таблице', card: 'На карточке', match: '✓ совпадает с карточкой', nomatch: '⚠ не совпадает с карточкой', search: 'Поиск…', showAll: 'Показать все', close: 'Закрыть', empty: 'Нет записей' },
+  ka: { source: 'საიდან მოდის', formula: 'როგორ ითვლება', checks: 'შემოწმება', ok: 'საეჭვო არაფერი ჩანს', total: 'ჯამი', card: 'ბარათზე', match: '✓ ემთხვევა ბარათს', nomatch: '⚠ არ ემთხვევა ბარათს', search: 'ძებნა…', more: 'მეტის ჩვენება', shown: 'ნაჩვენებია', of: '-დან', close: 'დახურვა', empty: 'ჩანაწერი არ არის' },
+  en: { source: 'Where it comes from', formula: 'How it is calculated', checks: 'Checks', ok: 'Nothing suspicious found', total: 'Total', card: 'On the card', match: '✓ matches the card', nomatch: '⚠ does not match the card', search: 'Search…', more: 'Show more', shown: 'Showing', of: ' of', close: 'Close', empty: 'No records' },
+  ru: { source: 'Откуда берётся', formula: 'Как считается', checks: 'Проверка', ok: 'Ничего подозрительного', total: 'Итого', card: 'На карточке', match: '✓ совпадает с карточкой', nomatch: '⚠ не совпадает с карточкой', search: 'Поиск…', more: 'Показать ещё', shown: 'Показано', of: ' из', close: 'Закрыть', empty: 'Нет записей' },
 }
+const FIRST = 50
+const STEP = 500
 
 const money = (n) => `₾${Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 2 })}`
 
-export default function FinDetails({ month, card, cardTotal, title, onClose }) {
+export default function FinDetails({ month, card, cardTotal, title, section, group, onClose }) {
   const L = TXT[useLocale()] || TXT.en
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
+  const [qInput, setQInput] = useState('')
   const [q, setQ] = useState('')
-  const [all, setAll] = useState(false)
+  const [more, setMore] = useState(false)
+  const req = useRef(0)
+
+  // search: wait until typing stops
+  useEffect(() => {
+    const id = setTimeout(() => setQ(qInput.trim()), 300)
+    return () => clearTimeout(id)
+  }, [qInput])
+
+  const url = (offset, limit) => {
+    const p = new URLSearchParams({ month, card, offset, limit })
+    if (section) p.set('section', section)
+    if (group) p.set('group', group)
+    if (q) p.set('q', q)
+    return `/api/finance/details?${p}`
+  }
 
   useEffect(() => {
-    setData(null); setError(''); setQ(''); setAll(false)
-    apiFetch(`/api/finance/details?month=${month}&card=${card}`).then(setData).catch((e) => setError(e.message))
-  }, [month, card])
+    const id = ++req.current
+    setError('')
+    if (!data || data.card !== card) setData(null)
+    apiFetch(url(0, FIRST))
+      .then((d) => id === req.current && setData(d))
+      .catch((e) => id === req.current && setError(e.message))
+  }, [month, card, section, group, q]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const rows = useMemo(() => {
-    if (!data) return []
-    const s = q.trim().toLowerCase()
-    return s ? data.rows.filter((r) => Object.values(r).some((v) => String(v).toLowerCase().includes(s))) : data.rows
-  }, [data, q])
+  function loadMore() {
+    const id = req.current
+    setMore(true)
+    apiFetch(url(data.rows.length, STEP))
+      .then((d) => id === req.current && setData((x) => ({ ...x, rows: [...x.rows, ...d.rows] })))
+      .catch((e) => setError(e.message))
+      .finally(() => setMore(false))
+  }
 
-  const shown = all ? rows : rows.slice(0, 50)
   const same = data && Math.abs((data.total || 0) - (cardTotal || 0)) < 0.01
 
   return (
@@ -66,12 +91,12 @@ export default function FinDetails({ month, card, cardTotal, title, onClose }) {
               : data.checks.map((c, i) => <p key={i} className={`fin-check ${c.level}`}>{c.level === 'error' ? '⛔' : c.level === 'warn' ? '⚠️' : 'ℹ️'} {c.text}</p>)}
           </div>
 
-          {data.rows.length > 8 && (
-            <input className="field-input fin-details-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={L.search} />
+          {(data.count > 8 || qInput) && (
+            <input className="field-input fin-details-search" value={qInput} onChange={(e) => setQInput(e.target.value)} placeholder={L.search} />
           )}
 
           <div className="fin-panel fin-details-table">
-            {rows.length === 0 ? (
+            {data.rows.length === 0 ? (
               <p className="fin-muted">{L.empty}</p>
             ) : (
               <table className="fin-table">
@@ -79,7 +104,7 @@ export default function FinDetails({ month, card, cardTotal, title, onClose }) {
                   <tr>{data.columns.map(([k, label, kind]) => <th key={k} className={kind ? 'num' : ''}>{label}</th>)}</tr>
                 </thead>
                 <tbody>
-                  {shown.map((r, i) => (
+                  {data.rows.map((r, i) => (
                     <tr key={i}>
                       {data.columns.map(([k, , kind]) => (
                         <td key={k} className={`${kind ? 'num' : ''}${k === 'diff' && Math.abs(r[k]) > 0.005 ? ' owed' : ''}`}>
@@ -91,9 +116,14 @@ export default function FinDetails({ month, card, cardTotal, title, onClose }) {
                 </tbody>
               </table>
             )}
-            {!all && rows.length > 50 && (
-              <button type="button" className="fin-link fin-showall" onClick={() => setAll(true)}>{L.showAll} ({rows.length})</button>
-            )}
+            <div className="fin-more">
+              <span>{L.shown} {data.rows.length.toLocaleString('en-US')}{L.of} {data.count.toLocaleString('en-US')}</span>
+              {data.rows.length < data.count && (
+                <button type="button" className="fin-more-btn" onClick={loadMore} disabled={more}>
+                  {more ? <span className="btn-spinner" aria-hidden="true" /> : `${L.more} (+${Math.min(STEP, data.count - data.rows.length)})`}
+                </button>
+              )}
+            </div>
           </div>
         </>
       )}

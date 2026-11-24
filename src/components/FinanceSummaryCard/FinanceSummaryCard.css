@@ -72,3 +72,22 @@ button.fin-card.open { box-shadow: 0 0 0 2px var(--c); }
 .fin-details-search { width: 100%; max-width: 320px; margin-bottom: 10px; }
 .fin-details-table { background: #fff; max-height: 520px; overflow: auto; }
 .fin-showall { border: 0; background: none; cursor: pointer; padding: 0; }
+
+/* ===== filters: division pills + group select ===== */
+.fin-shown-filter { font-weight: 600; color: #0e7fb0; }
+.fin-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin: -4px 0 16px; padding: 10px 12px; border-radius: 12px; background: #f8fafc; border: 1px solid #eef2f7; }
+.fin-filter { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.fin-filter-label { font-size: 12px; font-weight: 700; color: #64748b; }
+.fin-pills { display: inline-flex; flex-wrap: wrap; gap: 4px; background: #eef2f7; border-radius: 10px; padding: 3px; }
+.fin-pills button { border: 0; background: transparent; padding: 6px 12px; border-radius: 8px; font: inherit; font-size: 12.5px; font-weight: 700; color: #475569; cursor: pointer; white-space: nowrap; }
+.fin-pills button.active { background: #fff; color: #0f172a; box-shadow: 0 1px 3px rgba(15, 23, 42, .1); }
+.fin-select { font: inherit; font-size: 13px; padding: 7px 30px 7px 10px; border-radius: 9px; border: 1px solid #d5dce6; background: #fff; color: #0f172a; max-width: 260px; cursor: pointer; }
+.fin-reset { border: 0; background: none; color: #dc2626; font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+.fin-filter-spin { margin-left: auto; }
+.fin-cards.is-loading { opacity: .55; transition: opacity .2s; }
+@media (max-width: 640px) { .fin-filter { flex-wrap: wrap; } .fin-select { max-width: 100%; width: 100%; } }
+
+/* details: "showing X of Y" + load more */
+.fin-more { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; font-size: 12.5px; color: #64748b; }
+.fin-more-btn { border: 1px solid #c7d2fe; background: #eef2ff; color: #3730a3; font: inherit; font-size: 13px; font-weight: 700; padding: 7px 14px; border-radius: 9px; cursor: pointer; }
+.fin-more-btn:disabled { opacity: .6; cursor: default; }
