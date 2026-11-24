@@ -95,3 +95,12 @@
 }
 .bb-footer .bb-summary { opacity: 1; font-weight: 600; }
 .bb-footer-btns .btn-gray { border-color: rgba(255, 255, 255, .6) !important; }
+
+/* plan / prescription chips: their own line under the doctor,
+   so "რა თანხას ვუხდით ექიმს" stays level with the doctor field */
+.bb-row { grid-template-areas: "doc paid end" "info info info" "stats stats stats" "note note note"; }
+.bb-info { grid-area: info; }
+.bb-info .entry-info { margin-top: -4px; }
+@media (max-width: 900px) {
+  .bb-row { grid-template-areas: "doc doc" "info info" "paid end" "stats stats" "note note"; }
+}

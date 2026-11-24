@@ -205,8 +205,8 @@ export default function BudgetBulk() {
                       getLabel={formatDoctorLabel}
                       placeholder={tu('k109')}
                     />
-                    <EntryInfo computed={r.computed} computing={r.computing} />
                   </div>
+                  {r.computed?.entry && !r.computing && <div className="bb-info"><EntryInfo computed={r.computed} /></div>}
                   <div className="prescedit-field budgetnew-input-field bb-paid">
                     <label>{B.paid}</label>
                     <div className="budgetnew-amount-input">
