@@ -19,8 +19,8 @@ function timeAgo(iso) {
 // page in the app -> its name in the menu
 const PAGES = [
   [/plannings/, 'ვიზიტების დაგეგმვა'], [/doctor-entry-items/, 'რეცეპტების შეყვანა'], [/entered-prescriptions/, 'შეყვანილი რეცეპტები'], [/sales-listing/, 'გაყიდვების სია'],
-  [/budgets\/new/, 'ახალი ბიუჯეტი'], [/budgets/, 'ბიუჯეტები'], [/employee-sales/, 'გაყიდვები აფთიაქებიდან'],
-  [/employee-targets/, 'თანამშრომლების გეგმები'], [/leave-requests/, 'შვებულების მოთხოვნა'], [/leaves/, 'შვებულებები'],
+  [/budgets\/new/, 'ახალი ბიუჯეტი'], [/budgets/, 'ბიუჯეტები'], [/employee-sales/, 'თანამშრომლის გაყიდვები'],
+  [/employee-targets/, 'თანამშრომლის გეგმები'], [/leave-requests/, 'შვებულების მოთხოვნა'], [/leaves/, 'შვებულებები'],
   [/reports\/efficiency/, 'ეფექტურობის რეპორტი'], [/reports\/reimbursement/, 'ტრანსპორტის ანაზღაურება'],
   [/reports\/attendances/, 'დასწრების რეპორტი'], [/reports\/prescriptions/, 'რეცეპტების რეპორტი'],
   [/reports\/staff-performance/, 'თანამშრომელთა შესრულება'], [/analytics/, 'ანალიტიკა'],

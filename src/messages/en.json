@@ -86,7 +86,7 @@
         "budgets": "Budgets",
         "budgetRequireds": "Budget Requests",
         "salesListing": "Sales Listing",
-        "employeeSales": "Pharmacy Sales",
+        "employeeSales": "Employee Sales",
         "employeeTargets": "Employee Plans",
         "budgetAllotment": "Budget Allotment",
         "visitsReport": "Visits list"
@@ -1184,7 +1184,7 @@
     "k134": "Unfinished",
     "k135": "No record found",
     "k136": "Delete this target?",
-    "k137": "Employee Targets",
+    "k137": "Employee Plans",
     "k138": "+ New target",
     "k139": "Search by employee name...",
     "k140": "Target amount",
