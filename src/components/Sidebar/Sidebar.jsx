@@ -197,7 +197,6 @@ const NAV = [
       { href: 'dashboard/doctor-entry-items', key: 'doctorEntryItems' },
       { href: 'dashboard/entered-prescriptions', key: 'enteredPrescriptions' },
       { href: 'dashboard/bonuses', key: 'bonuses' },
-      { href: 'dashboard/sales-listing', key: 'salesListing' },
       { href: 'dashboard/budgets-list', key: 'budgets' },
       { href: 'dashboard/employee-sales', key: 'employeeSales' },
       { href: 'dashboard/employee-targets', key: 'employeeTargets' },
@@ -208,6 +207,7 @@ const NAV = [
     id: 'reports',
     icon: 'reports',
     items: [
+      { href: 'dashboard/sales-listing', key: 'salesListing' },
       { href: 'dashboard/reports/efficiency', key: 'efficiency' },
       { href: 'dashboard/reports/reimbursement', key: 'reimbursement' },
       { href: 'dashboard/reports/attendances', key: 'attendances' },
