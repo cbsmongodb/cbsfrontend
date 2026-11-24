@@ -117,8 +117,8 @@ export default function BudgetsList() {
       headers: [tu('k096'), tu('k049'), tu('k166'), tu('k167'), tu('k077'), tu('k044'), tu('k163'), tu('k164'), tu('k168'),
         tu('k169'), tu('k170'), tu('k171'), tu('k172'), tu('k173'), tu('k174'), tu('k098')],
       rows: all.map((row) => [
-        row.date ? new Date(row.date) : '',
-        row.doctorName || '', row.profileName || '', row.uniqueNumber || '', row.hospitals || '',
+        row.date ? (() => { const d = new Date(new Date(row.date).getTime() + 4 * 3600e3); return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())) })() : '',
+        row.doctorName || '', row.profileName || '', { value: String(row.uniqueNumber || ''), kind: 'text' }, row.hospitals || '',
         row.employeeName || '', row.sectionName || '', row.groupName || '', row.regionName || '',
         n(row.payableAmt), n(row.paidAmount), n(row.advanceAmount), n(row.targetAmount), n(row.prescriptionAmt), n(row.salesAmount),
         row.isActive ? '✓' : '✗',

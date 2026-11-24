@@ -3,12 +3,15 @@ const BRAND = 'FF0C3557', HEAD = 'FF13608F', ZEBRA = 'FFF3F7FC', LINE = 'FFD5DCE
 
 // "1,234.50 ₾" -> {value: 1234.5, kind: 'money'};  "45%" -> {value: 0.45, kind: 'pct'};  "21/10/2026" -> Date
 export function parseCell(text) {
+  if (text instanceof Date) return isNaN(text) ? { value: '', kind: 'text' } : { value: text, kind: 'date' }
   const raw = String(text ?? '').replace(/\s+/g, ' ').trim()
   if (!raw || raw === '—' || raw === '-') return { value: raw === '—' ? '' : raw, kind: 'text' }
   const d = raw.match(/^(\d{2})[./](\d{2})[./](\d{4})$/)
   if (d) return { value: new Date(Date.UTC(+d[3], +d[2] - 1, +d[1])), kind: 'date' }
   const money = /₾|GEL/i.test(raw), pct = /%$/.test(raw)
   const n = raw.replace(/[₾%~]|GEL/gi, '').replace(/,/g, '').replace(/\s/g, '')
+  // personal / ID numbers (01005026778): keep as text, so Excel doesn't drop the leading 0
+  if (!money && !pct && /^(0\d{3,}|\d{9,})$/.test(n)) return { value: raw, kind: 'text' }
   if (/^-?\d+(\.\d+)?$/.test(n)) {
     const v = Number(n)
     return pct ? { value: v / 100, kind: 'pct' } : { value: v, kind: money ? 'money' : 'number' }
@@ -64,14 +67,17 @@ export async function exportXlsx({ title, subtitle, fileName, headers, rows, tot
   hr.height = 30
 
   // data
-  const FMT = { money: '#,##0.00 "₾"', number: '#,##0.##', pct: '0.0%', date: 'dd.mm.yyyy' }
+  const FMT = { money: '#,##0.00 "₾"', number: '#,##0', pct: '0.0%', date: 'dd/mm/yyyy' }
+  // number columns: 1,000 for whole numbers, 1,234.50 when the column has decimals (no trailing ".")
+  const numFmt = headers.map((_, i) => (cells.some((r) => r[i]?.kind === 'number' && !Number.isInteger(r[i].value)) ? '#,##0.00' : '#,##0'))
+  const fmtOf = (kind, i) => (kind === 'number' ? numFmt[i] : FMT[kind])
   cells.forEach((r, ri) => {
     const row = ws.getRow(5 + ri)
     for (let i = 0; i < cols; i++) {
       const v = r[i] || { value: '', kind: 'text' }
       const c = row.getCell(i + 1)
       c.value = v.value
-      if (FMT[v.kind]) c.numFmt = FMT[v.kind]
+      if (FMT[v.kind]) c.numFmt = fmtOf(v.kind, i)
       c.font = { name: 'Calibri', size: 10.5, color: { argb: 'FF1E293B' }, bold: i === 0 && kinds[0] === 'text' }
       c.alignment = { vertical: 'top', horizontal: v.kind === 'text' ? 'left' : 'right', wrapText: true }
       c.border = { bottom: { style: 'hair', color: { argb: LINE } }, left: { style: 'hair', color: { argb: LINE } }, right: { style: 'hair', color: { argb: LINE } } }
@@ -89,7 +95,7 @@ export async function exportXlsx({ title, subtitle, fileName, headers, rows, tot
       else if (sumCols[i]) {
         const L = ws.getColumn(i + 1).letter
         c.value = { formula: `SUBTOTAL(9,${L}5:${L}${4 + rows.length})` }
-        c.numFmt = FMT[kinds[i]]
+        c.numFmt = fmtOf(kinds[i], i)
       }
       c.font = { name: 'Calibri', size: 11, bold: true, color: { argb: BRAND } }
       c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: TOTAL } }
