@@ -151,7 +151,7 @@ export default function PrescriptionsReport() {
         {loading && <ReportLoader />}
       </div>
       <p className="rx-report-subtitle">{t('prescriptions.subtitle')}</p>
-      <p className="rx-report-subtitle rx-report-note">ⓘ გაყიდული = თანამშრომლის აფთიაქის გაყიდვები ამ წამალზე, გადანაწილებული ექიმებზე რეცეპტების წილით (როგორც ბიუჯეტში ითვლება).</p>
+      <p className="rx-report-subtitle rx-report-note">ⓘ გაყიდული მოდის „თანამშრომლის გაყიდვებიდან“ და ექიმებზე ნაწილდება რეცეპტების მიხედვით.</p>
 
       <div className="rx-report-filters-card">
         <div className="rx-report-filters-grid">

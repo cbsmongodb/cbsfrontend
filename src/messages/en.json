@@ -889,7 +889,7 @@
     },
     "prescriptions": {
       "title": "Prescriptions Report",
-      "subtitle": "Prescriptions entered in Data Entry: who, which doctor, which drug, how many boxes were prescribed and sold",
+      "subtitle": "Entered prescriptions: who, which doctor, which drug, how many were prescribed and how many were sold",
       "fromMonth": "From month",
       "toMonth": "To month",
       "searchPlaceholder": "Search: doctor, drug, hospital...",
