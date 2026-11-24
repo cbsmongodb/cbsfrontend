@@ -124,3 +124,12 @@
 }
 .dashboard-shell .prescedit-card .budgetnew-auto-field > label { opacity: 0.8; }
 .dashboard-shell .prescedit-card .budgetnew-lock { color: rgba(255, 255, 255, 0.75) !important; }
+
+/* ===== doctor balance: red = we owe the doctor, green = paid ahead ===== */
+.dashboard-shell .prescedit-card .budgetnew-balance.is-owe { color: #ffb3b3 !important; border-color: rgba(255, 120, 120, 0.7) !important; font-weight: 700; }
+.dashboard-shell .prescedit-card .budgetnew-balance.is-ahead { color: #9ff0c5 !important; border-color: rgba(110, 230, 170, 0.7) !important; font-weight: 700; }
+.budgetnew-balance.is-owe { color: #c0392b; }
+.budgetnew-balance.is-ahead { color: #1e8e5a; }
+.budgetnew-balance-note { display: block; margin-top: 6px; font-size: 11.5px; opacity: 0.8; }
+.bb-stat.budgetnew-balance.is-owe .bb-stat-val { color: #ff9a9a; font-weight: 700; }
+.bb-stat.budgetnew-balance.is-ahead .bb-stat-val { color: #8be8b6; font-weight: 700; }

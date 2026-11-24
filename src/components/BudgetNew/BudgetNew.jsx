@@ -10,6 +10,7 @@ import '../PrescriptionEdit/PrescriptionEdit.css'
 import './BudgetNew.css'
 import BudgetBulk from './BudgetBulk'
 import { useTranslations } from 'next-intl'
+import { BTXT, doctorBalance, balanceState } from './budgetBalance'
 
 function BudgetSingle() {
   const tu = useTranslations('ui')
@@ -37,12 +38,15 @@ function BudgetSingle() {
     targetAmount: 0,
     prescriptionAmt: 0,
     payableAmt: 0,
+    openingBalance: 0,
   })
   const [computing, setComputing] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   // budgetEditMode: /budgets/new?id=<budget> edits that budget
   const [editId, setEditId] = useState('')
+  const B = BTXT[locale] || BTXT.en
+  const bal = doctorBalance(computed, paidAmount)
 
   useEffect(() => {
     const id = new URLSearchParams(window.location.search).get('id')
@@ -172,7 +176,7 @@ function BudgetSingle() {
 
         <div className="prescedit-fields budgetnew-amounts-row">
           <div className="prescedit-field budgetnew-input-field">
-            <label>{tu('k177')}</label>
+            <label>{B.paid}</label>
             <div className="budgetnew-amount-input">
               <input
                 type="number"
@@ -184,12 +188,17 @@ function BudgetSingle() {
               />
             </div>
           </div>
-          <div className="prescedit-field budgetnew-auto-field">
-            <label>{tu('k178')}</label>
-            <div className="budgetnew-amount-readonly">
-              {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.advanceAmount}
+          <div className="prescedit-field budgetnew-auto-field budgetnew-balance-field">
+            <label>{B.balance}</label>
+            <div className={`budgetnew-amount-readonly budgetnew-balance is-${balanceState(bal.balance)}`}>
+              {computing ? <span className="btn-spinner" aria-hidden="true" /> : bal.balance}
               <svg className="budgetnew-lock" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2"/></svg>
             </div>
+            {!computing && (
+              <small className="budgetnew-balance-note">
+                {B[balanceState(bal.balance)]} · {B.fromPrev}: {bal.opening}
+              </small>
+            )}
           </div>
           <div className="prescedit-field budgetnew-auto-field">
             <label>{tu('k179')}</label>
@@ -202,9 +211,16 @@ function BudgetSingle() {
 
         <div className="prescedit-fields budgetnew-amounts-row">
           <div className="prescedit-field budgetnew-auto-field">
-            <label>{tu('k180')}</label>
+            <label>{B.toPay}</label>
             <div className="budgetnew-amount-readonly">
-              {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.targetAmount}
+              {computing ? <span className="btn-spinner" aria-hidden="true" /> : bal.toPay}
+              <svg className="budgetnew-lock" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2"/></svg>
+            </div>
+          </div>
+          <div className="prescedit-field budgetnew-auto-field">
+            <label>{B.accrued}</label>
+            <div className="budgetnew-amount-readonly">
+              {computing ? <span className="btn-spinner" aria-hidden="true" /> : bal.accrued}
               <svg className="budgetnew-lock" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2"/></svg>
             </div>
           </div>
@@ -215,10 +231,13 @@ function BudgetSingle() {
               <svg className="budgetnew-lock" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2"/></svg>
             </div>
           </div>
+        </div>
+
+        <div className="prescedit-fields budgetnew-amounts-row">
           <div className="prescedit-field budgetnew-auto-field">
-            <label>{tu('k182')}</label>
+            <label>{tu('k180')}</label>
             <div className="budgetnew-amount-readonly">
-              {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.payableAmt}
+              {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.targetAmount}
               <svg className="budgetnew-lock" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2"/></svg>
             </div>
           </div>

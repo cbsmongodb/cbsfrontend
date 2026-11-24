@@ -13,6 +13,7 @@ import MonthSelect from '@/components/MonthSelect/MonthSelect'
 import '../PrescriptionEdit/PrescriptionEdit.css'
 import './BudgetNew.css'
 import './BudgetBulk.css'
+import { BTXT, doctorBalance, balanceState } from './budgetBalance'
 
 const TXT = {
   ka: { addDoctor: '+ ექიმის დამატება', addEmployee: '+ თანამშრომლის დამატება', removeLine: 'ხაზის წაშლა', removeBlock: 'თანამშრომლის მოშორება', exists: 'ამ ექიმს ამ თვეში ბიუჯეტი უკვე აქვს', dup: 'ეს ექიმი ამ თანამშრომელზე ორჯერ არის არჩეული', saved: 'შენახულია', budgets: 'ბიუჯეტი', total: 'ჯამი', nothing: 'აირჩიე თანამშრომელი და ექიმი', partial: 'ზოგი ვერ შეინახა — წითლად მონიშნულს გადახედე', waiting: 'თანხები ჯერ ითვლება…', fixDup: 'ჯერ გაასწორე დუბლიკატი ექიმები' },
@@ -34,6 +35,7 @@ export default function BudgetBulk() {
   const tm = useTranslations('enteredRx')
   const { locale } = useParams()
   const L = TXT[locale] || TXT.en
+  const B = BTXT[locale] || BTXT.en
   const router = useRouter()
   const uid = useRef(0)
   const nextKey = () => ++uid.current
@@ -190,6 +192,7 @@ export default function BudgetBulk() {
               const dup = isDup(b, r)
               const has = hasBudget(b, r)
               const c = r.computed || {}
+              const bal = doctorBalance(c, r.paid)
               return (
                 <div key={r.key} className={`bb-row ${r.saved ? 'is-saved' : ''} ${r.err || dup ? 'is-bad' : ''}`}>
                   <div className="prescedit-field budgetnew-input-field bb-doc">
@@ -203,7 +206,7 @@ export default function BudgetBulk() {
                     />
                   </div>
                   <div className="prescedit-field budgetnew-input-field bb-paid">
-                    <label>{tu('k177')}</label>
+                    <label>{B.paid}</label>
                     <div className="budgetnew-amount-input">
                       <input
                         type="number"
@@ -218,9 +221,9 @@ export default function BudgetBulk() {
                     </div>
                   </div>
                   <div className="bb-stats">
-                    {[['k178', c.advanceAmount], ['k179', c.salesAmount], ['k180', c.targetAmount], ['k181', c.prescriptionAmt], ['k182', c.payableAmt]].map(([k, v]) => (
-                      <div key={k} className="bb-stat">
-                        <span className="bb-stat-label">{tu(k)}</span>
+                    {[['balance', bal.balance, B.balance], ['toPay', bal.toPay, B.toPay], ['accrued', bal.accrued, B.accrued], ['k179', c.salesAmount], ['k180', c.targetAmount], ['k181', c.prescriptionAmt]].map(([k, v, label]) => (
+                      <div key={k} className={`bb-stat${k === 'balance' && r.computed ? ` budgetnew-balance is-${balanceState(bal.balance)}` : ''}`} title={k === 'balance' && r.computed ? `${B[balanceState(bal.balance)]} · ${B.fromPrev}: ${bal.opening}` : undefined}>
+                        <span className="bb-stat-label">{label || tu(k)}</span>
                         <span className="bb-stat-val">{r.computing ? <span className="btn-spinner" aria-hidden="true" /> : fmt(v)}<Lock /></span>
                       </div>
                     ))}
