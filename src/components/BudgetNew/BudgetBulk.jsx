@@ -221,7 +221,7 @@ export default function BudgetBulk() {
                     </div>
                   </div>
                   <div className="bb-stats">
-                    {[['balance', bal.balance, B.balance], ['toPay', bal.toPay, B.toPay], ['accrued', bal.accrued, B.accrued], ['k179', c.salesAmount], ['k180', c.targetAmount], ['k181', c.prescriptionAmt]].map(([k, v, label]) => (
+                    {[['balance', bal.balance, B.balance], ['toPay', bal.toPay, B.toPay], ['accrued', bal.accrued, B.accrued]].map(([k, v, label]) => (
                       <div key={k} className={`bb-stat${k === 'balance' && r.computed ? ` budgetnew-balance is-${balanceState(bal.balance)}` : ''}`} title={k === 'balance' && r.computed ? `${B[balanceState(bal.balance)]} · ${B.fromPrev}: ${bal.opening}` : undefined}>
                         <span className="bb-stat-label">{label || tu(k)}</span>
                         <span className="bb-stat-val">{r.computing ? <span className="btn-spinner" aria-hidden="true" /> : fmt(v)}<Lock /></span>

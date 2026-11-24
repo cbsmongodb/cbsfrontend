@@ -174,7 +174,7 @@ function BudgetSingle() {
           </div>
         </div>
 
-        <div className="prescedit-fields budgetnew-amounts-row">
+        <div className="prescedit-fields budgetnew-amounts-row budgetnew-two">
           <div className="prescedit-field budgetnew-input-field">
             <label>{B.paid}</label>
             <div className="budgetnew-amount-input">
@@ -200,16 +200,9 @@ function BudgetSingle() {
               </small>
             )}
           </div>
-          <div className="prescedit-field budgetnew-auto-field">
-            <label>{tu('k179')}</label>
-            <div className="budgetnew-amount-readonly">
-              {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.salesAmount}
-              <svg className="budgetnew-lock" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2"/></svg>
-            </div>
-          </div>
         </div>
 
-        <div className="prescedit-fields budgetnew-amounts-row">
+        <div className="prescedit-fields budgetnew-amounts-row budgetnew-two">
           <div className="prescedit-field budgetnew-auto-field">
             <label>{B.toPay}</label>
             <div className="budgetnew-amount-readonly">
@@ -221,23 +214,6 @@ function BudgetSingle() {
             <label>{B.accrued}</label>
             <div className="budgetnew-amount-readonly">
               {computing ? <span className="btn-spinner" aria-hidden="true" /> : bal.accrued}
-              <svg className="budgetnew-lock" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2"/></svg>
-            </div>
-          </div>
-          <div className="prescedit-field budgetnew-auto-field">
-            <label>{tu('k181')}</label>
-            <div className="budgetnew-amount-readonly">
-              {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.prescriptionAmt}
-              <svg className="budgetnew-lock" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2"/></svg>
-            </div>
-          </div>
-        </div>
-
-        <div className="prescedit-fields budgetnew-amounts-row">
-          <div className="prescedit-field budgetnew-auto-field">
-            <label>{tu('k180')}</label>
-            <div className="budgetnew-amount-readonly">
-              {computing ? <span className="btn-spinner" aria-hidden="true" /> : computed.targetAmount}
               <svg className="budgetnew-lock" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2"/></svg>
             </div>
           </div>

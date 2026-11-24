@@ -133,3 +133,8 @@
 .budgetnew-balance-note { display: block; margin-top: 6px; font-size: 11.5px; opacity: 0.8; }
 .bb-stat.budgetnew-balance.is-owe .bb-stat-val { color: #ff9a9a; font-weight: 700; }
 .bb-stat.budgetnew-balance.is-ahead .bb-stat-val { color: #8be8b6; font-weight: 700; }
+
+/* budget form: only the four money fields, two per row */
+.prescedit-fields.budgetnew-two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 640px) { .prescedit-fields.budgetnew-two { grid-template-columns: 1fr; } }
+.bb-row .bb-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
