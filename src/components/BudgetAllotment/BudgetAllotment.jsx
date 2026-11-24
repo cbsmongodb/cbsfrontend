@@ -16,6 +16,8 @@ import {
 import './BudgetAllotment.css'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import DateInput from '@/components/DateInput/DateInput'
+import { fmtDate } from '@/lib/date'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -135,11 +137,11 @@ export default function BudgetAllotment() {
       <div className="budgetallot-filters">
         <div className="budgetallot-field">
           <label>{t('common.startDate')}</label>
-          <input type="date" className="field-input" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+          <DateInput  className="field-input" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
         </div>
         <div className="budgetallot-field">
           <label>{t('common.endDate')}</label>
-          <input type="date" className="field-input" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+          <DateInput  className="field-input" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
         </div>
         <div className="budgetallot-field budgetallot-field-grow">
           <label>{t('common.employee')}</label>
@@ -216,7 +218,7 @@ export default function BudgetAllotment() {
             {pageDocs.map((row) => (
               <tr key={row._id}>
                 <td>{row._id.slice(-6)}</td>
-                <td>{row.date ? new Date(row.date).toLocaleDateString(localeTag(locale)) : '—'}</td>
+                <td>{row.date ? fmtDate(row.date) : '—'}</td>
                 <td>{row.doctorName}</td>
                 <td>{row.doctorUniqueNumber}</td>
                 <td>{fmtMoney(row.paidAmount)}</td>

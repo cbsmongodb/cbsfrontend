@@ -10,6 +10,8 @@ import './BudgetsList.css'
 import { useTranslations } from 'next-intl'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
+import DateInput from '@/components/DateInput/DateInput'
+import { fmtDate } from '@/lib/date'
 
 function fmtMoney(n) {
   const num = Number(n) || 0
@@ -163,11 +165,11 @@ export default function BudgetsList() {
         <div className="budgets-list-filters-grid">
           <div className="budgets-list-field">
             <label>{tu('k090')}</label>
-            <input type="date" className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+            <DateInput  className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
           </div>
           <div className="budgets-list-field">
             <label>{tu('k091')}</label>
-            <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+            <DateInput  className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
           </div>
           <div className="budgets-list-field">
             <label>{tu('k163')}</label>
@@ -260,7 +262,7 @@ export default function BudgetsList() {
           <tbody>
             {data?.docs.map((row) => (
               <tr key={row._id}>
-                <td data-label={tu('k096')}>{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
+                <td data-label={tu('k096')}>{row.date ? fmtDate(row.date) : '—'}</td>
                 <td data-label={tu('k049')} className={row.doctorIsBudgeted ? 'budgets-list-doctor-budgeted' : ''}>
                   {row.doctorName}
                 </td>

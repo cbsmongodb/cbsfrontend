@@ -1,0 +1,11 @@
+.date-input { position: relative; display: block; min-width: 0; }
+.date-input .date-input-native { width: 100%; box-sizing: border-box; color: transparent !important; cursor: pointer; }
+.date-input .date-input-native::-webkit-datetime-edit { opacity: 0; }
+.date-input .date-input-native:focus::-webkit-datetime-edit { opacity: 0; }
+.date-input-text {
+  position: absolute; left: 12px; right: 34px; top: 50%; transform: translateY(-50%);
+  pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font: inherit; font-variant-numeric: tabular-nums; color: inherit;
+}
+.date-input-text.is-empty { opacity: 0.5; }
+.date-input.is-disabled .date-input-text { opacity: 0.5; }

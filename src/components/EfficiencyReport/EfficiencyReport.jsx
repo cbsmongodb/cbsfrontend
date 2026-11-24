@@ -7,6 +7,8 @@ import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './EfficiencyReport.css'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import DateInput from '@/components/DateInput/DateInput'
+import { fmtDate } from '@/lib/date'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -150,11 +152,11 @@ export default function EfficiencyReport() {
         <div className="efficiency-filters-grid">
           <div className="efficiency-field">
             <label>{t('common.startDate')}</label>
-            <input type="date" className="field-input" value={from} onChange={(e) => setFrom(e.target.value)} />
+            <DateInput  className="field-input" value={from} onChange={(e) => setFrom(e.target.value)} />
           </div>
           <div className="efficiency-field">
             <label>{t('common.endDate')}</label>
-            <input type="date" className="field-input" value={to} onChange={(e) => setTo(e.target.value)} />
+            <DateInput  className="field-input" value={to} onChange={(e) => setTo(e.target.value)} />
           </div>
           <div className="efficiency-field">
             <label>{t('common.employee')}</label>
@@ -245,7 +247,7 @@ export default function EfficiencyReport() {
             <tbody>
               {pageGroups.map((g, i) => (
                 <tr key={i}>
-                  <td className="nowrap">{new Date(g.date).toLocaleDateString(localeTag(locale), { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
+                  <td className="nowrap">{fmtDate(g.date)}</td>
                   <td className="strong">{g.employeeName}</td>
                   <td className="efficiency-col-doctors">
                     <div className="efficiency-clamp" title={g.doctors.map((d) => d.name).join(', ')}>{g.doctors.map((d) => d.name).join(', ')}</div>
@@ -275,7 +277,7 @@ export default function EfficiencyReport() {
           <div key={i} className="efficiency-card">
             <div className="efficiency-card-header">
               <div className="efficiency-card-date">
-                {new Date(g.date).toLocaleDateString(localeTag(locale), { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                {fmtDate(g.date)}
               </div>
               <div className="efficiency-card-title">
                 <span className="efficiency-employee">{g.employeeName}</span>

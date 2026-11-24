@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import HospitalPinModal from './HospitalPinModal'
 import HospitalRepFix from './HospitalRepFix'
+import { fmtDate } from '@/lib/date'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -320,7 +321,7 @@ export default function HospitalImport() {
                   <div style={{ color: h.visits > 0 ? '#b45309' : '#94a3b8', fontSize: 12, marginTop: 2 }}>
                     {h.visits > 0
                       ? `${t('visitsCount', { count: h.visits })} · ${t('lastVisit', {
-                          date: new Date(h.lastVisit).toLocaleDateString('ka-GE'),
+                          date: fmtDate(h.lastVisit),
                         })}`
                       : t('noVisitsYet')}
                   </div>

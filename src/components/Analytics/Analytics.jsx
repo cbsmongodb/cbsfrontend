@@ -18,6 +18,8 @@ import {
 import './Analytics.css'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import DateInput from '@/components/DateInput/DateInput'
+import { fmtDate } from '@/lib/date'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -263,11 +265,11 @@ export default function Analytics() {
         <div className="analytics-filters-grid">
           <div className="analytics-field">
             <label>{t('common.startDate')}</label>
-            <input type="date" className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+            <DateInput  className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
           </div>
           <div className="analytics-field">
             <label>{t('common.endDate')}</label>
-            <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+            <DateInput  className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
           </div>
           {sections.length > 0 && (
             <div className="analytics-field">
@@ -374,7 +376,7 @@ export default function Analytics() {
                         {isExpanded ? '▼' : '▶'}
                       </button>
                     </td>
-                    <td data-label={t('common.date')}>{row.date ? new Date(row.date).toLocaleDateString(localeTag(locale)) : '—'}</td>
+                    <td data-label={t('common.date')}>{row.date ? fmtDate(row.date) : '—'}</td>
                     <td data-label={t('common.employee')}>{row.employeeName}</td>
                     <td data-label={t('common.doctor')} className={row.doctorIsBudgeted ? 'analytics-doctor-budgeted' : ''}>
                       {row.doctorName}

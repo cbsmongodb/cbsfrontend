@@ -7,6 +7,7 @@ import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './StaffPerformanceReport.css'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import DateInput from '@/components/DateInput/DateInput'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -129,11 +130,11 @@ export default function StaffPerformanceReport() {
             <>
               <div className="staff-performance-field">
                 <label>{t('common.startDate')}</label>
-                <input type="date" className="field-input" value={from} onChange={(e) => setFrom(e.target.value)} />
+                <DateInput  className="field-input" value={from} onChange={(e) => setFrom(e.target.value)} />
               </div>
               <div className="staff-performance-field">
                 <label>{t('common.endDate')}</label>
-                <input type="date" className="field-input" value={to} onChange={(e) => setTo(e.target.value)} />
+                <DateInput  className="field-input" value={to} onChange={(e) => setTo(e.target.value)} />
               </div>
             </>
           )}

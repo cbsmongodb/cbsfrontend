@@ -23,6 +23,7 @@ const IconMoney = () => (
 const BOXES_HEAD = { ka: 'გაყიდული ყუთები', en: 'Boxes sold', ru: 'Продано упаковок' }
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
 import MonthPicker from '@/components/MonthPicker/MonthPicker'
+import { fmtDate } from '@/lib/date'
 
 export default function EmployeeSales() {
   const tu = useTranslations('ui')
@@ -136,7 +137,7 @@ export default function EmployeeSales() {
           <tbody>
             {data?.docs.map((row) => (
               <tr key={row._id}>
-                <td data-label={tu('k096')}>{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
+                <td data-label={tu('k096')}>{row.date ? fmtDate(row.date) : '—'}</td>
                 <td data-label={tu('k044')}>{row.employeeName}</td>
                 <td data-label={tu('k150')}>{(Number(row.saleAmount) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 <td data-label={BOXES_HEAD[locale] || BOXES_HEAD.ka}>{(row.saleBoxes || 0).toLocaleString('en-US')}</td>

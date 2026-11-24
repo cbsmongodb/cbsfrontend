@@ -8,6 +8,7 @@ import ReportLoader from '@/components/ReportLoader/ReportLoader'
 import '@/components/ReimbursementReport/ReimbursementReport.css'
 import '@/components/LeavePayrollReport/LeavePayrollReport.css'
 import './TimesheetReport.css'
+import DateInput from '@/components/DateInput/DateInput'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 const CODES = ['დ', 'ა/შ', 'უხ/შ', 'ს/ფ', 'გ', 'დ/შ']
@@ -187,7 +188,7 @@ export default function TimesheetReport() {
           </div>
           <div className="reimbursement-field">
             <label>{t2('docDate')}</label>
-            <input type="date" className="field-input" value={docDateInput} onChange={(e) => setDocDate(e.target.value)} />
+            <DateInput  className="field-input" value={docDateInput} onChange={(e) => setDocDate(e.target.value)} />
           </div>
           <button type="button" className="btn reimbursement-search-btn" onClick={() => load()} disabled={loading}>
             <span>{loading ? <span className="btn-spinner" aria-hidden="true" /> : t('common.search')}</span>

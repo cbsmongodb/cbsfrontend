@@ -7,6 +7,8 @@ import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import TodayVisits from './TodayVisits'
 import './PlanningsManager.css'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import DateInput from '@/components/DateInput/DateInput'
+import { fmtDate } from '@/lib/date'
 
 const PLAN_TYPE_IDS = ['hospital', 'pharmacy', 'general', 'double visit']
 const STATUS_IDS = ['planned', 'i_went', 'i_left', 'canceled', 'completed']
@@ -342,8 +344,8 @@ export default function PlanningsManager() {
 
           <div className="planning-field">
             <label>{t('fields.period')}</label>
-            <input
-              type="date"
+            <DateInput
+              
               className="field-input"
               value={form.period}
               onChange={(e) => updateField('period', e.target.value)}
@@ -470,9 +472,9 @@ export default function PlanningsManager() {
           <div className="planning-field">
             <label>{t('fields.period')}</label>
             <div className="planning-date-range">
-              <input type="date" className="field-input" value={filterFrom} onChange={(e) => setFilterFrom(e.target.value)} />
+              <DateInput  className="field-input" value={filterFrom} onChange={(e) => setFilterFrom(e.target.value)} />
               <span>–</span>
-              <input type="date" className="field-input" value={filterTo} onChange={(e) => setFilterTo(e.target.value)} />
+              <DateInput  className="field-input" value={filterTo} onChange={(e) => setFilterTo(e.target.value)} />
             </div>
           </div>
 
@@ -544,7 +546,7 @@ export default function PlanningsManager() {
             {visiblePlans.map((plan) => (
               <tr key={plan._id}>
                 <td>{typeLabel(plan.planType)}</td>
-                <td>{plan.period ? new Date(plan.period).toLocaleDateString('ka-GE') : '—'}</td>
+                <td>{plan.period ? fmtDate(plan.period) : '—'}</td>
                 <td className="planning-cell-wrap">
                   {(() => {
                     const place = plan.hospital?.name || plan.pharmacy?.pharmacyName || '—'

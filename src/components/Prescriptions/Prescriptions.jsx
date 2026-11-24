@@ -7,6 +7,8 @@ import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './Prescriptions.css'
 import { useTranslations } from 'next-intl'
+import DateInput from '@/components/DateInput/DateInput'
+import { fmtDate } from '@/lib/date'
 
 export default function Prescriptions() {
   const tu = useTranslations('ui')
@@ -100,11 +102,11 @@ export default function Prescriptions() {
         <div className="prescriptions-filters-grid">
           <div className="prescriptions-field">
             <label>{tu('k090')}</label>
-            <input type="date" className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+            <DateInput  className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
           </div>
           <div className="prescriptions-field">
             <label>{tu('k091')}</label>
-            <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+            <DateInput  className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
           </div>
           <div className="prescriptions-field">
             <label>{tu('k044')}</label>
@@ -173,7 +175,7 @@ export default function Prescriptions() {
             {data?.docs.map((row) => (
               <tr key={row._id}>
                 <td data-label="#">{row._id.slice(-6)}</td>
-                <td data-label={tu('k096')}>{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
+                <td data-label={tu('k096')}>{row.date ? fmtDate(row.date) : '—'}</td>
                 <td data-label={tu('k049')} className={row.doctorIsBudgeted ? 'prescriptions-doctor-budgeted' : ''}>
                   {row.doctorName}
                 </td>

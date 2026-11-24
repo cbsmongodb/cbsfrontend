@@ -7,6 +7,8 @@ import DoctorTargetModal from './DoctorTargetModal'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './DoctorTargets.css'
 import { useTranslations } from 'next-intl'
+import DateInput from '@/components/DateInput/DateInput'
+import { fmtDate } from '@/lib/date'
 
 export default function DoctorTargets() {
   const tu = useTranslations('ui')
@@ -84,11 +86,11 @@ export default function DoctorTargets() {
         <div className="doctor-targets-filters-grid">
           <div className="doctor-targets-field">
             <label>{tu('k090')}</label>
-            <input type="date" className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+            <DateInput  className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
           </div>
           <div className="doctor-targets-field">
             <label>{tu('k091')}</label>
-            <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+            <DateInput  className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
           </div>
           <div className="doctor-targets-field">
             <label>{tu('k044')}</label>
@@ -141,7 +143,7 @@ export default function DoctorTargets() {
           <tbody>
             {data?.docs.map((row) => (
               <tr key={row._id}>
-                <td data-label={tu('k096')}>{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
+                <td data-label={tu('k096')}>{row.date ? fmtDate(row.date) : '—'}</td>
                 <td data-label={tu('k049')}>{row.doctorName}</td>
                 <td data-label={tu('k044')}>{row.employeeName}</td>
                 <td data-label={tu('k140')}>{row.targetAmount}</td>

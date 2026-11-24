@@ -7,6 +7,7 @@ import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './ReimbursementReport.css'
 import '@/components/ExcelExportButton/ExcelExportButton.css'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import { fmtDate } from '@/lib/date'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -292,7 +293,7 @@ export default function ReimbursementReport() {
             <tbody>
               {pageRows.map((r, i) => (
                 <tr key={i}>
-                  <td>{new Date(r.date).toLocaleDateString('en-GB')}</td>
+                  <td>{fmtDate(r.date)}</td>
                   <td>{r.employeeName}</td>
                   <td>{r.regionName}</td>
                   <td className="reimbursement-amount">{r.amount} ₾</td>
@@ -320,7 +321,7 @@ export default function ReimbursementReport() {
                   <td className="reimb-strong">{r.employeeName}</td>
                   <td>{[...r.regions].join(', ')}</td>
                   <td>{r.days}</td>
-                  <td>{new Date(r.first).toLocaleDateString('en-GB')} – {new Date(r.last).toLocaleDateString('en-GB')}</td>
+                  <td>{fmtDate(r.first)} – {fmtDate(r.last)}</td>
                   <td className="reimbursement-amount reimb-strong">{r.amount.toLocaleString('en-US')} ₾</td>
                 </tr>
               ))}

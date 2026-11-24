@@ -31,6 +31,8 @@ import {
 import './DirectorDashboard.css'
 import DirectorOverview from './DirectorOverview'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import DateInput from '@/components/DateInput/DateInput'
+import { fmtDate } from '@/lib/date'
 
 function fmtMoney(n) {
   const num = Number(n) || 0
@@ -912,11 +914,11 @@ function OrderTab() {
       <div className="director-filters">
         <div className="director-field">
           <label>{t('startDate')}</label>
-          <input type="date" className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+          <DateInput  className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
         </div>
         <div className="director-field">
           <label>{t('endDate')}</label>
-          <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+          <DateInput  className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
         </div>
         <div className="director-field director-field-grow">
           <label>{t('search')}</label>
@@ -960,7 +962,7 @@ function OrderTab() {
                     <td>{row.priceFobUsd}</td>
                     <td>{row.quantity}</td>
                     <td>{row.amountUsd}</td>
-                    <td>{row.createdAt ? new Date(row.createdAt).toLocaleDateString(localeTag(locale)) : '—'}</td>
+                    <td>{row.createdAt ? fmtDate(row.createdAt) : '—'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -1099,11 +1101,11 @@ function DoctorsReportTab() {
       <div className="director-filters">
         <div className="director-field">
           <label>{t('startDate')}</label>
-          <input type="date" className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+          <DateInput  className="field-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
         </div>
         <div className="director-field">
           <label>{t('endDate')}</label>
-          <input type="date" className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+          <DateInput  className="field-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
         </div>
         <div className="director-field director-field-grow">
           <label>{t('doctor')}</label>

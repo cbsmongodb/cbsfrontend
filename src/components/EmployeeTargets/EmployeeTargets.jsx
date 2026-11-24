@@ -7,6 +7,7 @@ import './EmployeeTargets.css'
 import EmployeeTargetModal from './EmployeeTargetModal'
 import { useTranslations } from 'next-intl'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import { fmtDate } from '@/lib/date'
 
 // add / edit / delete buttons only when the role really allows it
 function readPerms() {
@@ -153,7 +154,7 @@ export default function EmployeeTargets() {
           <tbody>
             {data?.docs.map((row) => (
               <tr key={row._id}>
-                <td data-label={tu('k096')}>{row.date ? new Date(row.date).toLocaleDateString('ka-GE') : '—'}</td>
+                <td data-label={tu('k096')}>{row.date ? fmtDate(row.date) : '—'}</td>
                 <td data-label={tu('k044')}>{row.employeeName}</td>
                 <td data-label={tu('k140')}>{row.targetAmount}</td>
                 <td data-label="">

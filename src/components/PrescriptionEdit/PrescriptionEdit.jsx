@@ -7,6 +7,7 @@ import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './PrescriptionEdit.css'
 import { useTranslations } from 'next-intl'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import DateInput from '@/components/DateInput/DateInput'
 
 export default function PrescriptionEdit() {
   const tu = useTranslations('ui')
@@ -164,7 +165,7 @@ export default function PrescriptionEdit() {
         <div className="prescedit-fields">
           <div className="prescedit-field">
             <label>{tu('k107')}</label>
-            <input type="date" className="field-input" value={date} onChange={(e) => setDate(e.target.value)} />
+            <DateInput  className="field-input" value={date} onChange={(e) => setDate(e.target.value)} />
           </div>
           <div className="prescedit-field">
             <label>{tu('k108')}</label>

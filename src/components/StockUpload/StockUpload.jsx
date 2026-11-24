@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import './StockUpload.css'
+import { fmtDate } from '@/lib/date'
 
 function currentMonth() {
   const d = new Date()
@@ -286,7 +287,7 @@ export default function StockUpload() {
                     <td>{t('drugsCount', { count: p.count })}</td>
                     <td>{t('total', { total: fmt(p.total) })}</td>
                     <td className="stock-muted">
-                      {new Date(p.updatedAt).toLocaleDateString()}
+                      {fmtDate(p.updatedAt)}
                       {p.uploadedBy ? ` · ${p.uploadedBy}` : ''}
                     </td>
                     <td>

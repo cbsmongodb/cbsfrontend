@@ -10,6 +10,7 @@ import '@/components/ExcelExportButton/ExcelExportButton.css'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
 import '@/components/ReimbursementReport/ReimbursementReport.css'
 import './VisitsReport.css'
+import DateInput from '@/components/DateInput/DateInput'
 
 const TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const pad2 = (n) => String(n).padStart(2, '0')
@@ -116,11 +117,11 @@ export default function VisitsReport() {
         <div className="reimbursement-filters-grid">
           <div className="reimbursement-field">
             <label>{t('common.startDate')}</label>
-            <input type="date" className="field-input" value={from} onChange={(e) => setFrom(e.target.value)} />
+            <DateInput  className="field-input" value={from} onChange={(e) => setFrom(e.target.value)} />
           </div>
           <div className="reimbursement-field">
             <label>{t('common.endDate')}</label>
-            <input type="date" className="field-input" value={to} onChange={(e) => setTo(e.target.value)} />
+            <DateInput  className="field-input" value={to} onChange={(e) => setTo(e.target.value)} />
           </div>
           <button type="button" className="btn reimbursement-search-btn" onClick={() => load()} disabled={loading}>
             <span>{loading ? <span className="btn-spinner" aria-hidden="true" /> : t('common.search')}</span>

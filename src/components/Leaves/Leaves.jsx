@@ -6,6 +6,7 @@ import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './Leaves.css'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import DateInput from '@/components/DateInput/DateInput'
 
 function currentYear() {
   return new Date().getFullYear()
@@ -269,14 +270,14 @@ export default function Leaves() {
             <option value="unpaid">{t('types.unpaid')}</option>
             <option value="sick">{t('types.sick')}</option>
           </select>
-          <input
-            type="date"
+          <DateInput
+            
             className="field-date"
             value={entryForm.startDate}
             onChange={(e) => setEntryForm((p) => ({ ...p, startDate: e.target.value }))}
           />
-          <input
-            type="date"
+          <DateInput
+            
             className="field-date"
             value={entryForm.endDate}
             onChange={(e) => setEntryForm((p) => ({ ...p, endDate: e.target.value }))}
@@ -346,8 +347,8 @@ export default function Leaves() {
         </h2>
 
         <form className="resource-form" onSubmit={handleAddRestDay}>
-          <input
-            type="date"
+          <DateInput
+            
             className="field-date"
             value={restDayForm.date}
             onChange={(e) => setRestDayForm((p) => ({ ...p, date: e.target.value }))}
