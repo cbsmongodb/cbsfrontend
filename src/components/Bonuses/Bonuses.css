@@ -890,3 +890,34 @@
   .mp-caret { margin-left: auto; }
   .mp-panel { left: 0; right: 0; width: auto; }
 }
+
+/* doctor bonus: Tbilisi + region side by side */
+.bm-area-pair { display: flex; gap: 8px; flex-shrink: 0; }
+.bm-area-field { display: flex; flex-direction: column; gap: 3px; margin: 0; }
+.bm-area-field > small { font-size: 10.5px; font-weight: 700; letter-spacing: .02em; color: #64748b; padding-left: 2px; }
+.bm-list .bm-area-field > small { display: none; }               /* the list has a header row instead */
+.bm-line-head { position: sticky; top: 0; z-index: 1; background: #f8fafc !important; padding-top: 8px; padding-bottom: 8px; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+.bm-line-head-doc { flex: 1; }
+.bm-line-head-area { width: 94px; text-align: center; }
+.bm-line-head-del { width: 34px; }
+.bm-line .bm-area-pair .bm-money.is-small { width: 94px; }
+.bm-line .bm-area-pair .bm-money.is-small input { width: 100%; min-width: 0; }
+.bm-bulk .bm-area-field { flex-direction: row; align-items: center; gap: 6px; }
+
+/* picked doctors: always visible, clear "add" button */
+.bm-picked { position: sticky; bottom: -18px; z-index: 2; box-shadow: 0 -6px 16px rgba(15, 39, 68, .08); }
+.bm-add {
+  height: 38px; padding: 0 18px; border: 0; border-radius: 10px; cursor: pointer;
+  background: #3f74d6 !important; color: #fff !important; font: inherit; font-size: 13.5px; font-weight: 700;
+  box-shadow: 0 6px 16px rgba(63, 116, 214, .35); text-transform: none; white-space: nowrap;
+}
+.bm-add:hover { background: #2f63c4 !important; }
+.bm-add:active { transform: scale(.98); }
+
+@media (max-width: 640px) {
+  .bm-line-head { display: none; }
+  .bm-list .bm-area-field > small { display: block; }
+  .bm-area-pair { flex: 1; }
+  .bm-line .bm-area-pair .bm-money.is-small { width: 100%; }
+  .bm-area-pair .bm-area-field { flex: 1; }
+}

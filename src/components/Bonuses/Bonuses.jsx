@@ -205,7 +205,7 @@ function DoctorPicker({ t, onPick, exclude }) {
         <div className="bm-picked">
           <span>{t('pickedN', { n: picked.length })}</span>
           <button type="button" className="bm-link" onClick={() => setPicked([])}>{t('clearPicked')}</button>
-          <button type="button" className="btn btn-sm" onClick={addAll}><span>{t('addPicked', { n: picked.length })}</span></button>
+          <button type="button" className="bm-add" onClick={addAll}>{t('addPicked', { n: picked.length })}</button>
         </div>
       )}
     </div>
@@ -213,12 +213,14 @@ function DoctorPicker({ t, onPick, exclude }) {
 }
 
 // the "Edit" window for one medicine
-function EditModal({ t, drug, monthText, onClose, onSave }) {
+function EditModal({ t, drug, monthText, onClose, onSave, L = AREA_TXT.ka }) {
   const [text, setText] = useState(asText(drug.value))
-  const [lines, setLines] = useState(drug.doctors.map((x) => ({ doctor: x.doctor, saved: x.value, text: asText(x.value), remove: false, isNew: false })))
+  const [lines, setLines] = useState(drug.doctors.map((x) => ({ doctor: x.doctor, saved: x.value, text: asText(x.value), rsaved: x.regionValue ?? null, rtext: asText(x.regionValue), remove: false, isNew: false })))
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [bulk, setBulk] = useState('')
+  const [bulkR, setBulkR] = useState('')
+  const listRef = useRef(null)
   const firstInput = useRef(null)
 
   useEffect(() => { firstInput.current?.focus() }, [])
@@ -229,11 +231,13 @@ function EditModal({ t, drug, monthText, onClose, onSave }) {
   }, [saving, onClose])
 
   const drugChanged = clean(text) !== clean(asText(drug.value))
-  const lineChanged = (l) => l.remove || (l.isNew ? clean(l.text) !== '' : clean(l.text) !== clean(asText(l.saved)))
+  const lineChanged = (l) => l.remove || (l.isNew
+    ? clean(l.text) !== '' || clean(l.rtext) !== ''
+    : clean(l.text) !== clean(asText(l.saved)) || clean(l.rtext) !== clean(asText(l.rsaved)))
   const changedLines = lines.filter(lineChanged)
   const changes = (drugChanged ? 1 : 0) + changedLines.length
-  const bad = (drugChanged && !valid(text)) || changedLines.some((l) => !l.remove && !valid(l.text))
-  const waiting = lines.filter((l) => l.isNew && clean(l.text) === '').length // added, no number yet
+  const bad = (drugChanged && !valid(text)) || changedLines.some((l) => !l.remove && (!valid(l.text) || !valid(l.rtext)))
+  const waiting = lines.filter((l) => l.isNew && clean(l.text) === '' && clean(l.rtext) === '').length // added, no number yet
   const effective = clean(text) !== '' && valid(text) ? clean(text) : drug.inherited
   const active = lines.filter((l) => !l.remove)
   const taken = new Set(lines.map((l) => l.doctor._id))
@@ -245,7 +249,12 @@ function EditModal({ t, drug, monthText, onClose, onSave }) {
     try {
       await onSave({
         drugs: drugChanged ? [{ drug: drug._id, value: clean(text) === '' ? null : clean(text) }] : [],
-        doctors: changedLines.map((l) => ({ drug: drug._id, doctor: l.doctor._id, value: l.remove || clean(l.text) === '' ? null : clean(l.text) })),
+        doctors: changedLines.map((l) => ({
+          drug: drug._id,
+          doctor: l.doctor._id,
+          value: l.remove || clean(l.text) === '' ? null : clean(l.text),
+          regionValue: l.remove || clean(l.rtext) === '' ? null : clean(l.rtext),
+        })),
       })
     } catch (err) {
       setError(err.message || t('saveFailed'))
@@ -292,25 +301,43 @@ function EditModal({ t, drug, monthText, onClose, onSave }) {
             <DoctorPicker
               t={t}
               exclude={taken}
-              onPick={(doctors) => setLines((ls) => [
-                ...ls,
-                ...doctors.filter((d) => !ls.some((l) => l.doctor._id === d._id))
-                  .map((doctor) => ({ doctor, saved: null, text: bulk && valid(bulk) ? clean(bulk) : '', remove: false, isNew: true })),
-              ])}
+              onPick={(doctors) => {
+                setLines((ls) => [
+                  ...doctors.filter((d) => !ls.some((l) => l.doctor._id === d._id))
+                    .map((doctor) => ({ doctor, saved: null, text: bulk && valid(bulk) ? clean(bulk) : '', rsaved: null, rtext: bulkR && valid(bulkR) ? clean(bulkR) : '', remove: false, isNew: true })),
+                  ...ls,
+                ])
+                // show where they went
+                setTimeout(() => listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60)
+              }}
             />
 
             {active.length > 1 && (
               <div className="bm-bulk">
                 <span>{t('bulkLabel')}</span>
-                <div className={`bm-money is-small ${bulk && !valid(bulk) ? 'is-bad' : ''}`}>
-                  <input type="text" inputMode="decimal" value={bulk} placeholder="0" onChange={(e) => setBulk(e.target.value)} aria-label={t('bulkLabel')} />
-                  <span>₾</span>
-                </div>
+                <label className="bm-area-field">
+                  <small>{L.tbilisi}</small>
+                  <div className={`bm-money is-small ${bulk && !valid(bulk) ? 'is-bad' : ''}`}>
+                    <input type="text" inputMode="decimal" value={bulk} placeholder="0" onChange={(e) => setBulk(e.target.value)} aria-label={`${t('bulkLabel')} ${L.tbilisi}`} />
+                    <span>₾</span>
+                  </div>
+                </label>
+                <label className="bm-area-field">
+                  <small>{L.region}</small>
+                  <div className={`bm-money is-small ${bulkR && !valid(bulkR) ? 'is-bad' : ''}`}>
+                    <input type="text" inputMode="decimal" value={bulkR} placeholder="=" onChange={(e) => setBulkR(e.target.value)} aria-label={`${t('bulkLabel')} ${L.region}`} />
+                    <span>₾</span>
+                  </div>
+                </label>
                 <button
                   type="button"
                   className="btn-gray btn-sm"
-                  disabled={!clean(bulk) || !valid(bulk)}
-                  onClick={() => setLines((ls) => ls.map((l) => (l.remove ? l : { ...l, text: clean(bulk) })))}
+                  disabled={(!clean(bulk) && !clean(bulkR)) || !valid(bulk) || !valid(bulkR)}
+                  onClick={() => setLines((ls) => ls.map((l) => (l.remove ? l : {
+                    ...l,
+                    text: clean(bulk) ? clean(bulk) : l.text,
+                    rtext: clean(bulkR) ? clean(bulkR) : l.rtext,
+                  })))}
                 >
                   <span>{t('bulkApply', { n: active.length })}</span>
                 </button>
@@ -323,10 +350,15 @@ function EditModal({ t, drug, monthText, onClose, onSave }) {
                 <p>{t('noDoctorsYet')}</p>
               </div>
             ) : (
-              <ul className="bm-list">
+              <ul className="bm-list" ref={listRef}>
+                <li className="bm-line bm-line-head" aria-hidden="true">
+                  <span className="bm-line-head-doc">{t('step2Title')}</span>
+                  <span className="bm-line-head-area">{L.tbilisi}</span>
+                  <span className="bm-line-head-area">{L.region}</span>
+                  <span className="bm-line-head-del" />
+                </li>
                 {lines.map((l) => {
                   const ch = lineChanged(l)
-                  const lBad = !l.remove && ch && !valid(l.text)
                   const empty = l.isNew && clean(l.text) === ''
                   return (
                     <li key={l.doctor._id} className={`bm-line ${l.remove ? 'is-removed' : ''} ${ch ? 'is-changed' : ''} ${empty ? 'is-waiting' : ''}`}>
@@ -335,18 +367,40 @@ function EditModal({ t, drug, monthText, onClose, onSave }) {
                         {l.isNew && <em className="bm-tag is-new">{t('tagNew')}</em>}
                         {l.remove && <em className="bm-tag is-red">{t('tagRemove')}</em>}
                       </span>
-                      <div className={`bm-money is-small ${ch && !l.remove ? 'is-changed' : ''} ${lBad ? 'is-bad' : ''}`}>
-                        <input
-                          type="text"
-                          inputMode="decimal"
-                          value={l.text}
-                          placeholder={t('typeValue')}
-                          disabled={l.remove}
-                          onChange={(e) => setLine(l.doctor._id, { text: e.target.value })}
-                          onKeyDown={(e) => { if (e.key === 'Enter') save() }}
-                          aria-label={`${l.doctor.firstName || ''} ${l.doctor.lastName || ''} — ${t('colBonus')}`}
-                        />
-                        <span>₾</span>
+                      <div className="bm-area-pair">
+                        <label className="bm-area-field">
+                          <small>{L.tbilisi}</small>
+                          <div className={`bm-money is-small ${ch && !l.remove ? 'is-changed' : ''} ${!l.remove && !valid(l.text) ? 'is-bad' : ''}`}>
+                            <input
+                              type="text"
+                              inputMode="decimal"
+                              value={l.text}
+                              placeholder={fmt(effective) || t('typeValue')}
+                              disabled={l.remove}
+                              onChange={(e) => setLine(l.doctor._id, { text: e.target.value })}
+                              onKeyDown={(e) => { if (e.key === 'Enter') save() }}
+                              aria-label={`${l.doctor.firstName || ''} ${l.doctor.lastName || ''} — ${L.tbilisi}`}
+                            />
+                            <span>₾</span>
+                          </div>
+                        </label>
+                        <label className="bm-area-field">
+                          <small>{L.region}</small>
+                          <div className={`bm-money is-small ${ch && !l.remove ? 'is-changed' : ''} ${!l.remove && !valid(l.rtext) ? 'is-bad' : ''}`}>
+                            <input
+                              type="text"
+                              inputMode="decimal"
+                              value={l.rtext}
+                              placeholder={clean(l.text) && valid(l.text) ? fmt(clean(l.text)) : '='}
+                              title={L.same}
+                              disabled={l.remove}
+                              onChange={(e) => setLine(l.doctor._id, { rtext: e.target.value })}
+                              onKeyDown={(e) => { if (e.key === 'Enter') save() }}
+                              aria-label={`${l.doctor.firstName || ''} ${l.doctor.lastName || ''} — ${L.region}`}
+                            />
+                            <span>₾</span>
+                          </div>
+                        </label>
                       </div>
                       {l.remove ? (
                         <button type="button" className="bm-link" onClick={() => setLine(l.doctor._id, { remove: false })}>{t('undo')}</button>
@@ -658,7 +712,7 @@ export default function Bonuses() {
                   <td>
                     <div className="mb-docs">
                       {d.doctors.length ? (
-                        <span className="bonuses-doc-summary" title={d.doctors.map((x) => `${formatDoctorLabel(x.doctor)}: ${fmt(x.value)} ₾`).join('\n')}>
+                        <span className="bonuses-doc-summary" title={d.doctors.map((x) => `${formatDoctorLabel(x.doctor)}: ${L.tbilisi} ${fmt(x.value)} ₾ · ${L.region} ${fmt(x.regionValue ?? x.value)} ₾`).join('\n')}>
                           {t('doctorsCount', { n: d.doctors.length })}
                         </span>
                       ) : (
@@ -683,6 +737,7 @@ export default function Bonuses() {
           t={t}
           drug={editing}
           monthText={mName(month)}
+          L={L}
           onClose={() => setEditing(null)}
           onSave={(body) => saveDrug(editing, body)}
         />
