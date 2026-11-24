@@ -126,6 +126,31 @@
   .sl-formulas { margin-left: 0; }
 }
 
+/* ---------- "who entered how much" for one drug ---------- */
+.sl-who { border: 1px solid #e5eaf1; border-radius: 14px; background: #fff; overflow: hidden; }
+.sl-who-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 14px; padding: 12px 16px; border-bottom: 1px solid #eef2f7; }
+.sl-who-head h3 { margin: 0; font-size: 15px; color: #0f172a; }
+.sl-who-head h3 span { color: #2f5fbf; }
+.sl-who-head small { font-size: 12px; color: #94a3b8; }
+.sl-who-all { border: 1px solid #c7d2fe; background: #eef2ff; color: #3730a3; font: inherit; font-size: 12.5px; font-weight: 700; padding: 5px 12px; border-radius: 9px; cursor: pointer; }
+.sl-who-empty { margin: 0; padding: 24px 16px; text-align: center; color: #94a3b8; }
+.sl-who-scroll { max-height: 340px; overflow: auto; }
+.sl-who-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+.sl-who-table th, .sl-who-table td { padding: 8px 14px; text-align: left; white-space: nowrap; border-bottom: 1px solid #f1f4f8; }
+.sl-who-table thead th { position: sticky; top: 0; z-index: 1; background: #f8fafc; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; }
+.sl-who-table .n { text-align: right; font-variant-numeric: tabular-nums; }
+.sl-who-table tbody tr { cursor: pointer; }
+.sl-who-table tbody tr:hover td { background: #eef4ff; }
+.sl-who-table tbody tr.active td { background: #e0eaff; }
+.sl-who-table .sl-who-i { width: 40px; color: #94a3b8; }
+.sl-who-table .sl-who-name { font-weight: 600; color: #0f172a; }
+.sl-who-table .sl-who-rx { min-width: 200px; }
+.sl-who-table td.sl-who-rx { display: flex; align-items: center; gap: 10px; }
+.sl-who-table td.sl-who-rx b { min-width: 48px; text-align: right; font-variant-numeric: tabular-nums; color: #0f172a; }
+.sl-who-bar { flex: 1; height: 8px; border-radius: 4px; background: #eef2f7; overflow: hidden; }
+.sl-who-bar i { display: block; height: 100%; border-radius: 4px; background: #3f74d6; }
+.sl-who-table tfoot td { position: sticky; bottom: 0; background: #f8fafc; font-weight: 700; color: #0f172a; border-top: 1px solid #dfe5ee; border-bottom: 0; }
+
 /* kept for other pages that reuse it */
 .sales-listing-edit-input { width: 80px; padding: 5px 8px; border: 1px solid #d5dce6; border-radius: 6px; font-size: 13px; font-family: var(--font-sans); }
 .sales-listing-edit-input:focus { border-color: #4a9dec; outline: none; box-shadow: 0 0 0 3px rgba(74, 157, 236, 0.15); }

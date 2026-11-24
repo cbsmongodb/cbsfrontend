@@ -13,9 +13,9 @@ const ALL = 'all'
 const SIZES = [50, 100, 200, 500]
 
 const TXT = {
-  ka: { all: 'ყველა', division: 'დივიზიონი', group: 'ჯგუფი', allGroups: 'ყველა ჯგუფი', allEmployees: 'ყველა თანამშრომელი', employee: 'თანამშრომელი', search: 'ძებნა', searchPh: 'ექიმი, ID, წამალი ან თანამშრომელი…', reset: 'გასუფთავება', rows: 'ჩანაწერი', doctors: 'ექიმი', reps: 'თანამშრომელი', total: 'სულ ბიუჯეტი', issued: 'გაცემული', planned: 'დაგეგმილი', diff: 'სხვაობა', perPage: 'გვერდზე', prev: 'წინა', next: 'შემდეგი', formulas: 'როგორ ითვლება?', scrollHint: 'ცხრილი გვერდზე სქროლდება →' },
-  en: { all: 'All', division: 'Division', group: 'Group', allGroups: 'All groups', allEmployees: 'All employees', employee: 'Employee', search: 'Search', searchPh: 'Doctor, ID, drug or employee…', reset: 'Reset', rows: 'rows', doctors: 'doctors', reps: 'employees', total: 'Total budget', issued: 'Issued', planned: 'Planned', diff: 'Difference', perPage: 'per page', prev: 'Previous', next: 'Next', formulas: 'How is it calculated?', scrollHint: 'Scroll the table sideways →' },
-  ru: { all: 'Все', division: 'Дивизион', group: 'Группа', allGroups: 'Все группы', allEmployees: 'Все сотрудники', employee: 'Сотрудник', search: 'Поиск', searchPh: 'Врач, ID, препарат или сотрудник…', reset: 'Сбросить', rows: 'записей', doctors: 'врачей', reps: 'сотрудников', total: 'Итого бюджет', issued: 'Выдано', planned: 'Запланировано', diff: 'Разница', perPage: 'на странице', prev: 'Назад', next: 'Вперёд', formulas: 'Как считается?', scrollHint: 'Таблицу можно листать вбок →' },
+  ka: { all: 'ყველა', division: 'დივიზიონი', group: 'ჯგუფი', allGroups: 'ყველა ჯგუფი', allEmployees: 'ყველა თანამშრომელი', employee: 'თანამშრომელი', drug: 'წამალი', allDrugs: 'ყველა წამალი', whoTitle: 'ვინ რამდენი შეიყვანა', whoHint: 'დააჭირე სახელს — ცხრილში მხოლოდ მისი ჩანაწერები დარჩება', sum: 'ჯამი', quota: 'გეგმა', rx: 'რეცეპტი', showAll: 'ყველას ჩვენება', search: 'ძებნა', searchPh: 'ექიმი, ID, წამალი ან თანამშრომელი…', reset: 'გასუფთავება', rows: 'ჩანაწერი', doctors: 'ექიმი', reps: 'თანამშრომელი', total: 'სულ ბიუჯეტი', issued: 'გაცემული', planned: 'დაგეგმილი', diff: 'სხვაობა', perPage: 'გვერდზე', prev: 'წინა', next: 'შემდეგი', formulas: 'როგორ ითვლება?', scrollHint: 'ცხრილი გვერდზე სქროლდება →' },
+  en: { all: 'All', division: 'Division', group: 'Group', allGroups: 'All groups', allEmployees: 'All employees', employee: 'Employee', drug: 'Drug', allDrugs: 'All drugs', whoTitle: 'Who entered how much', whoHint: 'Click a name to see only their rows', sum: 'Total', quota: 'Plan', rx: 'Prescriptions', showAll: 'Show everyone', search: 'Search', searchPh: 'Doctor, ID, drug or employee…', reset: 'Reset', rows: 'rows', doctors: 'doctors', reps: 'employees', total: 'Total budget', issued: 'Issued', planned: 'Planned', diff: 'Difference', perPage: 'per page', prev: 'Previous', next: 'Next', formulas: 'How is it calculated?', scrollHint: 'Scroll the table sideways →' },
+  ru: { all: 'Все', division: 'Дивизион', group: 'Группа', allGroups: 'Все группы', allEmployees: 'Все сотрудники', employee: 'Сотрудник', drug: 'Препарат', allDrugs: 'Все препараты', whoTitle: 'Кто сколько внёс', whoHint: 'Нажмите на имя — останутся только его записи', sum: 'Итого', quota: 'План', rx: 'Рецепты', showAll: 'Показать всех', search: 'Поиск', searchPh: 'Врач, ID, препарат или сотрудник…', reset: 'Сбросить', rows: 'записей', doctors: 'врачей', reps: 'сотрудников', total: 'Итого бюджет', issued: 'Выдано', planned: 'Запланировано', diff: 'Разница', perPage: 'на странице', prev: 'Назад', next: 'Вперёд', formulas: 'Как считается?', scrollHint: 'Таблицу можно листать вбок →' },
 }
 
 function currentPeriodValue() {
@@ -51,12 +51,13 @@ export default function SalesListing() {
   const L = TXT[useLocale()] || TXT.en
 
   const [employees, setEmployees] = useState([])
-  const [filters, setFilters] = useState({ sections: [], groups: [] })
+  const [filters, setFilters] = useState({ sections: [], groups: [], drugs: [] })
   const [me, setMe] = useState(null)
 
   const [section, setSection] = useState('')
   const [group, setGroup] = useState('')
   const [employeeId, setEmployeeId] = useState('')
+  const [drug, setDrug] = useState('')
   const [monthValue, setMonthValue] = useState(currentPeriodValue())
   const [qInput, setQInput] = useState('')
   const [q, setQ] = useState('')
@@ -83,7 +84,7 @@ export default function SalesListing() {
         setEmployeeId(arr.length === 1 ? arr[0]._id : arr.length > 1 ? ALL : stored?._id || '')
       })
       .catch((err) => setError(err.message))
-    apiFetch('/api/doctor-entry-items/filters').then(setFilters).catch(() => {})
+    apiFetch('/api/doctor-entry-items/filters').then((f) => setFilters({ sections: [], groups: [], drugs: [], ...f })).catch(() => {})
   }, [])
 
   const onlySelf = employees.length === 1 || (!employees.length && !!me)
@@ -111,13 +112,19 @@ export default function SalesListing() {
     [employeesShown, L.allEmployees]
   )
 
+  const drugOptions = useMemo(
+    () => [{ _id: ALL, name: `— ${L.allDrugs} —` }, ...(filters.drugs || [])],
+    [filters.drugs, L.allDrugs]
+  )
+  const drugName = (filters.drugs || []).find((d) => d._id === drug)?.name || ''
+
   // a picked person who is not in the new division / group -> back to "all"
   useEffect(() => {
     if (employeeId && employeeId !== ALL && !onlySelf && !employeesShown.some((e) => e._id === employeeId)) setEmployeeId(ALL)
   }, [employeesShown]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // new filter -> page 1
-  useEffect(() => { setPage(1) }, [section, group, employeeId, monthValue, q, size])
+  useEffect(() => { setPage(1) }, [section, group, employeeId, drug, monthValue, q, size])
 
   // load the page
   useEffect(() => {
@@ -129,6 +136,7 @@ export default function SalesListing() {
       if (group) p.set('group', group)
       else if (section) p.set('section', section)
     }
+    if (drug) p.set('drug', drug)
     if (q) p.set('q', q)
     setLoading(true)
     setError('')
@@ -136,7 +144,7 @@ export default function SalesListing() {
       .then((d) => { if (id === req.current) { setData(d); scrollRef.current?.scrollTo({ top: 0 }) } })
       .catch((err) => id === req.current && setError(err.message))
       .finally(() => id === req.current && setLoading(false))
-  }, [employeeId, section, group, monthValue, q, page, size])
+  }, [employeeId, section, group, drug, monthValue, q, page, size])
 
   // show the "scroll sideways" hint only when the table is wider than the screen
   useEffect(() => {
@@ -155,7 +163,7 @@ export default function SalesListing() {
     setMonthValue(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
   }
   function pickSection(id) { setSection(id); setGroup('') }
-  function resetAll() { setSection(''); setGroup(''); setQInput(''); if (!onlySelf) setEmployeeId(ALL) }
+  function resetAll() { setSection(''); setGroup(''); setDrug(''); setQInput(''); if (!onlySelf) setEmployeeId(ALL) }
 
   const items = data?.items || []
   const count = data?.count || 0
@@ -163,7 +171,7 @@ export default function SalesListing() {
   const showRep = employeeId === ALL
   const pharmacy = data?.pharmacySales || {}
   const tot = data?.totals || {}
-  const filtered = section || group || qInput || (!onlySelf && employeeId !== ALL)
+  const filtered = section || group || drug || qInput || (!onlySelf && employeeId !== ALL)
   const go = (n) => n >= 1 && n <= pages && n !== page && setPage(n)
 
   return (
@@ -209,6 +217,17 @@ export default function SalesListing() {
             )}
           </div>
 
+          <div className="sl-field sl-grow">
+            <label>{L.drug}</label>
+            <SearchableSelect
+              options={drugOptions}
+              value={drug || ALL}
+              onChange={(v) => setDrug(v && v !== ALL ? v : '')}
+              getLabel={(d) => d.name}
+              placeholder={L.allDrugs}
+            />
+          </div>
+
           <div className="sl-field">
             <label>{tu('k046')}</label>
             <div className="sl-month">
@@ -249,6 +268,63 @@ export default function SalesListing() {
               <span>{tu('fCalc')}</span>
             </div>
           </details>
+        </div>
+      )}
+
+      {data?.byEmployee && (
+        <div className="sl-who">
+          <div className="sl-who-head">
+            <h3>{L.whoTitle} <span>· {drugName}</span></h3>
+            {employeeId !== ALL && !onlySelf
+              ? <button type="button" className="sl-who-all" onClick={() => setEmployeeId(ALL)}>{L.showAll}</button>
+              : <small>{L.whoHint}</small>}
+          </div>
+          {data.byEmployee.length === 0 ? (
+            <p className="sl-who-empty">{tu('k086')}</p>
+          ) : (
+            <div className="sl-who-scroll">
+              <table className="sl-who-table">
+                <thead>
+                  <tr>
+                    <th className="n">#</th><th>{L.employee}</th><th className="n">{L.doctors}</th>
+                    <th className="n">{L.quota}</th><th className="sl-who-rx">{L.rx}</th>
+                    <th className="n">{L.total}</th><th className="n">{L.issued}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(() => {
+                    const max = Math.max(1, ...data.byEmployee.map((r) => r.prescription || 0))
+                    return data.byEmployee.map((r, i) => (
+                      <tr key={r.employee} className={employeeId === r.employee ? 'active' : ''} onClick={() => !onlySelf && setEmployeeId(r.employee)}>
+                        <td className="n sl-who-i">{i + 1}</td>
+                        <td className="sl-who-name">{r.name || '—'}</td>
+                        <td className="n">{fmt(r.doctors)}</td>
+                        <td className="n">{fmt(r.quota)}</td>
+                        <td className="sl-who-rx">
+                          <div className="sl-who-bar"><i style={{ width: `${((r.prescription || 0) / max) * 100}%` }} /></div>
+                          <b>{fmt(r.prescription)}</b>
+                        </td>
+                        <td className="n">₾{fmt(r.totalBudget)}</td>
+                        <td className="n">₾{fmt(r.issuedBudget)}</td>
+                      </tr>
+                    ))
+                  })()}
+                </tbody>
+                {data.byEmployee.length > 1 && (
+                  <tfoot>
+                    <tr>
+                      <td /><td>{L.sum}</td>
+                      <td className="n">{fmt(tot.doctors)}</td>
+                      <td className="n">{fmt(data.byEmployee.reduce((s, r) => s + (r.quota || 0), 0))}</td>
+                      <td className="sl-who-rx"><b>{fmt(tot.prescription)}</b></td>
+                      <td className="n">₾{fmt(tot.totalBudget)}</td>
+                      <td className="n">₾{fmt(tot.issuedBudget)}</td>
+                    </tr>
+                  </tfoot>
+                )}
+              </table>
+            </div>
+          )}
         </div>
       )}
 
