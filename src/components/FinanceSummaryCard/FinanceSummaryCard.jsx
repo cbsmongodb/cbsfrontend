@@ -12,9 +12,9 @@ const money = (n) => `₾${Number(n || 0).toLocaleString('en-US', { maximumFract
 const ym = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
 
 const MTXT = {
-  ka: { empty: 'ჯერ ცარიელი', showing: 'ნაჩვენებია', notFilled: 'ჯერ არ არის შევსებული (აფთიაქების გაყიდვები არ ატვირთულა).', notYet: 'ამ თვის აფთიაქების გაყიდვები ჯერ არ არის ატვირთული — ციფრები ჯერ არასრულია.', failed: 'მონაცემები ვერ ჩაიტვირთა', all: 'ყველა', division: 'დივიზიონი', group: 'ჯგუფი', allGroups: 'ყველა ჯგუფი', reset: 'გასუფთავება' },
-  en: { empty: 'not filled yet', showing: 'Showing', notFilled: 'is not filled yet (pharmacy sales not uploaded).', notYet: 'Pharmacy sales for this month are not uploaded yet — the numbers are incomplete.', failed: 'Could not load the data', all: 'All', division: 'Division', group: 'Group', allGroups: 'All groups', reset: 'Reset' },
-  ru: { empty: 'ещё пусто', showing: 'Показан', notFilled: 'ещё не заполнен (продажи аптек не загружены).', notYet: 'Продажи аптек за этот месяц ещё не загружены — цифры неполные.', failed: 'Не удалось загрузить данные', all: 'Все', division: 'Дивизион', group: 'Группа', allGroups: 'Все группы', reset: 'Сбросить' },
+  ka: { empty: 'ჯერ ცარიელი', showing: 'ნაჩვენებია', notFilled: 'ჯერ არ არის შევსებული (აფთიაქების გაყიდვები არ ატვირთულა).', notYet: 'ამ თვის აფთიაქების გაყიდვები ჯერ არ არის ატვირთული — ციფრები ჯერ არასრულია.', failed: 'მონაცემები ვერ ჩაიტვირთა', all: 'ყველა', division: 'დივიზიონი', group: 'ჯგუფი', allGroups: 'ყველა ჯგუფი', reset: 'გასუფთავება', allDebts: 'ყველა ვალის ნახვა', hideDebts: 'დამალვა' },
+  en: { empty: 'not filled yet', showing: 'Showing', notFilled: 'is not filled yet (pharmacy sales not uploaded).', notYet: 'Pharmacy sales for this month are not uploaded yet — the numbers are incomplete.', failed: 'Could not load the data', all: 'All', division: 'Division', group: 'Group', allGroups: 'All groups', reset: 'Reset', allDebts: 'Show all debts', hideDebts: 'Hide' },
+  ru: { empty: 'ещё пусто', showing: 'Показан', notFilled: 'ещё не заполнен (продажи аптек не загружены).', notYet: 'Продажи аптек за этот месяц ещё не загружены — цифры неполные.', failed: 'Не удалось загрузить данные', all: 'Все', division: 'Дивизион', group: 'Группа', allGroups: 'Все группы', reset: 'Сбросить', allDebts: 'Показать все долги', hideDebts: 'Скрыть' },
 }
 
 // Finance manager's dashboard: sales, what doctors are owed, what was paid
@@ -28,6 +28,7 @@ export default function FinanceSummaryCard() {
     return { value: ym(d), label: `${months[d.getMonth()]} ${d.getFullYear()}` }
   })
   const M = MTXT[locale] || MTXT.en
+  const [allDebts, setAllDebts] = useState(false)
   // a month counts as "filled" once its pharmacy sales are uploaded
   const isFilled = (d) => !!d && ((d.sales?.amount || 0) > 0 || (d.sales?.boxes || 0) > 0)
 
@@ -93,6 +94,8 @@ export default function FinanceSummaryCard() {
   const openCard = cards.find((c) => c[0] === open)
   const sectionName = filters.sections.find((x) => x.id === section)?.name
   const groupName = filters.groups.find((x) => x.id === group)?.name
+
+  useEffect(() => setAllDebts(false), [month, section, group])
 
   return (
     <div className="fin">
@@ -168,9 +171,11 @@ export default function FinanceSummaryCard() {
           </div>
 
           <div className="fin-grid">
-            <div className="fin-panel">
+            <div className={`fin-panel${allDebts ? ' fin-panel-wide' : ''}`}>
               <h4>{t('topDebts')}</h4>
-              {data.topDebts.length === 0 ? (
+              {allDebts ? (
+                <FinDetails compact month={month} card="owed" cardTotal={b.owed} title={t('topDebts')} section={section} group={group} onClose={() => setAllDebts(false)} />
+              ) : data.topDebts.length === 0 ? (
                 <p className="fin-ok">✓ {t('noDebts')}</p>
               ) : (
                 <table className="fin-table">
@@ -190,7 +195,11 @@ export default function FinanceSummaryCard() {
                   </tbody>
                 </table>
               )}
-              <Link href={`/${locale}/dashboard/sales-listing`} className="fin-link">{t('allDetails')} →</Link>
+              {data.topDebts.length > 0 && (
+                <button type="button" className="fin-link fin-link-btn" onClick={() => setAllDebts((v) => !v)}>
+                  {allDebts ? `▲ ${M.hideDebts}` : `${M.allDebts} ↓`}
+                </button>
+              )}
             </div>
 
             <div className="fin-panel">

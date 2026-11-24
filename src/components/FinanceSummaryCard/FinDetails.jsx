@@ -17,7 +17,7 @@ const STEP = 500
 
 const money = (n) => `₾${Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 2 })}`
 
-export default function FinDetails({ month, card, cardTotal, title, section, group, onClose }) {
+export default function FinDetails({ month, card, cardTotal, title, section, group, onClose, compact }) {
   const L = TXT[useLocale()] || TXT.en
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
@@ -61,17 +61,18 @@ export default function FinDetails({ month, card, cardTotal, title, section, gro
   const same = data && Math.abs((data.total || 0) - (cardTotal || 0)) < 0.01
 
   return (
-    <div className={`fin-details ${card}`}>
-      <div className="fin-details-head">
+    <div className={`fin-details ${card}${compact ? ' compact' : ''}`}>
+      {!compact && <div className="fin-details-head">
         <h4>{title}</h4>
         <button type="button" className="fin-details-x" onClick={onClose} aria-label={L.close}>✕</button>
-      </div>
+      </div>}
 
       {error && <p className="resource-error">{error}</p>}
       {!data && !error && <p className="fin-muted"><span className="btn-spinner" aria-hidden="true" /></p>}
 
       {data && (
         <>
+          {!compact && <>
           <div className="fin-details-info">
             <div><span>{L.source}</span><p>{data.source}</p></div>
             <div><span>{L.formula}</span><p className="fin-formula">{data.formula}</p></div>
@@ -90,6 +91,7 @@ export default function FinDetails({ month, card, cardTotal, title, section, gro
               ? <p className="fin-check ok">✓ {L.ok}</p>
               : data.checks.map((c, i) => <p key={i} className={`fin-check ${c.level}`}>{c.level === 'error' ? '⛔' : c.level === 'warn' ? '⚠️' : 'ℹ️'} {c.text}</p>)}
           </div>
+          </>}
 
           {(data.count > 8 || qInput) && (
             <input className="field-input fin-details-search" value={qInput} onChange={(e) => setQInput(e.target.value)} placeholder={L.search} />
