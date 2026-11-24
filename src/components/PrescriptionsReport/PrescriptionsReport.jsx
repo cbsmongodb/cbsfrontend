@@ -8,6 +8,7 @@ import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import './PrescriptionsReport.css'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import MonthSelect from '@/components/MonthSelect/MonthSelect'
 
 const pad2 = (n) => String(n).padStart(2, '0')
 function currentMonth() {
@@ -22,8 +23,7 @@ export default function PrescriptionsReport() {
   const months = useMonthNames()
 
   const [employees, setEmployees] = useState([])
-  const [from, setFrom] = useState(currentMonth())
-  const [to, setTo] = useState(currentMonth())
+  const [month, setMonth] = useState(currentMonth()) // one month
   const [employeeId, setEmployeeId] = useState('')
   const [search, setSearch] = useState('')
 
@@ -42,17 +42,19 @@ export default function PrescriptionsReport() {
 
   useEffect(() => {
     apiFetch('/api/employees?lite=1').then(setEmployees).catch(() => {})
+  }, [])
+  // the table follows the month / employee on its own
+  useEffect(() => {
     loadReport()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [month, employeeId])
 
   async function loadReport() {
     setLoading(true)
     setError('')
     try {
       const params = new URLSearchParams()
-      if (from) params.set('from', from)
-      if (to) params.set('to', to)
+      if (month) { params.set('from', month); params.set('to', month) }
       if (employeeId) params.set('employee', employeeId)
       const data = await apiFetch(`/api/reports/prescriptions?${params}`)
       setRows(Array.isArray(data) ? data : [])
@@ -79,7 +81,7 @@ export default function PrescriptionsReport() {
     const doctors = new Set()
     visibleRows.forEach((r) => {
       prescribed += r.prescription || 0
-      sold += r.sale || 0
+      sold += r.sold || 0
       if (r.doctorNumber || r.doctorName) doctors.add(r.doctorNumber || r.doctorName)
     })
     return {
@@ -142,23 +144,20 @@ export default function PrescriptionsReport() {
             r.hospitalName || '—',
             r.drugName || '—',
             { value: r.prescription || 0, kind: 'number' },
-            { value: r.sale || 0, kind: 'number' },
-            { value: r.prescription ? (r.sale || 0) / r.prescription : 0, kind: 'pct' },
+            { value: r.sold || 0, kind: 'number' },
+            { value: r.prescription ? (r.sold || 0) / r.prescription : 0, kind: 'pct' },
           ]),
         })} />
         {loading && <ReportLoader />}
       </div>
       <p className="rx-report-subtitle">{t('prescriptions.subtitle')}</p>
+      <p className="rx-report-subtitle rx-report-note">ⓘ გაყიდული = თანამშრომლის აფთიაქის გაყიდვები ამ წამალზე, გადანაწილებული ექიმებზე რეცეპტების წილით (როგორც ბიუჯეტში ითვლება).</p>
 
       <div className="rx-report-filters-card">
         <div className="rx-report-filters-grid">
           <div className="rx-report-field">
-            <label>{t('prescriptions.fromMonth')}</label>
-            <input type="month" className="field-input" value={from} onChange={(e) => setFrom(e.target.value)} />
-          </div>
-          <div className="rx-report-field">
-            <label>{t('prescriptions.toMonth')}</label>
-            <input type="month" className="field-input" value={to} onChange={(e) => setTo(e.target.value)} />
+            <label>{t('common.month')}</label>
+            <MonthSelect value={month} onChange={(v) => v && setMonth(v)} />
           </div>
           <div className="rx-report-field">
             <label>{t('common.employee')}</label>
@@ -237,7 +236,7 @@ export default function PrescriptionsReport() {
           </thead>
           <tbody>
             {pageRows.map((r) => {
-              const pct = r.prescription ? Math.round(((r.sale || 0) / r.prescription) * 100) : 0
+              const pct = r.prescription ? Math.round(((r.sold || 0) / r.prescription) * 100) : 0
               return (
                 <tr key={r._id}>
                   <td>{monthLabel(r.month)}</td>
@@ -249,7 +248,7 @@ export default function PrescriptionsReport() {
                   <td>{r.hospitalName || '—'}</td>
                   <td>{r.drugName || '—'}</td>
                   <td className="num">{fmt(r.prescription)}</td>
-                  <td className="num">{fmt(r.sale)}</td>
+                  <td className="num">{fmt(r.sold)}</td>
                   <td className="num"><span className={`rx-pct ${pct >= 100 ? 'rx-good' : pct < 50 ? 'rx-bad' : 'rx-mid'}`}>{pct}%</span></td>
                 </tr>
               )
