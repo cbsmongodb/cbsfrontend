@@ -245,7 +245,12 @@ export default function PrescriptionsReport() {
                     {r.doctorName || '—'}
                     {r.doctorNumber && <div className="rx-report-muted">{r.doctorNumber}</div>}
                   </td>
-                  <td>{r.hospitalName || '—'}</td>
+                  <td className="rx-hosp">{(() => {
+                    const n = r.hospitalName
+                    if (!n) return '—'
+                    const [a, ...b] = n.split(/ \/ | - /)
+                    return <span title={n}>{a}{b.length > 0 && <small>{b.join(' / ')}</small>}</span>
+                  })()}</td>
                   <td>{r.drugName || '—'}</td>
                   <td className="num">{fmt(r.prescription)}</td>
                   <td className="num">{fmt(r.sold)}</td>
