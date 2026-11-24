@@ -104,7 +104,8 @@
         "prescriptionsReport": "Prescriptions Report",
         "leavePayroll": "Leave for payroll",
         "timesheet": "Timesheet",
-        "zonalSales": "Zonal sales"
+        "zonalSales": "Zonal sales",
+        "salesListing": "Sales Listing"
       },
       "administration": {
         "label": "Administration",

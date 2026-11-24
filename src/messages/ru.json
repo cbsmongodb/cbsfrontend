@@ -104,7 +104,8 @@
         "prescriptionsReport": "Отчёт по рецептам",
         "leavePayroll": "Отпуска для зарплаты",
         "timesheet": "Табель",
-        "zonalSales": "Зональные продажи"
+        "zonalSales": "Зональные продажи",
+        "salesListing": "Список продаж"
       },
       "administration": {
         "label": "Администрирование",

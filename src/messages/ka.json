@@ -107,7 +107,8 @@
         "prescriptionsReport": "რეცეპტების რეპორტი",
         "leavePayroll": "შვებულებები ხელფასისთვის",
         "timesheet": "ტაბელი",
-        "zonalSales": "ზონალური გაყიდვები"
+        "zonalSales": "ზონალური გაყიდვები",
+        "salesListing": "გაყიდვების სია"
       },
       "administration": {
         "label": "ადმინისტრაცია",
