@@ -41,3 +41,42 @@
   background: transparent; color: #3f74d6; font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
 }
 .ms-today:hover { background: #f1f5fb; }
+
+/* ms-pop-v2 */
+/* the popup sits inside coloured filter cards — keep their button / label styles out of it */
+.ms-pop, .ms-pop * {
+  box-sizing: border-box; text-transform: none !important; letter-spacing: normal !important;
+  font-feature-settings: normal !important; text-shadow: none !important;
+}
+.ms-pop { width: 300px; max-width: calc(100vw - 16px); padding: 12px; border-radius: 18px; overflow: hidden; color: #0f2744; }
+
+.ms-pop .ms-year { margin: 0 0 10px; }
+.ms-pop .ms-year strong { font-size: 16px !important; font-weight: 800; color: #0f2744 !important; }
+.ms-pop .ms-nav {
+  width: 32px !important; min-width: 0 !important; height: 32px !important; min-height: 0 !important; padding: 0 !important; margin: 0;
+  border: 0 !important; border-radius: 9px !important; background: #f1f5fb !important; color: #334155 !important; box-shadow: none !important;
+}
+.ms-pop .ms-nav:hover:not(:disabled) { background: #e3ebf8 !important; color: #1e40af !important; }
+
+.ms-pop .ms-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+.ms-pop .ms-cell {
+  width: 100% !important; min-width: 0 !important; height: 38px !important; min-height: 0 !important; margin: 0;
+  padding: 0 4px !important; border: 1px solid transparent !important; border-radius: 10px !important;
+  background: #f5f7fb !important; color: #1e293b !important; box-shadow: none !important;
+  font-size: 12.5px !important; font-weight: 500 !important; line-height: 1 !important;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ms-pop .ms-cell:hover:not(:disabled):not(.is-sel) { background: #e7eefb !important; color: #1e40af !important; }
+.ms-pop .ms-cell.is-now:not(.is-sel) { border-color: #9db8ec !important; font-weight: 700 !important; }
+.ms-pop .ms-cell.is-sel {
+  background: #3f74d6 !important; color: #fff !important; font-weight: 700 !important;
+  box-shadow: 0 4px 12px rgba(63, 116, 214, .32) !important;
+}
+.ms-pop .ms-cell:disabled { opacity: .35; }
+
+.ms-pop .ms-today {
+  width: 100% !important; min-width: 0 !important; height: 36px !important; min-height: 0 !important; margin: 8px 0 0 !important;
+  padding: 0 !important; border: 0 !important; border-radius: 10px !important; background: transparent !important;
+  color: #3f74d6 !important; box-shadow: none !important; font-size: 13px !important; font-weight: 700 !important;
+}
+.ms-pop .ms-today:hover { background: #f1f5fb !important; }

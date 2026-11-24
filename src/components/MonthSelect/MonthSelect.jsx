@@ -41,7 +41,7 @@ export default function MonthSelect({ value, onChange, className = 'field-input'
   function toggle() {
     if (open) return setOpen(false)
     const r = btnRef.current.getBoundingClientRect()
-    const width = Math.max(280, Math.min(r.width, 340))
+    const width = Math.min(window.innerWidth - 16, Math.max(300, Math.min(r.width, 340)))
     const left = Math.min(Math.max(8, r.left), window.innerWidth - width - 8)
     const up = window.innerHeight - r.bottom < 330 && r.top > 330
     setPos({ top: up ? r.top - 8 : r.bottom + 8, left, width, up })
