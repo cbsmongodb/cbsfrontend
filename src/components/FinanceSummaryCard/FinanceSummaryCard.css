@@ -110,3 +110,17 @@ button.fin-card.open { box-shadow: 0 0 0 2px var(--c); }
 .fin .fin-link-btn:hover { text-decoration: underline; }
 .fin .fin-details.compact { margin: 0; padding: 0; border: 0; box-shadow: none; background: transparent; }
 .fin .fin-details.compact .fin-details-table { border: 0; padding: 0; }
+
+/* page-number pagination under detail tables */
+.fin .fin-details-table.is-busy table { opacity: .5; transition: opacity .15s; }
+.fin .fin-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #eef2f7; font-size: 12.5px; color: #64748b; }
+.fin .fin-pager-info { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fin .fin-pages { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.fin .fin-pages button { min-width: 32px; height: 32px; margin: 0; padding: 0 8px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; color: #334155; font: inherit; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; cursor: pointer; box-shadow: none; }
+.fin .fin-pages button:hover:not(:disabled):not(.active) { border-color: #3f74d6; color: #3f74d6; }
+.fin .fin-pages button.active { background: #3f74d6; border-color: #3f74d6; color: #fff; cursor: default; }
+.fin .fin-pages button:disabled { opacity: .4; cursor: default; }
+.fin .fin-pages-dots { min-width: 20px; text-align: center; color: #94a3b8; }
+.fin .fin-pager-size { display: inline-flex; align-items: center; gap: 6px; margin: 0; white-space: nowrap; }
+.fin .fin-pager-size select { height: 32px; margin: 0; padding: 0 8px; width: auto; min-width: 0; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; color: #334155; font: inherit; font-size: 13px; cursor: pointer; }
+@media (max-width: 640px) { .fin .fin-pager { justify-content: center; } }
