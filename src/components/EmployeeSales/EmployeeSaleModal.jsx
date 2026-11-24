@@ -54,7 +54,7 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
   const filtered = drugs
     .filter((d) => (!search.trim() ? true : d.name.toLowerCase().includes(search.trim().toLowerCase())))
     .map((d, i) => ({ d, i }))
-    .sort((a, b) => (pinned[b.d._id] ? 1 : 0) - (pinned[a.d._id] ? 1 : 0) || a.i - b.i)
+    .sort((a, b) => (pinned[b.d._id] || checked[b.d._id] ? 1 : 0) - (pinned[a.d._id] || checked[a.d._id] ? 1 : 0) || a.i - b.i) // ticked on top
     .map((x) => x.d)
 
   function toggle(drugId) {

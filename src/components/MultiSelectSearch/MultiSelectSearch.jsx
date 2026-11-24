@@ -50,12 +50,14 @@ export default function MultiSelectSearch({
   );
 
   const filteredOptions = useMemo(() => {
-    if (!query.trim()) return options;
     const q = query.trim().toLowerCase();
-    return options.filter((o) =>
+    const list = !q ? options : options.filter((o) =>
       String(o[optionsLabel] ?? "").toLowerCase().includes(q)
     );
-  }, [options, query, optionsLabel]);
+    // selected ones on top
+    const on = (o) => selectedSet.has(o._id || o.id);
+    return [...list.filter(on), ...list.filter((o) => !on(o))];
+  }, [options, query, optionsLabel, selectedSet]);
 
   const allFilteredSelected =
     filteredOptions.length > 0 &&

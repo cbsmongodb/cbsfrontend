@@ -29,10 +29,10 @@ export default function MultiSelectSearch({ options, selected, optionsLabel, pla
     const list = q
       ? options.filter((o) => (o[labelKey] || '').toLowerCase().includes(q))
       : options
-    // items that were selected when the window opened go first
-    if (!pinned.size) return list
-    return [...list.filter((o) => pinned.has(o._id)), ...list.filter((o) => !pinned.has(o._id))]
-  }, [options, query, labelKey, pinned])
+    // selected items (and the ones selected when it opened) go first
+    const on = (o) => pinned.has(o._id) || selectedSet.has(o._id)
+    return [...list.filter(on), ...list.filter((o) => !on(o))]
+  }, [options, query, labelKey, pinned, selectedSet])
 
   const allFilteredSelected =
     filteredOptions.length > 0 && filteredOptions.every((o) => selectedSet.has(o._id))

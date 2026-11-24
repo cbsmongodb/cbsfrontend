@@ -8,9 +8,11 @@ export default function DrugPickerModal({ drugs, alreadyAddedIds = [], onClose, 
   const [checked, setChecked] = useState({})
   const [search, setSearch] = useState("")
 
-  const filtered = drugs.filter((d) =>
+  // ticked drugs always on top, the rest keep their order
+  const matches = drugs.filter((d) =>
     !search.trim() ? true : d.name.toLowerCase().includes(search.trim().toLowerCase())
   )
+  const filtered = [...matches.filter((d) => checked[d._id]), ...matches.filter((d) => !checked[d._id])]
   function toggle(id) { setChecked((p) => ({ ...p, [id]: !p[id] })) }
   const chosen = Object.keys(checked).filter((id) => checked[id])
 

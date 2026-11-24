@@ -55,9 +55,11 @@ export default function DoctorTargetModal({ employees, doctors, editId, onClose,
       .finally(() => setLoadingEdit(false))
   }, [editId])
 
-  const filtered = drugs.filter((d) =>
+  // ticked drugs always on top, the rest keep their order
+  const matches = drugs.filter((d) =>
     !search.trim() ? true : d.name.toLowerCase().includes(search.trim().toLowerCase())
   )
+  const filtered = [...matches.filter((d) => checked[d._id]), ...matches.filter((d) => !checked[d._id])]
 
   function toggle(drugId) {
     setChecked((prev) => {
