@@ -1,225 +1,345 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+// Sales list: everyone / a division / a group / one rep, one month.
+// Rows come from the server one page at a time (/api/doctor-entry-items/page).
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
-import './SalesListing.css'
-import { useTranslations } from 'next-intl'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import './SalesListing.css'
+
+const ALL = 'all'
+const SIZES = [50, 100, 200, 500]
+
+const TXT = {
+  ka: { all: 'ყველა', division: 'დივიზიონი', group: 'ჯგუფი', allGroups: 'ყველა ჯგუფი', allEmployees: 'ყველა თანამშრომელი', employee: 'თანამშრომელი', search: 'ძებნა', searchPh: 'ექიმი, ID, წამალი ან თანამშრომელი…', reset: 'გასუფთავება', rows: 'ჩანაწერი', doctors: 'ექიმი', reps: 'თანამშრომელი', total: 'სულ ბიუჯეტი', issued: 'გაცემული', planned: 'დაგეგმილი', diff: 'სხვაობა', perPage: 'გვერდზე', prev: 'წინა', next: 'შემდეგი', formulas: 'როგორ ითვლება?', scrollHint: 'ცხრილი გვერდზე სქროლდება →' },
+  en: { all: 'All', division: 'Division', group: 'Group', allGroups: 'All groups', allEmployees: 'All employees', employee: 'Employee', search: 'Search', searchPh: 'Doctor, ID, drug or employee…', reset: 'Reset', rows: 'rows', doctors: 'doctors', reps: 'employees', total: 'Total budget', issued: 'Issued', planned: 'Planned', diff: 'Difference', perPage: 'per page', prev: 'Previous', next: 'Next', formulas: 'How is it calculated?', scrollHint: 'Scroll the table sideways →' },
+  ru: { all: 'Все', division: 'Дивизион', group: 'Группа', allGroups: 'Все группы', allEmployees: 'Все сотрудники', employee: 'Сотрудник', search: 'Поиск', searchPh: 'Врач, ID, препарат или сотрудник…', reset: 'Сбросить', rows: 'записей', doctors: 'врачей', reps: 'сотрудников', total: 'Итого бюджет', issued: 'Выдано', planned: 'Запланировано', diff: 'Разница', perPage: 'на странице', prev: 'Назад', next: 'Вперёд', formulas: 'Как считается?', scrollHint: 'Таблицу можно листать вбок →' },
+}
 
 function currentPeriodValue() {
   const now = new Date()
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
 }
-
 function monthValueToPeriod(monthValue) {
   const [yyyy, mm] = monthValue.split('-')
   return `${mm}/${yyyy}`
 }
-
 function fmt(n) {
   if (n == null) return '—'
-  return Number(n).toLocaleString('ka-GE', { maximumFractionDigits: 2 })
+  return Number(n).toLocaleString('en-US', { maximumFractionDigits: 2 })
 }
-
 function fmtPercent(coefficient) {
   if (coefficient == null) return '—'
   return `${fmt(coefficient * 100)}%`
 }
+const personName = (p) => (p ? (p.name || `${p.firstName || ''} ${p.lastName || ''}`.trim() || '—') : '—')
+
+// 1 … 4 5 [6] 7 8 … 36
+function pageList(cur, total) {
+  const out = []
+  for (let i = 1; i <= total; i++) {
+    if (i === 1 || i === total || Math.abs(i - cur) <= 2) out.push(i)
+    else if (out[out.length - 1] !== '…') out.push('…')
+  }
+  return out
+}
 
 export default function SalesListing() {
   const tu = useTranslations('ui')
+  const L = TXT[useLocale()] || TXT.en
+
   const [employees, setEmployees] = useState([])
+  const [filters, setFilters] = useState({ sections: [], groups: [] })
+  const [me, setMe] = useState(null)
+
+  const [section, setSection] = useState('')
+  const [group, setGroup] = useState('')
   const [employeeId, setEmployeeId] = useState('')
   const [monthValue, setMonthValue] = useState(currentPeriodValue())
-  const [drugSearch, setDrugSearch] = useState('')
+  const [qInput, setQInput] = useState('')
+  const [q, setQ] = useState('')
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(SIZES[0])
 
-  const [items, setItems] = useState([])
-  const [loaded, setLoaded] = useState(false)
+  const [data, setData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const req = useRef(0)
+  const scrollRef = useRef(null)
+  const [canScrollX, setCanScrollX] = useState(false)
 
-  const [me, setMe] = useState(null)
+  // who am I, who can I see, which divisions / groups exist
   useEffect(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem('employee') || 'null')
-      if (stored?._id) { setMe(stored); setEmployeeId((cur) => cur || stored._id) }
-    } catch { /* ignore */ }
+    let stored = null
+    try { stored = JSON.parse(localStorage.getItem('employee') || 'null') } catch { /* ignore */ }
+    if (stored?._id) setMe(stored)
     apiFetch('/api/employees?lite=1')
-      .then((data) => setEmployees(Array.isArray(data) ? data : []))
+      .then((list) => {
+        const arr = Array.isArray(list) ? list : []
+        setEmployees(arr)
+        // a rep sees only themself; everyone else starts on "all employees"
+        setEmployeeId(arr.length === 1 ? arr[0]._id : arr.length > 1 ? ALL : stored?._id || '')
+      })
       .catch((err) => setError(err.message))
+    apiFetch('/api/doctor-entry-items/filters').then(setFilters).catch(() => {})
   }, [])
-  const onlySelf = employees.length === 1
-  useEffect(() => {
-    if (onlySelf && employeeId !== employees[0]._id) setEmployeeId(employees[0]._id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onlySelf, employees])
 
-  // autoLoadMonth: the table follows the chosen employee / month on its own
+  const onlySelf = employees.length === 1 || (!employees.length && !!me)
+
+  // search waits until typing stops
   useEffect(() => {
-    if (employeeId) handleLoad()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [employeeId, monthValue])
+    const id = setTimeout(() => setQ(qInput.trim()), 350)
+    return () => clearTimeout(id)
+  }, [qInput])
+
+  // groups of the chosen division, employees of the chosen group / division
+  const groupsShown = useMemo(
+    () => filters.groups.filter((g) => !section || g.section === section),
+    [filters.groups, section]
+  )
+  const employeesShown = useMemo(() => {
+    if (!section && !group) return employees
+    const ids = new Set()
+    ;(group ? filters.groups.filter((g) => g.id === group) : groupsShown).forEach((g) => g.employees.forEach((e) => ids.add(e)))
+    if (!group && section) { const head = filters.sections.find((s) => s.id === section)?.head; if (head) ids.add(head) }
+    return employees.filter((e) => ids.has(String(e._id)))
+  }, [employees, filters, groupsShown, section, group])
+  const employeeOptions = useMemo(
+    () => [{ _id: ALL, name: `— ${L.allEmployees} —` }, ...employeesShown],
+    [employeesShown, L.allEmployees]
+  )
+
+  // a picked person who is not in the new division / group -> back to "all"
+  useEffect(() => {
+    if (employeeId && employeeId !== ALL && !onlySelf && !employeesShown.some((e) => e._id === employeeId)) setEmployeeId(ALL)
+  }, [employeesShown]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // new filter -> page 1
+  useEffect(() => { setPage(1) }, [section, group, employeeId, monthValue, q, size])
+
+  // load the page
+  useEffect(() => {
+    if (!employeeId) return
+    const id = ++req.current
+    const p = new URLSearchParams({ period: monthValueToPeriod(monthValue), page, limit: size })
+    if (employeeId !== ALL) p.set('employee', employeeId)
+    else {
+      if (group) p.set('group', group)
+      else if (section) p.set('section', section)
+    }
+    if (q) p.set('q', q)
+    setLoading(true)
+    setError('')
+    apiFetch(`/api/doctor-entry-items/page?${p}`)
+      .then((d) => { if (id === req.current) { setData(d); scrollRef.current?.scrollTo({ top: 0 }) } })
+      .catch((err) => id === req.current && setError(err.message))
+      .finally(() => id === req.current && setLoading(false))
+  }, [employeeId, section, group, monthValue, q, page, size])
+
+  // show the "scroll sideways" hint only when the table is wider than the screen
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    const check = () => setCanScrollX(el.scrollWidth > el.clientWidth + 4 && el.scrollLeft + el.clientWidth < el.scrollWidth - 4)
+    check()
+    el.addEventListener('scroll', check, { passive: true })
+    window.addEventListener('resize', check)
+    return () => { el.removeEventListener('scroll', check); window.removeEventListener('resize', check) }
+  }, [data])
 
   function shiftMonth(delta) {
     const [y, m] = monthValue.split('-').map(Number)
     const d = new Date(y, m - 1 + delta, 1)
     setMonthValue(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
   }
+  function pickSection(id) { setSection(id); setGroup('') }
+  function resetAll() { setSection(''); setGroup(''); setQInput(''); if (!onlySelf) setEmployeeId(ALL) }
 
-  async function handleLoad() {
-    if (!employeeId) {
-      setError(tu('k038'))
-      return
-    }
-    setLoading(true)
-    setError('')
-    try {
-      const period = monthValueToPeriod(monthValue)
-      const data = await apiFetch(`/api/doctor-entry-items?employee=${employeeId}&period=${encodeURIComponent(period)}`)
-      setItems(data.items || [])
-      setPharmacy(data.pharmacySales || {})
-      setLoaded(true)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  function doctorLabel(doctor) {
-    if (!doctor) return tu('deletedDoctor')
-    return `${doctor.firstName || ''} ${doctor.lastName || ''}`.trim() || '—'
-  }
-
-  const [pharmacy, setPharmacy] = useState({})
-
-  const visibleItems = useMemo(() => {
-    if (!drugSearch.trim()) return items
-    const q = drugSearch.trim().toLowerCase()
-    return items.filter((item) => (item.drug?.name || '').toLowerCase().includes(q))
-  }, [items, drugSearch])
+  const items = data?.items || []
+  const count = data?.count || 0
+  const pages = Math.max(1, Math.ceil(count / size))
+  const showRep = employeeId === ALL
+  const pharmacy = data?.pharmacySales || {}
+  const tot = data?.totals || {}
+  const filtered = section || group || qInput || (!onlySelf && employeeId !== ALL)
+  const go = (n) => n >= 1 && n <= pages && n !== page && setPage(n)
 
   return (
     <div className="sales-listing-page">
-      {loading && <ReportLoader variant="page" />}
+      {loading && !data && <ReportLoader variant="page" />}
       <h1>{tu('k072')}</h1>
 
       <div className="sales-listing-filters">
-        <div className="sales-listing-field">
-          <label>{tu('k044')}</label>
-          {onlySelf || (!employees.length && me) ? (
-            <input
-              type="text"
-              className="field-input"
-              value={(() => { const p = onlySelf ? employees[0] : me; return p.name || `${p.firstName || ''} ${p.lastName || ''}`.trim() })()}
-              readOnly
-            />
-          ) : (
-            <SearchableSelect
-              options={employees}
-              value={employeeId}
-              onChange={setEmployeeId}
-              getLabel={(emp) => emp.name || `${emp.firstName} ${emp.lastName}`}
-              placeholder={tu('k045')}
-            />
-          )}
-        </div>
-
-        <div className="sales-listing-field">
-          <label>{tu('k046')}</label>
-          <div className="sl-month">
-            <button type="button" className="sl-month-btn" onClick={() => shiftMonth(-1)} aria-label="previous month">‹</button>
-            <input
-              type="month"
-              className="field-input field-date"
-              value={monthValue}
-              onChange={(e) => e.target.value && setMonthValue(e.target.value)}
-            />
-            <button type="button" className="sl-month-btn" onClick={() => shiftMonth(1)} aria-label="next month">›</button>
-          </div>
-        </div>
-
-        {(
-          <div className="sales-listing-field" style={{ minWidth: 220 }}>
-            <label>{tu('k074')}</label>
-            <input
-              type="text"
-              className="field-input"
-              placeholder={tu('k075')}
-              value={drugSearch}
-              onChange={(e) => setDrugSearch(e.target.value)}
-            />
+        {!onlySelf && filters.sections.length > 0 && (
+          <div className="sl-row">
+            <div className="sl-field">
+              <label>{L.division}</label>
+              <div className="sl-pills">
+                <button type="button" className={!section ? 'active' : ''} onClick={() => pickSection('')}>{L.all}</button>
+                {filters.sections.map((s) => (
+                  <button key={s.id} type="button" className={section === s.id ? 'active' : ''} onClick={() => pickSection(s.id)}>{s.name}</button>
+                ))}
+              </div>
+            </div>
+            <div className="sl-field">
+              <label>{L.group}</label>
+              <select className="field-input sl-select" value={group} onChange={(e) => setGroup(e.target.value)}>
+                <option value="">{L.allGroups}</option>
+                {groupsShown.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
+              </select>
+            </div>
           </div>
         )}
+
+        <div className="sl-row">
+          <div className="sl-field sl-grow">
+            <label>{L.employee}</label>
+            {onlySelf ? (
+              <input type="text" className="field-input" value={personName(employees[0] || me)} readOnly />
+            ) : (
+              <SearchableSelect
+                options={employeeOptions}
+                value={employeeId}
+                onChange={(v) => setEmployeeId(v || ALL)}
+                getLabel={personName}
+                placeholder={L.allEmployees}
+              />
+            )}
+          </div>
+
+          <div className="sl-field">
+            <label>{tu('k046')}</label>
+            <div className="sl-month">
+              <button type="button" className="sl-month-btn" onClick={() => shiftMonth(-1)} aria-label={L.prev}>‹</button>
+              <input type="month" className="field-input field-date" value={monthValue} onChange={(e) => e.target.value && setMonthValue(e.target.value)} />
+              <button type="button" className="sl-month-btn" onClick={() => shiftMonth(1)} aria-label={L.next}>›</button>
+            </div>
+          </div>
+
+          <div className="sl-field sl-grow">
+            <label>{L.search}</label>
+            <input type="search" className="field-input" placeholder={L.searchPh} value={qInput} onChange={(e) => setQInput(e.target.value)} />
+          </div>
+
+          {filtered && (
+            <button type="button" className="sl-reset" onClick={resetAll}>✕ {L.reset}</button>
+          )}
+        </div>
       </div>
 
       {error && <p className="resource-error">{error}</p>}
 
-      {loaded && (
-        <div className="sales-listing-formulas">
-          <strong>{tu('formulasTitle')}</strong>
-          <span>{tu('fCoef')}</span>
-          <span>{tu('fTotal')}</span>
-          <span>{tu('fPlanned')}</span>
-          <span>{tu('fDiff')}</span>
-          <span>{tu('fCalc')}</span>
+      {data && (
+        <div className="sl-summary">
+          <div className="sl-stat"><span>{L.rows}</span><strong>{fmt(count)}</strong></div>
+          {tot.doctors != null && <div className="sl-stat"><span>{L.doctors}</span><strong>{fmt(tot.doctors)}</strong></div>}
+          {showRep && tot.employees != null && <div className="sl-stat"><span>{L.reps}</span><strong>{fmt(tot.employees)}</strong></div>}
+          <div className="sl-stat"><span>{L.total}</span><strong>₾{fmt(tot.totalBudget)}</strong></div>
+          <div className="sl-stat"><span>{L.issued}</span><strong>₾{fmt(tot.issuedBudget)}</strong></div>
+          <div className="sl-stat"><span>{L.diff}</span><strong className={tot.difference < 0 ? 'neg' : ''}>₾{fmt(tot.difference)}</strong></div>
+          <details className="sl-formulas">
+            <summary>{L.formulas}</summary>
+            <div>
+              <span>{tu('fCoef')}</span>
+              <span>{tu('fTotal')}</span>
+              <span>{tu('fPlanned')}</span>
+              <span>{tu('fDiff')}</span>
+              <span>{tu('fCalc')}</span>
+            </div>
+          </details>
         </div>
       )}
 
-      {loaded && (
-        <div className="sales-listing-scroll">
-          <table className="sales-listing-table">
-            <thead>
-              <tr>
-                <th>{tu('k049')}</th>
-                <th>{tu('k076')}</th>
-                <th>{tu('k077')}</th>
-                <th>{tu('k055')}</th>
-                <th>{tu('planCol')}</th>
-                <th>{tu('k064')}</th>
-                <th>{tu('pharmacyCol')}</th>
-                <th>{tu('bonusCol')}</th>
-                <th>{tu('k080')}</th>
-                <th>{tu('k081')}</th>
-                <th>{tu('howCol')}</th>
-                <th>{tu('k051')}</th>
-                <th>{tu('k057')}</th>
-                <th>{tu('k058')}</th>
-                <th>{tu('k082')}</th>
-                <th>{tu('k083')}</th>
-                <th>{tu('k084')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {visibleItems.map((item) => (
-                <tr key={item._id}>
-                  <td>{doctorLabel(item.doctor)}</td>
-                  <td>{item.drug?.name || '—'}</td>
-                  <td>{item.hospital?.name || '—'}</td>
-                  <td>{item.bank || '—'}</td>
-                  <td>{fmt(item.quota)}</td>
-                  <td>{fmt(item.prescription)}</td>
-                  <td>{pharmacy[item.drug?._id] != null ? fmt(pharmacy[item.drug?._id]) : '—'}</td>
-                  <td>{fmt(item.budget)}</td>
-                  <td>{fmtPercent(item.coefficient)}</td>
-                  <td>{fmt(item.totalBudget)}</td>
-                  <td className="sales-listing-how">{fmt(item.prescription)} × {fmt(item.budget)} ₾ × {fmtPercent(item.coefficient)} = {fmt(item.totalBudget)} ₾</td>
-                  <td>{fmt(item.issuedBudget)}</td>
-                  <td>{fmt(item.plannedBudget)}</td>
-                  <td className={item.difference < 0 ? 'negative' : ''}>{fmt(item.difference)}</td>
-                  <td>{fmt(item.analysisOfPreviousMonth)}</td>
-                  <td className={item.budgetCalculation < 0 ? 'negative' : ''}>{fmt(item.budgetCalculation)}</td>
-                  <td>{fmt(item.analysisOfCurrentMonth)}</td>
-                </tr>
-              ))}
-              {visibleItems.length === 0 && (
+      {data && (
+        <div className={`sl-table-card${loading ? ' is-loading' : ''}`}>
+          <div className={`sales-listing-scroll${canScrollX ? ' can-scroll-x' : ''}`} ref={scrollRef}>
+            <table className={`sales-listing-table${showRep ? ' with-rep' : ''}`}>
+              <thead>
                 <tr>
-                  <td colSpan={17}>{drugSearch ? tu('k085') : tu('k086')}</td>
+                  <th className="sl-sticky sl-num">#</th>
+                  <th className="sl-sticky sl-doc">{tu('k049')}</th>
+                  {showRep && <th>{L.employee}</th>}
+                  <th>{tu('k076')}</th>
+                  <th>{tu('k077')}</th>
+                  <th>{tu('k055')}</th>
+                  <th className="n">{tu('planCol')}</th>
+                  <th className="n">{tu('k064')}</th>
+                  <th className="n">{tu('pharmacyCol')}</th>
+                  <th className="n">{tu('bonusCol')}</th>
+                  <th className="n">{tu('k080')}</th>
+                  <th className="n">{tu('k081')}</th>
+                  <th>{tu('howCol')}</th>
+                  <th className="n">{tu('k051')}</th>
+                  <th className="n">{tu('k057')}</th>
+                  <th className="n">{tu('k058')}</th>
+                  <th className="n">{tu('k082')}</th>
+                  <th className="n">{tu('k083')}</th>
+                  <th className="n">{tu('k084')}</th>
                 </tr>
+              </thead>
+              <tbody>
+                {items.map((item, i) => {
+                  const ph = pharmacy[`${item.employee?._id || item.employee}:${item.drug?._id}`]
+                  return (
+                    <tr key={item._id}>
+                      <td className="sl-sticky sl-num">{(page - 1) * size + i + 1}</td>
+                      <td className="sl-sticky sl-doc">
+                        {item.doctor ? personName(item.doctor) : tu('deletedDoctor')}
+                        {item.doctor?.uniqueNumber && <small>{item.doctor.uniqueNumber}</small>}
+                      </td>
+                      {showRep && <td className="sl-muted">{personName(item.employee)}</td>}
+                      <td>{item.drug?.name || '—'}</td>
+                      <td className="sl-muted">{item.hospital?.name || '—'}</td>
+                      <td>{item.bank ? <span className="sl-bank">{item.bank}</span> : '—'}</td>
+                      <td className="n">{fmt(item.quota)}</td>
+                      <td className="n">{fmt(item.prescription)}</td>
+                      <td className="n">{ph != null ? fmt(ph) : '—'}</td>
+                      <td className="n">{fmt(item.budget)}</td>
+                      <td className="n">{fmtPercent(item.coefficient)}</td>
+                      <td className="n strong">{fmt(item.totalBudget)}</td>
+                      <td className="sales-listing-how">{fmt(item.prescription)} × {fmt(item.budget)} ₾ × {fmtPercent(item.coefficient)} = {fmt(item.totalBudget)} ₾</td>
+                      <td className="n">{fmt(item.issuedBudget)}</td>
+                      <td className="n">{fmt(item.plannedBudget)}</td>
+                      <td className={`n${item.difference < 0 ? ' negative' : ''}`}>{fmt(item.difference)}</td>
+                      <td className="n">{fmt(item.analysisOfPreviousMonth)}</td>
+                      <td className={`n${item.budgetCalculation < 0 ? ' negative' : ''}`}>{fmt(item.budgetCalculation)}</td>
+                      <td className="n">{fmt(item.analysisOfCurrentMonth)}</td>
+                    </tr>
+                  )
+                })}
+                {items.length === 0 && (
+                  <tr><td className="sl-empty" colSpan={showRep ? 19 : 18}>{q ? tu('k085') : tu('k086')}</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {canScrollX && <div className="sl-scroll-hint">{L.scrollHint}</div>}
+
+          {count > 0 && (
+            <div className="sl-pager">
+              <span className="sl-pager-info">
+                {fmt((page - 1) * size + 1)}–{fmt(Math.min(page * size, count))} / {fmt(count)}
+              </span>
+              {pages > 1 && (
+                <div className="sl-pages">
+                  <button type="button" onClick={() => go(page - 1)} disabled={page === 1} aria-label={L.prev}>‹</button>
+                  {pageList(page, pages).map((n, i) => n === '…'
+                    ? <span key={`d${i}`} className="sl-dots">…</span>
+                    : <button key={n} type="button" className={n === page ? 'active' : ''} onClick={() => go(n)}>{n}</button>)}
+                  <button type="button" onClick={() => go(page + 1)} disabled={page === pages} aria-label={L.next}>›</button>
+                </div>
               )}
-            </tbody>
-          </table>
+              <label className="sl-size">
+                <select value={size} onChange={(e) => setSize(Number(e.target.value))}>
+                  {SIZES.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+                {L.perPage}
+              </label>
+            </div>
+          )}
         </div>
       )}
     </div>
