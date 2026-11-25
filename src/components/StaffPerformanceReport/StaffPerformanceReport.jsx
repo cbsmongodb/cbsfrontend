@@ -16,7 +16,7 @@ const TXT = {
   ka: {
     visits: 'ვიზიტები', doctors: 'ექიმები', paid: 'გადახდილი', rx: 'რეცეპტები', plan: 'გეგმა', sales: 'გაყიდვები', done: 'შესრულება',
     total: 'ჯამი', how: 'როგორ ითვლება?', perPage: 'გვერდზე',
-    hVisits: 'დასრულებული ვიზიტები (მივედი / წამოვედი / დასრულებული)',
+    hVisits: 'მხოლოდ დასრულებული ვიზიტები (დაგეგმილი, გაუქმებული და „მივედი“ არ ითვლება)',
     hDoctors: 'რამდენი სხვადასხვა ექიმი ნახა ამ ვიზიტებზე',
     hPaid: 'ექიმებზე გადახდილი თანხა ბიუჯეტებიდან (წაშლილი ბიუჯეტები არ ითვლება)',
     hRx: 'რეცეპტების შეყვანაში შეყვანილი რეცეპტები × წამლის ფასი',
@@ -28,7 +28,7 @@ const TXT = {
   en: {
     visits: 'Visits', doctors: 'Doctors', paid: 'Paid', rx: 'Prescriptions', plan: 'Plan', sales: 'Sales', done: 'Fulfilment',
     total: 'Total', how: 'How is it calculated?', perPage: 'per page',
-    hVisits: 'Finished visits (arrived / left / completed)',
+    hVisits: 'Finished visits only (planned, cancelled and "arrived" are not counted)',
     hDoctors: 'Different doctors seen on those visits',
     hPaid: 'Paid to doctors from budgets (deleted budgets excluded)',
     hRx: 'Entered prescriptions × drug price',
@@ -40,7 +40,7 @@ const TXT = {
   ru: {
     visits: 'Визиты', doctors: 'Врачи', paid: 'Выплачено', rx: 'Рецепты', plan: 'План', sales: 'Продажи', done: 'Выполнение',
     total: 'Итого', how: 'Как считается?', perPage: 'на странице',
-    hVisits: 'Завершённые визиты (пришёл / ушёл / завершён)',
+    hVisits: 'Только завершённые визиты (запланированные, отменённые и «пришёл» не считаются)',
     hDoctors: 'Сколько разных врачей посещено',
     hPaid: 'Выплачено врачам по бюджетам (удалённые не считаются)',
     hRx: 'Введённые рецепты × цена препарата',
