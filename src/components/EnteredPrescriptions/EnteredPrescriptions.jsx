@@ -162,28 +162,10 @@ export default function EnteredPrescriptions() {
     rx: groups.reduce((s, g) => s + g.rows.reduce((a, r) => a + (r.prescription || 0), 0), 0),
   }), [groups, srvTotals])
 
-  // a manager changes one line's bonus -> it becomes this doctor's bonus for this drug and month
-  const [bonusEdit, setBonusEdit] = useState(null) // { id, text }
-  async function saveBonus(row) {
-    if (!bonusEdit) return
-    setBusyId(`b:${row._id}`)
-    setError('')
-    try {
-      await apiFetch(`/api/my-entries/${row._id}/bonus`, { method: 'PUT', body: JSON.stringify({ value: bonusEdit.text }) })
-      setBonusEdit(null)
-      setNotice(t('saved'))
-      await load() // other lines of the same doctor + drug may have changed too
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setBusyId(null)
-    }
-  }
-
   function startEdit(row) {
     setConfirmKey(null)
     setEditId(row._id)
-    setDraft({ quota: row.quota || 0, prescription: row.prescription || 0 })
+    setDraft({ quota: row.quota || 0, prescription: row.prescription || 0, bonus: row.budget == null ? '' : String(row.budget) })
   }
 
   async function saveEdit(row) {
@@ -195,6 +177,12 @@ export default function EnteredPrescriptions() {
         body: JSON.stringify({ quota: Number(draft.quota) || 0, prescription: Number(draft.prescription) || 0 }),
       })
       setItems((prev) => prev.map((x) => (x._id === row._id ? { ...x, quota: saved.quota, prescription: saved.prescription } : x)))
+      // a manager also changed the bonus -> it becomes this doctor's bonus for this drug and month
+      const draftBonusChanged = canBonus && String(draft.bonus ?? '').trim() !== String(row.budget ?? '').trim()
+      if (draftBonusChanged) {
+        await apiFetch(`/api/my-entries/${row._id}/bonus`, { method: 'PUT', body: JSON.stringify({ value: draft.bonus }) })
+        await load() // other lines of the same doctor + drug may have changed too
+      }
       setEditId(null)
       setNotice(t('saved'))
     } catch (err) {
@@ -431,7 +419,13 @@ export default function EnteredPrescriptions() {
                               onChange={(e) => setDraft((d) => ({ ...d, prescription: e.target.value }))}
                               onKeyDown={(e) => { if (e.key === 'Enter') saveEdit(r); if (e.key === 'Escape') setEditId(null) }} />
                           </span>
-                          {canBonus && <span className="erx-n erx-bonus" data-label={BONUS_TXT}>{num(r.budget)} ₾</span>}
+                          {canBonus && (
+                            <span className="erx-n" data-label={BONUS_TXT}>
+                              <input type="text" inputMode="decimal" className="erx-num erx-num-bonus" value={draft.bonus} aria-label={BONUS_TXT} title={BONUS_EDIT_TXT}
+                                onChange={(e) => setDraft((d) => ({ ...d, bonus: e.target.value }))}
+                                onKeyDown={(e) => { if (e.key === 'Enter') saveEdit(r); if (e.key === 'Escape') setEditId(null) }} />
+                            </span>
+                          )}
                           <span className="erx-actions">
                             <button type="button" className="erx-btn erx-btn-primary" disabled={busyId === r._id} onClick={() => saveEdit(r)}>{t('save')}</button>
                             <button type="button" className="erx-btn" onClick={() => setEditId(null)}>{t('cancel')}</button>
@@ -441,20 +435,7 @@ export default function EnteredPrescriptions() {
                         <>
                           <span className="erx-n" data-label={t('quota')}>{num(r.quota)}</span>
                           <span className="erx-n erx-rx" data-label={t('prescriptions')}>{num(r.prescription)}</span>
-                          {canBonus && (bonusEdit?.id === r._id ? (
-                            <span className="erx-n erx-bonus-edit" data-label={BONUS_TXT}>
-                              <input type="text" inputMode="decimal" className="erx-num" value={bonusEdit.text} autoFocus aria-label={BONUS_TXT}
-                                onChange={(e) => setBonusEdit({ id: r._id, text: e.target.value })}
-                                onKeyDown={(e) => { if (e.key === 'Enter') saveBonus(r); if (e.key === 'Escape') setBonusEdit(null) }} />
-                              <button type="button" className="erx-icon erx-ok" title={t('save')} aria-label={t('save')} disabled={busyId === `b:${r._id}`} onClick={() => saveBonus(r)}>✓</button>
-                              <button type="button" className="erx-icon" title={t('cancel')} aria-label={t('cancel')} onClick={() => setBonusEdit(null)}>✕</button>
-                            </span>
-                          ) : (
-                            <button type="button" className="erx-n erx-bonus erx-bonus-btn" data-label={BONUS_TXT} title={BONUS_EDIT_TXT}
-                              onClick={() => { setEditId(null); setConfirmKey(null); setBonusEdit({ id: r._id, text: String(r.budget ?? '') }) }}>
-                              {num(r.budget)} ₾ <IconEdit />
-                            </button>
-                          ))}
+                          {canBonus && <span className="erx-n erx-bonus" data-label={BONUS_TXT}>{num(r.budget)} ₾</span>}
                           <span className="erx-actions">
                             {confirmKey === itemKey ? (
                               <>

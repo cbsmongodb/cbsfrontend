@@ -149,3 +149,5 @@
 .erx-bonus-edit { display: inline-flex; align-items: center; justify-content: flex-end; gap: 4px; }
 .erx-bonus-edit .erx-num { width: 64px; }
 .erx-ok { color: #15803d; font-weight: 800; }
+
+.erx-num-bonus { border-color: #93c5fd !important; background: #eff6ff !important; }
