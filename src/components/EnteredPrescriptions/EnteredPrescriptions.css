@@ -140,3 +140,12 @@
 .erx-emp-sum { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; color: #fff; background: var(--dir-a, #1e3a68); transition: filter .15s; }
 .erx-card .erx-emp.erx-emp-link:hover { opacity: 1; }
 .erx-card .erx-emp.erx-emp-link:hover .erx-emp-sum { filter: brightness(1.25); }
+
+/* manager edits a line's bonus */
+.erx-bonus-btn { justify-self: end; display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; margin: -4px -8px -4px 0; border: 1px dashed transparent; border-radius: 8px; background: none; font: inherit; cursor: pointer; }
+.erx-bonus-btn svg { opacity: .35; }
+.erx-bonus-btn:hover { border-color: #93c5fd; background: #eff6ff; }
+.erx-bonus-btn:hover svg { opacity: .9; }
+.erx-bonus-edit { display: inline-flex; align-items: center; justify-content: flex-end; gap: 4px; }
+.erx-bonus-edit .erx-num { width: 64px; }
+.erx-ok { color: #15803d; font-weight: 800; }

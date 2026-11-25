@@ -162,6 +162,24 @@ export default function EnteredPrescriptions() {
     rx: groups.reduce((s, g) => s + g.rows.reduce((a, r) => a + (r.prescription || 0), 0), 0),
   }), [groups, srvTotals])
 
+  // a manager changes one line's bonus -> it becomes this doctor's bonus for this drug and month
+  const [bonusEdit, setBonusEdit] = useState(null) // { id, text }
+  async function saveBonus(row) {
+    if (!bonusEdit) return
+    setBusyId(`b:${row._id}`)
+    setError('')
+    try {
+      await apiFetch(`/api/my-entries/${row._id}/bonus`, { method: 'PUT', body: JSON.stringify({ value: bonusEdit.text }) })
+      setBonusEdit(null)
+      setNotice(t('saved'))
+      await load() // other lines of the same doctor + drug may have changed too
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setBusyId(null)
+    }
+  }
+
   function startEdit(row) {
     setConfirmKey(null)
     setEditId(row._id)
@@ -423,7 +441,20 @@ export default function EnteredPrescriptions() {
                         <>
                           <span className="erx-n" data-label={t('quota')}>{num(r.quota)}</span>
                           <span className="erx-n erx-rx" data-label={t('prescriptions')}>{num(r.prescription)}</span>
-                          {canBonus && <span className="erx-n erx-bonus" data-label={BONUS_TXT}>{num(r.budget)} ₾</span>}
+                          {canBonus && (bonusEdit?.id === r._id ? (
+                            <span className="erx-n erx-bonus-edit" data-label={BONUS_TXT}>
+                              <input type="text" inputMode="decimal" className="erx-num" value={bonusEdit.text} autoFocus aria-label={BONUS_TXT}
+                                onChange={(e) => setBonusEdit({ id: r._id, text: e.target.value })}
+                                onKeyDown={(e) => { if (e.key === 'Enter') saveBonus(r); if (e.key === 'Escape') setBonusEdit(null) }} />
+                              <button type="button" className="erx-icon erx-ok" title={t('save')} aria-label={t('save')} disabled={busyId === `b:${r._id}`} onClick={() => saveBonus(r)}>✓</button>
+                              <button type="button" className="erx-icon" title={t('cancel')} aria-label={t('cancel')} onClick={() => setBonusEdit(null)}>✕</button>
+                            </span>
+                          ) : (
+                            <button type="button" className="erx-n erx-bonus erx-bonus-btn" data-label={BONUS_TXT} title={BONUS_EDIT_TXT}
+                              onClick={() => { setEditId(null); setConfirmKey(null); setBonusEdit({ id: r._id, text: String(r.budget ?? '') }) }}>
+                              {num(r.budget)} ₾ <IconEdit />
+                            </button>
+                          ))}
                           <span className="erx-actions">
                             {confirmKey === itemKey ? (
                               <>
@@ -461,6 +492,7 @@ export default function EnteredPrescriptions() {
 
 
 const BONUS_TXT = 'ბონუსი'
+const BONUS_EDIT_TXT = 'ბონუსის შეცვლა ამ ექიმზე, ამ თვეში'
 
 const SUM_TXT = {
   ka: { btn: 'წამლების ჯამი', title: 'წამლების ჯამი', drug: 'წამალი', doctors: 'ექიმები', plan: 'გეგმა', rx: 'რეცეპტები', total: 'ჯამი', close: 'დახურვა', loading: 'იტვირთება…', empty: 'ამ თვეში ჩანაწერი არ არის' },
