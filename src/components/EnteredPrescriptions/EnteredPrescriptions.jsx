@@ -10,6 +10,7 @@ import ReportLoader from '@/components/ReportLoader/ReportLoader'
 import MonthSelect from '@/components/MonthSelect/MonthSelect'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 import './EnteredPrescriptions.css'
+import BonusOverview, { isBonusViewer } from './BonusOverview'
 
 function currentMonth() {
   const d = new Date()
@@ -47,6 +48,8 @@ export default function EnteredPrescriptions() {
   const [employees, setEmployees] = useState([])
   const [employeeId, setEmployeeId] = useState('')
   const [month, setMonth] = useState(currentMonth())
+  const [canBonus, setCanBonus] = useState(false) // group / division managers see the bonus table
+  useEffect(() => { setCanBonus(isBonusViewer()) }, [])
   const [search, setSearch] = useState('')
 
   const [items, setItems] = useState([])
@@ -276,6 +279,7 @@ export default function EnteredPrescriptions() {
           <h1>{t('title')}</h1>
           <p className="erx-sub">{t('subtitle')}</p>
         </div>
+        {canBonus && <BonusOverview month={month} />}
         <ExcelExportButton title={`${t('title')} — ${toPeriod(month)}`} fileName={`${t('title')} ${toPeriod(month)}`} build={buildExcel} />
       </div>
 
