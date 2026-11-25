@@ -30,7 +30,6 @@ export default function EntryInfo({ computed, computing }) {
     <div className="entry-info">
       {chip(L.plan, e.planBoxes, computed.targetAmount)}
       {chip(L.rx, e.rxBoxes, computed.prescriptionAmt)}
-      {e.lines > 0 && !e.own && <span className="entry-chip warn">ⓘ {L.other}</span>}
       {e.legacy && e.lines > 0 && <span className="entry-chip warn">ⓘ {L.legacy}</span>}
     </div>
   )
