@@ -10,7 +10,6 @@ import ReportLoader from '@/components/ReportLoader/ReportLoader'
 import MonthSelect from '@/components/MonthSelect/MonthSelect'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 import './EnteredPrescriptions.css'
-import BonusOverview, { isBonusViewer } from './BonusOverview'
 
 function currentMonth() {
   const d = new Date()
@@ -28,6 +27,15 @@ const IconEdit = () => (
 const IconTrash = () => (
   <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M8 6V4h8v2" /><path d="M19 6l-1 14H6L5 6" /></svg>
 )
+
+// group / division managers (and admin / director) see each line's bonus
+function isBonusViewer() {
+  try {
+    const me = JSON.parse(localStorage.getItem('employee') || 'null')
+    const r = (me?.role?.name || '').toLowerCase().trim()
+    return /(group|division) manager/.test(r) || ['admin', 'director'].includes(r)
+  } catch { return false }
+}
 
 function isAdminUser() {
   try {
@@ -279,7 +287,6 @@ export default function EnteredPrescriptions() {
           <h1>{t('title')}</h1>
           <p className="erx-sub">{t('subtitle')}</p>
         </div>
-        {canBonus && <BonusOverview month={month} />}
         <ExcelExportButton title={`${t('title')} — ${toPeriod(month)}`} fileName={`${t('title')} ${toPeriod(month)}`} build={buildExcel} />
       </div>
 
@@ -342,7 +349,10 @@ export default function EnteredPrescriptions() {
                   <div>
                     {isAll && g.employeeName && (
                       <button type="button" className="erx-emp erx-emp-link" title={SL.btn}
-                        onClick={() => setSumFor({ id: g.employeeId, name: g.employeeName })}>{g.employeeName} <span aria-hidden="true">📊</span></button>
+                        onClick={() => setSumFor({ id: g.employeeId, name: g.employeeName })}>
+                        <span className="erx-emp-name">{g.employeeName}</span>
+                        <span className="erx-emp-sum">📊 {SL.btn}</span>
+                      </button>
                     )}
                     <div className="erx-doc-name">{g.doctor}</div>
                     {g.hospital && <div className="erx-doc-hosp">{g.hospital}</div>}
@@ -378,11 +388,12 @@ export default function EnteredPrescriptions() {
                 </div>
               </header>
 
-              <div className="erx-rows">
+              <div className={`erx-rows${canBonus ? ' with-bonus' : ''}`}>
                 <div className="erx-row erx-row-head">
                   <span>{t('drug')}</span>
                   <span className="erx-n">{t('quota')}</span>
                   <span className="erx-n">{t('prescriptions')}</span>
+                  {canBonus && <span className="erx-n">{BONUS_TXT}</span>}
                   <span />
                 </div>
                 {g.rows.map((r) => {
@@ -402,6 +413,7 @@ export default function EnteredPrescriptions() {
                               onChange={(e) => setDraft((d) => ({ ...d, prescription: e.target.value }))}
                               onKeyDown={(e) => { if (e.key === 'Enter') saveEdit(r); if (e.key === 'Escape') setEditId(null) }} />
                           </span>
+                          {canBonus && <span className="erx-n erx-bonus" data-label={BONUS_TXT}>{num(r.budget)} ₾</span>}
                           <span className="erx-actions">
                             <button type="button" className="erx-btn erx-btn-primary" disabled={busyId === r._id} onClick={() => saveEdit(r)}>{t('save')}</button>
                             <button type="button" className="erx-btn" onClick={() => setEditId(null)}>{t('cancel')}</button>
@@ -411,6 +423,7 @@ export default function EnteredPrescriptions() {
                         <>
                           <span className="erx-n" data-label={t('quota')}>{num(r.quota)}</span>
                           <span className="erx-n erx-rx" data-label={t('prescriptions')}>{num(r.prescription)}</span>
+                          {canBonus && <span className="erx-n erx-bonus" data-label={BONUS_TXT}>{num(r.budget)} ₾</span>}
                           <span className="erx-actions">
                             {confirmKey === itemKey ? (
                               <>
@@ -446,6 +459,8 @@ export default function EnteredPrescriptions() {
   )
 }
 
+
+const BONUS_TXT = 'ბონუსი'
 
 const SUM_TXT = {
   ka: { btn: 'წამლების ჯამი', title: 'წამლების ჯამი', drug: 'წამალი', doctors: 'ექიმები', plan: 'გეგმა', rx: 'რეცეპტები', total: 'ჯამი', close: 'დახურვა', loading: 'იტვირთება…', empty: 'ამ თვეში ჩანაწერი არ არის' },
