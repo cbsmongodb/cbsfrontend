@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 import './SalesListing.css'
 
 const ALL = 'all'
@@ -157,6 +158,50 @@ export default function SalesListing() {
     return () => { el.removeEventListener('scroll', check); window.removeEventListener('resize', check) }
   }, [data])
 
+  // Excel: every row that matches the filters (all pages), easy to read: names, numbers, ₾ and %
+  async function buildExcel() {
+    const base = new URLSearchParams({ period: monthValueToPeriod(monthValue), limit: 500 })
+    if (employeeId && employeeId !== ALL) base.set('employee', employeeId)
+    else if (group) base.set('group', group)
+    else if (section) base.set('section', section)
+    if (drug) base.set('drug', drug)
+    if (q) base.set('q', q)
+    let rows = [], ph = {}, pg = 1, last = 1
+    do {
+      base.set('page', pg)
+      const d = await apiFetch(`/api/doctor-entry-items/page?${base}`)
+      rows = rows.concat(d.items || [])
+      ph = { ...ph, ...(d.pharmacySales || {}) }
+      last = Math.max(1, Math.ceil((d.count || 0) / 500))
+      pg += 1
+    } while (pg <= last)
+    const N = (v) => ({ value: Number(v) || 0, kind: 'number' })
+    const money = (v) => ({ value: Math.round((Number(v) || 0) * 100) / 100, kind: 'money' })
+    return {
+      headers: [
+        L.employee, tu('k049'), 'ID', tu('k076'), tu('k077'), tu('k055'),
+        tu('planCol'), tu('k064'), tu('pharmacyCol'), tu('bonusCol'), tu('k080'),
+        tu('k081'), tu('k051'), tu('k057'), tu('k058'), tu('k082'), tu('k083'), tu('k084'),
+      ],
+      rows: rows.map((it) => {
+        const pharmacy = ph[`${it.employee?._id || it.employee}:${it.drug?._id}`]
+        return [
+          personName(it.employee),
+          it.doctor ? personName(it.doctor) : tu('deletedDoctor'),
+          { value: it.doctor?.uniqueNumber || '', kind: 'text' },
+          it.drug?.name || '—',
+          it.hospital?.name || '—',
+          it.bank || '—',
+          N(it.quota), N(it.prescription), pharmacy != null ? N(pharmacy) : '—',
+          money(it.budget),
+          { value: Number(it.coefficient) || 0, kind: 'pct' },
+          money(it.totalBudget), money(it.issuedBudget), money(it.plannedBudget), money(it.difference),
+          money(it.analysisOfPreviousMonth), money(it.budgetCalculation), money(it.analysisOfCurrentMonth),
+        ]
+      }),
+    }
+  }
+
   function shiftMonth(delta) {
     const [y, m] = monthValue.split('-').map(Number)
     const d = new Date(y, m - 1 + delta, 1)
@@ -177,7 +222,19 @@ export default function SalesListing() {
   return (
     <div className="sales-listing-page">
       {loading && !data && <ReportLoader variant="page" />}
-      <h1>{tu('k072')}</h1>
+      <div className="sl-title-row">
+        <h1>{tu('k072')}</h1>
+        <ExcelExportButton
+          title={[
+            `${tu('k072')} — ${monthValueToPeriod(monthValue)}`,
+            employeeId && employeeId !== ALL ? personName(employees.find((e) => e._id === employeeId) || me) : '',
+            group ? filters.groups.find((g) => g.id === group)?.name : section ? filters.sections.find((s) => s.id === section)?.name : '',
+            drug ? drugName : '',
+          ].filter(Boolean).join(' · ')}
+          fileName={`${tu('k072')} ${monthValue}`}
+          build={buildExcel}
+        />
+      </div>
 
       <div className="sales-listing-filters">
         {!onlySelf && filters.sections.length > 0 && (
