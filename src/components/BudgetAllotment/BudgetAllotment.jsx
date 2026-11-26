@@ -1,14 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
+import MonthSelect from '@/components/MonthSelect/MonthSelect'
 import './BudgetAllotment.css'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
-import DateInput from '@/components/DateInput/DateInput'
-import { fmtDate } from '@/lib/date'
 
 const LOCALE_TAG = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' }
 const localeTag = (locale) => LOCALE_TAG[locale] || 'ka-GE'
@@ -18,24 +17,54 @@ function fmtMoney(n) {
   return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
-// allotCols: the money columns of the table
-const COLS = {
-  ka: { paid: 'ექიმზე გადახდილი თანხა', sales: 'ექიმის გაყიდვების თანხა', quota: 'ექიმის კვოტის თანხა', balance: 'ექიმის ბალანსი',
-        balanceHint: 'ოქტომბრიდან ამ ბიუჯეტამდე: გადახდილი − დარიცხული. მინუსი = ექიმს ვალში ვართ, პლიუსი = ავანსად აქვს' },
-  en: { paid: 'Paid to doctor', sales: 'Doctor sales amount', quota: 'Doctor quota amount', balance: 'Doctor balance',
-        balanceHint: 'From October up to this budget: paid − accrued. Minus = we owe the doctor, plus = paid ahead' },
-  ru: { paid: 'Выплачено врачу', sales: 'Сумма продаж врача', quota: 'Сумма квоты врача', balance: 'Баланс врача',
-        balanceHint: 'С октября до этого бюджета: выплачено − начислено. Минус = мы должны врачу, плюс = аванс' },
+// allotMonth: texts of this page
+const TXT = {
+  ka: {
+    month: 'თვე', division: 'დივიზიონი', group: 'ჯგუფი', employee: 'თანამშრომელი',
+    all: 'ყველა', allGroups: 'ყველა ჯგუფი', allEmployees: 'ყველა თანამშრომელი',
+    paid: 'ექიმზე გადახდილი თანხა', sales: 'ექიმის გაყიდვების თანხა', quota: 'ექიმის კვოტის თანხა', balance: 'ექიმის ბალანსი',
+    balanceHint: 'ოქტომბრიდან ამ ბიუჯეტამდე: გადახდილი − დარიცხული. მინუსი = ექიმს ვალში ვართ, პლიუსი = ავანსად აქვს',
+    totalBalanceHint: 'თითო ექიმის ბალანსი თვის ბოლოს, ჯამში',
+    search: 'ძებნა: ექიმი ან თანამშრომელი...', rows: 'ჩანაწერი', deleted: 'წაშლილი ბიუჯეტი — ჯამში არ ითვლება',
+  },
+  en: {
+    month: 'Month', division: 'Division', group: 'Group', employee: 'Employee',
+    all: 'All', allGroups: 'All groups', allEmployees: 'All employees',
+    paid: 'Paid to doctor', sales: 'Doctor sales amount', quota: 'Doctor quota amount', balance: 'Doctor balance',
+    balanceHint: 'From October up to this budget: paid − accrued. Minus = we owe the doctor, plus = paid ahead',
+    totalBalanceHint: "Each doctor's balance at the month's end, summed",
+    search: 'Search: doctor or employee...', rows: 'rows', deleted: 'Deleted budget — not counted',
+  },
+  ru: {
+    month: 'Месяц', division: 'Дивизион', group: 'Группа', employee: 'Сотрудник',
+    all: 'Все', allGroups: 'Все группы', allEmployees: 'Все сотрудники',
+    paid: 'Выплачено врачу', sales: 'Сумма продаж врача', quota: 'Сумма квоты врача', balance: 'Баланс врача',
+    balanceHint: 'С октября до этого бюджета: выплачено − начислено. Минус = мы должны врачу, плюс = аванс',
+    totalBalanceHint: 'Баланс каждого врача на конец месяца, в сумме',
+    search: 'Поиск: врач или сотрудник...', rows: 'записей', deleted: 'Удалённый бюджет — не считается',
+  },
 }
+
+function lastMonth() {
+  const d = new Date()
+  d.setDate(1)
+  d.setMonth(d.getMonth() - 1)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+}
+
+const balClass = (n) => (Number(n) < 0 ? 'is-owe' : Number(n) > 0 ? 'is-ahead' : '')
 
 export default function BudgetAllotment() {
   const t = useTranslations('reports')
   const locale = useLocale()
-  const C = COLS[locale] || COLS.ka
+  const L = TXT[locale] || TXT.ka
+
+  const [month, setMonth] = useState(lastMonth())
+  const [filters, setFilters] = useState({ sections: [], groups: [] })
+  const [sectionId, setSectionId] = useState('')
+  const [groupId, setGroupId] = useState('')
   const [employees, setEmployees] = useState([])
   const [employeeId, setEmployeeId] = useState('')
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
   const [search, setSearch] = useState('')
 
   const [data, setData] = useState(null)
@@ -43,35 +72,61 @@ export default function BudgetAllotment() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    apiFetch('/api/employees?lite=1')
-      .then(setEmployees)
-      .catch((err) => setError(err.message))
+    apiFetch('/api/employees?lite=1').then(setEmployees).catch((err) => setError(err.message))
+    apiFetch('/api/budgets/allotment/filters').then((f) => setFilters({ sections: [], groups: [], ...f })).catch(() => {})
   }, [])
 
-  async function load() {
-    setLoading(true)
-    setError('')
-    try {
-      const params = new URLSearchParams()
-      if (employeeId) params.set('employee_id', employeeId)
-      if (startDate) params.set('start_date', startDate)
-      if (endDate) params.set('end_date', endDate)
-      const result = await apiFetch(`/api/budgets/allotment?${params}`)
-      setData(result)
-      if (!employeeId) setEmployeeId('') // keep as-is; server defaulted to logged-in employee
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // no auto-load on mount — wait until the person picks an employee
-  // and hits Submit, so their own name never silently appears by default
-
-  const filteredDocs = (data?.docs || []).filter(
-    (row) => !search || row.doctorName?.toLowerCase().includes(search.toLowerCase())
+  // groups of the chosen division; people of the chosen division / group
+  const groupsShown = useMemo(
+    () => filters.groups.filter((g) => !sectionId || g.section === sectionId),
+    [filters.groups, sectionId]
   )
+  const employeesShown = useMemo(() => {
+    if (!sectionId && !groupId) return employees
+    const ids = new Set()
+    ;(groupId ? filters.groups.filter((g) => g.id === groupId) : groupsShown).forEach((g) => g.employees.forEach((e) => ids.add(e)))
+    if (!groupId && sectionId) {
+      const h = filters.sections.find((s) => s.id === sectionId)?.head
+      if (h) ids.add(h)
+    }
+    return employees.filter((e) => ids.has(String(e._id)))
+  }, [employees, filters, groupsShown, sectionId, groupId])
+
+  // a person outside the chosen division / group is dropped
+  useEffect(() => {
+    if (employeeId && employees.length && !employeesShown.some((e) => String(e._id) === String(employeeId))) setEmployeeId('')
+  }, [employeesShown, employeeId, employees.length])
+
+  // any change -> load again
+  useEffect(() => {
+    let alive = true
+    async function load() {
+      setLoading(true)
+      setError('')
+      try {
+        const params = new URLSearchParams({ month })
+        if (employeeId) params.set('employee_id', employeeId)
+        else if (groupId) params.set('group', groupId)
+        else if (sectionId) params.set('section', sectionId)
+        const result = await apiFetch(`/api/budgets/allotment?${params}`)
+        if (alive) setData(result)
+      } catch (err) {
+        if (alive) setError(err.message)
+      } finally {
+        if (alive) setLoading(false)
+      }
+    }
+    load()
+    return () => { alive = false }
+  }, [month, sectionId, groupId, employeeId])
+
+  const filteredDocs = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return (data?.docs || []).filter((r) => !q
+      || r.doctorName?.toLowerCase().includes(q)
+      || r.employeeName?.toLowerCase().includes(q)
+      || String(r.doctorUniqueNumber || '').toLowerCase().includes(q))
+  }, [data, search])
 
   // 50 rows per page on screen; Excel still gets every row
   const PAGE = 50
@@ -90,16 +145,18 @@ export default function BudgetAllotment() {
     </div>
   ) : null
 
+  const fmtDate = (d) => (d ? new Date(d).toLocaleDateString(localeTag(locale)) : '—')
+
   return (
     <div className="budgetallot-page">
       <div className="budgetallot-header">
         <div className="report-title-row">
           <h1>{t('budget.title')}</h1>
           <ExcelExportButton title={t('budget.title')} build={() => ({
-            headers: [t('budget.budgetId'), t('common.date'), t('common.doctor'), t('budget.doctorId'), C.paid, C.sales, C.quota, C.balance, t('budget.isActive')],
+            headers: [t('common.date'), L.employee, t('common.doctor'), t('budget.doctorId'), L.paid, L.sales, L.quota, L.balance, t('budget.isActive')],
             rows: filteredDocs.map((row) => [
-              row._id.slice(-6),
               row.date ? { value: new Date(row.date), kind: 'date' } : '—',
+              row.employeeName,
               row.doctorName,
               row.doctorUniqueNumber,
               { value: Number(row.paidAmount) || 0, kind: 'money' },
@@ -115,61 +172,64 @@ export default function BudgetAllotment() {
 
       {error && <p className="resource-error">{error}</p>}
 
-      <div className="budgetallot-kpi-row">
-        <div className="budgetallot-kpi-card">
-          <span className="budgetallot-kpi-value">{data ? fmtMoney(data.totalPaidAmount) : '0'}</span>
-          <span className="budgetallot-kpi-label">{t('budget.totalPaid')}</span>
-        </div>
-        <div className="budgetallot-kpi-card">
-          <span className="budgetallot-kpi-value">{data ? fmtMoney(data.totalTargetAmount) : '0'}</span>
-          <span className="budgetallot-kpi-label">{t('budget.totalTarget')}</span>
-        </div>
-        <div className="budgetallot-kpi-card">
-          <span className="budgetallot-kpi-value">{data ? fmtMoney(data.totalSalesAmount) : '0'}</span>
-          <span className="budgetallot-kpi-label">{t('budget.totalSales')}</span>
-        </div>
-        <div className="budgetallot-kpi-card">
-          <span className="budgetallot-kpi-value">{data ? fmtMoney(data.totalPrescriptionAmount) : '0'}</span>
-          <span className="budgetallot-kpi-label">{t('budget.prescriptionAmount')}</span>
-        </div>
-      </div>
-
       <div className="budgetallot-filters">
         <div className="budgetallot-field">
-          <label>{t('common.startDate')}</label>
-          <DateInput  className="field-input" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+          <label>{L.month}</label>
+          <MonthSelect value={month} onChange={(v) => v && setMonth(v)} />
         </div>
-        <div className="budgetallot-field">
-          <label>{t('common.endDate')}</label>
-          <DateInput  className="field-input" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-        </div>
+        {filters.sections.length > 1 && (
+          <div className="budgetallot-field">
+            <label>{L.division}</label>
+            <select className="field-input" value={sectionId} onChange={(e) => { setSectionId(e.target.value); setGroupId('') }}>
+              <option value="">{L.all}</option>
+              {filters.sections.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+            </select>
+          </div>
+        )}
+        {groupsShown.length > 1 && (
+          <div className="budgetallot-field">
+            <label>{L.group}</label>
+            <select className="field-input" value={groupId} onChange={(e) => setGroupId(e.target.value)}>
+              <option value="">{L.allGroups}</option>
+              {groupsShown.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
+            </select>
+          </div>
+        )}
         <div className="budgetallot-field budgetallot-field-grow">
-          <label>{t('common.employee')}</label>
+          <label>{L.employee}</label>
           <SearchableSelect
-            options={employees}
+            options={employeesShown}
             value={employeeId}
             onChange={setEmployeeId}
-            getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
-            placeholder={t('common.myAccount')}
+            getLabel={(o) => o.name || `${o.firstName} ${o.lastName || ''}`.trim()}
+            placeholder={L.allEmployees}
           />
         </div>
-        <button type="button" className="btn budgetallot-submit-btn" onClick={load} disabled={loading}>
-          <span>{loading ? <span className="btn-spinner" aria-hidden="true" /> : t('common.show')}</span>
-        </button>
       </div>
 
-
-      {data && (
-        <h3 className="budgetallot-table-title">Employee Budgets of {data.employeeName}:</h3>
-      )}
-      {!data && (
-        <p className="budgetallot-placeholder">{t('budget.pickEmployee')}</p>
-      )}
+      <div className="budgetallot-kpi-row">
+        <div className="budgetallot-kpi-card">
+          <span className="budgetallot-kpi-value">{fmtMoney(data?.totalPaidAmount)}</span>
+          <span className="budgetallot-kpi-label">{L.paid}</span>
+        </div>
+        <div className="budgetallot-kpi-card">
+          <span className="budgetallot-kpi-value">{fmtMoney(data?.totalSalesAmount)}</span>
+          <span className="budgetallot-kpi-label">{L.sales}</span>
+        </div>
+        <div className="budgetallot-kpi-card">
+          <span className="budgetallot-kpi-value">{fmtMoney(data?.totalTargetAmount)}</span>
+          <span className="budgetallot-kpi-label">{L.quota}</span>
+        </div>
+        <div className="budgetallot-kpi-card" title={L.totalBalanceHint}>
+          <span className={`budgetallot-kpi-value budgetallot-balance ${balClass(data?.totalBalance)}`}>{fmtMoney(data?.totalBalance)}</span>
+          <span className="budgetallot-kpi-label">{L.balance}</span>
+        </div>
+      </div>
 
       <input
         type="text"
         className="field-input budgetallot-search"
-        placeholder={t('budget.searchDoctor')}
+        placeholder={L.search}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
@@ -180,32 +240,32 @@ export default function BudgetAllotment() {
         <table className="budgetallot-table">
           <thead>
             <tr>
-              <th>{t('budget.budgetId')}</th>
               <th>{t('common.date')}</th>
+              <th>{L.employee}</th>
               <th>{t('common.doctor')}</th>
               <th>{t('budget.doctorId')}</th>
-              <th>{C.paid}</th>
-              <th>{C.sales}</th>
-              <th>{C.quota}</th>
-              <th title={C.balanceHint}>{C.balance} <span className="budgetallot-hint">ⓘ</span></th>
+              <th className="num">{L.paid}</th>
+              <th className="num">{L.sales}</th>
+              <th className="num">{L.quota}</th>
+              <th className="num" title={L.balanceHint}>{L.balance} <span className="budgetallot-hint">ⓘ</span></th>
               <th>{t('budget.isActive')}</th>
             </tr>
           </thead>
           <tbody>
             {pageDocs.map((row) => (
-              <tr key={row._id}>
-                <td>{row._id.slice(-6)}</td>
-                <td>{row.date ? fmtDate(row.date) : '—'}</td>
+              <tr key={row._id} className={row.isActive ? '' : 'is-deleted'} title={row.isActive ? undefined : L.deleted}>
+                <td>{fmtDate(row.date)}</td>
+                <td>{row.employeeName}</td>
                 <td>{row.doctorName}</td>
                 <td>{row.doctorUniqueNumber}</td>
-                <td>{fmtMoney(row.paidAmount)}</td>
-                <td>{fmtMoney(row.salesAmount)}</td>
-                <td>{fmtMoney(row.targetAmount)}</td>
-                <td className={`budgetallot-balance ${Number(row.balance) < 0 ? 'is-owe' : Number(row.balance) > 0 ? 'is-ahead' : ''}`}>{fmtMoney(row.balance)}</td>
+                <td className="num">{fmtMoney(row.paidAmount)}</td>
+                <td className="num">{fmtMoney(row.salesAmount)}</td>
+                <td className="num">{fmtMoney(row.targetAmount)}</td>
+                <td className={`num budgetallot-balance ${balClass(row.balance)}`}>{fmtMoney(row.balance)}</td>
                 <td>{row.isActive ? '✓' : '✕'}</td>
               </tr>
             ))}
-            {filteredDocs.length === 0 && (
+            {!loading && filteredDocs.length === 0 && (
               <tr>
                 <td colSpan={9}>{t('budget.noData')}</td>
               </tr>
@@ -216,9 +276,7 @@ export default function BudgetAllotment() {
 
       {pager}
 
-      <p className="budgetallot-showing">
-        Showing {filteredDocs.length ? safePage * PAGE + 1 : 0} to {Math.min((safePage + 1) * PAGE, filteredDocs.length)} of {filteredDocs.length} entries
-      </p>
+      <p className="budgetallot-showing">{filteredDocs.length} {L.rows}</p>
     </div>
   )
 }

@@ -198,3 +198,13 @@
 .budgetallot-table td.budgetallot-balance.is-owe { color: #c0392b; }
 .budgetallot-table td.budgetallot-balance.is-ahead { color: #1e8e5a; }
 .budgetallot-hint { opacity: 0.6; font-size: 0.85em; cursor: help; }
+
+/* ===== allotMonth: one month, numbers right, balance colours ===== */
+.budgetallot-table th.num, .budgetallot-table td.num { text-align: right; white-space: nowrap; }
+.budgetallot-table td.budgetallot-balance, .budgetallot-kpi-value.budgetallot-balance { font-weight: 800; }
+.budgetallot-balance.is-owe { color: #c0392b !important; }
+.budgetallot-balance.is-ahead { color: #1e8e5a !important; }
+.budgetallot-table tr.is-deleted td { opacity: 0.45; text-decoration: line-through; }
+.budgetallot-hint { opacity: 0.6; font-size: 0.85em; cursor: help; }
+.budgetallot-filters select.field-input { min-width: 170px; }
+@media (max-width: 760px) { .budgetallot-kpi-row { grid-template-columns: repeat(2, 1fr); } }
