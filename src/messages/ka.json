@@ -792,8 +792,8 @@
     "efficiency": {
       "title": "თანამშრომელთა ეფექტურობა",
       "searchPlaceholder": "ძიება (თანამშრომელი, ჰოსპიტალი, ექიმი)...",
-      "visitGroups": "ვიზიტის ჯგუფი",
-      "doctorsSeen": "ნანახი ექიმი, სულ",
+      "visitGroups": "ვიზიტი",
+      "doctorsSeen": "ნანახი ექიმი",
       "doctorsCount": "{n} ექიმი",
       "viewCards": "ბარათები",
       "viewTable": "ცხრილი",

@@ -789,8 +789,8 @@
     "efficiency": {
       "title": "Эффективность сотрудников",
       "searchPlaceholder": "Поиск (сотрудник, больница, врач)...",
-      "visitGroups": "Групп визитов",
-      "doctorsSeen": "Посещено врачей, всего",
+      "visitGroups": "Визиты",
+      "doctorsSeen": "Посещено врачей",
       "doctorsCount": "{n} врачей",
       "viewCards": "Карточки",
       "viewTable": "Таблица",

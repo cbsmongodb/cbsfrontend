@@ -789,8 +789,8 @@
     "efficiency": {
       "title": "Employee Efficiency",
       "searchPlaceholder": "Search (employee, hospital, doctor)...",
-      "visitGroups": "Visit groups",
-      "doctorsSeen": "Doctors seen, total",
+      "visitGroups": "Visits",
+      "doctorsSeen": "Doctors seen",
       "doctorsCount": "{n} doctors",
       "viewCards": "Cards",
       "viewTable": "Table",

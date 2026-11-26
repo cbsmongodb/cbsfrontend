@@ -34,9 +34,17 @@ const FTXT = {
   ru: { division: 'Дивизион', group: 'Группа', all: 'Все', allGroups: 'Все группы' },
 }
 
+// small explanation under each number of the summary
+const HINT = {
+  ka: { visits: 'ერთი თანამშრომელი, ერთ დღეს, ერთ ადგილას', doctors: 'ყველა ვიზიტზე ჯამში', emps: 'ვისაც ვიზიტი ჰქონდა', places: 'მონახულებული ჰოსპიტალი / აფთიაქი' },
+  en: { visits: 'one employee, one day, one place', doctors: 'on all visits together', emps: 'who had visits', places: 'hospitals / pharmacies visited' },
+  ru: { visits: 'один сотрудник, один день, одно место', doctors: 'на всех визитах вместе', emps: 'у кого были визиты', places: 'посещённые больницы / аптеки' },
+}
+
 export default function EfficiencyReport() {
   const t = useTranslations('reports')
   const locale = useLocale()
+  const H = HINT[locale] || HINT.ka
   const [employees, setEmployees] = useState([])
   const [hospitals, setHospitals] = useState([])
 
@@ -250,18 +258,22 @@ export default function EfficiencyReport() {
           <div className="efficiency-summary-item">
             <span>{totals.rows}</span>
             <label>{t('efficiency.visitGroups')}</label>
+            <small>{H.visits}</small>
           </div>
           <div className="efficiency-summary-item">
             <span>{totals.totalVisits}</span>
             <label>{t('efficiency.doctorsSeen')}</label>
+            <small>{H.doctors}</small>
           </div>
           <div className="efficiency-summary-item">
             <span>{totals.uniqueEmployees}</span>
             <label>{t('common.employee')}</label>
+            <small>{H.emps}</small>
           </div>
           <div className="efficiency-summary-item">
             <span>{totals.uniqueHospitals}</span>
             <label>{t('common.hospital')}</label>
+            <small>{H.places}</small>
           </div>
         </div>
       )}
