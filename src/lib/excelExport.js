@@ -20,7 +20,7 @@ export function parseCell(text) {
 }
 
 // headers: ['Date', ...]; rows: [[cell, ...]] (strings, numbers or {value, kind})
-export async function exportXlsx({ title, subtitle, fileName, headers, rows, totalLabel = 'Total' }) {
+export async function exportXlsx({ title, subtitle, fileName, headers, rows, totalLabel = 'Total', noTotal = [] }) {
   const mod = await import('exceljs')
   const ExcelJS = mod.default || mod
   const wb = new ExcelJS.Workbook()
@@ -86,7 +86,7 @@ export async function exportXlsx({ title, subtitle, fileName, headers, rows, tot
   })
 
   // totals for money / number columns
-  const sumCols = kinds.map((k, i) => (k === 'money' || k === 'number') && i > 0)
+  const sumCols = kinds.map((k, i) => (k === 'money' || k === 'number') && i > 0 && !noTotal.includes(i))
   if (rows.length > 1 && sumCols.some(Boolean)) {
     const tr = ws.getRow(5 + rows.length)
     for (let i = 0; i < cols; i++) {

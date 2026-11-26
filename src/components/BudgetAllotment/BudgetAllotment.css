@@ -208,3 +208,8 @@
 .budgetallot-hint { opacity: 0.6; font-size: 0.85em; cursor: help; }
 .budgetallot-filters select.field-input { min-width: 170px; }
 @media (max-width: 760px) { .budgetallot-kpi-row { grid-template-columns: repeat(2, 1fr); } }
+
+/* title left, Excel button right — like every other page */
+.budgetallot-header .budgetallot-title-row { flex: 1; width: 100%; justify-content: space-between; }
+.budgetallot-header .budgetallot-title-row h1 { margin: 0; }
+.budgetallot-title-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }

@@ -145,16 +145,32 @@ export default function BudgetAllotment() {
     </div>
   ) : null
 
+  // allotExcel: which month / division / group / person is in the file
+  function excelSubtitle() {
+    const parts = [`${L.month}: ${month}`]
+    const sec = filters.sections.find((s) => s.id === sectionId)
+    const grp = filters.groups.find((g) => g.id === groupId)
+    const emp = employees.find((e) => String(e._id) === String(employeeId))
+    parts.push(`${L.division}: ${sec ? sec.name : L.all}`)
+    if (grp) parts.push(`${L.group}: ${grp.name}`)
+    parts.push(`${L.employee}: ${emp ? (emp.name || `${emp.firstName} ${emp.lastName || ''}`.trim()) : L.allEmployees}`)
+    parts.push(`${L.balance}: ${fmtMoney(data?.totalBalance)} ₾`)
+    return `Global CBS · ${parts.join(' · ')}`
+  }
+
   const fmtDate = (d) => (d ? new Date(d).toLocaleDateString(localeTag(locale)) : '—')
 
   return (
     <div className="budgetallot-page">
       <div className="budgetallot-header">
-        <div className="report-title-row">
+        <div className="report-title-row budgetallot-title-row">
           <h1>{t('budget.title')}</h1>
-          <ExcelExportButton title={t('budget.title')} build={() => ({
-            headers: [t('common.date'), L.employee, t('common.doctor'), t('budget.doctorId'), L.paid, L.sales, L.quota, L.balance, t('budget.isActive')],
-            rows: filteredDocs.map((row) => [
+          <div className="budgetallot-title-actions">
+          {loading && <ReportLoader />}
+          <ExcelExportButton title={`${t('budget.title')} — ${month}`} fileName={`${t('budget.title')} ${month}`} subtitle={excelSubtitle()} build={() => ({
+            headers: [t('common.date'), L.employee, t('common.doctor'), t('budget.doctorId'), L.paid, L.sales, L.quota, L.balance],
+            noTotal: [7], // a balance is not added up line by line
+            rows: filteredDocs.filter((row) => row.isActive).map((row) => [
               row.date ? { value: new Date(row.date), kind: 'date' } : '—',
               row.employeeName,
               row.doctorName,
@@ -163,10 +179,9 @@ export default function BudgetAllotment() {
               { value: Number(row.salesAmount) || 0, kind: 'money' },
               { value: Number(row.targetAmount) || 0, kind: 'money' },
               { value: Number(row.balance) || 0, kind: 'money' },
-              row.isActive ? '✓' : '✕',
             ]),
           })} />
-          {loading && <ReportLoader />}
+          </div>
         </div>
       </div>
 
