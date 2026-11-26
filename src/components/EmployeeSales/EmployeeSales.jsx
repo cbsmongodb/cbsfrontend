@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { apiFetch } from '@/lib/api'
 import EmployeeSaleModal from './EmployeeSaleModal'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
@@ -20,6 +20,11 @@ const IconMoney = () => (
   </svg>
 )
 
+const FTXT = {
+  ka: { division: 'დივიზიონი', group: 'ჯგუფი', all: 'ყველა', allGroups: 'ყველა ჯგუფი' },
+  en: { division: 'Division', group: 'Group', all: 'All', allGroups: 'All groups' },
+  ru: { division: 'Дивизион', group: 'Группа', all: 'Все', allGroups: 'Все группы' },
+}
 const BOXES_HEAD = { ka: 'გაყიდული ყუთები', en: 'Boxes sold', ru: 'Продано упаковок' }
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
 import MonthPicker from '@/components/MonthPicker/MonthPicker'
@@ -34,6 +39,19 @@ export default function EmployeeSales() {
   const [search, setSearch] = useState('')
   const [employeeId, setEmployeeId] = useState('')
   const [month, setMonth] = useState('') // "YYYY-MM" or "" = all months
+  // division / group filter: only the divisions this user may see
+  const F = FTXT[locale] || FTXT.ka
+  const [filters, setFilters] = useState({ sections: [], groups: [] })
+  const [sectionId, setSectionId] = useState('')
+  const [groupId, setGroupId] = useState('')
+  const groupsShown = useMemo(() => filters.groups.filter((g) => !sectionId || g.section === sectionId), [filters.groups, sectionId])
+  const employeesShown = useMemo(() => {
+    if (!sectionId && !groupId) return employees
+    const ids = new Set()
+    ;(groupId ? filters.groups.filter((g) => g.id === groupId) : groupsShown).forEach((g) => g.employees.forEach((e) => ids.add(e)))
+    if (!groupId && sectionId) { const h = filters.sections.find((s) => s.id === sectionId)?.head; if (h) ids.add(h) }
+    return employees.filter((e) => ids.has(String(e._id)))
+  }, [employees, filters, groupsShown, sectionId, groupId])
 
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(50)
@@ -45,9 +63,10 @@ export default function EmployeeSales() {
 
   useEffect(() => {
     apiFetch('/api/employee-sales/employees').then(setEmployees).catch((err) => setError(err.message))
+    apiFetch('/api/employee-sales/filters').then((f) => setFilters({ sections: [], groups: [], ...f })).catch(() => {})
   }, [])
 
-  async function load(targetPage = 1, size = pageSize, m = month) {
+  async function load(targetPage = 1, size = pageSize, m = month, emp = employeeId) {
     setLoading(true)
     setError('')
     try {
@@ -55,7 +74,9 @@ export default function EmployeeSales() {
       params.set('page', targetPage)
       params.set('limit', size)
       if (search.trim()) params.set('search', search.trim())
-      if (employeeId) params.set('employee', employeeId)
+      if (emp) params.set('employee', emp)
+      if (groupId) params.set('group', groupId)
+      else if (sectionId) params.set('section', sectionId)
       if (m) params.set('month', m)
 
       const result = await apiFetch(`/api/employee-sales?${params}`)
@@ -72,6 +93,16 @@ export default function EmployeeSales() {
     load(1)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // a new division / group -> reload (and drop a person who is not in it)
+  const firstFilter = useRef(true)
+  useEffect(() => {
+    if (firstFilter.current) { firstFilter.current = false; return }
+    let emp = employeeId
+    if (emp && !employeesShown.some((e) => String(e._id) === String(emp))) { emp = ''; setEmployeeId('') }
+    load(1, pageSize, month, emp)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sectionId, groupId])
 
   async function handleDelete(id) {
     if (!confirm(tu('k147'))) return
@@ -96,10 +127,28 @@ export default function EmployeeSales() {
             <label>{tb('month')}</label>
             <MonthPicker value={month} onChange={(m) => { setMonth(m); load(1, pageSize, m) }} />
           </div>
+          {filters.sections.length > 1 && (
+            <div className="employee-sales-field">
+              <label>{F.division}</label>
+              <select className="field-input" value={sectionId} onChange={(e) => { setSectionId(e.target.value); setGroupId('') }}>
+                <option value="">{F.all}</option>
+                {filters.sections.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+              </select>
+            </div>
+          )}
+          {groupsShown.length > 1 && (
+            <div className="employee-sales-field">
+              <label>{F.group}</label>
+              <select className="field-input" value={groupId} onChange={(e) => setGroupId(e.target.value)}>
+                <option value="">{F.allGroups}</option>
+                {groupsShown.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
+              </select>
+            </div>
+          )}
           <div className="employee-sales-field">
             <label>{tu('k044')}</label>
             <SearchableSelect
-              options={employees}
+              options={employeesShown}
               value={employeeId}
               onChange={setEmployeeId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
