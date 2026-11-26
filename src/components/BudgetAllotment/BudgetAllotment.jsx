@@ -326,8 +326,8 @@ export default function BudgetAllotment() {
             {pageDocs.map((row) => (
               <tr key={row._id} className={row.isActive ? '' : 'is-deleted'} title={row.isActive ? undefined : L.deleted}>
                 <td>{fmtDate(row.date)}</td>
-                <td>{row.employeeName}</td>
-                <td>{row.doctorName}</td>
+                <td title={row.employeeName}>{row.employeeName}</td>
+                <td title={row.doctorName}>{row.doctorName}</td>
                 <td>{row.doctorUniqueNumber}</td>
                 <td className="num">{fmtMoney(row.paidAmount)}</td>
                 <td className="num">{fmtMoney(row.salesAmount)}</td>
