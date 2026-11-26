@@ -180,7 +180,6 @@ const NAV = [
     items: [
       { href: 'dashboard/doctors', key: 'doctors' },
       { href: 'dashboard/doctor-categories', key: 'doctorCategories' },
-      { href: 'dashboard/doctor-subcategories', key: 'doctorSubcategories' },
       { href: 'dashboard/hospitals', key: 'hospitals' },
       { href: 'dashboard/hospitals/import', key: 'hospitalsImport' },
       { href: 'dashboard/pharmacies', key: 'pharmacies' },
