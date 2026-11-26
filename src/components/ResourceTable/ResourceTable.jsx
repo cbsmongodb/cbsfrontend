@@ -50,7 +50,7 @@ function readPermissions(endpoint) {
   }
 }
 
-export default function ResourceTable({ title, endpoint, fields: rawFields, paginated = false, pageSize = 50 }) {
+export default function ResourceTable({ title, endpoint, fields: rawFields, paginated = false, pageSize = 50, headerExtra = null }) {
   const fields = rawFields.map((f) => (!f.type && /^is[A-Z]/.test(f.name) ? { ...f, type: 'checkbox' } : f))
   const t = useTranslations('resourceTable')
   const WEEKDAYS = [
@@ -647,7 +647,11 @@ export default function ResourceTable({ title, endpoint, fields: rawFields, pagi
 
   return (
     <div className="resource-table">
-      <h1>{title}</h1>
+      {headerExtra ? (
+        <div className="report-title-row"><h1>{title}</h1>{headerExtra}</div>
+      ) : (
+        <h1>{title}</h1>
+      )}
 
       {(perms.add || (editingId && perms.update)) && (
       <form className={`resource-form ${editingId ? 'is-editing' : ''}`} onSubmit={handleSubmit}>
