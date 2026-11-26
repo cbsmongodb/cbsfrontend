@@ -60,6 +60,9 @@ const RESOURCE_KEY = {
   'dashboard/leaves': 'leaves',
 }
 
+// these two pages: only admin, director and Tea Kobelashvili (server decides)
+const ONLY_FEW = new Set(['dashboard/drugs/import', 'dashboard/hospitals/import'])
+
 function hasAccess(privileges, isAdmin, href) {
   if (isAdmin) return true
   const key = RESOURCE_KEY[href]
@@ -260,7 +263,7 @@ export default function Sidebar() {
         if (!fresh?.role) return
         let base = {}
         try { base = JSON.parse(localStorage.getItem('employee') || '{}') || {} } catch { /* ignore */ }
-        const next = { ...base, role: fresh.role }
+        const next = { ...base, role: fresh.role, canImport: !!fresh.canImport }
         localStorage.setItem('employee', JSON.stringify(next))
         setEmployee(next)
       })
@@ -462,7 +465,7 @@ export default function Sidebar() {
               )
             }
 
-            const visibleItems = entry.items.filter((item) => hasAccess(privileges, isAdmin, item.href))
+            const visibleItems = entry.items.filter((item) => ONLY_FEW.has(item.href) ? !!employee?.canImport : hasAccess(privileges, isAdmin, item.href))
             if (visibleItems.length === 0) return null
 
             const isOpen = openGroups[entry.id]

@@ -1,4 +1,10 @@
 import HospitalImport from "@/components/HospitalImport/HospitalImport";
+import ImportGate from "@/components/ImportGate/ImportGate";
+
 export default function Page() {
-  return <HospitalImport />;
+  return (
+    <ImportGate>
+      <HospitalImport />
+    </ImportGate>
+  );
 }
