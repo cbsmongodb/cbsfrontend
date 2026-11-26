@@ -192,3 +192,9 @@
 .budgetallot-pagination button:hover:not(:disabled) { border-color: #3f74d6; background: #eef4fd; }
 .budgetallot-pagination button:disabled { opacity: 0.4; cursor: default; }
 .budgetallot-pagination span { color: #334155; font-weight: 600; font-size: 13.5px; padding: 0 10px; font-variant-numeric: tabular-nums; }
+
+/* doctor balance: red = we owe the doctor, green = paid ahead */
+.budgetallot-table td.budgetallot-balance { font-weight: 700; }
+.budgetallot-table td.budgetallot-balance.is-owe { color: #c0392b; }
+.budgetallot-table td.budgetallot-balance.is-ahead { color: #1e8e5a; }
+.budgetallot-hint { opacity: 0.6; font-size: 0.85em; cursor: help; }

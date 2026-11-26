@@ -18,9 +18,20 @@ function fmtMoney(n) {
   return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
+// allotCols: the money columns of the table
+const COLS = {
+  ka: { paid: 'ექიმზე გადახდილი თანხა', sales: 'ექიმის გაყიდვების თანხა', quota: 'ექიმის კვოტის თანხა', balance: 'ექიმის ბალანსი',
+        balanceHint: 'ოქტომბრიდან ამ ბიუჯეტამდე: გადახდილი − დარიცხული. მინუსი = ექიმს ვალში ვართ, პლიუსი = ავანსად აქვს' },
+  en: { paid: 'Paid to doctor', sales: 'Doctor sales amount', quota: 'Doctor quota amount', balance: 'Doctor balance',
+        balanceHint: 'From October up to this budget: paid − accrued. Minus = we owe the doctor, plus = paid ahead' },
+  ru: { paid: 'Выплачено врачу', sales: 'Сумма продаж врача', quota: 'Сумма квоты врача', balance: 'Баланс врача',
+        balanceHint: 'С октября до этого бюджета: выплачено − начислено. Минус = мы должны врачу, плюс = аванс' },
+}
+
 export default function BudgetAllotment() {
   const t = useTranslations('reports')
   const locale = useLocale()
+  const C = COLS[locale] || COLS.ka
   const [employees, setEmployees] = useState([])
   const [employeeId, setEmployeeId] = useState('')
   const [startDate, setStartDate] = useState('')
@@ -85,18 +96,16 @@ export default function BudgetAllotment() {
         <div className="report-title-row">
           <h1>{t('budget.title')}</h1>
           <ExcelExportButton title={t('budget.title')} build={() => ({
-            headers: [t('budget.budgetId'), t('common.date'), t('common.doctor'), t('budget.doctorId'), t('budget.paidAmount'), t('budget.advanceAmount'), t('budget.salesAmount'), t('budget.deltaAmount'), t('budget.targetAmount'), t('budget.prescriptionAmount'), t('budget.isActive')],
+            headers: [t('budget.budgetId'), t('common.date'), t('common.doctor'), t('budget.doctorId'), C.paid, C.sales, C.quota, C.balance, t('budget.isActive')],
             rows: filteredDocs.map((row) => [
               row._id.slice(-6),
               row.date ? { value: new Date(row.date), kind: 'date' } : '—',
               row.doctorName,
               row.doctorUniqueNumber,
               { value: Number(row.paidAmount) || 0, kind: 'money' },
-              { value: Number(row.advanceAmount) || 0, kind: 'money' },
               { value: Number(row.salesAmount) || 0, kind: 'money' },
-              { value: Number(row.deltaAmount) || 0, kind: 'money' },
               { value: Number(row.targetAmount) || 0, kind: 'money' },
-              { value: Number(row.prescriptionAmt) || 0, kind: 'money' },
+              { value: Number(row.balance) || 0, kind: 'money' },
               row.isActive ? '✓' : '✕',
             ]),
           })} />
@@ -175,12 +184,10 @@ export default function BudgetAllotment() {
               <th>{t('common.date')}</th>
               <th>{t('common.doctor')}</th>
               <th>{t('budget.doctorId')}</th>
-              <th>{t('budget.paidAmount')}</th>
-              <th>{t('budget.advanceAmount')}</th>
-              <th>{t('budget.salesAmount')}</th>
-              <th>{t('budget.deltaAmount')}</th>
-              <th>{t('budget.targetAmount')}</th>
-              <th>{t('budget.prescriptionAmount')}</th>
+              <th>{C.paid}</th>
+              <th>{C.sales}</th>
+              <th>{C.quota}</th>
+              <th title={C.balanceHint}>{C.balance} <span className="budgetallot-hint">ⓘ</span></th>
               <th>{t('budget.isActive')}</th>
             </tr>
           </thead>
@@ -192,17 +199,15 @@ export default function BudgetAllotment() {
                 <td>{row.doctorName}</td>
                 <td>{row.doctorUniqueNumber}</td>
                 <td>{fmtMoney(row.paidAmount)}</td>
-                <td>{fmtMoney(row.advanceAmount)}</td>
                 <td>{fmtMoney(row.salesAmount)}</td>
-                <td>{fmtMoney(row.deltaAmount)}</td>
                 <td>{fmtMoney(row.targetAmount)}</td>
-                <td>{fmtMoney(row.prescriptionAmt)}</td>
+                <td className={`budgetallot-balance ${Number(row.balance) < 0 ? 'is-owe' : Number(row.balance) > 0 ? 'is-ahead' : ''}`}>{fmtMoney(row.balance)}</td>
                 <td>{row.isActive ? '✓' : '✕'}</td>
               </tr>
             ))}
             {filteredDocs.length === 0 && (
               <tr>
-                <td colSpan={11}>{t('budget.noData')}</td>
+                <td colSpan={9}>{t('budget.noData')}</td>
               </tr>
             )}
           </tbody>
