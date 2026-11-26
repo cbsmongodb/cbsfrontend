@@ -4,15 +4,6 @@ import { useEffect, useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
-import {
-  BarChart as RBarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts'
 import './BudgetAllotment.css'
 import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
@@ -158,27 +149,6 @@ export default function BudgetAllotment() {
         </button>
       </div>
 
-      <div className="budgetallot-chart-card">
-        {data?.chartData?.length > 0 ? (
-          <ResponsiveContainer width="100%" height={Math.max(data.chartData.length * 42, 200)}>
-            <RBarChart data={data.chartData} layout="vertical" margin={{ top: 4, right: 24, bottom: 4, left: 4 }}>
-              <defs>
-                <linearGradient id="allotBarGradient" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#3f74d6" />
-                  <stop offset="100%" stopColor="#2f9e6e" />
-                </linearGradient>
-              </defs>
-              <CartesianGrid horizontal={false} stroke="#eceef2" />
-              <XAxis type="number" tick={{ fontSize: 11, fill: '#9aa7ba' }} axisLine={false} tickLine={false} />
-              <YAxis type="category" dataKey="name" width={140} tick={{ fontSize: 12, fontWeight: 600, fill: '#0f2744' }} axisLine={false} tickLine={false} />
-              <Tooltip />
-              <Bar dataKey="value" name={t('budget.paidAmount')} fill="url(#allotBarGradient)" radius={[0, 8, 8, 0]} maxBarSize={22} />
-            </RBarChart>
-          </ResponsiveContainer>
-        ) : (
-          <p className="budgetallot-no-chart">{t('budget.noChart')}</p>
-        )}
-      </div>
 
       {data && (
         <h3 className="budgetallot-table-title">Employee Budgets of {data.employeeName}:</h3>
