@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import { useMonthNames } from '@/lib/months'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
@@ -18,6 +18,12 @@ function currentMonth() {
 const PAGE_SIZE = 100
 const fmt = (n) => Number(n || 0).toLocaleString('en-US')
 
+const FTXT = {
+  ka: { division: 'დივიზიონი', group: 'ჯგუფი', all: 'ყველა', allGroups: 'ყველა ჯგუფი' },
+  en: { division: 'Division', group: 'Group', all: 'All', allGroups: 'All groups' },
+  ru: { division: 'Дивизион', group: 'Группа', all: 'Все', allGroups: 'Все группы' },
+}
+
 export default function PrescriptionsReport() {
   const t = useTranslations('reports')
   const months = useMonthNames()
@@ -25,6 +31,23 @@ export default function PrescriptionsReport() {
   const [employees, setEmployees] = useState([])
   const [month, setMonth] = useState(currentMonth()) // one month
   const [employeeId, setEmployeeId] = useState('')
+  // division / group filter: only the divisions this user may see
+  const F = FTXT[useLocale()] || FTXT.ka
+  const [filters, setFilters] = useState({ sections: [], groups: [] })
+  const [sectionId, setSectionId] = useState('')
+  const [groupId, setGroupId] = useState('')
+  const groupsShown = useMemo(() => filters.groups.filter((g) => !sectionId || g.section === sectionId), [filters.groups, sectionId])
+  const employeesShown = useMemo(() => {
+    if (!sectionId && !groupId) return employees
+    const ids = new Set()
+    ;(groupId ? filters.groups.filter((g) => g.id === groupId) : groupsShown).forEach((g) => g.employees.forEach((e) => ids.add(e)))
+    if (!groupId && sectionId) { const h = filters.sections.find((s) => s.id === sectionId)?.head; if (h) ids.add(h) }
+    return employees.filter((e) => ids.has(String(e._id)))
+  }, [employees, filters, groupsShown, sectionId, groupId])
+  // a person outside the chosen division / group -> back to "all"
+  useEffect(() => {
+    if (employeeId && (sectionId || groupId) && !employeesShown.some((e) => String(e._id) === String(employeeId))) setEmployeeId('')
+  }, [employeesShown]) // eslint-disable-line react-hooks/exhaustive-deps
   const [search, setSearch] = useState('')
 
   const [rows, setRows] = useState([])
@@ -42,12 +65,13 @@ export default function PrescriptionsReport() {
 
   useEffect(() => {
     apiFetch('/api/employees?lite=1').then(setEmployees).catch(() => {})
+    apiFetch('/api/reports/prescriptions/filters').then((f) => setFilters({ sections: [], groups: [], ...f })).catch(() => {})
   }, [])
   // the table follows the month / employee on its own
   useEffect(() => {
     loadReport()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [month, employeeId])
+  }, [month, employeeId, sectionId, groupId])
 
   async function loadReport() {
     setLoading(true)
@@ -56,6 +80,8 @@ export default function PrescriptionsReport() {
       const params = new URLSearchParams()
       if (month) { params.set('from', month); params.set('to', month) }
       if (employeeId) params.set('employee', employeeId)
+      if (groupId) params.set('group', groupId)
+      else if (sectionId) params.set('section', sectionId)
       const data = await apiFetch(`/api/reports/prescriptions?${params}`)
       setRows(Array.isArray(data) ? data : [])
       setLoaded(true)
@@ -159,6 +185,24 @@ export default function PrescriptionsReport() {
             <label>{t('common.month')}</label>
             <MonthSelect value={month} onChange={(v) => v && setMonth(v)} />
           </div>
+          {!isRep && filters.sections.length > 1 && (
+            <div className="rx-report-field">
+              <label>{F.division}</label>
+              <select className="field-input" value={sectionId} onChange={(e) => { setSectionId(e.target.value); setGroupId('') }}>
+                <option value="">{F.all}</option>
+                {filters.sections.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+              </select>
+            </div>
+          )}
+          {!isRep && groupsShown.length > 1 && (
+            <div className="rx-report-field">
+              <label>{F.group}</label>
+              <select className="field-input" value={groupId} onChange={(e) => setGroupId(e.target.value)}>
+                <option value="">{F.allGroups}</option>
+                {groupsShown.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
+              </select>
+            </div>
+          )}
           <div className="rx-report-field">
             <label>{t('common.employee')}</label>
             {isRep ? (
@@ -170,7 +214,7 @@ export default function PrescriptionsReport() {
               />
             ) : (
               <SearchableSelect
-                options={employees}
+                options={employeesShown}
                 value={employeeId}
                 onChange={setEmployeeId}
                 getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
