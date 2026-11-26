@@ -106,12 +106,12 @@ export default function BudgetAllotment() {
     const w = 320
     const left = Math.max(8, Math.min(r.left + r.width / 2 - w / 2, window.innerWidth - w - 8))
     const below = r.bottom + 8
-    setTip({ text, left, top: below, w })
+    setTip({ text, left, top: below, w, open: true }) // allotTipSmooth: stays mounted, fades out
   }
   const tipProps = (text) => ({
     onMouseEnter: (e) => showTip(e, text),
-    onMouseLeave: () => setTip(null),
-    onClick: (e) => (tip?.text === text ? setTip(null) : showTip(e, text)),
+    onMouseLeave: () => setTip((x) => (x ? { ...x, open: false } : x)),
+    onClick: (e) => (tip?.open && tip?.text === text ? setTip((x) => ({ ...x, open: false })) : showTip(e, text)),
     className: 'has-tip',
   })
 
@@ -348,7 +348,7 @@ export default function BudgetAllotment() {
       {pager}
 
       {tip && (
-        <div className="budgetallot-tip" style={{ top: tip.top, left: tip.left, width: tip.w }} role="tooltip">
+        <div className={`budgetallot-tip${tip.open ? ' is-open' : ''}`} style={{ top: tip.top, left: tip.left, width: tip.w }} role="tooltip">
           {tip.text}
         </div>
       )}
