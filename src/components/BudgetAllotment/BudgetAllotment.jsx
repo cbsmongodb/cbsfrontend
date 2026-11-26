@@ -311,15 +311,15 @@ export default function BudgetAllotment() {
         <table className="budgetallot-table">
           <thead>
             <tr>
-              <th {...tipProps(H.date)}>{t('common.date')} <span className="budgetallot-hint">ⓘ</span></th>
-              <th {...tipProps(H.employee)}>{L.employee} <span className="budgetallot-hint">ⓘ</span></th>
+              <th>{t('common.date')}</th>
+              <th>{L.employee}</th>
               <th>{t('common.doctor')}</th>
-              <th {...tipProps(H.doctorId)}>{t('budget.doctorId')} <span className="budgetallot-hint">ⓘ</span></th>
+              <th>{t('budget.doctorId')}</th>
               <th {...tipProps(H.paid)} className="num has-tip">{L.paid} <span className="budgetallot-hint">ⓘ</span></th>
               <th {...tipProps(H.sales)} className="num has-tip">{L.sales} <span className="budgetallot-hint">ⓘ</span></th>
               <th {...tipProps(H.quota)} className="num has-tip">{L.quota} <span className="budgetallot-hint">ⓘ</span></th>
               <th {...tipProps(H.balance)} className="num has-tip">{L.balance} <span className="budgetallot-hint">ⓘ</span></th>
-              <th {...tipProps(H.active)}>{t('budget.isActive')} <span className="budgetallot-hint">ⓘ</span></th>
+              <th>{t('budget.isActive')}</th>
             </tr>
           </thead>
           <tbody>
