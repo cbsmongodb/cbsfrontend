@@ -33,6 +33,7 @@ const CTXT = {
 const money2 = (n) => (Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const BOXES_HEAD = { ka: 'გაყიდული ყუთები', en: 'Boxes sold', ru: 'Продано упаковок' }
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
+import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 import MonthPicker from '@/components/MonthPicker/MonthPicker'
 import { fmtDate } from '@/lib/date'
 
@@ -127,6 +128,39 @@ export default function EmployeeSales() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sectionId, groupId])
 
+  // Excel: every sale that matches the filters (all pages), not only the visible page
+  async function buildExcel() {
+    const base = new URLSearchParams({ limit: 500 })
+    if (search.trim()) base.set('search', search.trim())
+    if (employeeId) base.set('employee', employeeId)
+    if (month) base.set('month', month)
+    if (groupId) base.set('group', groupId)
+    else if (sectionId) base.set('section', sectionId)
+    let all = [], pg = 1, last = 1
+    do {
+      base.set('page', pg)
+      const r = await apiFetch(`/api/employee-sales?${base}`)
+      all = all.concat(r.docs || [])
+      last = r.pages || 1
+      pg += 1
+    } while (pg <= last)
+    const XL = { ka: { date: 'თარიღი', emp: 'თანამშრომელი', amount: 'თანხა (ყუთები × ფასი)', corr: 'დაკორექტირებული', final: 'საბოლოო თანხა', boxes: 'გაყიდული ყუთები' },
+      en: { date: 'Date', emp: 'Employee', amount: 'Amount (boxes × price)', corr: 'Corrected', final: 'Final amount', boxes: 'Boxes sold' },
+      ru: { date: 'Дата', emp: 'Сотрудник', amount: 'Сумма (упаковки × цена)', corr: 'Скорректировано', final: 'Итоговая сумма', boxes: 'Продано упаковок' } }[locale] || {}
+    const day = (d) => { if (!d) return ''; const t = new Date(+new Date(d) + 4 * 3600e3); return { value: new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate())), kind: 'date' } }
+    return {
+      headers: [XL.date, XL.emp, XL.amount, XL.corr, XL.final, XL.boxes],
+      rows: all.map((r) => [
+        day(r.date),
+        r.employeeName || '—',
+        { value: Number(r.saleAmount) || 0, kind: 'money' },
+        r.correctedAmount != null ? { value: Number(r.correctedAmount), kind: 'money' } : '',
+        { value: Number(r.correctedAmount ?? r.saleAmount) || 0, kind: 'money' },
+        { value: Number(r.saleBoxes) || 0, kind: 'number' },
+      ]),
+    }
+  }
+
   async function handleDelete(id) {
     if (!confirm(tu('k147'))) return
     try {
@@ -141,7 +175,10 @@ export default function EmployeeSales() {
     <div className="employee-sales-page">
       {loading && <ReportLoader variant="page" />}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}><h1>{tu('k148')}</h1>
-        <button className="btn" onClick={() => { setEditId(null); setShowModal(true) }}><span>{tu('k149')}</span></button>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <ExcelExportButton title={`${tu('k148')}${month ? ` — ${month.split('-').reverse().join('/')}` : ''}`} build={buildExcel} />
+          <button className="btn" onClick={() => { setEditId(null); setShowModal(true) }}><span>{tu('k149')}</span></button>
+        </div>
       </div>
 
       <div className="employee-sales-filters">
