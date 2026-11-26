@@ -84,7 +84,9 @@ function Pct({ v }) {
 
 export default function StaffPerformanceReport() {
   const t = useTranslations('reports')
-  const L = TXT[useLocale()] || TXT.ka
+  const locale = useLocale()
+  const useLocaleSafe = () => locale
+  const L = TXT[locale] || TXT.ka
   const [mode, setMode] = useState('month')
   const [month, setMonth] = useState(currentMonthValue())
   const [from, setFrom] = useState(defaultFrom())
@@ -135,6 +137,44 @@ export default function StaffPerformanceReport() {
       .finally(() => id === req.current && setLoading(false))
   }, [mode, month, from, to, sectionId, groupId, employeeId, page, size])
 
+  // Excel: everyone that matches the filters (all pages), with plain, self-explaining column names
+  async function buildStaffExcel() {
+    const XL = {
+      ka: { emp: 'თანამშრომელი', visits: 'დასრულებული ვიზიტები', doctors: 'მონახულებული ექიმები (სხვადასხვა)', paid: 'ექიმებზე გადახდილი (₾)',
+        rxA: 'რეცეპტები — თანხა (₾)', rxB: 'რეცეპტები — კოლოფი', planA: 'გეგმა — თანხა (₾)', planB: 'გეგმა — კოლოფი',
+        salesA: 'გაყიდვები აფთიაქებიდან — თანხა (₾)', salesB: 'გაყიდვები აფთიაქებიდან — კოლოფი', done: 'გეგმის შესრულება (გაყიდვა ÷ გეგმა)' },
+      en: { emp: 'Employee', visits: 'Finished visits', doctors: 'Doctors seen (different)', paid: 'Paid to doctors (₾)',
+        rxA: 'Prescriptions — amount (₾)', rxB: 'Prescriptions — boxes', planA: 'Plan — amount (₾)', planB: 'Plan — boxes',
+        salesA: 'Pharmacy sales — amount (₾)', salesB: 'Pharmacy sales — boxes', done: 'Plan fulfilment (sales ÷ plan)' },
+      ru: { emp: 'Сотрудник', visits: 'Завершённые визиты', doctors: 'Посещено врачей (разных)', paid: 'Выплачено врачам (₾)',
+        rxA: 'Рецепты — сумма (₾)', rxB: 'Рецепты — упаковки', planA: 'План — сумма (₾)', planB: 'План — упаковки',
+        salesA: 'Продажи из аптек — сумма (₾)', salesB: 'Продажи из аптек — упаковки', done: 'Выполнение плана (продажи ÷ план)' },
+    }[useLocaleSafe()] || {}
+    const p = new URLSearchParams({ limit: 200 })
+    if (mode === 'month') { p.set('mode', 'month'); p.set('month', month) } else { p.set('mode', 'range'); p.set('from', from); p.set('to', to) }
+    if (sectionId) p.set('section', sectionId)
+    if (groupId) p.set('group', groupId)
+    if (employeeId) p.set('employee', employeeId)
+    let all = [], pg = 1, last = 1, isMonth = false
+    do {
+      p.set('page', pg)
+      const r = await apiFetch(`/api/reports/staff-performance?${p}`)
+      all = all.concat(r.docs || []); last = r.pages || 1; isMonth = r.mode === 'month'; pg += 1
+    } while (pg <= last)
+    const N = (v) => ({ value: Number(v) || 0, kind: 'number' })
+    const M = (v) => ({ value: Math.round((Number(v) || 0) * 100) / 100, kind: 'money' })
+    return {
+      headers: [XL.emp, XL.visits, XL.doctors, XL.paid, ...(isMonth ? [XL.rxA, XL.rxB, XL.planA, XL.planB, XL.salesA, XL.salesB, XL.done] : [])],
+      rows: all.map((r) => [
+        r.employeeName, N(r.visits), N(r.doctorsVisited), M(r.totalPaidAmount),
+        ...(isMonth ? [
+          M(r.totalPrescriptionAmount), N(r.prescriptionBoxes), M(r.targetAmount), N(r.targetBoxes), M(r.salesAmount), N(r.salesBoxes),
+          r.fulfillment == null ? '—' : { value: r.fulfillment / 100, kind: 'pct' },
+        ] : []),
+      ]),
+    }
+  }
+
   const isMonthMode = data?.mode === 'month'
   const tot = data?.totals || {}
   const cols = isMonthMode ? 9 : 4
@@ -143,21 +183,10 @@ export default function StaffPerformanceReport() {
     <div className="staff-performance">
       <div className="report-title-row">
         <h1>{t('staff.title')}</h1>
-        <ExcelExportButton title={t('staff.title')} build={() => ({
-          headers: [t('common.employee'), L.visits, L.doctors, L.paid, ...(isMonthMode ? [L.rx, L.plan, L.sales, `${L.done} %`] : [])],
-          rows: (data?.docs || []).map((r) => [
-            r.employeeName,
-            { value: r.visits || 0, kind: 'number' },
-            { value: r.doctorsVisited || 0, kind: 'number' },
-            { value: r.totalPaidAmount || 0, kind: 'number' },
-            ...(isMonthMode ? [
-              { value: r.totalPrescriptionAmount || 0, kind: 'number' },
-              { value: r.targetAmount || 0, kind: 'number' },
-              { value: r.salesAmount || 0, kind: 'number' },
-              { value: r.fulfillment == null ? 0 : r.fulfillment / 100, kind: 'pct' },
-            ] : []),
-          ]),
-        })} />
+        <ExcelExportButton
+          title={`${t('staff.title')} — ${mode === 'month' ? month.split('-').reverse().join('/') : `${from.split('-').reverse().join('/')} – ${to.split('-').reverse().join('/')}`}`}
+          build={buildStaffExcel}
+        />
         {loading && <ReportLoader />}
       </div>
 
