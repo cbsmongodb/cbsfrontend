@@ -52,12 +52,68 @@ function lastMonth() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
 }
 
+// allotTips: what every column means (hover / tap on the header)
+const TIPS = {
+  ka: {
+    date: 'ბიუჯეტის თარიღი — რომელ თვეს ეკუთვნის.',
+    employee: 'ვის ხაზზეა ბიუჯეტი შეყვანილი.',
+    doctorId: 'ექიმის უნიკალური ნომერი.',
+    paid: 'რამდენი მიეცა ექიმს რეალურად.\nმენეჯერი ხელით წერს ბიუჯეტის შეყვანისას (ველი „რა თანხას ვუხდით ექიმს“).',
+    sales: 'ექიმის რეცეპტებით რამდენი გაიყიდა, ლარში.\n= გამოწერილი კოლოფი × კოეფიციენტი × წამლის ფასი, ამ თვის ყველა წამალზე.\nკოეფიციენტი = თანამშრომლის აფთიაქის გაყიდვები ÷ მისი რეცეპტები.\nითვლება ბიუჯეტის შეყვანის მომენტში.',
+    quota: 'ექიმის გეგმა ლარში.\n= გეგმის კოლოფი (კვოტა) × წამლის ფასი, ამ თვის ყველა წამალზე.\nითვლება ბიუჯეტის შეყვანის მომენტში.',
+    balance: 'ექიმთან ანგარიში ამ ბიუჯეტის შემდეგ.\n= ოქტომბრიდან აქამდე ექიმზე გადახდილი − რეცეპტებით დარიცხული ბონუსი (გადასახდელი).\nმინუსი (წითელი) = ექიმს ვალში ვართ.\nპლიუსი (მწვანე) = ექიმს ავანსად აქვს.\n0 = ანგარიში სწორია.',
+    active: '✓ = მოქმედი ბიუჯეტი.\n✕ = წაშლილი — ჯამებში არ ითვლება.',
+    totalBalance: 'თითო ექიმის ბალანსი თვის ბოლოს, შეკრებილი.\nმინუსი = ჯამში ექიმებს ვალში ვართ.',
+    totals: 'ამ თვის მოქმედი ბიუჯეტების ჯამი (წაშლილების გარეშე).',
+  },
+  en: {
+    date: 'Budget date — the month it belongs to.',
+    employee: 'Whose line the budget is on.',
+    doctorId: "The doctor's unique number.",
+    paid: 'What the doctor was actually paid.\nThe manager types it when entering the budget.',
+    sales: "Sold on the doctor's prescriptions, in GEL.\n= prescribed boxes × coefficient × drug price, all drugs of the month.\nCoefficient = employee's pharmacy sales ÷ their prescriptions.\nCalculated when the budget is entered.",
+    quota: "The doctor's plan in GEL.\n= plan boxes (quota) × drug price, all drugs of the month.\nCalculated when the budget is entered.",
+    balance: 'Account with the doctor after this budget.\n= paid to the doctor since October − bonus accrued by prescriptions.\nMinus (red) = we owe the doctor.\nPlus (green) = paid ahead.\n0 = settled.',
+    active: '✓ = active budget.\n✕ = deleted — not counted in totals.',
+    totalBalance: "Each doctor's balance at the month's end, summed.",
+    totals: "Sum of this month's active budgets (deleted ones excluded).",
+  },
+  ru: {
+    date: 'Дата бюджета — к какому месяцу относится.',
+    employee: 'На чьей линии бюджет.',
+    doctorId: 'Уникальный номер врача.',
+    paid: 'Сколько реально выплачено врачу.\nМенеджер вводит при создании бюджета.',
+    sales: 'Продано по рецептам врача, в лари.\n= выписанные коробки × коэффициент × цена, все препараты месяца.\nКоэффициент = продажи сотрудника в аптеках ÷ его рецепты.\nСчитается при вводе бюджета.',
+    quota: 'План врача в лари.\n= коробки плана (квота) × цена, все препараты месяца.\nСчитается при вводе бюджета.',
+    balance: 'Расчёт с врачом после этого бюджета.\n= выплачено с октября − начислено бонуса по рецептам.\nМинус (красный) = мы должны врачу.\nПлюс (зелёный) = аванс.\n0 = расчёт закрыт.',
+    active: '✓ = действующий бюджет.\n✕ = удалён — в суммах не считается.',
+    totalBalance: 'Баланс каждого врача на конец месяца, в сумме.',
+    totals: 'Сумма действующих бюджетов месяца (без удалённых).',
+  },
+}
+
 const balClass = (n) => (Number(n) < 0 ? 'is-owe' : Number(n) > 0 ? 'is-ahead' : '')
 
 export default function BudgetAllotment() {
   const t = useTranslations('reports')
   const locale = useLocale()
   const L = TXT[locale] || TXT.ka
+  const H = TIPS[locale] || TIPS.ka
+  // one floating hint, fixed to the screen so the table's scroll box can't cut it
+  const [tip, setTip] = useState(null)
+  const showTip = (e, text) => {
+    const r = e.currentTarget.getBoundingClientRect()
+    const w = 320
+    const left = Math.max(8, Math.min(r.left + r.width / 2 - w / 2, window.innerWidth - w - 8))
+    const below = r.bottom + 8
+    setTip({ text, left, top: below, w })
+  }
+  const tipProps = (text) => ({
+    onMouseEnter: (e) => showTip(e, text),
+    onMouseLeave: () => setTip(null),
+    onClick: (e) => (tip?.text === text ? setTip(null) : showTip(e, text)),
+    className: 'has-tip',
+  })
 
   const [month, setMonth] = useState(lastMonth())
   const [filters, setFilters] = useState({ sections: [], groups: [] })
@@ -223,19 +279,19 @@ export default function BudgetAllotment() {
       </div>
 
       <div className="budgetallot-kpi-row">
-        <div className="budgetallot-kpi-card">
+        <div {...tipProps(`${H.paid}\n\n${H.totals}`)} className="budgetallot-kpi-card has-tip">
           <span className="budgetallot-kpi-value">{fmtMoney(data?.totalPaidAmount)}</span>
           <span className="budgetallot-kpi-label">{L.paid}</span>
         </div>
-        <div className="budgetallot-kpi-card">
+        <div {...tipProps(`${H.sales}\n\n${H.totals}`)} className="budgetallot-kpi-card has-tip">
           <span className="budgetallot-kpi-value">{fmtMoney(data?.totalSalesAmount)}</span>
           <span className="budgetallot-kpi-label">{L.sales}</span>
         </div>
-        <div className="budgetallot-kpi-card">
+        <div {...tipProps(`${H.quota}\n\n${H.totals}`)} className="budgetallot-kpi-card has-tip">
           <span className="budgetallot-kpi-value">{fmtMoney(data?.totalTargetAmount)}</span>
           <span className="budgetallot-kpi-label">{L.quota}</span>
         </div>
-        <div className="budgetallot-kpi-card" title={L.totalBalanceHint}>
+        <div {...tipProps(`${H.totalBalance}\n\n${H.balance}`)} className="budgetallot-kpi-card has-tip">
           <span className={`budgetallot-kpi-value budgetallot-balance ${balClass(data?.totalBalance)}`}>{fmtMoney(data?.totalBalance)}</span>
           <span className="budgetallot-kpi-label">{L.balance}</span>
         </div>
@@ -255,15 +311,15 @@ export default function BudgetAllotment() {
         <table className="budgetallot-table">
           <thead>
             <tr>
-              <th>{t('common.date')}</th>
-              <th>{L.employee}</th>
+              <th {...tipProps(H.date)}>{t('common.date')} <span className="budgetallot-hint">ⓘ</span></th>
+              <th {...tipProps(H.employee)}>{L.employee} <span className="budgetallot-hint">ⓘ</span></th>
               <th>{t('common.doctor')}</th>
-              <th>{t('budget.doctorId')}</th>
-              <th className="num">{L.paid}</th>
-              <th className="num">{L.sales}</th>
-              <th className="num">{L.quota}</th>
-              <th className="num" title={L.balanceHint}>{L.balance} <span className="budgetallot-hint">ⓘ</span></th>
-              <th>{t('budget.isActive')}</th>
+              <th {...tipProps(H.doctorId)}>{t('budget.doctorId')} <span className="budgetallot-hint">ⓘ</span></th>
+              <th {...tipProps(H.paid)} className="num has-tip">{L.paid} <span className="budgetallot-hint">ⓘ</span></th>
+              <th {...tipProps(H.sales)} className="num has-tip">{L.sales} <span className="budgetallot-hint">ⓘ</span></th>
+              <th {...tipProps(H.quota)} className="num has-tip">{L.quota} <span className="budgetallot-hint">ⓘ</span></th>
+              <th {...tipProps(H.balance)} className="num has-tip">{L.balance} <span className="budgetallot-hint">ⓘ</span></th>
+              <th {...tipProps(H.active)}>{t('budget.isActive')} <span className="budgetallot-hint">ⓘ</span></th>
             </tr>
           </thead>
           <tbody>
@@ -290,6 +346,12 @@ export default function BudgetAllotment() {
       </div>
 
       {pager}
+
+      {tip && (
+        <div className="budgetallot-tip" style={{ top: tip.top, left: tip.left, width: tip.w }} role="tooltip">
+          {tip.text}
+        </div>
+      )}
 
       <p className="budgetallot-showing">{filteredDocs.length} {L.rows}</p>
     </div>
