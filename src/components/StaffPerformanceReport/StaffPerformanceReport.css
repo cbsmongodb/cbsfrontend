@@ -198,3 +198,31 @@
 .sp-dots { min-width: 20px; text-align: center; color: var(--ink-faint); align-self: center; }
 .sp-size { display: inline-flex; align-items: center; gap: 6px; margin: 0; }
 .sp-size select { height: 32px; padding: 0 8px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; font: inherit; font-size: 13px; }
+/* table fits the screen */
+/* the table is about one screen high and scrolls inside itself, so the left / right
+   scroll bar is always visible without scrolling the page; header, name column and totals stay */
+@media (min-width: 641px) {
+  .staff-performance .staff-performance-table-wrap {
+    max-height: max(360px, calc(100vh - 290px));
+    overflow: auto;
+    overscroll-behavior: contain;
+    background: #fff;
+    scrollbar-width: thin;
+    scrollbar-color: #94a3b8 #f1f5f9;
+  }
+  .staff-performance .staff-performance-table-wrap::-webkit-scrollbar { width: 10px; height: 10px; }
+  .staff-performance .staff-performance-table-wrap::-webkit-scrollbar-track { background: #f1f5f9; }
+  .staff-performance .staff-performance-table-wrap::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; border: 2px solid #f1f5f9; }
+  .staff-performance .staff-performance-table { border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; }
+  .staff-performance .staff-performance-table thead th { position: sticky; top: 0; z-index: 2; background: #f8fafc; border-bottom: 1px solid var(--line); }
+  .staff-performance .staff-performance-table td { background: #fff; }
+  .staff-performance .staff-performance-table tbody tr:hover td { background: #f3f7ff; }
+  .staff-performance .staff-performance-table tr.is-active td { background: #eaf1ff; }
+  /* employee column stays on the left */
+  .staff-performance .staff-performance-table th:first-child,
+  .staff-performance .staff-performance-table td:first-child { position: sticky; left: 0; z-index: 1; box-shadow: 1px 0 0 var(--line); }
+  .staff-performance .staff-performance-table thead th:first-child { z-index: 3; }
+  /* totals stay at the bottom */
+  .staff-performance .staff-performance-table tfoot td { position: sticky; bottom: 0; z-index: 2; background: #f8fafc; }
+  .staff-performance .staff-performance-table tfoot td:first-child { z-index: 3; }
+}
