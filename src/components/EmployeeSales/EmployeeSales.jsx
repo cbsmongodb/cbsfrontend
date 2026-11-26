@@ -25,6 +25,12 @@ const FTXT = {
   en: { division: 'Division', group: 'Group', all: 'All', allGroups: 'All groups' },
   ru: { division: 'Дивизион', group: 'Группа', all: 'Все', allGroups: 'Все группы' },
 }
+const CTXT = {
+  ka: { col: 'დაკორექტირებული', edit: 'თანხის კორექტირება', note: 'მიზეზი (არასავალდებულო)', save: 'შენახვა', cancel: 'გაუქმება', clear: 'ცარიელი = კორექტირების მოხსნა', by: 'დააკორექტირა' },
+  en: { col: 'Corrected', edit: 'Correct the amount', note: 'Reason (optional)', save: 'Save', cancel: 'Cancel', clear: 'empty = remove the correction', by: 'corrected by' },
+  ru: { col: 'Скорректировано', edit: 'Корректировка суммы', note: 'Причина (необязательно)', save: 'Сохранить', cancel: 'Отмена', clear: 'пусто = убрать корректировку', by: 'скорректировал' },
+}
+const money2 = (n) => (Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const BOXES_HEAD = { ka: 'გაყიდული ყუთები', en: 'Boxes sold', ru: 'Продано упаковок' }
 import ReportLoader from '@/components/ReportLoader/ReportLoader'
 import MonthPicker from '@/components/MonthPicker/MonthPicker'
@@ -59,6 +65,23 @@ export default function EmployeeSales() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showModal, setShowModal] = useState(false)
+  // amount correction (division managers + finance)
+  const C = CTXT[locale] || CTXT.ka
+  const [corr, setCorr] = useState(null) // { id, amount }
+  const [corrBusy, setCorrBusy] = useState(false)
+  async function saveCorrection() {
+    if (!corr) return
+    setCorrBusy(true); setError('')
+    try {
+      await apiFetch(`/api/employee-sales/${corr.id}/correction`, { method: 'PUT', body: JSON.stringify({ amount: corr.amount }) })
+      setCorr(null)
+      await load(page)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setCorrBusy(false)
+    }
+  }
   const [editId, setEditId] = useState(null)
 
   useEffect(() => {
@@ -179,6 +202,7 @@ export default function EmployeeSales() {
               <th>{tu('k096')}</th>
               <th>{tu('k044')}</th>
               <th><span style={thIcon}><IconMoney />{tu('k150')}</span></th>
+              <th>{C.col}</th>
               <th><span style={thIcon}><IconBox />{BOXES_HEAD[locale] || BOXES_HEAD.ka}</span></th>
               <th></th>
             </tr>
@@ -188,7 +212,26 @@ export default function EmployeeSales() {
               <tr key={row._id}>
                 <td data-label={tu('k096')}>{row.date ? fmtDate(row.date) : '—'}</td>
                 <td data-label={tu('k044')}>{row.employeeName}</td>
-                <td data-label={tu('k150')}>{(Number(row.saleAmount) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td data-label={tu('k150')}>{money2(row.saleAmount)}</td>
+                <td data-label={C.col} className="es-corr">
+                  {corr?.id === row._id ? (
+                    <div className="es-corr-edit">
+                      <input type="text" inputMode="decimal" className="field-input" value={corr.amount} autoFocus placeholder={money2(row.saleAmount)} title={C.clear}
+                        onChange={(e) => setCorr({ ...corr, amount: e.target.value })}
+                        onKeyDown={(e) => { if (e.key === 'Enter') saveCorrection(); if (e.key === 'Escape') setCorr(null) }} />
+                      <button type="button" className="es-corr-ok" disabled={corrBusy} onClick={saveCorrection} aria-label={C.save}>✓</button>
+                      <button type="button" className="es-corr-x" onClick={() => setCorr(null)} aria-label={C.cancel}>✕</button>
+                    </div>
+                  ) : (
+                    <div className="es-corr-view">
+                      {row.correctedAmount != null ? <b>{money2(row.correctedAmount)}</b> : <span className="es-muted">—</span>}
+                      {data?.canCorrect && (
+                        <button type="button" className="es-corr-btn" title={C.edit} aria-label={C.edit}
+                          onClick={() => setCorr({ id: row._id, amount: row.correctedAmount != null ? String(row.correctedAmount) : '' })}>✏️</button>
+                      )}
+                    </div>
+                  )}
+                </td>
                 <td data-label={BOXES_HEAD[locale] || BOXES_HEAD.ka}>{(row.saleBoxes || 0).toLocaleString('en-US')}</td>
                 <td data-label="">
                   <button className="btn-gray btn-sm" onClick={() => { setEditId(row._id); setShowModal(true) }}><span>{tu('k101')}</span></button>
@@ -200,7 +243,7 @@ export default function EmployeeSales() {
             ))}
             {data && data.docs.length === 0 && (
               <tr>
-                <td colSpan={5}>{tu('k102')}</td>
+                <td colSpan={6}>{tu('k102')}</td>
               </tr>
             )}
           </tbody>
