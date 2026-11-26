@@ -85,7 +85,7 @@
         "enteredPrescriptions": "Entered prescriptions",
         "budgets": "Budgets",
         "budgetRequireds": "Budget Requests",
-        "salesListing": "Sales Listing",
+        "salesListing": "Analytics",
         "employeeSales": "Employee Sales",
         "employeeTargets": "Employee Plans",
         "budgetAllotment": "Budget Allotment",
@@ -97,7 +97,7 @@
         "reimbursement": "Transport Reimbursement",
         "attendances": "Attendance Report",
         "staffPerformance": "Staff Performance",
-        "analytics": "Analytics",
+        "analytics": "Analytics report",
         "budgets": "Budgets",
         "budgetAllotment": "Budget Allotment",
         "directorDashboard": "Director Dashboard",
@@ -105,7 +105,7 @@
         "leavePayroll": "Leave for payroll",
         "timesheet": "Timesheet",
         "zonalSales": "Zonal sales",
-        "salesListing": "Sales Listing"
+        "salesListing": "Analytics"
       },
       "administration": {
         "label": "Administration",
@@ -449,7 +449,7 @@
       "employee_sales": "Employee Sales",
       "doctor_targets": "Doctor Target",
       "staff_performance_report": "Staff Performance",
-      "analytics": "Analytics",
+      "analytics": "Analytics report",
       "budgets_report": "Budgets (Report)",
       "director_dashboard": "Director Dashboard",
       "attendance_report": "Attendance Report",
@@ -847,7 +847,7 @@
       "salesAmount": "Sales amount"
     },
     "analytics": {
-      "title": "Analytics",
+      "title": "Analytics report",
       "noDrugData": "No drug data in this period",
       "budgetBy": "Budget: {names}",
       "multipleReps": "Doctor has several reps",
@@ -1119,7 +1119,7 @@
     "k069": "Delete",
     "k070": "+ Add drug",
     "k071": "+ Add doctor",
-    "k072": "Sales list",
+    "k072": "Analytics",
     "k073": "Show",
     "k074": "Search by drug",
     "k075": "Drug name...",

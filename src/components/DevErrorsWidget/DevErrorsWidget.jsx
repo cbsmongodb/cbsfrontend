@@ -18,12 +18,12 @@ function timeAgo(iso) {
 
 // page in the app -> its name in the menu
 const PAGES = [
-  [/plannings/, 'ვიზიტების დაგეგმვა'], [/doctor-entry-items/, 'რეცეპტების შეყვანა'], [/entered-prescriptions/, 'შეყვანილი რეცეპტები'], [/sales-listing/, 'გაყიდვების სია'],
+  [/plannings/, 'ვიზიტების დაგეგმვა'], [/doctor-entry-items/, 'რეცეპტების შეყვანა'], [/entered-prescriptions/, 'შეყვანილი რეცეპტები'], [/sales-listing/, 'ანალიტიკა'],
   [/budgets\/new/, 'ახალი ბიუჯეტი'], [/budgets/, 'ბიუჯეტები'], [/employee-sales/, 'თანამშრომლის გაყიდვები'],
   [/employee-targets/, 'თანამშრომლის გეგმები'], [/leave-requests/, 'შვებულების მოთხოვნა'], [/leaves/, 'შვებულებები'],
   [/reports\/efficiency/, 'ეფექტურობის რეპორტი'], [/reports\/reimbursement/, 'ტრანსპორტის ანაზღაურება'],
   [/reports\/attendances/, 'დასწრების რეპორტი'], [/reports\/prescriptions/, 'რეცეპტების რეპორტი'],
-  [/reports\/staff-performance/, 'თანამშრომელთა შესრულება'], [/analytics/, 'ანალიტიკა'],
+  [/reports\/staff-performance/, 'თანამშრომელთა შესრულება'], [/analytics/, 'ანალიტიკის რეპორტი'],
   [/live-feeds/, 'Live Feed'], [/team-status/, 'საველე გუნდის სტატუსი'], [/attendance-status/, 'დასწრების სტატუსი'],
   [/doctors/, 'ექიმები'], [/drugs/, 'მედიკამენტები'], [/hospitals/, 'ჰოსპიტლები'], [/pharmacies/, 'აფთიაქები'],
   [/employees/, 'თანამშრომლები'], [/stocks/, 'მარაგები'], [/roles/, 'როლები'], [/login/, 'შესვლა'],

@@ -85,7 +85,7 @@
         "enteredPrescriptions": "Введённые рецепты",
         "budgets": "Бюджеты",
         "budgetRequireds": "Заявки на бюджет",
-        "salesListing": "Список продаж",
+        "salesListing": "Аналитика",
         "employeeSales": "Продажи сотрудников",
         "employeeTargets": "Планы сотрудников",
         "budgetAllotment": "Распределение бюджета",
@@ -97,7 +97,7 @@
         "reimbursement": "Возмещение транспорта",
         "attendances": "Отчёт о посещаемости",
         "staffPerformance": "Эффективность сотрудников",
-        "analytics": "Аналитика",
+        "analytics": "Аналитический отчёт",
         "budgets": "Бюджеты",
         "budgetAllotment": "Распределение бюджета",
         "directorDashboard": "Панель директора",
@@ -105,7 +105,7 @@
         "leavePayroll": "Отпуска для зарплаты",
         "timesheet": "Табель",
         "zonalSales": "Зональные продажи",
-        "salesListing": "Список продаж"
+        "salesListing": "Аналитика"
       },
       "administration": {
         "label": "Администрирование",
@@ -449,7 +449,7 @@
       "employee_sales": "Продажи сотрудников",
       "doctor_targets": "Цели врачей",
       "staff_performance_report": "Эффективность сотрудников",
-      "analytics": "Аналитика",
+      "analytics": "Аналитический отчёт",
       "budgets_report": "Бюджеты (Отчёт)",
       "director_dashboard": "Панель директора",
       "attendance_report": "Отчёт о посещаемости",
@@ -847,7 +847,7 @@
       "salesAmount": "Сумма продаж"
     },
     "analytics": {
-      "title": "Аналитика",
+      "title": "Аналитический отчёт",
       "noDrugData": "Нет данных по препаратам за этот период",
       "budgetBy": "Бюджет: {names}",
       "multipleReps": "У врача несколько представителей",
@@ -1119,7 +1119,7 @@
     "k069": "Удалить",
     "k070": "+ Добавить препарат",
     "k071": "+ Добавить врача",
-    "k072": "Список продаж",
+    "k072": "Аналитика",
     "k073": "Показать",
     "k074": "Поиск по препарату",
     "k075": "Название препарата...",
