@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
@@ -28,6 +28,12 @@ function defaultTo() {
   return toInputDate(new Date())
 }
 
+const FTXT = {
+  ka: { division: 'დივიზიონი', group: 'ჯგუფი', all: 'ყველა', allGroups: 'ყველა ჯგუფი' },
+  en: { division: 'Division', group: 'Group', all: 'All', allGroups: 'All groups' },
+  ru: { division: 'Дивизион', group: 'Группа', all: 'Все', allGroups: 'Все группы' },
+}
+
 export default function EfficiencyReport() {
   const t = useTranslations('reports')
   const locale = useLocale()
@@ -37,6 +43,19 @@ export default function EfficiencyReport() {
   const [from, setFrom] = useState(defaultFrom())
   const [to, setTo] = useState(defaultTo())
   const [employeeId, setEmployeeId] = useState('')
+  // division / group filter: only the divisions this user may see
+  const F = FTXT[locale] || FTXT.ka
+  const [filters, setFilters] = useState({ sections: [], groups: [] })
+  const [sectionId, setSectionId] = useState('')
+  const [groupId, setGroupId] = useState('')
+  const groupsShown = useMemo(() => filters.groups.filter((g) => !sectionId || g.section === sectionId), [filters.groups, sectionId])
+  const employeesShown = useMemo(() => {
+    if (!sectionId && !groupId) return employees
+    const ids = new Set()
+    ;(groupId ? filters.groups.filter((g) => g.id === groupId) : groupsShown).forEach((g) => g.employees.forEach((e) => ids.add(e)))
+    if (!groupId && sectionId) { const h = filters.sections.find((s) => s.id === sectionId)?.head; if (h) ids.add(h) }
+    return employees.filter((e) => ids.has(String(e._id)))
+  }, [employees, filters, groupsShown, sectionId, groupId])
   const [hospitalId, setHospitalId] = useState('')
   const [search, setSearch] = useState('')
 
@@ -63,11 +82,12 @@ export default function EfficiencyReport() {
       }
     }
     loadOptions()
+    apiFetch('/api/reports/efficiency/filters').then((f) => setFilters({ sections: [], groups: [], ...f })).catch(() => {})
     loadReport()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  async function loadReport() {
+  async function loadReport(emp = employeeId) {
     setLoading(true)
     setError('')
     try {
@@ -79,7 +99,9 @@ export default function EfficiencyReport() {
       if (!to) setTo(tt)
       params.set('from', f)
       params.set('to', tt)
-      if (employeeId) params.set('employee', employeeId)
+      if (emp) params.set('employee', emp)
+      if (groupId) params.set('group', groupId)
+      else if (sectionId) params.set('section', sectionId)
       if (hospitalId) params.set('hospital', hospitalId)
       const data = await apiFetch(`/api/reports/efficiency?${params}`)
       setGroups(data)
@@ -90,6 +112,16 @@ export default function EfficiencyReport() {
       setLoading(false)
     }
   }
+
+  // a new division / group -> reload (and drop a person who is not in it)
+  const firstFilter = useRef(true)
+  useEffect(() => {
+    if (firstFilter.current) { firstFilter.current = false; return }
+    let emp = employeeId
+    if (emp && !employeesShown.some((e) => String(e._id) === String(emp))) { emp = ''; setEmployeeId('') }
+    loadReport(emp)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sectionId, groupId])
 
   const visibleGroups = useMemo(() => {
     if (!search.trim()) return groups
@@ -158,10 +190,28 @@ export default function EfficiencyReport() {
             <label>{t('common.endDate')}</label>
             <DateInput  className="field-input" value={to} onChange={(e) => setTo(e.target.value)} />
           </div>
+          {filters.sections.length > 1 && (
+            <div className="efficiency-field">
+              <label>{F.division}</label>
+              <select className="field-input" value={sectionId} onChange={(e) => { setSectionId(e.target.value); setGroupId('') }}>
+                <option value="">{F.all}</option>
+                {filters.sections.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+              </select>
+            </div>
+          )}
+          {groupsShown.length > 1 && (
+            <div className="efficiency-field">
+              <label>{F.group}</label>
+              <select className="field-input" value={groupId} onChange={(e) => setGroupId(e.target.value)}>
+                <option value="">{F.allGroups}</option>
+                {groupsShown.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
+              </select>
+            </div>
+          )}
           <div className="efficiency-field">
             <label>{t('common.employee')}</label>
             <SearchableSelect
-              options={employees}
+              options={employeesShown}
               value={employeeId}
               onChange={setEmployeeId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
@@ -178,7 +228,7 @@ export default function EfficiencyReport() {
               placeholder={t('common.all')}
             />
           </div>
-          <button type="button" className="btn efficiency-search-btn" onClick={loadReport} disabled={loading}>
+          <button type="button" className="btn efficiency-search-btn" onClick={() => loadReport()} disabled={loading}>
             <span>{loading ? <span className="btn-spinner" aria-hidden="true" /> : t('common.search')}</span>
           </button>
         </div>
