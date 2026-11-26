@@ -208,12 +208,12 @@ const NAV = [
     icon: 'reports',
     items: [
       { href: 'dashboard/sales-listing', key: 'salesListing' },
+      { href: 'dashboard/analytics', key: 'analytics' },
       { href: 'dashboard/reports/efficiency', key: 'efficiency' },
       { href: 'dashboard/reports/reimbursement', key: 'reimbursement' },
       { href: 'dashboard/reports/attendances', key: 'attendances' },
       { href: 'dashboard/reports/prescriptions', key: 'prescriptionsReport' },
       { href: 'dashboard/reports/staff-performance', key: 'staffPerformance' },
-      { href: 'dashboard/analytics', key: 'analytics' },
       { href: 'dashboard/budgets/allotment', key: 'budgetAllotment' },
       { href: 'dashboard/reports/leave-payroll', key: 'leavePayroll' },
       { href: 'dashboard/reports/timesheet', key: 'timesheet' },
