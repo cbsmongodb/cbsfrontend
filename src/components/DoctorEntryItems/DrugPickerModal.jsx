@@ -1,10 +1,13 @@
 "use client"
 import { useState } from "react"
 import "@/components/EmployeeTargets/EmployeeTargetModal.css"
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 
 export default function DrugPickerModal({ drugs, alreadyAddedIds = [], onClose, onConfirm }) {
   const tu = useTranslations('ui')
+  const locale = useLocale()
+  const ALL_TXT = { ka: ['ყველას მონიშვნა', 'ყველას მოხსნა'], en: ['Select all', 'Clear all'], ru: ['Выбрать все', 'Снять все'] }[locale]
+    || ['ყველას მონიშვნა', 'ყველას მოხსნა']
   const [checked, setChecked] = useState({})
   const [search, setSearch] = useState("")
 
@@ -13,6 +16,16 @@ export default function DrugPickerModal({ drugs, alreadyAddedIds = [], onClose, 
     !search.trim() ? true : d.name.toLowerCase().includes(search.trim().toLowerCase())
   )
   const filtered = [...matches.filter((d) => checked[d._id]), ...matches.filter((d) => !checked[d._id])]
+  // pickAll: tick every drug in the list (what the search shows), then untick the few not needed
+  const pickable = filtered.filter((d) => !alreadyAddedIds.includes(d._id))
+  const allPicked = pickable.length > 0 && pickable.every((d) => checked[d._id])
+  function pickAll() {
+    setChecked((p) => {
+      const n = { ...p }
+      pickable.forEach((d) => { n[d._id] = !allPicked })
+      return n
+    })
+  }
   function toggle(id) { setChecked((p) => ({ ...p, [id]: !p[id] })) }
   const chosen = Object.keys(checked).filter((id) => checked[id])
 
@@ -25,6 +38,12 @@ export default function DrugPickerModal({ drugs, alreadyAddedIds = [], onClose, 
         </div>
         <div className="et-modal-druglabel" style={{ paddingTop: 16 }}>
           <span>{tu('k026')}</span>
+          {pickable.length > 0 && (
+            <button type="button" className={`et-pick-all${allPicked ? " is-on" : ""}`} onClick={pickAll}>
+              <span className="et-pick-all-box">{allPicked ? "✓" : ""}</span>
+              {allPicked ? ALL_TXT[1] : ALL_TXT[0]}{search.trim() && !allPicked ? ` (${pickable.length})` : ""}
+            </button>
+          )}
           {chosen.length > 0 && <span className="et-modal-count">{tu('k009')}{" "}{chosen.length}</span>}
         </div>
         <div className="et-modal-searchwrap">

@@ -103,3 +103,20 @@
 @media (max-width: 640px) {
   .et-modal-top.et-modal-top-3 { grid-template-columns: 1fr; }
 }
+
+/* "select all" in the drug picker */
+.et-modal-druglabel { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.et-pick-all {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-left: auto; padding: 7px 14px;
+  border: 1.5px solid #3f74d6; border-radius: 999px;
+  background: #fff; color: #3f74d6;
+  font: inherit; font-size: 13px; font-weight: 700; text-transform: none; letter-spacing: 0;
+  cursor: pointer; transition: background 0.15s ease, color 0.15s ease;
+}
+.et-pick-all:hover { background: #eef3fd; }
+.et-pick-all.is-on { background: #3f74d6; color: #fff; }
+.et-pick-all-box {
+  width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid currentColor;
+  display: inline-flex; align-items: center; justify-content: center; font-size: 11px; line-height: 1;
+}
