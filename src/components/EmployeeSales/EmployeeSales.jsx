@@ -68,13 +68,21 @@ export default function EmployeeSales() {
   const [showModal, setShowModal] = useState(false)
   // amount correction (division managers + finance)
   const C = CTXT[locale] || CTXT.ka
+  const CLR = {
+    ka: { btn: 'გასუფთავება', hint: 'კორექტირების მოხსნა — დარჩება თავდაპირველი თანხა' },
+    en: { btn: 'Clear', hint: 'Remove the correction — the original amount stays' },
+    ru: { btn: 'Очистить', hint: 'Убрать корректировку — останется исходная сумма' },
+  }[locale] || { btn: 'გასუფთავება', hint: 'კორექტირების მოხსნა — დარჩება თავდაპირველი თანხა' }
   const [corr, setCorr] = useState(null) // { id, amount }
   const [corrBusy, setCorrBusy] = useState(false)
-  async function saveCorrection() {
-    if (!corr) return
+  // corrClear: saveCorrection('', id) removes the correction — the sale counts with its original amount again
+  async function saveCorrection(over, overId) {
+    const id = overId || corr?.id
+    if (!id) return
+    const amount = typeof over === 'string' ? over : corr.amount
     setCorrBusy(true); setError('')
     try {
-      await apiFetch(`/api/employee-sales/${corr.id}/correction`, { method: 'PUT', body: JSON.stringify({ amount: corr.amount }) })
+      await apiFetch(`/api/employee-sales/${id}/correction`, { method: 'PUT', body: JSON.stringify({ amount: String(amount ?? '').trim() }) })
       setCorr(null)
       await load(page)
     } catch (err) {
@@ -256,12 +264,18 @@ export default function EmployeeSales() {
                       <input type="text" inputMode="decimal" className="field-input" value={corr.amount} autoFocus placeholder={money2(row.saleAmount)} title={C.clear}
                         onChange={(e) => setCorr({ ...corr, amount: e.target.value })}
                         onKeyDown={(e) => { if (e.key === 'Enter') saveCorrection(); if (e.key === 'Escape') setCorr(null) }} />
-                      <button type="button" className="es-corr-ok" disabled={corrBusy} onClick={saveCorrection} aria-label={C.save}>✓</button>
+                      <button type="button" className="es-corr-ok" disabled={corrBusy} onClick={() => saveCorrection()} title={C.save} aria-label={C.save}>✓</button>
+                      {row.correctedAmount != null && (
+                        <button type="button" className="es-corr-clear" disabled={corrBusy} onClick={() => saveCorrection('', row._id)} title={CLR.hint}>{CLR.btn}</button>
+                      )}
                       <button type="button" className="es-corr-x" onClick={() => setCorr(null)} aria-label={C.cancel}>✕</button>
                     </div>
                   ) : (
                     <div className="es-corr-view">
                       {row.correctedAmount != null ? <b>{money2(row.correctedAmount)}</b> : <span className="es-muted">—</span>}
+                      {data?.canCorrect && row.correctedAmount != null && (
+                        <button type="button" className="es-corr-del" disabled={corrBusy} onClick={() => saveCorrection('', row._id)} title={CLR.hint} aria-label={CLR.hint}>✕</button>
+                      )}
                       {data?.canCorrect && (
                         <button type="button" className="es-corr-btn" title={C.edit} aria-label={C.edit}
                           onClick={() => setCorr({ id: row._id, amount: row.correctedAmount != null ? String(row.correctedAmount) : '' })}>✏️</button>

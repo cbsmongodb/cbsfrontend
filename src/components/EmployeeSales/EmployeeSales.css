@@ -184,3 +184,17 @@
 .es-corr-ok, .es-corr-x { width: 30px; height: 30px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 800; }
 .es-corr-ok { background: #dcfce7; color: #15803d; }
 .es-corr-x { background: #f1f5f9; color: #64748b; }
+
+/* remove a correction */
+.es-corr-clear {
+  height: 30px; padding: 0 10px; border: 1px solid #fecaca; border-radius: 8px;
+  background: #fff5f5; color: #dc2626; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;
+}
+.es-corr-clear:hover { background: #fee2e2; }
+.es-corr-del {
+  width: 24px; height: 24px; border: 0; border-radius: 6px; background: transparent;
+  color: #94a3b8; font-size: 12px; font-weight: 800; cursor: pointer; opacity: 0; transition: opacity .15s ease, background .15s ease, color .15s ease;
+}
+tr:hover .es-corr-del, .es-corr-del:focus-visible { opacity: 1; }
+.es-corr-del:hover { background: #fee2e2; color: #dc2626; }
+@media (hover: none) { .es-corr-del { opacity: 1; } }
