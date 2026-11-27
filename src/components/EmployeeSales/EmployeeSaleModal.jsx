@@ -1,9 +1,9 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { apiFetch } from "@/lib/api"
 import SearchableSelect from "@/components/ResourceTable/SearchableSelect"
 import "@/components/EmployeeTargets/EmployeeTargetModal.css"
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { useMonthNames } from '@/lib/months'
 
 const MONTHS = [
@@ -11,6 +11,12 @@ const MONTHS = [
   "ივლისი", "აგვისტო", "სექტემბერი", "ოქტომბერი", "ნოემბერი", "დეკემბერი",
 ]
 const CURRENT_YEAR = new Date().getUTCFullYear()
+// saleModalGroups: division / group filter + "select all" in the sale window
+const GTXT = {
+  ka: { division: 'დივიზიონი', group: 'ჯგუფი', all: 'ყველა', allGroups: 'ყველა ჯგუფი', pickAll: 'ყველას მონიშვნა', clearAll: 'ყველას მოხსნა' },
+  en: { division: 'Division', group: 'Group', all: 'All', allGroups: 'All groups', pickAll: 'Select all', clearAll: 'Clear all' },
+  ru: { division: 'Дивизион', group: 'Группа', all: 'Все', allGroups: 'Все группы', pickAll: 'Выбрать все', clearAll: 'Снять все' },
+}
 
 export default function EmployeeSaleModal({ employees, editId, onClose, onSaved }) {
   const tu = useTranslations('ui')
@@ -27,6 +33,26 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
   const [loadingEdit, setLoadingEdit] = useState(!!editId)
+  const G = GTXT[useLocale()] || GTXT.ka
+  const [filters, setFilters] = useState({ sections: [], groups: [] })
+  const [sectionId, setSectionId] = useState("")
+  const [groupId, setGroupId] = useState("")
+  const [bulk, setBulk] = useState(false) // after "select all": no jumping focus
+  useEffect(() => {
+    apiFetch("/api/employee-sales/filters").then((f) => setFilters({ sections: [], groups: [], ...f })).catch(() => {})
+  }, [])
+  const groupsShown = useMemo(() => filters.groups.filter((g) => !sectionId || g.section === sectionId), [filters.groups, sectionId])
+  const theGroup = filters.groups.find((g) => g.id === groupId) || null
+  // people of the chosen division / group
+  const employeesShown = useMemo(() => {
+    if (!sectionId && !groupId) return employees
+    const ids = new Set()
+    ;(theGroup ? [theGroup] : groupsShown).forEach((g) => g.employees.forEach((e) => ids.add(e)))
+    if (!groupId && sectionId) { const h = filters.sections.find((s) => s.id === sectionId)?.head; if (h) ids.add(h) }
+    return employees.filter((e) => ids.has(String(e._id)) || String(e._id) === String(employeeId))
+  }, [employees, filters.sections, groupsShown, theGroup, sectionId, groupId, employeeId])
+  // drugs of the chosen group (a group with no drugs listed shows every drug)
+  const groupDrugs = theGroup && theGroup.drugs?.length ? new Set(theGroup.drugs) : null
 
   useEffect(() => {
     apiFetch("/api/employee-sales/visible-drugs")
@@ -52,6 +78,7 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
   }, [editId])
 
   const filtered = drugs
+    .filter((d) => !groupDrugs || groupDrugs.has(String(d._id)) || checked[d._id])
     .filter((d) => (!search.trim() ? true : d.name.toLowerCase().includes(search.trim().toLowerCase())))
     .map((d, i) => ({ d, i }))
     .sort((a, b) => (pinned[b.d._id] || checked[b.d._id] ? 1 : 0) - (pinned[a.d._id] || checked[a.d._id] ? 1 : 0) || a.i - b.i) // ticked on top
@@ -72,6 +99,17 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
   }
 
   const chosenCount = Object.keys(checked).filter((id) => checked[id]).length
+  const allPicked = filtered.length > 0 && filtered.every((d) => checked[d._id])
+  function pickAll() {
+    setBulk(true)
+    if (allPicked) {
+      const ids = new Set(filtered.map((d) => d._id))
+      setChecked((p) => { const n = { ...p }; ids.forEach((id) => { n[id] = false }); return n })
+      setBoxes((b) => { const c = { ...b }; ids.forEach((id) => { delete c[id] }); return c })
+    } else {
+      setChecked((p) => { const n = { ...p }; filtered.forEach((d) => { n[d._id] = true }); return n })
+    }
+  }
 
   async function handleSave() {
     setError("")
@@ -106,6 +144,29 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
           <button className="et-modal-close" onClick={onClose}>×</button>
         </div>
 
+        {(filters.sections.length > 1 || filters.groups.length > 1) && (
+          <div className="et-modal-top et-modal-filters">
+            {filters.sections.length > 1 && (
+              <div className="et-modal-field">
+                <label>{G.division}</label>
+                <select className="field-select" value={sectionId} onChange={(e) => { setSectionId(e.target.value); setGroupId("") }}>
+                  <option value="">{G.all}</option>
+                  {filters.sections.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+                </select>
+              </div>
+            )}
+            {groupsShown.length > 0 && (
+              <div className="et-modal-field">
+                <label>{G.group}</label>
+                <select className="field-select" value={groupId} onChange={(e) => setGroupId(e.target.value)}>
+                  <option value="">{G.allGroups}</option>
+                  {groupsShown.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
+                </select>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="et-modal-top">
           <div className="et-modal-field">
             <label>{tu('k145')}</label>
@@ -116,7 +177,7 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
           <div className="et-modal-field">
             <label>{tu('k044')}</label>
             <SearchableSelect
-              options={employees}
+              options={employeesShown}
               value={employeeId}
               onChange={setEmployeeId}
               getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
@@ -128,6 +189,12 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
         <div className="et-modal-druglabel">
           <span>{tu('k153')}</span>
           {chosenCount > 0 && <span className="et-modal-count">{tu('k009')}{" "}{chosenCount}</span>}
+          {filtered.length > 0 && (
+            <button type="button" className={`et-pick-all${allPicked ? " is-on" : ""}`} onClick={pickAll}>
+              <span className="et-pick-all-box">{allPicked ? "✓" : ""}</span>
+              {allPicked ? G.clearAll : G.pickAll}{!allPicked && (search.trim() || groupDrugs) ? ` (${filtered.length})` : ""}
+            </button>
+          )}
         </div>
 
         <div className="et-modal-searchwrap">
@@ -159,7 +226,7 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
                     min="0"
                     step="any"
                     placeholder={tu('k116')}
-                    autoFocus={!pinned[d._id]}
+                    autoFocus={!pinned[d._id] && !bulk}
                     value={boxes[d._id] ?? ""}
                     onChange={(e) => setBox(d._id, e.target.value)}
                   />
