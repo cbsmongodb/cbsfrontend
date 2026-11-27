@@ -5,6 +5,7 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useTranslations, useLocale } from 'next-intl'
 import { apiFetch } from '@/lib/api'
+import ExcelExportButton from '@/components/ExcelExportButton/ExcelExportButton'
 import SearchableSelect from '@/components/ResourceTable/SearchableSelect'
 import {
   BarChart as RBarChart,
@@ -438,14 +439,14 @@ const getSaleColumns = (t, maxBoxes = 0) => [
   },
   {
     accessorKey: 'saleBoxes', header: t('saleBoxes'), meta: { num: true },
-    cell: (info) => { const v = Number(info.getValue()) || 0; return <span className="dd-withbar"><b>{ddNum(v)}</b>{ddBar(v, maxBoxes, 'blue')}</span> },
+    cell: (info) => { const v = Number(info.getValue()) || 0; return v ? <b className="ps-sold">{ddNum(v)}</b> : <span className="dd-dash">—</span> }, // psGridV3
   },
   {
     accessorKey: 'closingStocks', header: t('col.closingStocks'), meta: { num: true },
     cell: (info) => {
       const v = Number(info.getValue()) || 0
       const tone = v < 0 ? 'neg' : v < 20 ? 'low' : 'ok'
-      return <span className={`dd-pill dd-pill-${tone}`}>{ddNum(v)}</span>
+      return <span className={`ps-stock ps-stock-${tone}`}>{ddNum(v)}</span>
     },
   },
   {
@@ -456,9 +457,9 @@ const getSaleColumns = (t, maxBoxes = 0) => [
 
 const PS_COLORS = ['#13608f', '#2f9e6e', '#8e4f9a', '#e0a37a', '#d4a017', '#c0506a']
 const PS_L = {
-  ka: { prescriptions: 'რეცეპტები', share: 'დივიზიონების წილი', total: 'სულ', plan: 'თვიური გეგმა', prev: 'წინა თვე', next: 'შემდეგი თვე', source: 'გაყიდვები აფთიაქებიდან · აქტიური წამლები და თანამშრომლები', noDiv: 'დივიზიონის გარეშე', noData: 'ამ თვეზე გაყიდვები ჯერ არ არის შეყვანილი (გაყიდვები აფთიაქებიდან)', rxChart: 'რეცეპტები პროდუქტების მიხედვით' },
-  en: { prescriptions: 'Prescriptions', share: 'Division share', total: 'Total', plan: 'Monthly plan', prev: 'Previous month', next: 'Next month', source: 'Sales from pharmacies · active drugs and employees', noDiv: 'No division', noData: 'No sales entered for this month yet', rxChart: 'Prescriptions by product' },
-  ru: { prescriptions: 'Рецепты', share: 'Доли дивизионов', total: 'Всего', plan: 'План на месяц', prev: 'Прошлый месяц', next: 'Следующий месяц', source: 'Продажи из аптек · активные препараты и сотрудники', noDiv: 'Без дивизиона', noData: 'Продажи за этот месяц ещё не внесены', rxChart: 'Рецепты по препаратам' },
+  ka: { products: 'პროდუქტი', prescriptions: 'რეცეპტები', share: 'დივიზიონების წილი', total: 'სულ', plan: 'თვიური გეგმა', prev: 'წინა თვე', next: 'შემდეგი თვე', source: 'გაყიდვები აფთიაქებიდან · აქტიური წამლები და თანამშრომლები', noDiv: 'დივიზიონის გარეშე', noData: 'ამ თვეზე გაყიდვები ჯერ არ არის შეყვანილი (გაყიდვები აფთიაქებიდან)', rxChart: 'რეცეპტები პროდუქტების მიხედვით' },
+  en: { products: 'products', prescriptions: 'Prescriptions', share: 'Division share', total: 'Total', plan: 'Monthly plan', prev: 'Previous month', next: 'Next month', source: 'Sales from pharmacies · active drugs and employees', noDiv: 'No division', noData: 'No sales entered for this month yet', rxChart: 'Prescriptions by product' },
+  ru: { products: 'препаратов', prescriptions: 'Рецепты', share: 'Доли дивизионов', total: 'Всего', plan: 'План на месяц', prev: 'Прошлый месяц', next: 'Следующий месяц', source: 'Продажи из аптек · активные препараты и сотрудники', noDiv: 'Без дивизиона', noData: 'Продажи за этот месяц ещё не внесены', rxChart: 'Рецепты по препаратам' },
 }
 
 // MonthPicker: pick a whole month directly (no start / end dates)
@@ -543,7 +544,7 @@ function ProductSaleTab() {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageSize: 25 } },
   })
 
   return (
@@ -621,20 +622,36 @@ function ProductSaleTab() {
       {data && rows.length === 0 && !loading && <EmptyState text={t('empty.sales')} />}
 
       {data && rows.length > 0 && (
-        <div className="director-datagrid">
+        <div className="director-datagrid ps-grid">
           <div className="director-datagrid-toolbar">
-            <input
-              type="text"
-              className="field-input"
-              placeholder={t('searchProduct')}
-              value={globalFilter}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-            />
+            <label className="ps-search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4-4" strokeLinecap="round" /></svg>
+              <input
+                type="text"
+                placeholder={t('searchProduct')}
+                value={globalFilter}
+                onChange={(e) => setGlobalFilter(e.target.value)}
+              />
+            </label>
             <div className="director-toolbar-right">
               {lastLoaded && <span className="director-last-updated">{t('updated', { when: timeAgo(lastLoaded, t) })}</span>}
-              <button type="button" className="btn-gray btn-sm director-export-btn" onClick={() => downloadCSV(`product-sales-${month}.csv`, rows)}>
-                <span>⬇ CSV</span>
-              </button>
+              <ExcelExportButton
+                title={`${t('tabs.productSale')} — ${month}`}
+                fileName={`${t('tabs.productSale')} ${month}`}
+                build={() => ({
+                  headers: [t('col.drugName'), t('col.openingStocks'), t('monthlyTarget'), t('saleBoxes'), L.prescriptions, t('col.closingStocks'), t('col.totalSaleAmount')],
+                  noTotal: [1, 5],
+                  rows: table.getSortedRowModel().rows.map(({ original: r }) => [
+                    ddName(r.drugName),
+                    { value: Number(r.openingStocks) || 0, kind: 'number' },
+                    { value: Number(r.monthlyTarget) || 0, kind: 'number' },
+                    { value: Number(r.saleBoxes) || 0, kind: 'number' },
+                    { value: Number(r.prescriptions) || 0, kind: 'number' },
+                    { value: Number(r.closingStocks) || 0, kind: 'number' },
+                    { value: Number(r.totalSaleAmount) || 0, kind: 'money' },
+                  ]),
+                })}
+              />
             </div>
           </div>
 
@@ -664,7 +681,8 @@ function ProductSaleTab() {
             </table>
           </div>
 
-          <div className="director-pagination">
+          <div className="director-pagination ps-pager">
+            <small className="ps-count">{table.getFilteredRowModel().rows.length} {L.products || ''}</small>
             <button type="button" className="btn-gray btn-sm" disabled={!table.getCanPreviousPage()} onClick={() => table.previousPage()}><span>←</span></button>
             <span>{table.getState().pagination.pageIndex + 1} / {table.getPageCount()}</span>
             <button type="button" className="btn-gray btn-sm" disabled={!table.getCanNextPage()} onClick={() => table.nextPage()}><span>→</span></button>

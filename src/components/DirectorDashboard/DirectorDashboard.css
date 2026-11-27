@@ -1510,3 +1510,53 @@
 }
 
 .ps-empty { color: #64748b; font-size: 14px; padding: 18px 4px; }
+
+/* ===== psGridV3: product sales table ===== */
+.ps-grid { padding: 18px !important; gap: 14px !important; }
+.ps-grid .director-datagrid-toolbar { gap: 12px; }
+.ps-search {
+  display: flex; align-items: center; gap: 10px;
+  flex: 1; max-width: 360px; min-width: 200px; height: 42px; padding: 0 14px;
+  border: 1px solid #dfe5ee; border-radius: 12px; background: #f8fafd;
+  transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+}
+.ps-search:focus-within { border-color: #3f74d6; background: #fff; box-shadow: 0 0 0 3px rgba(63, 116, 214, .12); }
+.ps-search svg { width: 17px; height: 17px; color: #94a3b8; flex-shrink: 0; }
+.ps-search input { border: 0; outline: 0; background: transparent; font: inherit; font-size: 14px; color: #0f172a; width: 100%; }
+.ps-search input::placeholder { color: #94a3b8; }
+
+.ps-grid .director-table-wrap {
+  border: 1px solid #e3e8ef !important; border-radius: 14px !important; box-shadow: none !important;
+  max-height: calc(100vh - 220px); overflow: auto;
+}
+.ps-grid .director-table { border-collapse: separate; border-spacing: 0; font-size: 13.5px; }
+.ps-grid .director-table thead th {
+  position: sticky; top: 0; z-index: 2;
+  background: #f4f6fa !important; color: #475569 !important;
+  font-size: 12px !important; font-weight: 700 !important;
+  padding: 12px 18px !important; border-bottom: 1px solid #e3e8ef !important;
+}
+.ps-grid .director-table thead th:hover { color: #1e3a8a !important; }
+.ps-grid .director-table th:first-child, .ps-grid .director-table td:first-child { min-width: 220px; }
+.ps-grid .director-table td { padding: 11px 18px !important; border-bottom: 1px solid #eef1f5 !important; }
+.ps-grid .director-table tbody tr:nth-child(even) td { background: #fbfcfe; }
+.ps-grid .director-table tbody tr:hover td { background: #f1f6fe; }
+.ps-grid .dd-drug { font-weight: 600; color: #0f172a; }
+.ps-grid .dd-muted { color: #94a3b8; }
+.ps-sold { font-weight: 700; color: #1d4ed8; }
+.ps-stock { font-weight: 700; font-variant-numeric: tabular-nums; }
+.ps-stock-ok { color: #047857; }
+.ps-stock-low { color: #b45309; }
+.ps-stock-neg { color: #dc2626; }
+.ps-grid .dd-money { font-weight: 700; }
+.ps-grid .dd-money small { color: #a3adbb; font-weight: 600; margin-left: 2px; }
+
+.ps-pager { justify-content: flex-end !important; gap: 10px !important; padding: 2px 2px 0 !important; }
+.ps-pager .ps-count { margin-right: auto; color: #94a3b8; font-size: 12.5px; }
+.ps-pager .btn-gray { min-width: 38px; height: 34px; border-radius: 10px; }
+
+@media (max-width: 640px) {
+  .ps-grid { padding: 12px !important; }
+  .ps-search { max-width: none; }
+  .ps-grid .director-table th:first-child, .ps-grid .director-table td:first-child { min-width: 150px; }
+}
