@@ -1560,3 +1560,7 @@
   .ps-search { max-width: none; }
   .ps-grid .director-table th:first-child, .ps-grid .director-table td:first-child { min-width: 150px; }
 }
+
+/* corrected sales mark */
+.ps-corr-mark { color: #b45309; font-weight: 800; margin-right: 6px; cursor: help; }
+.ps-kpi em[title] { cursor: help; }

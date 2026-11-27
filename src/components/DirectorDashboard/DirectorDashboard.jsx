@@ -169,12 +169,43 @@ function PremiumTooltip({ active, payload, label }) {
   )
 }
 
-function BarChart({ data, valueKey, labelKey, seriesName }) {
+// psMoneyTip: what a product sold — boxes × price = amount (corrected amount if a sale was corrected)
+const PS_TIP = {
+  ka: { boxes: 'გაყიდული ყუთები', price: 'ფასი (1 ყუთი)', amount: 'გაყიდვის თანხა', raw: 'კორექტირებამდე', plan: 'თვიური გეგმა', rx: 'რეცეპტები' },
+  en: { boxes: 'Boxes sold', price: 'Price (1 box)', amount: 'Sales amount', raw: 'Before correction', plan: 'Monthly plan', rx: 'Prescriptions' },
+  ru: { boxes: 'Продано коробок', price: 'Цена (1 коробка)', amount: 'Сумма продаж', raw: 'До корректировки', plan: 'План на месяц', rx: 'Рецепты' },
+}
+const psNum = (n) => (Number(n) || 0).toLocaleString('en-US', { maximumFractionDigits: 2 })
+const psMoney = (n) => (Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+function PsMoneyTooltip({ active, payload, label }) {
+  const locale = useLocale()
+  const T = PS_TIP[locale] || PS_TIP.ka
+  if (!active || !payload || !payload.length) return null
+  const r = payload[0]?.payload || {}
+  const line = (name, value, strong) => (
+    <div className="director-recharts-tooltip-row">
+      <span className="director-recharts-tooltip-name">{name}</span>
+      <span className="director-recharts-tooltip-value" style={strong ? { fontWeight: 800 } : undefined}>{value}</span>
+    </div>
+  )
+  return (
+    <div className="director-recharts-tooltip">
+      <div className="director-recharts-tooltip-label">{label}</div>
+      {line(T.boxes, psNum(r.saleBoxes))}
+      {line(T.price, `${psMoney(r.price)} ₾`)}
+      {line(T.amount, `${psMoney(r.totalSaleAmount)} ₾`, true)}
+      {r.corrected && line(`✎ ${T.raw}`, `${psMoney(r.rawSaleAmount)} ₾`)}
+      {r.monthlyTarget > 0 && line(T.plan, psNum(r.monthlyTarget))}
+    </div>
+  )
+}
+
+function BarChart({ data, valueKey, labelKey, seriesName, labelDataKey, money }) {
   const t = useTranslations('director')
   const height = Math.max(data.length * 42, 200)
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <RBarChart data={data} layout="vertical" margin={{ top: 4, right: 60, bottom: 4, left: 4 }} barCategoryGap="28%">
+      <RBarChart data={data} layout="vertical" margin={{ top: 4, right: labelDataKey ? 190 : 60, bottom: 4, left: 4 }} barCategoryGap="28%">
         <defs>
           <linearGradient id="salesBarGradient" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#0c3557" /><stop offset="55%" stopColor="#13608f" /><stop offset="100%" stopColor="#2a93c4" />
@@ -184,21 +215,21 @@ function BarChart({ data, valueKey, labelKey, seriesName }) {
         <CartesianGrid horizontal={false} stroke="#eceef2" />
         <XAxis type="number" tick={{ fontSize: 11, fill: '#9aa7ba' }} axisLine={false} tickLine={false} />
         <YAxis type="category" dataKey={labelKey} width={130} tick={{ fontSize: 12, fontWeight: 600, fill: '#0b1b33' }} axisLine={false} tickLine={false} />
-        <Tooltip content={<PremiumTooltip />} cursor={{ fill: 'rgba(63, 116, 214, 0.05)' }} />
+        <Tooltip content={money ? <PsMoneyTooltip /> : <PremiumTooltip />} cursor={{ fill: 'rgba(63, 116, 214, 0.05)' }} />
         <Bar dataKey={valueKey} name={seriesName || t('saleBoxes')} fill="url(#salesBarGradient)" radius={[0, 10, 10, 0]} maxBarSize={22} animationDuration={700} animationEasing="ease-out" filter="url(#barShadow)">
-          <LabelList dataKey={valueKey} position="right" formatter={(v) => Number(v || 0).toLocaleString()} style={{ fill: '#0c3557', fontWeight: 700, fontSize: 11.5 }} />
+          <LabelList dataKey={labelDataKey || valueKey} position="right" formatter={(v) => (typeof v === 'string' ? v : Number(v || 0).toLocaleString())} style={{ fill: '#0c3557', fontWeight: 700, fontSize: 11.5 }} />
         </Bar>
       </RBarChart>
     </ResponsiveContainer>
   )
 }
 
-function DualBarChart({ data, labelKey, targetKey, soldKey }) {
+function DualBarChart({ data, labelKey, targetKey, soldKey, soldLabelKey }) {
   const t = useTranslations('director')
   const height = Math.max(data.length * 42, 200)
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <RBarChart data={data} layout="vertical" margin={{ top: 4, right: 60, bottom: 4, left: 4 }} barCategoryGap="28%" barGap={4}>
+      <RBarChart data={data} layout="vertical" margin={{ top: 4, right: soldLabelKey ? 190 : 60, bottom: 4, left: 4 }} barCategoryGap="28%" barGap={4}>
         <defs>
           <linearGradient id="soldBarGradient" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#0c3557" /><stop offset="55%" stopColor="#13608f" /><stop offset="100%" stopColor="#2a93c4" />
@@ -208,11 +239,11 @@ function DualBarChart({ data, labelKey, targetKey, soldKey }) {
         <CartesianGrid horizontal={false} stroke="#eceef2" />
         <XAxis type="number" tick={{ fontSize: 11, fill: '#9aa7ba' }} axisLine={false} tickLine={false} />
         <YAxis type="category" dataKey={labelKey} width={130} tick={{ fontSize: 12, fontWeight: 600, fill: '#0b1b33' }} axisLine={false} tickLine={false} />
-        <Tooltip content={<PremiumTooltip />} cursor={{ fill: 'rgba(63, 116, 214, 0.05)' }} />
+        <Tooltip content={soldLabelKey ? <PsMoneyTooltip /> : <PremiumTooltip />} cursor={{ fill: 'rgba(63, 116, 214, 0.05)' }} />
         <Legend verticalAlign="top" align="left" height={28} iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11, fontWeight: 600, color: '#5b6b82' }} />
         <Bar dataKey={targetKey} name={t('monthlyTarget')} fill="#d5dce6" radius={[0, 8, 8, 0]} maxBarSize={14} animationDuration={700} />
         <Bar dataKey={soldKey} name={t('boxesSold')} fill="url(#soldBarGradient)" radius={[0, 8, 8, 0]} maxBarSize={14} animationDuration={700} animationBegin={150} filter="url(#barShadow)">
-          <LabelList dataKey={soldKey} position="right" formatter={(v) => Number(v || 0).toLocaleString()} style={{ fill: '#0c3557', fontWeight: 700, fontSize: 11 }} />
+          <LabelList dataKey={soldLabelKey || soldKey} position="right" formatter={(v) => (typeof v === 'string' ? v : Number(v || 0).toLocaleString())} style={{ fill: '#0c3557', fontWeight: 700, fontSize: 11 }} />
         </Bar>
       </RBarChart>
     </ResponsiveContainer>
@@ -427,6 +458,7 @@ const ddBar = (v, max, tone) => (
   <span className="dd-bar"><span className={`dd-bar-fill dd-bar-${tone}`} style={{ width: `${max > 0 ? Math.max(3, Math.min(100, (v / max) * 100)) : 0}%` }} /></span>
 )
 
+let PS_PRICE_HEAD = 'ფასი (1 ყუთი)'
 const getSaleColumns = (t, maxBoxes = 0) => [
   { accessorKey: 'drugName', header: t('col.drugName'), cell: (info) => <span className="dd-drug">{ddName(info.getValue())}</span> },
   {
@@ -450,8 +482,19 @@ const getSaleColumns = (t, maxBoxes = 0) => [
     },
   },
   {
+    accessorKey: 'price', header: PS_PRICE_HEAD, meta: { num: true },
+    cell: (info) => { const v = Number(info.getValue()) || 0; return v ? <span className="dd-muted">{psMoney(v)} <small>₾</small></span> : <span className="dd-dash">—</span> },
+  },
+  {
     accessorKey: 'totalSaleAmount', header: t('col.totalSaleAmount'), meta: { num: true },
-    cell: (info) => <span className="dd-money">{fmtMoney(info.getValue())} <small>₾</small></span>,
+    cell: (info) => {
+      const r = info.row.original
+      return (
+        <span className="dd-money" title={r.corrected ? `✎ ${psMoney(r.rawSaleAmount)} ₾ → ${psMoney(r.totalSaleAmount)} ₾` : undefined}>
+          {r.corrected && <span className="ps-corr-mark">✎</span>}{fmtMoney(info.getValue())} <small>₾</small>
+        </span>
+      )
+    },
   },
 ]
 
@@ -517,14 +560,16 @@ function ProductSaleTab() {
   const rows = data?.docs || []
   const totals = data?.totals || {}
   const divisions = (data?.divisions || []).map((d) => ({ ...d, name: d.name === '—' ? L.noDiv : d.name }))
-  const divTotal = divisions.reduce((s, d) => s + d.amount, 0)
+  const divTotal = totals.amount != null ? totals.amount : divisions.reduce((s, d) => s + d.amount, 0)
   const byBoxes = !(totals.amount > 0)
   const maxBoxes = rows.reduce((m, r) => Math.max(m, Number(r.saleBoxes) || 0), 0)
   const topProduct = rows.find((r) => r.saleBoxes > 0) || null
   const chartRows = rows.filter((r) => r.saleBoxes > 0 || r.monthlyTarget > 0).slice(0, 15)
+    .map((r) => ({ ...r, soldLabel: r.saleBoxes > 0 ? `${psNum(r.saleBoxes)} · ${psMoney(r.totalSaleAmount)} ₾${r.corrected ? ' ✎' : ''}` : '' }))
   const rxRowsTop = [...rows].filter((r) => r.prescriptions > 0).sort((a, b) => b.prescriptions - a.prescriptions).slice(0, 15)
 
   const columns = useMemo(() => {
+    PS_PRICE_HEAD = (PS_TIP[locale] || PS_TIP.ka).price
     const base = getSaleColumns(t, maxBoxes)
     const rx = {
       accessorKey: 'prescriptions', header: L.prescriptions, meta: { num: true },
@@ -532,7 +577,7 @@ function ProductSaleTab() {
     }
     const i = base.findIndex((c) => c.accessorKey === 'saleBoxes')
     return i < 0 ? base : [...base.slice(0, i + 1), rx, ...base.slice(i + 1)]
-  }, [t, maxBoxes, L.prescriptions])
+  }, [t, maxBoxes, L.prescriptions, locale])
 
   const table = useReactTable({
     data: rows,
@@ -560,7 +605,7 @@ function ProductSaleTab() {
 
       {data && (
         <div className="ps-kpis">
-          <div className="ps-kpi ps-kpi-blue"><span>{t('kpi.totalSales')}</span><strong>{fmtMoney(totals.amount)} ₾</strong></div>
+          <div className="ps-kpi ps-kpi-blue"><span>{t('kpi.totalSales')}</span><strong>{fmtMoney(totals.amount)} ₾</strong>{totals.correctedSales > 0 && <em title={`${(PS_TIP[locale] || PS_TIP.ka).raw}: ${psMoney(totals.rawAmount)} ₾`}>✎ {(PS_TIP[locale] || PS_TIP.ka).raw}: {psMoney(totals.rawAmount)} ₾</em>}</div>
           <div className="ps-kpi ps-kpi-green"><span>{t('kpi.boxesSold')}</span><strong>{(totals.boxes || 0).toLocaleString('en-US')}</strong><em>{L.plan}: {(totals.target || 0).toLocaleString('en-US')}</em></div>
           <div className="ps-kpi ps-kpi-purple"><span>{L.prescriptions}</span><strong>{(totals.prescriptions || 0).toLocaleString('en-US')}</strong></div>
           <div className="ps-kpi ps-kpi-amber"><span>{t('kpi.topProduct')}</span><strong className="ps-kpi-text">{topProduct ? ddName(topProduct.drugName) : '—'}</strong></div>
@@ -606,11 +651,11 @@ function ProductSaleTab() {
         <>
           <div className="director-chart-card">
             <h3>{t('chart.targetVsSold')}</h3>
-            {chartRows.length ? <DualBarChart data={chartRows} labelKey="drugName" targetKey="monthlyTarget" soldKey="saleBoxes" /> : <p className="ps-empty">{L.noData}</p>}
+            {chartRows.length ? <DualBarChart data={chartRows} labelKey="drugName" targetKey="monthlyTarget" soldKey="saleBoxes" soldLabelKey="soldLabel" /> : <p className="ps-empty">{L.noData}</p>}
           </div>
           <div className="director-chart-card">
             <h3>{t('chart.productSale')}</h3>
-            {chartRows.some((r) => r.saleBoxes > 0) ? <BarChart data={chartRows.filter((r) => r.saleBoxes > 0)} valueKey="saleBoxes" labelKey="drugName" /> : <p className="ps-empty">{L.noData}</p>}
+            {chartRows.some((r) => r.saleBoxes > 0) ? <BarChart data={chartRows.filter((r) => r.saleBoxes > 0)} valueKey="saleBoxes" labelKey="drugName" labelDataKey="soldLabel" money /> : <p className="ps-empty">{L.noData}</p>}
           </div>
           <div className="director-chart-card">
             <h3>{L.rxChart}</h3>
@@ -639,8 +684,8 @@ function ProductSaleTab() {
                 title={`${t('tabs.productSale')} — ${month}`}
                 fileName={`${t('tabs.productSale')} ${month}`}
                 build={() => ({
-                  headers: [t('col.drugName'), t('col.openingStocks'), t('monthlyTarget'), t('saleBoxes'), L.prescriptions, t('col.closingStocks'), t('col.totalSaleAmount')],
-                  noTotal: [1, 5],
+                  headers: [t('col.drugName'), t('col.openingStocks'), t('monthlyTarget'), t('saleBoxes'), L.prescriptions, t('col.closingStocks'), (PS_TIP[locale] || PS_TIP.ka).price, `${t('col.totalSaleAmount')} (${(PS_TIP[locale] || PS_TIP.ka).raw})`, t('col.totalSaleAmount')], // psExcelPrice
+                  noTotal: [1, 5, 6],
                   rows: table.getSortedRowModel().rows.map(({ original: r }) => [
                     ddName(r.drugName),
                     { value: Number(r.openingStocks) || 0, kind: 'number' },
@@ -648,6 +693,8 @@ function ProductSaleTab() {
                     { value: Number(r.saleBoxes) || 0, kind: 'number' },
                     { value: Number(r.prescriptions) || 0, kind: 'number' },
                     { value: Number(r.closingStocks) || 0, kind: 'number' },
+                    { value: Number(r.price) || 0, kind: 'money' },
+                    { value: Number(r.rawSaleAmount) || 0, kind: 'money' },
                     { value: Number(r.totalSaleAmount) || 0, kind: 'money' },
                   ]),
                 })}
