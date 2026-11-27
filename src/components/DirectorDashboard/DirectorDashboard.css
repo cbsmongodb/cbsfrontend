@@ -1564,3 +1564,6 @@
 /* corrected sales mark */
 .ps-corr-mark { color: #b45309; font-weight: 800; margin-right: 6px; cursor: help; }
 .ps-kpi em[title] { cursor: help; }
+
+/* one search field (the site's own style) */
+.ps-grid .director-datagrid-toolbar .ps-search-input { flex: 1; max-width: 380px; min-width: 200px; }
