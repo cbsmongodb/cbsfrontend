@@ -155,6 +155,11 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
       return next
     })
   }
+  // outsideClick: a click outside the window closes it only while nothing is entered
+  function outside() {
+    const dirty = editId || tabs.some((t) => t.employeeId || statsOf(t).ticked > 0)
+    if (!dirty && !saving) onClose()
+  }
   function close() {
     const dirty = tabs.some((t) => t.employeeId || statsOf(t).ticked > 0)
     if (!editId && dirty && !saving && !window.confirm(T.closeAsk)) return
@@ -212,7 +217,7 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
   const saveCount = Math.max(1, tabs.filter((t) => t.employeeId || statsOf(t).ticked > 0).length)
 
   return (
-    <div className="et-modal-overlay" onClick={close}>
+    <div className="et-modal-overlay" onClick={outside}>
       <div className={`et-modal${batch ? " sb-modal" : ""}`} onClick={(e) => e.stopPropagation()}>
         <div className="et-modal-head">
           <h2>{editId ? tu('k151') : tu('k152')}</h2>
