@@ -271,7 +271,7 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
                   </select>
                 </div>
               )}
-              <div className="et-modal-field sb-emp">
+              <div className={`et-modal-field sb-emp ${active.employeeId ? "is-picked" : "is-empty"}`}> {/* empFieldState */}
                 <label>{batch ? `${T.step} ${tabs.findIndex((t) => t.key === active.key) + 1} — ${tu('k044')}` : tu('k044')}</label>
                 <GroupedEmployeePicker
                   key={active.key}
@@ -280,9 +280,10 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
                   sections={filters.sections}
                   value={active.employeeId}
                   onChange={(id) => { update(active.key, () => ({ employeeId: id, allDrugs: false })); setBadKeys((b) => { const c = { ...b }; delete c[active.key]; return c }) }}
-                  placeholder={tu('k109')}
+                  placeholder={`👤 ${T.noOne}…`}
                   otherLabel={T.other}
                 />
+                {active.employeeId && <span className="sb-emp-ok" aria-hidden="true">✓</span>}
               </div>
             </div>
             {batch && active.employeeId && existing[`${active.employeeId}|${monthKey}`] && (

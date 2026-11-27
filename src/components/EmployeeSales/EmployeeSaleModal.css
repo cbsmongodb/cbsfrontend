@@ -63,3 +63,34 @@
   .sb-total { width: 100%; margin-left: 0; order: -1; }
   .sb-actions { flex-wrap: wrap; }
 }
+
+/* empFieldState: the employee field — blue and glowing while empty, green with ✓ once chosen */
+.sb-emp { position: relative; }
+.sb-emp > label { font-size: 13.5px !important; font-weight: 800 !important; color: #0f2744 !important; }
+.sb-emp .gep .field-input {
+  height: 48px !important; font-size: 15px !important; font-weight: 600 !important;
+  border-width: 2px !important; border-radius: 12px !important;
+  transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
+}
+.sb-emp.is-empty .gep .field-input {
+  border-color: #3f74d6 !important; background: #f5f8ff !important;
+  animation: sbEmpGlow 1.8s ease-in-out infinite;
+}
+.sb-emp.is-empty .gep .field-input::placeholder { color: #3f74d6 !important; font-weight: 700; opacity: 1; }
+.sb-emp.is-picked .gep .field-input {
+  border-color: #16a34a !important; background: #f0fdf4 !important; color: #14532d !important;
+  padding-right: 64px !important;
+}
+.sb-emp.is-picked > label { color: #15803d !important; }
+.sb-emp-ok {
+  position: absolute; right: 40px; bottom: 13px;
+  width: 22px; height: 22px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #16a34a; color: #fff; font-size: 12px; font-weight: 800; pointer-events: none;
+}
+.sb-emp.is-picked .gep .gep-caret { display: none; }
+@keyframes sbEmpGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(63, 116, 214, 0.0); }
+  50% { box-shadow: 0 0 0 5px rgba(63, 116, 214, 0.18); }
+}
+@media (prefers-reduced-motion: reduce) { .sb-emp.is-empty .gep .field-input { animation: none; } }
