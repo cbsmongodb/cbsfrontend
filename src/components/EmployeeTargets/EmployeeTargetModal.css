@@ -123,3 +123,30 @@
 
 /* division / group row in the sale window */
 .et-modal-top.et-modal-filters { padding-bottom: 0; }
+
+/* employee picker grouped by group */
+.gep .searchable-select-control { position: relative; }
+.gep-caret { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; font-size: 12px; transition: transform .15s ease; }
+.gep-caret.is-open { transform: translateY(-50%) rotate(180deg); }
+.gep .searchable-select-clear + .gep-caret { display: none; }
+.gep-dropdown { max-height: 340px; overflow-y: auto; padding: 4px 0; }
+.gep-group + .gep-group { border-top: 1px solid #eef1f5; }
+.gep-head {
+  position: sticky; top: 0; z-index: 1;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; background: #f4f6fa;
+  font-size: 12px; font-weight: 800; color: #1e3a8a; text-transform: none; letter-spacing: 0;
+}
+.gep-head small { color: #94a3b8; font-weight: 600; }
+.gep-head em { margin-left: auto; font-style: normal; font-weight: 700; color: #94a3b8; font-size: 11.5px; }
+.gep-option { padding-left: 24px !important; }
+.gep-option.is-selected { background: #eef3fd; font-weight: 700; color: #1e3a8a; }
+
+/* "only this group's drugs" chip */
+.et-group-chip {
+  display: inline-flex; align-items: center; height: 32px; padding: 0 12px;
+  border: 1px solid #dfe5ee; border-radius: 999px; background: #fff; color: #475569;
+  font: inherit; font-size: 12.5px; font-weight: 700; text-transform: none; letter-spacing: 0; cursor: pointer;
+}
+.et-group-chip.is-on { border-color: #c7d7f5; background: #eef3fd; color: #1e3a8a; }
+.et-group-chip:hover { border-color: #3f74d6; }

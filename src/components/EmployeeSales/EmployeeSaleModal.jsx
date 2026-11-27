@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { apiFetch } from "@/lib/api"
 import SearchableSelect from "@/components/ResourceTable/SearchableSelect"
+import GroupedEmployeePicker from "./GroupedEmployeePicker"
 import "@/components/EmployeeTargets/EmployeeTargetModal.css"
 import { useTranslations, useLocale } from 'next-intl'
 import { useMonthNames } from '@/lib/months'
@@ -13,9 +14,9 @@ const MONTHS = [
 const CURRENT_YEAR = new Date().getUTCFullYear()
 // saleModalGroups: division / group filter + "select all" in the sale window
 const GTXT = {
-  ka: { division: 'დივიზიონი', group: 'ჯგუფი', all: 'ყველა', allGroups: 'ყველა ჯგუფი', pickAll: 'ყველას მონიშვნა', clearAll: 'ყველას მოხსნა' },
-  en: { division: 'Division', group: 'Group', all: 'All', allGroups: 'All groups', pickAll: 'Select all', clearAll: 'Clear all' },
-  ru: { division: 'Дивизион', group: 'Группа', all: 'Все', allGroups: 'Все группы', pickAll: 'Выбрать все', clearAll: 'Снять все' },
+  ka: { division: 'დივიზიონი', group: 'ჯგუფი', all: 'ყველა', allGroups: 'ყველა ჯგუფი', other: 'სხვა', onlyGroup: 'მხოლოდ ჯგუფი', showAll: 'ყველა წამალი', pickAll: 'ყველას მონიშვნა', clearAll: 'ყველას მოხსნა' },
+  en: { division: 'Division', group: 'Group', all: 'All', allGroups: 'All groups', other: 'Other', onlyGroup: 'Only group', showAll: 'All drugs', pickAll: 'Select all', clearAll: 'Clear all' },
+  ru: { division: 'Дивизион', group: 'Группа', all: 'Все', allGroups: 'Все группы', other: 'Другие', onlyGroup: 'Только группа', showAll: 'Все препараты', pickAll: 'Выбрать все', clearAll: 'Снять все' },
 }
 
 export default function EmployeeSaleModal({ employees, editId, onClose, onSaved }) {
@@ -42,7 +43,9 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
     apiFetch("/api/employee-sales/filters").then((f) => setFilters({ sections: [], groups: [], ...f })).catch(() => {})
   }, [])
   const groupsShown = useMemo(() => filters.groups.filter((g) => !sectionId || g.section === sectionId), [filters.groups, sectionId])
-  const theGroup = filters.groups.find((g) => g.id === groupId) || null
+  // saleModalPicker: the chosen employee's group (its drugs are shown first)
+  const [allDrugs, setAllDrugs] = useState(false)
+  const theGroup = employeeId ? filters.groups.find((g) => g.employees.includes(String(employeeId)) && g.drugs?.length) || null : null
   // people of the chosen division / group
   const employeesShown = useMemo(() => {
     if (!sectionId && !groupId) return employees
@@ -52,7 +55,7 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
     return employees.filter((e) => ids.has(String(e._id)) || String(e._id) === String(employeeId))
   }, [employees, filters.sections, groupsShown, theGroup, sectionId, groupId, employeeId])
   // drugs of the chosen group (a group with no drugs listed shows every drug)
-  const groupDrugs = theGroup && theGroup.drugs?.length ? new Set(theGroup.drugs) : null
+  const groupDrugs = !allDrugs && theGroup && theGroup.drugs?.length ? new Set(theGroup.drugs) : null
 
   useEffect(() => {
     apiFetch("/api/employee-sales/visible-drugs")
@@ -144,28 +147,6 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
           <button className="et-modal-close" onClick={onClose}>×</button>
         </div>
 
-        {(filters.sections.length > 1 || filters.groups.length > 1) && (
-          <div className="et-modal-top et-modal-filters">
-            {filters.sections.length > 1 && (
-              <div className="et-modal-field">
-                <label>{G.division}</label>
-                <select className="field-select" value={sectionId} onChange={(e) => { setSectionId(e.target.value); setGroupId("") }}>
-                  <option value="">{G.all}</option>
-                  {filters.sections.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-                </select>
-              </div>
-            )}
-            {groupsShown.length > 0 && (
-              <div className="et-modal-field">
-                <label>{G.group}</label>
-                <select className="field-select" value={groupId} onChange={(e) => setGroupId(e.target.value)}>
-                  <option value="">{G.allGroups}</option>
-                  {groupsShown.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
-                </select>
-              </div>
-            )}
-          </div>
-        )}
 
         <div className="et-modal-top">
           <div className="et-modal-field">
@@ -176,12 +157,14 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
           </div>
           <div className="et-modal-field">
             <label>{tu('k044')}</label>
-            <SearchableSelect
-              options={employeesShown}
+            <GroupedEmployeePicker
+              employees={employees}
+              groups={filters.groups}
+              sections={filters.sections}
               value={employeeId}
-              onChange={setEmployeeId}
-              getLabel={(o) => o.name || `${o.firstName} ${o.lastName}`}
+              onChange={(id) => { setEmployeeId(id); setAllDrugs(false) }}
               placeholder={tu('k109')}
+              otherLabel={G.other}
             />
           </div>
         </div>
@@ -189,6 +172,12 @@ export default function EmployeeSaleModal({ employees, editId, onClose, onSaved 
         <div className="et-modal-druglabel">
           <span>{tu('k153')}</span>
           {chosenCount > 0 && <span className="et-modal-count">{tu('k009')}{" "}{chosenCount}</span>}
+          {theGroup && (
+            <button type="button" className={`et-group-chip${allDrugs ? "" : " is-on"}`} onClick={() => setAllDrugs((v) => !v)}
+              title={allDrugs ? `${theGroup.name}` : G.showAll}>
+              {allDrugs ? `${G.onlyGroup} ${theGroup.name}` : `${theGroup.name} · ${G.showAll}`}
+            </button>
+          )}
           {filtered.length > 0 && (
             <button type="button" className={`et-pick-all${allPicked ? " is-on" : ""}`} onClick={pickAll}>
               <span className="et-pick-all-box">{allPicked ? "✓" : ""}</span>
